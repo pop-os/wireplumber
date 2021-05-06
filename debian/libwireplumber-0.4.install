@@ -1,0 +1,2 @@
+usr/lib/*/lib*.so.*
+usr/lib/*/wireplumber-0.4/libwireplumber*.so
