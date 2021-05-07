@@ -4,11 +4,11 @@ Maintainer: Frederic Danis <frederic.danis@collabora.com>
 Build-Depends: debhelper-compat (= 13),
                gobject-introspection,
                libgirepository1.0-dev,
-               libglib2.0-dev,
+               libglib2.0-dev (>= 2.58),
                liblua5.3-dev,
-               libpipewire-0.3-dev,
-               cmake,
-               meson,
+               libpipewire-0.3-dev (>= 0.3.20),
+               libspa-0.2-dev,
+               meson (>= 0.54.0),
                pkg-config (>= 0.22),
                systemd
 Standards-Version: 4.5.1
@@ -58,6 +58,7 @@ Package: gir1.2-wp-0.4
 Section: introspection
 Architecture: any
 Depends: ${misc:Depends},
+         ${gir:Depends},
          libwireplumber-0.4-0 (= ${binary:Version}),
 Description: Typelib file for libwireplumber-0.4
  WirePlumber is a modular session / policy manager for PipeWire and a
