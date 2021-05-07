@@ -1,5 +1,5 @@
-wireplumber (0.3.70-1) unstable; urgency=medium
+wireplumber (0.3.95-1) UNRELEASED; urgency=medium
 
-  * Initial release
+  * Initial release (Closes: #988143)
 
  -- Frederic Danis <frederic.danis@collabora.com>  Wed, 05 May 2021 15:25:29 +0000
