@@ -10,7 +10,9 @@ Build-Depends: debhelper-compat (= 13),
                libspa-0.2-dev,
                meson (>= 0.54.0),
                pkg-config (>= 0.22),
-               systemd
+               systemd,
+# Only used for automated tests
+               pipewire <!nocheck>,
 Standards-Version: 4.5.1
 Section: libs
 #Homepage: <insert the upstream URL, if relevant>
