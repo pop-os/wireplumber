@@ -1,10 +1,17 @@
 Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: wireplumber
-Upstream-Contact: <preferred name and address to reach the upstream project>
-Source: <url://example.com>
+Upstream-Contact: George Kiagiadakis <george.kiagiadakis@collabora.com>
+Source: https://gitlab.freedesktop.org/pipewire/wireplumber/
 
 Files: *
-Copyright: Copyright © 2019 Collabora Ltd.
+Copyright: 2019-2021 Collabora Ltd.
+License: MIT
+
+Files: lib/wplua/sandbox.lua
+Copyright: 2013 Enrique García Cota,
+           2020 Collabora Ltd.
+License: MIT
+
 License: MIT
  Permission is hereby granted, free of charge, to any person obtaining a
  copy of this software and associated documentation files (the "Software"),
