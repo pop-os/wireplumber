@@ -18,7 +18,7 @@ Section: libs
 #Vcs-Git: https://salsa.debian.org/debian/wireplumber.git
 Rules-Requires-Root: no
 
-Package: libwireplumber-0.4
+Package: libwireplumber-0.4-0
 Architecture: linux-any
 Multi-Arch: same
 Depends: ${misc:Depends},
@@ -34,7 +34,7 @@ Section: libdevel
 Architecture: linux-any
 Multi-Arch: same
 Depends: ${misc:Depends},
-         libwireplumber-0.4 (= ${binary:Version}),
+         libwireplumber-0.4-0 (= ${binary:Version}),
          gir1.2-libwireplumber-0.4,
 Description: libraries for WirePlumber modular session / policy manager for PipeWire
  WirePlumber is a modular session / policy manager for PipeWire and a
@@ -58,7 +58,7 @@ Package: gir1.2-libwireplumber-0.4
 Section: introspection
 Architecture: any
 Depends: ${misc:Depends},
-         libwireplumber-0.4 (= ${binary:Version}),
+         libwireplumber-0.4-0 (= ${binary:Version}),
 Description: Typelib file for libwireplumber-0.4
  WirePlumber is a modular session / policy manager for PipeWire and a
  GObject-based high-level library that wraps PipeWire's API, providing
