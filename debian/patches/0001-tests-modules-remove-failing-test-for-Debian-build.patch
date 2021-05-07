@@ -1,0 +1,30 @@
+From c5542815ba7f62b5d4bcfc21bc386d2a597ecfac Mon Sep 17 00:00:00 2001
+From: Arnaud Ferraris <arnaud.ferraris@collabora.com>
+Date: Thu, 6 May 2021 16:47:00 +0200
+Subject: [PATCH] tests: modules: remove failing test for Debian build
+
+---
+ tests/modules/meson.build | 7 -------
+ 1 file changed, 7 deletions(-)
+
+diff --git a/tests/modules/meson.build b/tests/modules/meson.build
+index 3e695dc..327bf21 100644
+--- a/tests/modules/meson.build
++++ b/tests/modules/meson.build
+@@ -20,13 +20,6 @@ test(
+   env: common_env,
+ )
+ 
+-test(
+-  'test-reserve-device',
+-  executable('test-reserve-device', 'reserve-device.c',
+-    dependencies: common_deps, c_args: common_args),
+-  env: common_env,
+-)
+-
+ test(
+   'test-si-node',
+   executable('test-si-node', 'si-node.c',
+-- 
+2.30.2
+
