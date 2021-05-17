@@ -1,1 +1,5 @@
 0001-tests-modules-remove-failing-test-for-Debian-build.patch
+
+# Backported upstream commits fixing build on 32-bit architectures
+0002-spa-pod-respect-the-SPA-size-for-long-and-int-APIs.patch
+0003-tests-spa-pod-fix-int64-constant-to-work-on-all-arch.patch
