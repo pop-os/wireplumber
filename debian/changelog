@@ -1,5 +1,9 @@
-wireplumber (0.3.95-1) UNRELEASED; urgency=medium
+wireplumber (0.3.95-1) experimental; urgency=medium
 
+  [ Frederic Danis ]
   * Initial release (Closes: #988143)
 
- -- Frederic Danis <frederic.danis@collabora.com>  Wed, 05 May 2021 15:25:29 +0000
+  [ Sjoerd Simons ]
+  * Upload to experimental
+
+ -- Sjoerd Simons <sjoerd@debian.org>  Tue, 18 May 2021 22:02:27 +0200
