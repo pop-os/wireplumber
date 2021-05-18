@@ -14,6 +14,7 @@ Build-Depends: debhelper-compat (= 13),
                pkg-config (>= 0.22),
                systemd,
 # Only used for automated tests
+               dbus <!nocheck>,
                pipewire <!nocheck>,
 Standards-Version: 4.5.1
 Homepage: https://gitlab.freedesktop.org/pipewire/wireplumber
@@ -51,7 +52,9 @@ Description: Development files for WirePlumber
 
 Package: wireplumber
 Architecture: linux-any
-Depends: ${shlibs:Depends}, ${misc:Depends}
+Depends: ${shlibs:Depends},
+         ${misc:Depends},
+         pipewire (>= 0.3.20),
 Section: video
 Description: modular session / policy manager for PipeWire
  WirePlumber is a modular session / policy manager for PipeWire and a
