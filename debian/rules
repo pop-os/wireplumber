@@ -7,5 +7,4 @@ export DEB_LDFLAGS_MAINT_APPEND = -Wl,-z,defs -Wl,--as-needed
 	dh $@ --buildsystem=meson
 
 override_dh_auto_configure:
-# hotdoc is not in Debian yet, so we can't build the documentation for now
-	dh_auto_configure -- -Dsystem-lua=true -Ddoc=disabled
+	dh_auto_configure -- -Dsystem-lua=true -Dintrospection=enabled
