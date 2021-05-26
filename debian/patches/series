@@ -1,3 +1,0 @@
-# Backported upstream commits fixing build on 32-bit architectures
-spa-pod-respect-the-SPA-size-for-long-and-int-APIs.patch
-tests-spa-pod-fix-int64-constant-to-work-on-all-arch.patch
