@@ -57,6 +57,7 @@ Architecture: linux-any
 Depends: ${shlibs:Depends},
          ${misc:Depends},
          pipewire (>= 0.3.20),
+Recommends: pipewire-pulse
 Section: video
 Description: modular session / policy manager for PipeWire
  WirePlumber is a modular session / policy manager for PipeWire and a
