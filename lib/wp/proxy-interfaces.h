@@ -15,10 +15,9 @@
 
 G_BEGIN_DECLS
 
-/**
- * WP_TYPE_PIPEWIRE_OBJECT:
- *
- * The #WpPipewireObject #GType
+/*!
+ * \brief The WpPipewireObject GType
+ * \ingroup wppipewireobject
  */
 #define WP_TYPE_PIPEWIRE_OBJECT (wp_pipewire_object_get_type ())
 WP_API

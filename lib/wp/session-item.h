@@ -14,10 +14,9 @@
 
 G_BEGIN_DECLS
 
-/**
- * WpSessionItemFeatures:
- *
- * Flags to be used as #WpObjectFeatures for #WpSessionItem subclasses.
+/*!
+ * \brief Flags to be used as WpObjectFeatures for WpSessionItem subclasses.
+ * \ingroup wpsessionitem
  */
 typedef enum { /*< flags >*/
   /* main features */
@@ -27,37 +26,33 @@ typedef enum { /*< flags >*/
   WP_SESSION_ITEM_FEATURE_CUSTOM_START = (1 << 16), /*< skip >*/
 } WpSessionItemFeatures;
 
-/**
- * WP_TYPE_SESSION_ITEM:
- *
- * The #WpSessionItem #GType
+/*!
+ * \brief The WpSessionItem GType
+ * \ingroup wpsessionitem
  */
 #define WP_TYPE_SESSION_ITEM (wp_session_item_get_type ())
 WP_API
 G_DECLARE_DERIVABLE_TYPE (WpSessionItem, wp_session_item,
                           WP, SESSION_ITEM, WpObject)
 
-/**
- * WpSessionItemClass:
- * @reset: See wp_session_item_reset()
- * @configure: See wp_session_item_configure()
- * @get_associated_proxy: See wp_session_item_get_associated_proxy()
- * @disable_active: disables the active feature of the session item
- * @disable_exported: disables the exported feature of the session item
- * @enable_active: enables the active feature of the session item
- * @enable_exported: enables the exported feature of the session item
- */
 struct _WpSessionItemClass
 {
   WpObjectClass parent_class;
 
+  /*! See wp_session_item_reset() */
   void (*reset) (WpSessionItem * self);
+  /*! See wp_session_item_configure() */
   gboolean (*configure) (WpSessionItem * self, WpProperties * props);
+  /*! See wp_session_item_get_associated_proxy() */
   gpointer (*get_associated_proxy) (WpSessionItem * self, GType proxy_type);
 
+  /*! disables the active feature of the session item */
   void (*disable_active) (WpSessionItem * self);
+  /*! disables the exported feature of the session item */
   void (*disable_exported) (WpSessionItem * self);
+  /*! enables the active feature of the session item */
   void (*enable_active) (WpSessionItem * self, WpTransition * transition);
+  /*! enables the exported feature of the session item */
   void (*enable_exported) (WpSessionItem * self, WpTransition * transition);
 };
 
@@ -99,6 +94,10 @@ void wp_session_item_remove (WpSessionItem * self);
 
 WP_API
 WpProperties * wp_session_item_get_properties (WpSessionItem * self);
+
+WP_API
+const gchar * wp_session_item_get_property (WpSessionItem * self,
+    const gchar *key);
 
 /* for subclasses only */
 

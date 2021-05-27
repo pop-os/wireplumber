@@ -13,10 +13,9 @@
 
 G_BEGIN_DECLS
 
-/**
- * WP_TYPE_LINK:
- *
- * The #WpLink #GType
+/*!
+ * \brief The WpLink GType
+ * \ingroup wplink
  */
 #define WP_TYPE_LINK (wp_link_get_type ())
 WP_API

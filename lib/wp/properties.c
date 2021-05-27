@@ -6,44 +6,43 @@
  * SPDX-License-Identifier: MIT
  */
 
-/**
- * SECTION: properties
- * @title: PipeWire Properties Dictionary
- *
- * #WpProperties is a data structure that contains string key-value pairs,
- * which are used to send/receive/attach arbitrary properties to PipeWire
- * objects.
- *
- * This could be thought of as a hash table with strings as both keys and
- * values. However, the reason that this class exists instead of using
- * #GHashTable directly is that in reality it wraps the PipeWire native
- * `struct spa_dict` and `struct pw_properties` and therefore it can be
- * easily passed to PipeWire function calls that require a `struct spa_dict *`
- * or a `struct pw_properties *` as arguments. Or alternatively, it can easily
- * wrap a `struct spa_dict *` or a `struct pw_properties *` that was given
- * from the PipeWire API without necessarily doing an expensive copy operation.
- *
- * #WpProperties normally wraps a `struct pw_properties`, unless it was created
- * with wp_properties_new_wrap_dict(), in which case it wraps a
- * `struct spa_dict` and it is immutable (you cannot add/remove/modify any
- * key-value pair).
- *
- * In most cases, it actually owns the `struct pw_properties`
- * internally and manages its lifetime. The exception to that rule is when
- * #WpProperties is constructed with wp_properties_new_wrap(), in which case
- * the ownership of the `struct pw_properties` remains outside. This must
- * be used with care, as the `struct pw_properties` may be free'ed externally.
- *
- * #WpProperties is reference-counted with wp_properties_ref() and
- * wp_properties_unref().
- */
-
 #define G_LOG_DOMAIN "wp-properties"
 
 #include "properties.h"
 
 #include <errno.h>
 #include <pipewire/properties.h>
+
+/*! \defgroup wpproperties WpProperties */
+/*!
+ * \struct WpProperties
+ *
+ * WpProperties is a data structure that contains string key-value pairs,
+ * which are used to send/receive/attach arbitrary properties to PipeWire objects.
+ *
+ * This could be thought of as a hash table with strings as both keys and
+ * values. However, the reason that this class exists instead of using
+ * GHashTable directly is that in reality it wraps the PipeWire native
+ * `struct spa_dict` and `struct pw_properties` and therefore it can be
+ * easily passed to PipeWire function calls that require a `struct spa_dict *`
+ * or a `struct pw_properties *` as arguments. Or alternatively, it can easily
+ * wrap a `struct spa_dict *` or a `struct pw_properties *` that was given
+ * from the PipeWire API without necessarily doing an expensive copy operation.
+ *
+ * WpProperties normally wraps a `struct pw_properties`, unless it was created
+ * with wp_properties_new_wrap_dict(), in which case it wraps a
+ * `struct spa_dict` and it is immutable (you cannot add/remove/modify any
+ * key-value pair).
+ *
+ * In most cases, it actually owns the `struct pw_properties`
+ * internally and manages its lifetime. The exception to that rule is when
+ * WpProperties is constructed with wp_properties_new_wrap(), in which case
+ * the ownership of the `struct pw_properties` remains outside. This must
+ * be used with care, as the `struct pw_properties` may be free'ed externally.
+ *
+ * WpProperties is reference-counted with wp_properties_ref() and
+ * wp_properties_unref().
+ */
 
 enum {
   FLAG_IS_DICT = (1<<1),
@@ -62,12 +61,10 @@ struct _WpProperties
 
 G_DEFINE_BOXED_TYPE(WpProperties, wp_properties, wp_properties_ref, wp_properties_unref)
 
-/**
- * wp_properties_new_empty:
- *
- * Creates a new empty properties set
- *
- * Returns: (transfer full): the newly constructed properties set
+/*!
+ * \brief Creates a new empty properties set
+ * \ingroup wpproperties
+ * \returns (transfer full): the newly constructed properties set
  */
 WpProperties *
 wp_properties_new_empty (void)
@@ -79,15 +76,14 @@ wp_properties_new_empty (void)
   return self;
 }
 
-/**
- * wp_properties_new:
- * @key: a property name
- * @...: a property value, followed by any number of further property
- *   key-value pairs, followed by %NULL
+/*!
+ * \brief Constructs a new properties set that contains the given properties
  *
- * Constructs a new properties set that contains the given properties
- *
- * Returns: (transfer full): the newly constructed properties set
+ * \ingroup wpproperties
+ * \param key a property name
+ * \param ... a property value, followed by any number of further property
+ *   key-value pairs, followed by NULL
+ * \returns (transfer full): the newly constructed properties set
  */
 WpProperties *
 wp_properties_new (const gchar * key, ...)
@@ -102,14 +98,13 @@ wp_properties_new (const gchar * key, ...)
   return self;
 }
 
-/**
- * wp_properties_new_valist:
- * @key: a property name
- * @args: the variable arguments passed to wp_properties_new()
+/*!
+ * \brief This is the `va_list` version of wp_properties_new()
  *
- * This is the `va_list` version of wp_properties_new()
- *
- * Returns: (transfer full): the newly constructed properties set
+ * \ingroup wpproperties
+ * \param key a property name
+ * \param args the variable arguments passed to wp_properties_new()
+ * \returns (transfer full): the newly constructed properties set
  */
 WpProperties *
 wp_properties_new_valist (const gchar * key, va_list args)
@@ -127,15 +122,14 @@ wp_properties_new_valist (const gchar * key, va_list args)
   return self;
 }
 
-/**
- * wp_properties_new_string:
- * @str: a string containing a whitespace separated list of key=value pairs
- *    (ex. "key1=value1 key2=value2")
- *
- * Constructs a new properties set that contains the properties that can
+/*!
+ * \brief Constructs a new properties set that contains the properties that can
  * be parsed from the given string
  *
- * Returns: (transfer full): the newly constructed properties set
+ * \ingroup wpproperties
+ * \param str a string containing a whitespace separated list of key=value pairs
+ *    (ex. "key1=value1 key2=value2")
+ * \returns (transfer full): the newly constructed properties set
  */
 WpProperties *
 wp_properties_new_string (const gchar * str)
@@ -151,24 +145,23 @@ wp_properties_new_string (const gchar * str)
   return self;
 }
 
-/**
- * wp_properties_new_wrap:
- * @props: a native `pw_properties` structure to wrap
+/*!
+ * \brief Constructs a new WpProperties that wraps the given \a props structure,
+ * allowing reading properties on that \a props structure through
+ * the WpProperties API.
  *
- * Constructs a new #WpProperties that wraps the given @props structure,
- * allowing reading properties on that @props structure through
- * the #WpProperties API.
+ * Care must be taken when using this function, since the returned WpProperties
+ * object does not own the \a props structure. Therefore, if the owner decides
+ * to free \a props, the returned WpProperties will crash when used. In addition,
+ * the returned WpProperties object will not try to free \a props when destroyed.
  *
- * Care must be taken when using this function, since the returned #WpProperties
- * object does not own the @props structure. Therefore, if the owner decides
- * to free @props, the returned #WpProperties will crash when used. In addition,
- * the returned #WpProperties object will not try to free @props when destroyed.
- *
- * Furthermore, note that the returned #WpProperties object is immutable. That
+ * Furthermore, note that the returned WpProperties object is immutable. That
  * means that you cannot add or modify any properties on it, unless you make
  * a copy first.
  *
- * Returns: (transfer full): the newly constructed properties set
+ * \ingroup wpproperties
+ * \param props a native `pw_properties` structure to wrap
+ * \returns (transfer full): the newly constructed properties set
  */
 WpProperties *
 wp_properties_new_wrap (const struct pw_properties * props)
@@ -184,18 +177,17 @@ wp_properties_new_wrap (const struct pw_properties * props)
   return self;
 }
 
-/**
- * wp_properties_new_take:
- * @props: a native `pw_properties` structure to wrap
- *
- * Constructs a new #WpProperties that wraps the given @props structure,
- * allowing reading & writing properties on that @props structure through
- * the #WpProperties API.
+/*!
+ * \brief Constructs a new WpProperties that wraps the given \a props structure,
+ * allowing reading & writing properties on that \a props structure through
+ * the WpProperties API.
  *
  * In constrast with wp_properties_new_wrap(), this function assumes ownership
- * of the @props structure, so it will try to free @props when it is destroyed.
+ * of the \a props structure, so it will try to free \a props when it is destroyed.
  *
- * Returns: (transfer full): the newly constructed properties set
+ * \ingroup wpproperties
+ * \param props a native `pw_properties` structure to wrap
+ * \returns (transfer full): the newly constructed properties set
  */
 WpProperties *
 wp_properties_new_take (struct pw_properties * props)
@@ -211,14 +203,13 @@ wp_properties_new_take (struct pw_properties * props)
   return self;
 }
 
-/**
- * wp_properties_new_copy:
- * @props: a native `pw_properties` structure to copy
+/*!
+ * \brief Constructs a new WpProperties that contains a copy of all the properties
+ * contained in the given \a props structure.
  *
- * Constructs a new #WpProperties that contains a copy of all the properties
- * contained in the given @props structure.
- *
- * Returns: (transfer full): the newly constructed properties set
+ * \ingroup wpproperties
+ * \param props a native `pw_properties` structure to copy
+ * \returns (transfer full): the newly constructed properties set
  */
 WpProperties *
 wp_properties_new_copy (const struct pw_properties * props)
@@ -234,22 +225,21 @@ wp_properties_new_copy (const struct pw_properties * props)
   return self;
 }
 
-/**
- * wp_properties_new_wrap_dict:
- * @dict: a native `spa_dict` structure to wrap
+/*!
+ * \brief Constructs a new WpProperties that wraps the given \a dict structure,
+ * allowing reading properties from that \a dict through the WpProperties API.
  *
- * Constructs a new #WpProperties that wraps the given @dict structure,
- * allowing reading properties from that @dict through the #WpProperties API.
+ * Note that the returned object does not own the \a dict, so care must be taken
+ * not to free it externally while this WpProperties object is alive.
  *
- * Note that the returned object does not own the @dict, so care must be taken
- * not to free it externally while this #WpProperties object is alive.
- *
- * In addition, note that the returned #WpProperties object is immutable. That
+ * In addition, note that the returned WpProperties object is immutable. That
  * means that you cannot add or modify any properties on it, since there is
  * no defined method for modifying a `struct spa_dict`. If you need to change
  * this properties set later, you should make a copy with wp_properties_copy().
  *
- * Returns: (transfer full): the newly constructed properties set
+ * \ingroup wpproperties
+ * \param dict a native `spa_dict` structure to wrap
+ * \returns (transfer full): the newly constructed properties set
  */
 WpProperties *
 wp_properties_new_wrap_dict (const struct spa_dict * dict)
@@ -265,14 +255,13 @@ wp_properties_new_wrap_dict (const struct spa_dict * dict)
   return self;
 }
 
-/**
- * wp_properties_new_copy_dict:
- * @dict: a native `spa_dict` structure to copy
+/*!
+ * \brief Constructs a new WpProperties that contains a copy of all the
+ * properties contained in the given \a dict structure.
  *
- * Constructs a new #WpProperties that contains a copy of all the properties
- * contained in the given @dict structure.
- *
- * Returns: (transfer full): the newly constructed properties set
+ * \ingroup wpproperties
+ * \param dict a native `spa_dict` structure to copy
+ * \returns (transfer full): the newly constructed properties set
  */
 WpProperties *
 wp_properties_new_copy_dict (const struct spa_dict * dict)
@@ -288,15 +277,15 @@ wp_properties_new_copy_dict (const struct spa_dict * dict)
   return self;
 }
 
-/**
- * wp_properties_copy:
- * @other: a properties object
+/*!
+ * \brief Constructs and returns a new WpProperties object that contains a copy
+ * of all the properties contained in \a other.
  *
- * Constructs and returns a new #WpProperties object that contains a copy
- * of all the properties contained in @other.
- *
- * Returns: (transfer full): the newly constructed properties set
+ * \ingroup wpproperties
+ * \param other a properties object
+ * \returns (transfer full): the newly constructed properties set
  */
+
 WpProperties *
 wp_properties_copy (WpProperties * other)
 {
@@ -311,11 +300,10 @@ wp_properties_free (WpProperties * self)
   g_slice_free (WpProperties, self);
 }
 
-/**
- * wp_properties_ref:
- * @self: a properties object
- *
- * Returns: (transfer full): @self with an additional reference count on it
+/*!
+ * \ingroup wpproperties
+ * \param self a properties object
+ * \returns (transfer full): \a self with an additional reference count on it
  */
 WpProperties *
 wp_properties_ref (WpProperties * self)
@@ -324,12 +312,12 @@ wp_properties_ref (WpProperties * self)
   return self;
 }
 
-/**
- * wp_properties_unref:
- * @self: (transfer full): a properties object
+/*!
+ * \brief Decreases the reference count on \a self and frees it when the ref
+ * count reaches zero.
  *
- * Decreases the reference count on @self and frees it when the ref count
- * reaches zero.
+ * \ingroup wpproperties
+ * \param self (transfer full): a properties object
  */
 void
 wp_properties_unref (WpProperties * self)
@@ -338,19 +326,20 @@ wp_properties_unref (WpProperties * self)
     wp_properties_free (self);
 }
 
-/**
- * wp_properties_ensure_unique_owner:
- * @self: (transfer full): a properties object
+/*!
+ * \brief Ensures that the given properties set is uniquely owned.
  *
- * Ensures that the given properties set is uniquely owned, which means:
+ * "Uniquely owned" means that:
  *  - its reference count is 1
  *  - it is not wrapping a native `spa_dict` or `pw_properties` object
  *
- * If @self is not uniquely owned already, then it is unrefed and a copy of
- * it is returned instead. You should always consider @self as unsafe to use
+ * If \a self is not uniquely owned already, then it is unrefed and a copy of
+ * it is returned instead. You should always consider \a self as unsafe to use
  * after this call and you should use the returned object instead.
  *
- * Returns: (transfer full): the uniquely owned properties object
+ * \ingroup wpproperties
+ * \param self (transfer full): a properties object
+ * \returns (transfer full): the uniquely owned properties object
  */
 WpProperties *
 wp_properties_ensure_unique_owner (WpProperties * self)
@@ -365,16 +354,16 @@ wp_properties_ensure_unique_owner (WpProperties * self)
   return self;
 }
 
-/**
- * wp_properties_update:
- * @self: a properties object
- * @props: a properties set that contains properties to update
+/*!
+ * \brief Updates (adds new or modifies existing) properties in \a self,
+ * using the given \a props as a source.
  *
- * Updates (adds new or modifies existing) properties in @self, using the
- * given @props as a source. Any properties that are not contained in @props
- * are left untouched.
+ * Any properties that are not contained in \a props are left untouched.
  *
- * Returns: the number of properties that were changed
+ * \ingroup wpproperties
+ * \param self a properties object
+ * \param props a properties set that contains properties to update
+ * \returns the number of properties that were changed
  */
 gint
 wp_properties_update (WpProperties * self, WpProperties * props)
@@ -386,16 +375,16 @@ wp_properties_update (WpProperties * self, WpProperties * props)
   return pw_properties_update (self->props, wp_properties_peek_dict (props));
 }
 
-/**
- * wp_properties_update_from_dict:
- * @self: a properties object
- * @dict: a `spa_dict` that contains properties to update
+/*!
+ * \brief Updates (adds new or modifies existing) properties in \a self,
+ * using the given \a dict as a source.
  *
- * Updates (adds new or modifies existing) properties in @self, using the
- * given @dict as a source. Any properties that are not contained in @dict
- * are left untouched.
+ * Any properties that are not contained in \a dict are left untouched.
  *
- * Returns: the number of properties that were changed
+ * \ingroup wpproperties
+ * \param self a properties object
+ * \param dict a `spa_dict` that contains properties to update
+ * \returns the number of properties that were changed
  */
 gint
 wp_properties_update_from_dict (WpProperties * self,
@@ -408,17 +397,17 @@ wp_properties_update_from_dict (WpProperties * self,
   return pw_properties_update (self->props, dict);
 }
 
-/**
- * wp_properties_add:
- * @self: a properties object
- * @props: a properties set that contains properties to add
+/*!
+ * \brief Adds new properties in \a self, using the given \a props as a source.
  *
- * Adds new properties in @self, using the given @props as a source.
- * Properties (keys) from @props that are already contained in @self
+ * Properties (keys) from \a props that are already contained in \a self
  * are not modified, unlike what happens with wp_properties_update().
- * Properties in @self that are not contained in @props are left untouched.
+ * Properties in \a self that are not contained in \a props are left untouched.
  *
- * Returns: the number of properties that were changed
+ * \ingroup wpproperties
+ * \param self a properties object
+ * \param props a properties set that contains properties to add
+ * \returns the number of properties that were changed
  */
 gint
 wp_properties_add (WpProperties * self, WpProperties * props)
@@ -430,17 +419,17 @@ wp_properties_add (WpProperties * self, WpProperties * props)
   return pw_properties_add (self->props, wp_properties_peek_dict (props));
 }
 
-/**
- * wp_properties_add_from_dict:
- * @self: a properties object
- * @dict: a `spa_dict` that contains properties to add
+/*!
+ * \brief Adds new properties in \a self, using the given \a dict as a source.
  *
- * Adds new properties in @self, using the given @dict as a source.
- * Properties (keys) from @dict that are already contained in @self
+ * Properties (keys) from \a dict that are already contained in \a self
  * are not modified, unlike what happens with wp_properties_update_from_dict().
- * Properties in @self that are not contained in @dict are left untouched.
+ * Properties in \a self that are not contained in \a dict are left untouched.
  *
- * Returns: the number of properties that were changed
+ * \ingroup wpproperties
+ * \param self a properties object
+ * \param dict a `spa_dict` that contains properties to add
+ * \returns the number of properties that were changed
  */
 gint
 wp_properties_add_from_dict (WpProperties * self,
@@ -453,19 +442,19 @@ wp_properties_add_from_dict (WpProperties * self,
   return pw_properties_add (self->props, dict);
 }
 
-/**
- * wp_properties_update_keys:
- * @self: a properties set
- * @props: a properties set that contains properties to update
- * @key1: a property to update
- * @...: a list of additional properties to update, followed by %NULL
+/*!
+ * \brief Updates (adds new or modifies existing) properties in \a self,
+ * using the given \a props as a source.
  *
- * Updates (adds new or modifies existing) properties in @self, using the
- * given @props as a source.
  * Unlike wp_properties_update(), this function only updates properties that
  * have one of the specified keys; the rest is left untouched.
  *
- * Returns: the number of properties that were changed
+ * \ingroup wpproperties
+ * \param self a properties set
+ * \param props a properties set that contains properties to update
+ * \param key1 a property to update
+ * \param ... a list of additional properties to update, followed by NULL
+ * \returns the number of properties that were changed
  */
 gint
 wp_properties_update_keys (WpProperties * self, WpProperties * props,
@@ -487,19 +476,19 @@ wp_properties_update_keys (WpProperties * self, WpProperties * props,
   return changed;
 }
 
-/**
- * wp_properties_update_keys_from_dict:
- * @self: a properties set
- * @dict: a `spa_dict` that contains properties to update
- * @key1: a property to update
- * @...: a list of additional properties to update, followed by %NULL
+/*!
+ * \brief Updates (adds new or modifies existing) properties in \a self,
+ * using the given \a dict as a source.
  *
- * Updates (adds new or modifies existing) properties in @self, using the
- * given @dict as a source.
  * Unlike wp_properties_update_from_dict(), this function only updates
  * properties that have one of the specified keys; the rest is left untouched.
  *
- * Returns: the number of properties that were changed
+ * \ingroup wpproperties
+ * \param self a properties set
+ * \param dict a `spa_dict` that contains properties to update
+ * \param key1 a property to update
+ * \param ... a list of additional properties to update, followed by NULL
+ * \returns the number of properties that were changed
  */
 gint
 wp_properties_update_keys_from_dict (WpProperties * self,
@@ -521,16 +510,15 @@ wp_properties_update_keys_from_dict (WpProperties * self,
   return changed;
 }
 
-/**
- * wp_properties_update_keys_array:
- * @self: a properties set
- * @props: a properties set that contains properties to update
- * @keys: (array zero-terminated=1): the properties to update
- *
- * The same as wp_properties_update_keys(), using a NULL-terminated array
+/*!
+ * \brief The same as wp_properties_update_keys(), using a NULL-terminated array
  * for specifying the keys to update
  *
- * Returns: the number of properties that were changed
+ * \ingroup wpproperties
+ * \param self a properties set
+ * \param props a properties set that contains properties to update
+ * \param keys (array zero-terminated=1): the properties to update
+ * \returns the number of properties that were changed
  */
 gint
 wp_properties_update_keys_array (WpProperties * self, WpProperties * props,
@@ -544,18 +532,18 @@ wp_properties_update_keys_array (WpProperties * self, WpProperties * props,
       wp_properties_peek_dict (props), keys);
 }
 
-/**
- * wp_properties_add_keys:
- * @self: a properties set
- * @props: a properties set that contains properties to add
- * @key1: a property to add
- * @...: a list of additional properties to add, followed by %NULL
+/*!
+ * \brief Adds new properties in \a self, using the given \a props as a source.
  *
- * Adds new properties in @self, using the given @props as a source.
  * Unlike wp_properties_add(), this function only adds properties that
  * have one of the specified keys; the rest is left untouched.
  *
- * Returns: the number of properties that were changed
+ * \ingroup wpproperties
+ * \param self a properties set
+ * \param props a properties set that contains properties to add
+ * \param key1 a property to add
+ * \param ... a list of additional properties to add, followed by NULL
+ * \returns the number of properties that were changed
  */
 gint
 wp_properties_add_keys (WpProperties * self, WpProperties * props,
@@ -579,18 +567,18 @@ wp_properties_add_keys (WpProperties * self, WpProperties * props,
   return changed;
 }
 
-/**
- * wp_properties_add_keys_from_dict:
- * @self: a properties set
- * @dict: a `spa_dict` that contains properties to add
- * @key1: a property to add
- * @...: a list of additional properties to add, followed by %NULL
+/*!
+ * \brief Adds new properties in \a self, using the given \a dict as a source.
  *
- * Adds new properties in @self, using the given @dict as a source.
  * Unlike wp_properties_add_from_dict(), this function only adds
  * properties that have one of the specified keys; the rest is left untouched.
  *
- * Returns: the number of properties that were changed
+ * \ingroup wpproperties
+ * \param self a properties set
+ * \param dict a `spa_dict` that contains properties to add
+ * \param key1 a property to add
+ * \param ... a list of additional properties to add, followed by NULL
+ * \returns the number of properties that were changed
  */
 gint
 wp_properties_add_keys_from_dict (WpProperties * self,
@@ -614,16 +602,15 @@ wp_properties_add_keys_from_dict (WpProperties * self,
   return changed;
 }
 
-/**
- * wp_properties_add_keys_array:
- * @self: a properties set
- * @props: a properties set that contains properties to add
- * @keys: (array zero-terminated=1): the properties to add
- *
- * The same as wp_properties_add_keys(), using a NULL-terminated array
+/*!
+ * \brief The same as wp_properties_add_keys(), using a NULL-terminated array
  * for specifying the keys to add
  *
- * Returns: the number of properties that were changed
+ * \ingroup wpproperties
+ * \param self a properties set
+ * \param props a properties set that contains properties to add
+ * \param keys (array zero-terminated=1): the properties to add
+ * \returns the number of properties that were changed
  */
 gint
 wp_properties_add_keys_array (WpProperties * self, WpProperties * props,
@@ -637,13 +624,12 @@ wp_properties_add_keys_array (WpProperties * self, WpProperties * props,
       wp_properties_peek_dict (props), keys);
 }
 
-/**
- * wp_properties_get:
- * @self: a properties object
- * @key: a property key
- *
- * Returns: (transfer none) (nullable): the value of the property identified
- *   with @key, or %NULL if this property is not contained in @self
+/*!
+ * \ingroup wpproperties
+ * \param self a properties object
+ * \param key a property key
+ * \returns (transfer none) (nullable): the value of the property identified
+ *   with \a key, or NULL if this property is not contained in \a self
  */
 const gchar *
 wp_properties_get (WpProperties * self, const gchar * key)
@@ -654,18 +640,18 @@ wp_properties_get (WpProperties * self, const gchar * key)
   return spa_dict_lookup (wp_properties_peek_dict (self), key);
 }
 
-/**
- * wp_properties_set:
- * @self: a properties object
- * @key: a property key
- * @value: (nullable): a property value
+/*!
+ * \brief Sets the given property \a key - \a value pair on \a self.
  *
- * Sets the given property @key - @value pair on @self. If the property
- * already existed, the value is overwritten with the new one.
+ * If the property already existed, the value is overwritten with the new one.
  *
- * If the @value is %NULL, then the specified property is removed from @self
+ * If the \a value is NULL, then the specified property is removed from \a self
  *
- * Returns: %1 if the property was changed. %0 if nothing was changed because
+ * \ingroup wpproperties
+ * \param self a properties object
+ * \param key a property key
+ * \param value (nullable): a property value
+ * \returns 1 if the property was changed. 0 if nothing was changed because
  *   the property already existed with the same value or because the key to
  *   remove did not exist.
  */
@@ -680,18 +666,17 @@ wp_properties_set (WpProperties * self, const gchar * key,
   return pw_properties_set (self->props, key, value);
 }
 
-/**
- * wp_properties_setf:
- * @self: a properties object
- * @key: a property key
- * @format: a printf-style format to be formatted and set as a value for
- *   this property @key
- * @...: arguments for @format
+/*!
+ * \brief Formats the given \a format string with the specified arguments
+ * and sets the result as a value of the property specified with \a key
  *
- * Formats the given @format string with the specified arguments and sets the
- * result as a value of the property specified with @key
- *
- * Returns: %1 if the property was changed. %0 if nothing was changed because
+ * \ingroup wpproperties
+ * \param self a properties object
+ * \param key a property key
+ * \param format a printf-style format to be formatted and set as a value for
+ *   this property \a key
+ * \param ... arguments for \a format
+ * \returns 1 if the property was changed. 0 if nothing was changed because
  *   the property already existed with the same value
  */
 gint
@@ -708,17 +693,16 @@ wp_properties_setf (WpProperties * self, const gchar * key,
   return res;
 }
 
-/**
- * wp_properties_setf_valist:
- * @self: a properties object
- * @key: a property key
- * @format: a printf-style format to be formatted and set as a value for
- *   this property @key
- * @args: the variable arguments passed to wp_properties_setf()
+/*!
+ * \brief This is the `va_list` version of wp_properties_setf()
  *
- * This is the `va_list` version of wp_properties_setf()
- *
- * Returns: %1 if the property was changed. %0 if nothing was changed because
+ * \ingroup wpproperties
+ * \param self a properties object
+ * \param key a property key
+ * \param format a printf-style format to be formatted and set as a value for
+ *   this property \a key
+ * \param args the variable arguments passed to wp_properties_setf()
+ * \returns 1 if the property was changed. 0 if nothing was changed because
  *   the property already existed with the same value
  */
 gint
@@ -793,11 +777,10 @@ static const WpIteratorMethods dict_iterator_methods = {
   .finalize = dict_iterator_finalize,
 };
 
-/**
- * wp_properties_new_iterator:
- * @self: a properties object
- *
- * Returns: (transfer full): an iterator that iterates over the properties.
+/*!
+ * \ingroup wpproperties
+ * \param self a properties object
+ * \returns (transfer full): an iterator that iterates over the properties.
  *   Use wp_properties_iterator_item_get_key() and
  *   wp_properties_iterator_item_get_value() to parse the items returned by
  *   this iterator.
@@ -818,12 +801,11 @@ wp_properties_new_iterator (WpProperties * self)
   return g_steal_pointer (&it);
 }
 
-/**
- * wp_properties_iterator_item_get_key:
- * @item: a #GValue that was returned from the #WpIterator of
+/*!
+ * \ingroup wpproperties
+ * \param item a GValue that was returned from the WpIterator of
  *   wp_properties_new_iterator()
- *
- * Returns: (transfer none): the property key of the @item
+ * \returns (transfer none): the property key of the \a item
  */
 const gchar *
 wp_properties_iterator_item_get_key (const GValue * item)
@@ -833,12 +815,11 @@ wp_properties_iterator_item_get_key (const GValue * item)
   return dict_item->key;
 }
 
-/**
- * wp_properties_iterator_item_get_value:
- * @item: a #GValue that was returned from the #WpIterator of
+/*!
+ * \ingroup wpproperties
+ * \param item a GValue that was returned from the WpIterator of
  *   wp_properties_new_iterator()
- *
- * Returns: (transfer none): the property value of the @item
+ * \returns (transfer none): the property value of the \a item
  */
 const gchar *
 wp_properties_iterator_item_get_value (const GValue * item)
@@ -848,6 +829,11 @@ wp_properties_iterator_item_get_value (const GValue * item)
   return dict_item->value;
 }
 
+/*!
+ * \brief Sorts the keys in alphabetical order
+ * \ingroup wpproperties
+ * \param self a properties object
+ */
 void
 wp_properties_sort (WpProperties * self)
 {
@@ -858,11 +844,10 @@ wp_properties_sort (WpProperties * self)
   return spa_dict_qsort (&self->props->dict);
 }
 
-/**
- * wp_properties_peek_dict:
- * @self: a properties object
- *
- * Returns: (transfer none): the internal properties set as a `struct spa_dict *`
+/*!
+ * \ingroup wpproperties
+ * \param self a properties object
+ * \returns (transfer none): the internal properties set as a `struct spa_dict *`
  */
 const struct spa_dict *
 wp_properties_peek_dict (WpProperties * self)
@@ -872,11 +857,10 @@ wp_properties_peek_dict (WpProperties * self)
   return (self->flags & FLAG_IS_DICT) ? self->dict : &self->props->dict;
 }
 
-/**
- * wp_properties_to_pw_properties:
- * @self: a properties object
- *
- * Returns: (transfer full): a copy of the properties in @self
+/*!
+ * \ingroup wpproperties
+ * \param self a properties object
+ * \returns (transfer full): a copy of the properties in \a self
  *   as a `struct pw_properties`
  */
 struct pw_properties *
@@ -887,19 +871,18 @@ wp_properties_to_pw_properties (WpProperties * self)
   return pw_properties_new_dict (wp_properties_peek_dict (self));
 }
 
-/**
- * wp_properties_unref_and_take_pw_properties:
- * @self: (transfer full): a properties object
- *
- * Similar to wp_properties_to_pw_properties(), but this method avoids making
+/*!
+ * \brief Similar to wp_properties_to_pw_properties(), but this method avoids making
  * a copy of the properties by returning the `struct pw_properties` that is
- * stored internally and then freeing the #WpProperties wrapper.
+ * stored internally and then freeing the WpProperties wrapper.
  *
- * If @self is not uniquely owned (see wp_properties_ensure_unique_owner()),
+ * If \a self is not uniquely owned (see wp_properties_ensure_unique_owner()),
  * then this method does make a copy and is the same as
  * wp_properties_to_pw_properties(), performance-wise.
  *
- * Returns: (transfer full): the properties in @self as a `struct pw_properties`
+ * \ingroup wpproperties
+ * \param self (transfer full): a properties object
+ * \returns (transfer full): the properties in \a self as a `struct pw_properties`
  */
 struct pw_properties *
 wp_properties_unref_and_take_pw_properties (WpProperties * self)
@@ -907,26 +890,25 @@ wp_properties_unref_and_take_pw_properties (WpProperties * self)
   g_return_val_if_fail (self != NULL, NULL);
 
   g_autoptr (WpProperties) unique = wp_properties_ensure_unique_owner (self);
-  /* set the flag so that unref-ing @unique will not destroy unique->props */
+  /* set the flag so that unref-ing \a unique will not destroy unique->props */
   unique->flags = FLAG_NO_OWNERSHIP;
   return unique->props;
 }
 
-/**
- * wp_properties_matches:
- * @self: a properties object
- * @other: a set of properties to match
+/*!
+ * \brief Checks if all property values contained in \a other are matching with
+ * the values in \a self.
  *
- * Checks if all property values contained in @other are matching with the
- * values in @self.
- *
- * If a property is contained in @other and not in @self, the result is not
+ * If a property is contained in \a other and not in \a self, the result is not
  * matched. If a property is contained in both sets, then the value of the
- * property in @other is interpreted as a glob-style pattern
- * (using g_pattern_match_simple()) and the value in @self is checked to
+ * property in \a other is interpreted as a glob-style pattern
+ * (using g_pattern_match_simple()) and the value in \a self is checked to
  * see if it matches with this pattern.
  *
- * Returns: %TRUE if all matches were successfull, %FALSE if at least one
+ * \ingroup wpproperties
+ * \param self a properties object
+ * \param other a set of properties to match
+ * \returns TRUE if all matches were successfull, FALSE if at least one
  *   property value did not match
  */
 gboolean

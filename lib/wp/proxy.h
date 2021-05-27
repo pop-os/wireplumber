@@ -15,10 +15,9 @@ G_BEGIN_DECLS
 
 struct pw_proxy;
 
-/**
- * WpProxyFeatures:
- *
- * Flags to be used as #WpObjectFeatures for #WpProxy subclasses.
+/*!
+ * \brief Flags to be used as WpObjectFeatures for WpProxy subclasses.
+ * \ingroup wpproxy
  */
 typedef enum { /*< flags >*/
   /* standard features */
@@ -35,20 +34,18 @@ typedef enum { /*< flags >*/
   WP_PROXY_FEATURE_CUSTOM_START                = (1 << 16), /*< skip >*/
 } WpProxyFeatures;
 
-/**
- * WP_PIPEWIRE_OBJECT_FEATURES_MINIMAL:
- *
- * The minimal feature set for proxies implementing #WpPipewireObject.
- * This is a subset of #WP_PIPEWIRE_OBJECT_FEATURES_ALL
+/*!
+ * \brief The minimal feature set for proxies implementing WpPipewireObject.
+ * This is a subset of \em WP_PIPEWIRE_OBJECT_FEATURES_ALL
+ * \ingroup wpproxy
  */
 static const WpObjectFeatures WP_PIPEWIRE_OBJECT_FEATURES_MINIMAL =
     (WP_PROXY_FEATURE_BOUND | WP_PIPEWIRE_OBJECT_FEATURE_INFO);
 
-/**
- * WP_PIPEWIRE_OBJECT_FEATURES_ALL:
- *
- * The complete common feature set for proxies implementing #WpPipewireObject.
- * This is a subset of #WP_OBJECT_FEATURES_ALL
+/*!
+ * \brief The complete common feature set for proxies implementing
+ * WpPipewireObject. This is a subset of \em WP_OBJECT_FEATURES_ALL
+ * \ingroup wpproxy
  */
 static const WpObjectFeatures WP_PIPEWIRE_OBJECT_FEATURES_ALL =
     (WP_PIPEWIRE_OBJECT_FEATURES_MINIMAL |
@@ -58,27 +55,24 @@ static const WpObjectFeatures WP_PIPEWIRE_OBJECT_FEATURES_ALL =
      WP_PIPEWIRE_OBJECT_FEATURE_PARAM_PORT_CONFIG |
      WP_PIPEWIRE_OBJECT_FEATURE_PARAM_ROUTE);
 
-/**
- * WP_TYPE_PROXY:
- *
- * The #WpProxy #GType
+/*!
+ * \brief The WpProxy GType
+ * \ingroup wpproxy
  */
 #define WP_TYPE_PROXY (wp_proxy_get_type ())
 WP_API
 G_DECLARE_DERIVABLE_TYPE (WpProxy, wp_proxy, WP, PROXY, WpObject)
 
-/**
- * WpProxyClass:
- * @pw_iface_type: the PipeWire type of the interface that is being proxied by
- *    this class (ex. `PW_TYPE_INTERFACE_Node` for #WpNode)
- * @pw_iface_version: the PipeWire version of the interface that is being
- *    proxied by this class
- */
 struct _WpProxyClass
 {
   WpObjectClass parent_class;
 
+  /*! \brief the PipeWire type of the interface that is being proxied by
+   *  this class (ex. `PW_TYPE_INTERFACE_Node` for WpNode */
   const gchar * pw_iface_type;
+
+  /*! \brief the PipeWire version of the interface that is being
+   *  proxied by this class */
   guint32 pw_iface_version;
 
   /* signals */
@@ -86,6 +80,7 @@ struct _WpProxyClass
   void (*pw_proxy_created) (WpProxy * self, struct pw_proxy * proxy);
   void (*pw_proxy_destroyed) (WpProxy * self);
   void (*bound) (WpProxy * self, guint32 id);
+  void (*error) (WpProxy * self, int seq, int res, const char *message);
 };
 
 WP_API
@@ -101,6 +96,9 @@ struct pw_proxy * wp_proxy_get_pw_proxy (WpProxy * self);
 
 WP_API
 void wp_proxy_set_pw_proxy (WpProxy * self, struct pw_proxy * proxy);
+
+WP_API
+void wp_proxy_watch_bind_error (WpProxy * proxy, WpTransition * transition);
 
 G_END_DECLS
 

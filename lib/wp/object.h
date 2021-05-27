@@ -14,10 +14,8 @@
 
 G_BEGIN_DECLS
 
-/**
- * WpObjectFeatures:
- *
- * Flags that specify functionality that is available on this class.
+/*!
+ * \brief Flags that specify functionality that is available on this class.
  *
  * Use wp_object_activate() to enable more features,
  * wp_object_get_supported_features() to see which features are supported and
@@ -25,23 +23,23 @@ G_BEGIN_DECLS
  * enabled. Features can also be deactivated later using wp_object_deactivate().
  *
  * Actual feature flags are to be specified by subclasses and their interfaces.
- * %WP_OBJECT_FEATURES_ALL is a special value that can be used to activate
+ * WP_OBJECT_FEATURES_ALL is a special value that can be used to activate
  * all the supported features in any given object.
+ *
+ * \ingroup wpobject
  */
 typedef guint WpObjectFeatures;
 
-/**
- * WP_OBJECT_FEATURES_ALL:
- *
- * Special value that can be used to activate
+/*!
+ * \brief Special value that can be used to activate
  * all the supported features in any given object.
+ * \ingroup wpobject
  */
 static const WpObjectFeatures WP_OBJECT_FEATURES_ALL = 0xffffffff;
 
-/**
- * WP_TYPE_FEATURE_ACTIVATION_TRANSITION:
- *
- * The #WpFeatureActivationTransition #GType
+/*!
+ * \brief The WpFeatureActivationTransition GType
+ * \ingroup wpfeatureactivationtransition
  */
 #define WP_TYPE_FEATURE_ACTIVATION_TRANSITION \
     (wp_feature_activation_transition_get_type ())
@@ -54,10 +52,9 @@ WP_API
 WpObjectFeatures wp_feature_activation_transition_get_requested_features (
     WpFeatureActivationTransition * self);
 
-/**
- * WP_TYPE_OBJECT:
- *
- * The #WpObject #GType
+/*!
+ * \brief The WpObject GType
+ * \ingroup wpobject
  */
 #define WP_TYPE_OBJECT (wp_object_get_type ())
 WP_API

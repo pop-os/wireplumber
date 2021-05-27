@@ -6,15 +6,20 @@
  * SPDX-License-Identifier: MIT
  */
 
-/**
- * SECTION: client
- * @title: PipeWire Client
- */
-
 #define G_LOG_DOMAIN "wp-client"
 
 #include "client.h"
 #include "private/pipewire-object-mixin.h"
+
+/*! \defgroup wpclient WpClient */
+/*!
+ * \struct WpClient
+ *
+ * The WpClient class allows accessing the properties and methods of a PipeWire
+ * client object (`struct pw_client`). A WpClient is constructed internally
+ * when a new client connects to PipeWire and it is made available through the
+ * WpObjectManager API.
+ */
 
 struct _WpClient
 {
@@ -24,14 +29,6 @@ struct _WpClient
 static void wp_client_pw_object_mixin_priv_interface_init (
     WpPwObjectMixinPrivInterface * iface);
 
-/**
- * WpClient:
- *
- * The #WpClient class allows accessing the properties and methods of a PipeWire
- * client object (`struct pw_client`). A #WpClient is constructed internally
- * when a new client connects to PipeWire and it is made available through the
- * #WpObjectManager API.
- */
 G_DEFINE_TYPE_WITH_CODE (WpClient, wp_client, WP_TYPE_GLOBAL_PROXY,
     G_IMPLEMENT_INTERFACE (WP_TYPE_PIPEWIRE_OBJECT,
         wp_pw_object_mixin_object_interface_init)
@@ -76,6 +73,14 @@ wp_client_pw_proxy_created (WpProxy * proxy, struct pw_proxy * pw_proxy)
 }
 
 static void
+wp_client_pw_proxy_destroyed (WpProxy * proxy)
+{
+  wp_pw_object_mixin_handle_pw_proxy_destroyed (proxy);
+
+  WP_PROXY_CLASS (wp_client_parent_class)->pw_proxy_destroyed (proxy);
+}
+
+static void
 wp_client_class_init (WpClientClass * klass)
 {
   GObjectClass *object_class = (GObjectClass *) klass;
@@ -93,8 +98,7 @@ wp_client_class_init (WpClientClass * klass)
   proxy_class->pw_iface_type = PW_TYPE_INTERFACE_Client;
   proxy_class->pw_iface_version = PW_VERSION_CLIENT;
   proxy_class->pw_proxy_created = wp_client_pw_proxy_created;
-  proxy_class->pw_proxy_destroyed =
-      wp_pw_object_mixin_handle_pw_proxy_destroyed;
+  proxy_class->pw_proxy_destroyed = wp_client_pw_proxy_destroyed;
 
   wp_pw_object_mixin_class_override_properties (object_class);
 }
@@ -106,16 +110,18 @@ wp_client_pw_object_mixin_priv_interface_init (
   wp_pw_object_mixin_priv_interface_info_init_no_params (iface, client, CLIENT);
 }
 
-/**
- * wp_client_update_permissions:
- * @self: the client
- * @n_perm: the number of permissions specified in the variable arguments
- * @...: @n_perm pairs of #guint32 numbers; the first number is the object id
- *   and the second is the permissions that this client should have
- *   on this object
+/*!
+ * \brief Update client's permissions on a list of objects.
  *
- * Update client's permissions on a list of objects. An object id of `-1`
- * can be used to set the default object permissions for this client
+ * An object id of `-1` can be used to set the default object permissions
+ * for this client
+ *
+ * \ingroup wpclient
+ * \param self the client
+ * \param n_perm the number of permissions specified in the variable arguments
+ * \param ... \a n_perm pairs of guint32 numbers; the first number is the
+ *   object id and the second is the permissions that this client should have
+ *   on this object
  */
 void
 wp_client_update_permissions (WpClient * self, guint n_perm, ...)
@@ -134,15 +140,17 @@ wp_client_update_permissions (WpClient * self, guint n_perm, ...)
   wp_client_update_permissions_array (self, n_perm, perm);
 }
 
-/**
- * wp_client_update_permissions_array:
- * @self: the client
- * @n_perm: the number of permissions specified in the @permissions array
- * @permissions: (array length=n_perm) (element-type pw_permission): an array
- *    of permissions per object id
+/*!
+ * \brief Update client's permissions on a list of objects.
  *
- * Update client's permissions on a list of objects. An object id of `-1`
- * can be used to set the default object permissions for this client
+ * An object id of `-1` can be used to set the default object permissions
+ * for this client
+ *
+ * \ingroup wpclient
+ * \param self the client
+ * \param n_perm the number of permissions specified in the \a permissions array
+ * \param permissions (array length=n_perm) (element-type pw_permission): an array
+ *    of permissions per object id
  */
 void
 wp_client_update_permissions_array (WpClient * self,

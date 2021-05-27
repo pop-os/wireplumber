@@ -13,28 +13,23 @@
 
 G_BEGIN_DECLS
 
-/**
- * WpPluginFeatures:
- * @WP_PLUGIN_FEATURE_ENABLED: enables the plugin
- *
- * Flags to be used as #WpObjectFeatures for #WpPlugin subclasses.
+/*!
+ * \brief Flags to be used as WpObjectFeatures on WpPlugin subclasses.
+ * \ingroup wpplugin
  */
 typedef enum { /*< flags >*/
+  /*! enables the plugin */
   WP_PLUGIN_FEATURE_ENABLED = (1 << 0),
 } WpPluginFeatures;
 
-/**
- * WP_TYPE_PLUGIN:
- *
- * The #WpPlugin #GType
+/*!
+ * \brief The WpPlugin GType
+ * \ingroup wpplugin
  */
 #define WP_TYPE_PLUGIN (wp_plugin_get_type ())
 WP_API
 G_DECLARE_DERIVABLE_TYPE (WpPlugin, wp_plugin, WP, PLUGIN, WpObject)
 
-/**
- * WpPluginClass:
- */
 struct _WpPluginClass
 {
   WpObjectClass parent_class;

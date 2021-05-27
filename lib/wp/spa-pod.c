@@ -6,11 +6,6 @@
  * SPDX-License-Identifier: MIT
  */
 
-/**
- * SECTION: spa-pod
- * @title: Spa Pod (Plain Old Data)
- */
-
 #define G_LOG_DOMAIN "wp-spa-pod"
 
 #include "spa-pod.h"
@@ -21,6 +16,17 @@
 #include <spa/pod/parser.h>
 
 #define WP_SPA_POD_BUILDER_REALLOC_STEP_SIZE 64
+
+/*! \defgroup wpspapod WpSpaPod */
+/*!
+ * \struct WpSpaPod
+ */
+/*!
+ * \struct WpSpaPodBuilder
+ */
+/*!
+ * \struct WpSpaPodParser
+ */
 
 enum {
   FLAG_NO_OWNERSHIP = (1 << 0),
@@ -127,12 +133,10 @@ wp_spa_pod_builder_new (size_t size, WpSpaType type)
   return self;
 }
 
-
-/**
- * wp_spa_pod_ref:
- * @self: a spa pod object
- *
- * Returns: (transfer full): @self with an additional reference count on it
+/*!
+ * \ingroup wpspapod
+ * \param self a spa pod object
+ * \returns (transfer full): \a self with an additional reference count on it
  */
 WpSpaPod *
 wp_spa_pod_ref (WpSpaPod *self)
@@ -149,12 +153,11 @@ wp_spa_pod_free (WpSpaPod *self)
   g_slice_free (WpSpaPod, self);
 }
 
-/**
- * wp_spa_pod_unref:
- * @self: (transfer full): a spa pod object
- *
- * Decreases the reference count on @self and frees it when the ref count
- * reaches zero.
+/*!
+ * \brief Decreases the reference count on \a self and frees it when the ref
+ * count reaches zero.
+ * \ingroup wpspapod
+ * \param self (transfer full): a spa pod object
  */
 void
 wp_spa_pod_unref (WpSpaPod *self)
@@ -190,13 +193,12 @@ wp_spa_pod_new (const struct spa_pod *pod, WpSpaPodType type, guint32 flags)
   return self;
 }
 
-/**
- * wp_spa_pod_new_wrap:
- * @pod: a spa_pod
- *
- * Returns: a new #WpSpaPod that references the data in @pod. @pod is not
- *   copied, so it needs to stay alive. The returned #WpSpaPod can be modified
- *   by using the setter functions, in which case @pod will be modified
+/*!
+ * \ingroup wpspapod
+ * \param pod a spa_pod
+ * \returns a new WpSpaPod that references the data in \a pod. \a pod is not
+ *   copied, so it needs to stay alive. The returned WpSpaPod can be modified
+ *   by using the setter functions, in which case \a pod will be modified
  *   underneath.
  */
 WpSpaPod *
@@ -205,12 +207,11 @@ wp_spa_pod_new_wrap (struct spa_pod *pod)
   return wp_spa_pod_new (pod, WP_SPA_POD_REGULAR, FLAG_NO_OWNERSHIP);
 }
 
-/**
- * wp_spa_pod_new_wrap_const:
- * @pod: a constant spa_pod
- *
- * Returns: a new #WpSpaPod that references the data in @pod. @pod is not
- *   copied, so it needs to stay alive. The returned #WpSpaPod cannot be
+/*!
+ * \ingroup wpspapod
+ * \param pod a constant spa_pod
+ * \returns a new WpSpaPod that references the data in \a pod. \a pod is not
+ *   copied, so it needs to stay alive. The returned WpSpaPod cannot be
  *   modified, unless it's copied first.
  */
 WpSpaPod *
@@ -295,15 +296,14 @@ wp_spa_pod_new_control_wrap_copy (guint32 offset, enum spa_control_type type,
   return self;
 }
 
-/**
- * wp_spa_pod_get_spa_pod:
- * @self: a spa pod object
- *
- * Converts a #WpSpaPod pointer to a `struct spa_pod` one, for use with
- * native pipewire & spa functions. The returned pointer is owned by #WpSpaPod
+/*!
+ * \brief Converts a WpSpaPod pointer to a `struct spa_pod` one, for use with
+ * native pipewire & spa functions. The returned pointer is owned by WpSpaPod
  * and may not be modified or freed.
  *
- * Returns: a const pointer to the underlying spa_pod structure
+ * \ingroup wpspapod
+ * \param self a spa pod object
+ * \returns a const pointer to the underlying spa_pod structure
  */
 const struct spa_pod *
 wp_spa_pod_get_spa_pod (const WpSpaPod *self)
@@ -311,17 +311,17 @@ wp_spa_pod_get_spa_pod (const WpSpaPod *self)
   return self->pod;
 }
 
-/**
- * wp_spa_pod_get_spa_type:
- * @self: a spa pod
+/*!
+ * \brief Gets the SPA type of the spa pod.
  *
- * Gets the SPA type of the spa pod.
  * If the pod is an object or pointer, this will return the derived
  * object/pointer type directly.
  * If the pod is an object property or a control, this will return the type
  * of the contained value.
  *
- * Returns: (transfer none): the type of the spa pod
+ * \ingroup wpspapod
+ * \param self a spa pod
+ * \returns (transfer none): the type of the spa pod
  */
 WpSpaType
 wp_spa_pod_get_spa_type (WpSpaPod *self)
@@ -334,14 +334,13 @@ wp_spa_pod_get_spa_type (WpSpaPod *self)
     return SPA_POD_TYPE (self->pod);
 }
 
-/**
- * wp_spa_pod_get_choice_type:
- * @self: a choice pod
- *
- * If the pod is a Choice, this gets the choice type
+/*!
+ * \brief If the pod is a Choice, this gets the choice type
  * (Range, Step, Enum, ...)
  *
- * Returns: the choice type of the choice pod
+ * \ingroup wpspapod
+ * \param self a choice pod
+ * \returns the choice type of the choice pod
  */
 WpSpaIdValue
 wp_spa_pod_get_choice_type (WpSpaPod *self)
@@ -351,13 +350,12 @@ wp_spa_pod_get_choice_type (WpSpaPod *self)
       SPA_TYPE_INFO_Choice, SPA_POD_CHOICE_TYPE (self->pod));
 }
 
-/**
- * wp_spa_pod_copy:
- * @other: a spa pod object
+/*!
+ * \brief Copies a spa pod object
  *
- * Copies a spa pod object
- *
- * Returns: (transfer full): The newly copied spa pod
+ * \ingroup wpspapod
+ * \param other a spa pod object
+ * \returns (transfer full): The newly copied spa pod
  */
 WpSpaPod *
 wp_spa_pod_copy (WpSpaPod *other)
@@ -380,13 +378,12 @@ wp_spa_pod_copy (WpSpaPod *other)
   return wp_spa_pod_new_wrap_copy (other->pod);
 }
 
-/**
- * wp_spa_pod_is_unique_owner:
- * @self: a spa pod object
+/*!
+ * \brief Checks if the pod is the unique owner of its data or not
  *
- * Checks if the pod is the unique owner of its data or not
- *
- * Returns: TRUE if the pod owns the data, FALSE otherwise.
+ * \ingroup wpspapod
+ * \param self a spa pod object
+ * \returns TRUE if the pod owns the data, FALSE otherwise.
  */
 gboolean
 wp_spa_pod_is_unique_owner (WpSpaPod *self)
@@ -395,16 +392,15 @@ wp_spa_pod_is_unique_owner (WpSpaPod *self)
       !(self->flags & FLAG_NO_OWNERSHIP);
 }
 
-/**
- * wp_spa_pod_ensure_unique_owner:
- * @self (transfer full): a spa pod object
+/*!
+ * \brief If \a self is not uniquely owned already, then it is unrefed and a
+ * copy of it is returned instead. You should always consider \a self as unsafe
+ * to use after this call and you should use the returned object instead.
  *
- * If @self is not uniquely owned already, then it is unrefed and a copy of
- * it is returned instead. You should always consider @self as unsafe to use
- * after this call and you should use the returned object instead.
- *
- * Returns: (transfer full): the uniquely owned spa pod object which may or may
- * not be the same as @self.
+ * \ingroup wpspapod
+ * \param self (transfer full): a spa pod object
+ * \returns (transfer full): the uniquely owned spa pod object which may or may
+ * not be the same as \a self.
  */
 WpSpaPod *
 wp_spa_pod_ensure_unique_owner (WpSpaPod *self)
@@ -419,12 +415,10 @@ wp_spa_pod_ensure_unique_owner (WpSpaPod *self)
   return copy;
 }
 
-/**
- * wp_spa_pod_new_none:
- *
- * Creates a spa pod of type None
- *
- * Returns: (transfer full): The new spa pod
+/*!
+ * \brief Creates a spa pod of type None
+ * \ingroup wpspapod
+ * \returns (transfer full): The new spa pod
  */
 WpSpaPod *
 wp_spa_pod_new_none (void)
@@ -437,13 +431,12 @@ wp_spa_pod_new_none (void)
   return self;
 }
 
-/**
- * wp_spa_pod_new_boolean:
- * @value: the boolean value
+/*!
+ * \brief Creates a spa pod of type boolean
  *
- * Creates a spa pod of type boolean
- *
- * Returns: (transfer full): The new spa pod
+ * \ingroup wpspapod
+ * \param value the boolean value
+ * \returns (transfer full): The new spa pod
  */
 WpSpaPod *
 wp_spa_pod_new_boolean (gboolean value)
@@ -456,13 +449,12 @@ wp_spa_pod_new_boolean (gboolean value)
   return self;
 }
 
-/**
- * wp_spa_pod_new_id:
- * @value: the Id value
+/*!
+ * \brief Creates a spa pod of type Id
  *
- * Creates a spa pod of type Id
- *
- * Returns: (transfer full): The new spa pod
+ * \ingroup wpspapod
+ * \param value the Id value
+ * \returns (transfer full): The new spa pod
  */
 WpSpaPod *
 wp_spa_pod_new_id (guint32 value)
@@ -475,16 +467,15 @@ wp_spa_pod_new_id (guint32 value)
   return self;
 }
 
-/**
- * wp_spa_pod_new_int:
- * @value: the int value
+/*!
+ * \brief Creates a spa pod of type int
  *
- * Creates a spa pod of type int
- *
- * Returns: (transfer full): The new spa pod
+ * \ingroup wpspapod
+ * \param value the int value
+ * \returns (transfer full): The new spa pod
  */
 WpSpaPod *
-wp_spa_pod_new_int (gint value)
+wp_spa_pod_new_int (gint32 value)
 {
   WpSpaPod *self = g_slice_new0 (WpSpaPod);
   g_ref_count_init (&self->ref);
@@ -494,16 +485,15 @@ wp_spa_pod_new_int (gint value)
   return self;
 }
 
-/**
- * wp_spa_pod_new_long:
- * @value: the long value
+/*!
+ * \brief Creates a spa pod of type long
  *
- * Creates a spa pod of type long
- *
- * Returns: (transfer full): The new spa pod
+ * \ingroup wpspapod
+ * \param value the long value
+ * \returns (transfer full): The new spa pod
  */
 WpSpaPod *
-wp_spa_pod_new_long (glong value)
+wp_spa_pod_new_long (gint64 value)
 {
   WpSpaPod *self = g_slice_new0 (WpSpaPod);
   g_ref_count_init (&self->ref);
@@ -513,13 +503,12 @@ wp_spa_pod_new_long (glong value)
   return self;
 }
 
-/**
- * wp_spa_pod_new_float:
- * @value: the float value
+/*!
+ * \brief Creates a spa pod of type float
  *
- * Creates a spa pod of type float
- *
- * Returns: (transfer full): The new spa pod
+ * \ingroup wpspapod
+ * \param value the float value
+ * \returns (transfer full): The new spa pod
  */
 WpSpaPod *
 wp_spa_pod_new_float (float value)
@@ -532,13 +521,12 @@ wp_spa_pod_new_float (float value)
   return self;
 }
 
-/**
- * wp_spa_pod_new_double:
- * @value: the double value
+/*!
+ * \brief Creates a spa pod of type double
  *
- * Creates a spa pod of type double
- *
- * Returns: (transfer full): The new spa pod
+ * \ingroup wpspapod
+ * \param value the double value
+ * \returns (transfer full): The new spa pod
  */
 WpSpaPod *
 wp_spa_pod_new_double (double value)
@@ -551,13 +539,12 @@ wp_spa_pod_new_double (double value)
   return self;
 }
 
-/**
- * wp_spa_pod_new_string:
- * @value: the string value
+/*!
+ * \brief Creates a spa pod of type string
  *
- * Creates a spa pod of type string
- *
- * Returns: (transfer full): The new spa pod
+ * \ingroup wpspapod
+ * \param value the string value
+ * \returns (transfer full): The new spa pod
  */
 WpSpaPod *
 wp_spa_pod_new_string (const char *value)
@@ -579,14 +566,13 @@ wp_spa_pod_new_string (const char *value)
   return self;
 }
 
-/**
- * wp_spa_pod_new_bytes:
- * @value: the bytes value
- * @len: the length of the bytes value
+/*!
+ * \brief Creates a spa pod of type bytes
  *
- * Creates a spa pod of type bytes
- *
- * Returns: (transfer full): The new spa pod
+ * \ingroup wpspapod
+ * \param value the bytes value
+ * \param len the length of the bytes value
+ * \returns (transfer full): The new spa pod
  */
 WpSpaPod *
 wp_spa_pod_new_bytes (gconstpointer value, guint32 len)
@@ -606,14 +592,13 @@ wp_spa_pod_new_bytes (gconstpointer value, guint32 len)
   return self;
 }
 
-/**
- * wp_spa_pod_new_pointer:
- * @type_name: the name of the type of the pointer
- * @value: the pointer value
+/*!
+ * \brief Creates a spa pod of type pointer
  *
- * Creates a spa pod of type pointer
- *
- * Returns: (transfer full): The new spa pod
+ * \ingroup wpspapod
+ * \param type_name the name of the type of the pointer
+ * \param value the pointer value
+ * \returns (transfer full): The new spa pod
  */
 WpSpaPod *
 wp_spa_pod_new_pointer (const char *type_name, gconstpointer value)
@@ -629,13 +614,12 @@ wp_spa_pod_new_pointer (const char *type_name, gconstpointer value)
   return self;
 }
 
-/**
- * wp_spa_pod_new_fd:
- * @value: the Fd value
+/*!
+ * \brief Creates a spa pod of type Fd
  *
- * Creates a spa pod of type Fd
- *
- * Returns: (transfer full): The new spa pod
+ * \ingroup wpspapod
+ * \param value the Fd value
+ * \returns (transfer full): The new spa pod
  */
 WpSpaPod *
 wp_spa_pod_new_fd (gint64 value)
@@ -648,14 +632,13 @@ wp_spa_pod_new_fd (gint64 value)
   return self;
 }
 
-/**
- * wp_spa_pod_new_rectangle:
- * @width: the width value of the rectangle
- * @height: the height value of the rectangle
+/*!
+ * \brief Creates a spa pod of type rectangle
  *
- * Creates a spa pod of type rectangle
- *
- * Returns: (transfer full): The new spa pod
+ * \ingroup wpspapod
+ * \param width the width value of the rectangle
+ * \param height the height value of the rectangle
+ * \returns (transfer full): The new spa pod
  */
 WpSpaPod *
 wp_spa_pod_new_rectangle (guint32 width, guint32 height)
@@ -669,14 +652,13 @@ wp_spa_pod_new_rectangle (guint32 width, guint32 height)
   return self;
 }
 
-/**
- * wp_spa_pod_new_fraction:
- * @num: the numerator value of the fraction
- * @denom: the denominator value of the fraction
+/*!
+ * \brief Creates a spa pod of type fraction
  *
- * Creates a spa pod of type fraction
- *
- * Returns: (transfer full): The new spa pod
+ * \ingroup wpspapod
+ * \param num the numerator value of the fraction
+ * \param denom the denominator value of the fraction
+ * \returns (transfer full): The new spa pod
  */
 WpSpaPod *
 wp_spa_pod_new_fraction (guint32 num, guint32 denom)
@@ -690,14 +672,13 @@ wp_spa_pod_new_fraction (guint32 num, guint32 denom)
   return self;
 }
 
-/**
- * wp_spa_pod_new_choice:
- * @choice_type: the name of the choice type ("Range", "Step", ...)
- * @...: a list of choice values, followed by %NULL
+/*!
+ * \brief Creates a spa pod of type choice
  *
- * Creates a spa pod of type choice
- *
- * Returns: (transfer full): The new spa pod
+ * \ingroup wpspapod
+ * \param choice_type the name of the choice type ("Range", "Step", ...),
+ * \param ... a list of choice values, followed by NULL
+ * \returns (transfer full): The new spa pod
  */
 WpSpaPod *
 wp_spa_pod_new_choice (const char *choice_type, ...)
@@ -712,14 +693,13 @@ wp_spa_pod_new_choice (const char *choice_type, ...)
   return self;
 }
 
-/**
- * wp_spa_pod_new_choice_valist:
- * @choice_type: the name of the choice type ("Range", "Step", ...)
- * @args: the variable arguments passed to wp_spa_pod_new_choice()
+/*!
+ * \brief This is the `va_list` version of wp_spa_pod_new_choice()
  *
- * This is the `va_list` version of wp_spa_pod_new_choice()
- *
- * Returns: (transfer full): The new spa pod
+ * \ingroup wpspapod
+ * \param choice_type the name of the choice type ("Range", "Step", ...)
+ * \param args the variable arguments passed to wp_spa_pod_new_choice()
+ * \returns (transfer full): The new spa pod
  */
 WpSpaPod *
 wp_spa_pod_new_choice_valist (const char *choice_type, va_list args)
@@ -729,15 +709,14 @@ wp_spa_pod_new_choice_valist (const char *choice_type, va_list args)
   return wp_spa_pod_builder_end (b);
 }
 
-/**
- * wp_spa_pod_new_object:
- * @type_name: the type name of the object type
- * @id_name: the id name of the object
- * @...: a list of object properties with their values, followed by %NULL
+/*!
+ * \brief Creates a spa pod of type object
  *
- * Creates a spa pod of type object
- *
- * Returns: (transfer full): The new spa pod
+ * \ingroup wpspapod
+ * \param type_name the type name of the object type
+ * \param id_name the id name of the object,
+ * \param ... a list of object properties with their values, followed by NULL
+ * \returns (transfer full): The new spa pod
  */
 WpSpaPod *
 wp_spa_pod_new_object (const char *type_name, const char *id_name, ...)
@@ -752,15 +731,14 @@ wp_spa_pod_new_object (const char *type_name, const char *id_name, ...)
   return self;
 }
 
-/**
- * wp_spa_pod_new_object_valist:
- * @type_name: the type name of the object type
- * @id_name: the id name of the object
- * @args: the variable arguments passed to wp_spa_pod_new_object()
+/*!
+ * \brief This is the `va_list` version of wp_spa_pod_new_object()
  *
- * This is the `va_list` version of wp_spa_pod_new_object()
- *
- * Returns: (transfer full): The new spa pod
+ * \ingroup wpspapod
+ * \param type_name the type name of the object type
+ * \param id_name the id name of the object
+ * \param args the variable arguments passed to wp_spa_pod_new_object()
+ * \returns (transfer full): The new spa pod
  */
 WpSpaPod *
 wp_spa_pod_new_object_valist (const char *type_name, const char *id_name,
@@ -772,14 +750,13 @@ wp_spa_pod_new_object_valist (const char *type_name, const char *id_name,
   return wp_spa_pod_builder_end (b);
 }
 
-/**
- * wp_spa_pod_new_sequence:
- * @unit: the unit of the sequence
- * @...: a list of sequence controls with their values, followed by %NULL
+/*!
+ * \brief Creates a spa pod of type sequence
  *
- * Creates a spa pod of type sequence
- *
- * Returns: (transfer full): The new spa pod
+ * \ingroup wpspapod
+ * \param unit the unit of the sequence
+ * \param ... a list of sequence controls with their values, followed by NULL
+ * \returns (transfer full): The new spa pod
  */
 WpSpaPod *
 wp_spa_pod_new_sequence (guint unit, ...)
@@ -794,14 +771,13 @@ wp_spa_pod_new_sequence (guint unit, ...)
   return self;
 }
 
-/**
- * wp_spa_pod_new_sequence_valist:
- * @unit: the unit of the sequence
- * @args: the variable arguments passed to wp_spa_pod_new_sequence()
+/*!
+ * \brief This is the `va_list` version of wp_spa_pod_new_sequence()
  *
- * This is the `va_list` version of wp_spa_pod_new_sequence()
- *
- * Returns: (transfer full): The new spa pod
+ * \ingroup wpspapod
+ * \param unit the unit of the sequence
+ * \param args the variable arguments passed to wp_spa_pod_new_sequence()
+ * \returns (transfer full): The new spa pod
  */
 WpSpaPod *
 wp_spa_pod_new_sequence_valist (guint unit, va_list args)
@@ -811,13 +787,12 @@ wp_spa_pod_new_sequence_valist (guint unit, va_list args)
   return wp_spa_pod_builder_end (b);
 }
 
-/**
- * wp_spa_pod_is_none:
- * @self: the spa pod object
+/*!
+ * \brief Checks wether the spa pod is of type none or not
  *
- * Checks wether the spa pod is of type none or not
- *
- * Returns: TRUE if it is of type none, FALSE otherwise
+ * \ingroup wpspapod
+ * \param self the spa pod object
+ * \returns TRUE if it is of type none, FALSE otherwise
  */
 gboolean
 wp_spa_pod_is_none (WpSpaPod *self)
@@ -825,13 +800,12 @@ wp_spa_pod_is_none (WpSpaPod *self)
   return self->type == WP_SPA_POD_REGULAR && spa_pod_is_none (self->pod);
 }
 
-/**
- * wp_spa_pod_is_boolean:
- * @self: the spa pod object
+/*!
+ * \brief Checks wether the spa pod is of type boolean or not
  *
- * Checks wether the spa pod is of type boolean or not
- *
- * Returns: TRUE if it is of type boolean, FALSE otherwise
+ * \ingroup wpspapod
+ * \param self the spa pod object
+ * \returns TRUE if it is of type boolean, FALSE otherwise
  */
 gboolean
 wp_spa_pod_is_boolean (WpSpaPod *self)
@@ -839,13 +813,12 @@ wp_spa_pod_is_boolean (WpSpaPod *self)
   return self->type == WP_SPA_POD_REGULAR && spa_pod_is_bool (self->pod);
 }
 
-/**
- * wp_spa_pod_is_id:
- * @self: the spa pod object
+/*!
+ * \brief Checks wether the spa pod is of type Id or not
  *
- * Checks wether the spa pod is of type Id or not
- *
- * Returns: TRUE if it is of type Id, FALSE otherwise
+ * \ingroup wpspapod
+ * \param self the spa pod object
+ * \returns TRUE if it is of type Id, FALSE otherwise
  */
 gboolean
 wp_spa_pod_is_id (WpSpaPod *self)
@@ -853,13 +826,12 @@ wp_spa_pod_is_id (WpSpaPod *self)
   return self->type == WP_SPA_POD_REGULAR && spa_pod_is_id (self->pod);
 }
 
-/**
- * wp_spa_pod_is_int:
- * @self: the spa pod object
+/*!
+ * \brief Checks wether the spa pod is of type int or not
  *
- * Checks wether the spa pod is of type int or not
- *
- * Returns: TRUE if it is of type int, FALSE otherwise
+ * \ingroup wpspapod
+ * \param self the spa pod object
+ * \returns TRUE if it is of type int, FALSE otherwise
  */
 gboolean
 wp_spa_pod_is_int (WpSpaPod *self)
@@ -867,13 +839,12 @@ wp_spa_pod_is_int (WpSpaPod *self)
   return self->type == WP_SPA_POD_REGULAR && spa_pod_is_int (self->pod);
 }
 
-/**
- * wp_spa_pod_is_long:
- * @self: the spa pod object
+/*!
+ * \brief Checks wether the spa pod is of type long or not
  *
- * Checks wether the spa pod is of type long or not
- *
- * Returns: TRUE if it is of type long, FALSE otherwise
+ * \ingroup wpspapod
+ * \param self the spa pod object
+ * \returns TRUE if it is of type long, FALSE otherwise
  */
 gboolean
 wp_spa_pod_is_long (WpSpaPod *self)
@@ -881,13 +852,12 @@ wp_spa_pod_is_long (WpSpaPod *self)
   return self->type == WP_SPA_POD_REGULAR && spa_pod_is_long (self->pod);
 }
 
-/**
- * wp_spa_pod_is_float:
- * @self: the spa pod object
+/*!
+ * \brief Checks wether the spa pod is of type float or not
  *
- * Checks wether the spa pod is of type float or not
- *
- * Returns: TRUE if it is of type float, FALSE otherwise
+ * \ingroup wpspapod
+ * \param self the spa pod object
+ * \returns TRUE if it is of type float, FALSE otherwise
  */
 gboolean
 wp_spa_pod_is_float (WpSpaPod *self)
@@ -895,13 +865,12 @@ wp_spa_pod_is_float (WpSpaPod *self)
   return self->type == WP_SPA_POD_REGULAR && spa_pod_is_float (self->pod);
 }
 
-/**
- * wp_spa_pod_is_double:
- * @self: the spa pod object
+/*!
+ * \brief Checks wether the spa pod is of type double or not
  *
- * Checks wether the spa pod is of type double or not
- *
- * Returns: TRUE if it is of type double, FALSE otherwise
+ * \ingroup wpspapod
+ * \param self the spa pod object
+ * \returns TRUE if it is of type double, FALSE otherwise
  */
 gboolean
 wp_spa_pod_is_double (WpSpaPod *self)
@@ -909,13 +878,12 @@ wp_spa_pod_is_double (WpSpaPod *self)
   return self->type == WP_SPA_POD_REGULAR && spa_pod_is_double (self->pod);
 }
 
-/**
- * wp_spa_pod_is_string:
- * @self: the spa pod object
+/*!
+ * \brief Checks wether the spa pod is of type string or not
  *
- * Checks wether the spa pod is of type string or not
- *
- * Returns: TRUE if it is of type string, FALSE otherwise
+ * \ingroup wpspapod
+ * \param self the spa pod object
+ * \returns TRUE if it is of type string, FALSE otherwise
  */
 gboolean
 wp_spa_pod_is_string (WpSpaPod *self)
@@ -923,13 +891,12 @@ wp_spa_pod_is_string (WpSpaPod *self)
   return self->type == WP_SPA_POD_REGULAR && spa_pod_is_string (self->pod);
 }
 
-/**
- * wp_spa_pod_is_bytes:
- * @self: the spa pod object
+/*!
+ * \brief Checks wether the spa pod is of type bytes or not
  *
- * Checks wether the spa pod is of type bytes or not
- *
- * Returns: TRUE if it is of type bytes, FALSE otherwise
+ * \ingroup wpspapod
+ * \param self the spa pod object
+ * \returns TRUE if it is of type bytes, FALSE otherwise
  */
 gboolean
 wp_spa_pod_is_bytes (WpSpaPod *self)
@@ -937,13 +904,12 @@ wp_spa_pod_is_bytes (WpSpaPod *self)
   return self->type == WP_SPA_POD_REGULAR && spa_pod_is_bytes (self->pod);
 }
 
-/**
- * wp_spa_pod_is_pointer:
- * @self: the spa pod object
+/*!
+ * \brief Checks wether the spa pod is of type pointer or not
  *
- * Checks wether the spa pod is of type pointer or not
- *
- * Returns: TRUE if it is of type pointer, FALSE otherwise
+ * \ingroup wpspapod
+ * \param self the spa pod object
+ * \returns TRUE if it is of type pointer, FALSE otherwise
  */
 gboolean
 wp_spa_pod_is_pointer (WpSpaPod *self)
@@ -951,13 +917,12 @@ wp_spa_pod_is_pointer (WpSpaPod *self)
   return self->type == WP_SPA_POD_REGULAR && spa_pod_is_pointer (self->pod);
 }
 
-/**
- * wp_spa_pod_is_fd:
- * @self: the spa pod object
+/*!
+ * \brief Checks wether the spa pod is of type Fd or not
  *
- * Checks wether the spa pod is of type Fd or not
- *
- * Returns: TRUE if it is of type Fd, FALSE otherwise
+ * \ingroup wpspapod
+ * \param self the spa pod object
+ * \returns TRUE if it is of type Fd, FALSE otherwise
  */
 gboolean
 wp_spa_pod_is_fd (WpSpaPod *self)
@@ -965,13 +930,12 @@ wp_spa_pod_is_fd (WpSpaPod *self)
   return self->type == WP_SPA_POD_REGULAR && spa_pod_is_fd (self->pod);
 }
 
-/**
- * wp_spa_pod_is_rectangle:
- * @self: the spa pod object
+/*!
+ * \brief Checks wether the spa pod is of type rectangle or not
  *
- * Checks wether the spa pod is of type rectangle or not
- *
- * Returns: TRUE if it is of type rectangle, FALSE otherwise
+ * \ingroup wpspapod
+ * \param self the spa pod object
+ * \returns TRUE if it is of type rectangle, FALSE otherwise
  */
 gboolean
 wp_spa_pod_is_rectangle (WpSpaPod *self)
@@ -979,13 +943,12 @@ wp_spa_pod_is_rectangle (WpSpaPod *self)
   return self->type == WP_SPA_POD_REGULAR && spa_pod_is_rectangle (self->pod);
 }
 
-/**
- * wp_spa_pod_is_fraction:
- * @self: the spa pod object
+/*!
+ * \brief Checks wether the spa pod is of type fraction or not
  *
- * Checks wether the spa pod is of type fraction or not
- *
- * Returns: TRUE if it is of type fraction, FALSE otherwise
+ * \ingroup wpspapod
+ * \param self the spa pod object
+ * \returns TRUE if it is of type fraction, FALSE otherwise
  */
 gboolean
 wp_spa_pod_is_fraction (WpSpaPod *self)
@@ -993,13 +956,12 @@ wp_spa_pod_is_fraction (WpSpaPod *self)
   return self->type == WP_SPA_POD_REGULAR && spa_pod_is_fraction (self->pod);
 }
 
-/**
- * wp_spa_pod_is_array:
- * @self: the spa pod object
+/*!
+ * \brief Checks wether the spa pod is of type array or not
  *
- * Checks wether the spa pod is of type array or not
- *
- * Returns: TRUE if it is of type array, FALSE otherwise
+ * \ingroup wpspapod
+ * \param self the spa pod object
+ * \returns TRUE if it is of type array, FALSE otherwise
  */
 gboolean
 wp_spa_pod_is_array (WpSpaPod *self)
@@ -1007,13 +969,12 @@ wp_spa_pod_is_array (WpSpaPod *self)
   return self->type == WP_SPA_POD_REGULAR && spa_pod_is_array (self->pod);
 }
 
-/**
- * wp_spa_pod_is_choice:
- * @self: the spa pod object
+/*!
+ * \brief Checks wether the spa pod is of type choice or not
  *
- * Checks wether the spa pod is of type choice or not
- *
- * Returns: TRUE if it is of type choice, FALSE otherwise
+ * \ingroup wpspapod
+ * \param self the spa pod object
+ * \returns TRUE if it is of type choice, FALSE otherwise
  */
 gboolean
 wp_spa_pod_is_choice (WpSpaPod *self)
@@ -1021,13 +982,12 @@ wp_spa_pod_is_choice (WpSpaPod *self)
   return self->type == WP_SPA_POD_REGULAR && spa_pod_is_choice (self->pod);
 }
 
-/**
- * wp_spa_pod_is_object:
- * @self: the spa pod object
+/*!
+ * \brief Checks wether the spa pod is of type object or not
  *
- * Checks wether the spa pod is of type object or not
- *
- * Returns: TRUE if it is of type object, FALSE otherwise
+ * \ingroup wpspapod
+ * \param self the spa pod object
+ * \returns TRUE if it is of type object, FALSE otherwise
  */
 gboolean
 wp_spa_pod_is_object (WpSpaPod *self)
@@ -1035,13 +995,12 @@ wp_spa_pod_is_object (WpSpaPod *self)
   return self->type == WP_SPA_POD_REGULAR && spa_pod_is_object (self->pod);
 }
 
-/**
- * wp_spa_pod_is_struct:
- * @self: the spa pod object
+/*!
+ * \brief Checks wether the spa pod is of type struct or not
  *
- * Checks wether the spa pod is of type struct or not
- *
- * Returns: TRUE if it is of type struct, FALSE otherwise
+ * \ingroup wpspapod
+ * \param self the spa pod object
+ * \returns TRUE if it is of type struct, FALSE otherwise
  */
 gboolean
 wp_spa_pod_is_struct (WpSpaPod *self)
@@ -1049,13 +1008,12 @@ wp_spa_pod_is_struct (WpSpaPod *self)
   return self->type == WP_SPA_POD_REGULAR && spa_pod_is_struct (self->pod);
 }
 
-/**
- * wp_spa_pod_is_sequence:
- * @self: the spa pod object
+/*!
+ * \brief Checks wether the spa pod is of type sequence or not
  *
- * Checks wether the spa pod is of type sequence or not
- *
- * Returns: TRUE if it is of type sequence, FALSE otherwise
+ * \ingroup wpspapod
+ * \param self the spa pod object
+ * \returns TRUE if it is of type sequence, FALSE otherwise
  */
 gboolean
 wp_spa_pod_is_sequence (WpSpaPod *self)
@@ -1063,13 +1021,12 @@ wp_spa_pod_is_sequence (WpSpaPod *self)
   return self->type == WP_SPA_POD_REGULAR && spa_pod_is_sequence (self->pod);
 }
 
-/**
- * wp_spa_pod_is_property:
- * @self: the spa pod object
+/*!
+ * \brief Checks wether the spa pod is of type property or not
  *
- * Checks wether the spa pod is of type property or not
- *
- * Returns: TRUE if it is of type property, FALSE otherwise
+ * \ingroup wpspapod
+ * \param self the spa pod object
+ * \returns TRUE if it is of type property, FALSE otherwise
  */
 gboolean
 wp_spa_pod_is_property (WpSpaPod *self)
@@ -1077,13 +1034,12 @@ wp_spa_pod_is_property (WpSpaPod *self)
   return self->type == WP_SPA_POD_PROPERTY;
 }
 
-/**
- * wp_spa_pod_is_control:
- * @self: the spa pod object
+/*!
+ * \brief Checks wether the spa pod is of type control or not
  *
- * Checks wether the spa pod is of type control or not
- *
- * Returns: TRUE if it is of type control, FALSE otherwise
+ * \ingroup wpspapod
+ * \param self the spa pod object
+ * \returns TRUE if it is of type control, FALSE otherwise
  */
 gboolean
 wp_spa_pod_is_control (WpSpaPod *self)
@@ -1091,14 +1047,13 @@ wp_spa_pod_is_control (WpSpaPod *self)
   return self->type == WP_SPA_POD_CONTROL;
 }
 
-/**
- * wp_spa_pod_get_boolean:
- * @self: the spa pod object
- * @value: (out): the boolean value
+/*!
+ * \brief Gets the boolean value of a spa pod object
  *
- * Gets the boolean value of a spa pod object
- *
- * Returns: TRUE if the value was obtained, FALSE otherwise
+ * \ingroup wpspapod
+ * \param self the spa pod object
+ * \param value (out): the boolean value
+ * \returns TRUE if the value was obtained, FALSE otherwise
  */
 gboolean
 wp_spa_pod_get_boolean (WpSpaPod *self, gboolean *value)
@@ -1111,14 +1066,13 @@ wp_spa_pod_get_boolean (WpSpaPod *self, gboolean *value)
   return res >= 0;
 }
 
-/**
- * wp_spa_pod_get_id:
- * @self: the spa pod object
- * @value: (out): the Id value
+/*!
+ * \brief Gets the Id value of a spa pod object
  *
- * Gets the Id value of a spa pod object
- *
- * Returns: TRUE if the value was obtained, FALSE otherwise
+ * \ingroup wpspapod
+ * \param self the spa pod object
+ * \param value (out): the Id value
+ * \returns TRUE if the value was obtained, FALSE otherwise
  */
 gboolean
 wp_spa_pod_get_id (WpSpaPod *self, guint32 *value)
@@ -1131,48 +1085,45 @@ wp_spa_pod_get_id (WpSpaPod *self, guint32 *value)
   return res >= 0;
 }
 
-/**
- * wp_spa_pod_get_int:
- * @self: the spa pod object
- * @value: (out): the int value
+/*!
+ * \brief Gets the int value of a spa pod object
  *
- * Gets the int value of a spa pod object
- *
- * Returns: TRUE if the value was obtained, FALSE otherwise
+ * \ingroup wpspapod
+ * \param self the spa pod object
+ * \param value (out): the int value
+ * \returns TRUE if the value was obtained, FALSE otherwise
  */
 gboolean
-wp_spa_pod_get_int (WpSpaPod *self, gint *value)
+wp_spa_pod_get_int (WpSpaPod *self, gint32 *value)
 {
   g_return_val_if_fail (self, FALSE);
   g_return_val_if_fail (value, FALSE);
   return spa_pod_get_int (self->pod, value) >= 0;
 }
 
-/**
- * wp_spa_pod_get_long:
- * @self: the spa pod object
- * @value: (out): the long value
+/*!
+ * \brief Gets the long value of a spa pod object
  *
- * Gets the long value of a spa pod object
- *
- * Returns: TRUE if the value was obtained, FALSE otherwise
+ * \ingroup wpspapod
+ * \param self the spa pod object
+ * \param value (out): the long value
+ * \returns TRUE if the value was obtained, FALSE otherwise
  */
 gboolean
-wp_spa_pod_get_long (WpSpaPod *self, glong *value)
+wp_spa_pod_get_long (WpSpaPod *self, gint64 *value)
 {
   g_return_val_if_fail (self, FALSE);
   g_return_val_if_fail (value, FALSE);
   return spa_pod_get_long (self->pod, value) >= 0;
 }
 
-/**
- * wp_spa_pod_get_float:
- * @self: the spa pod object
- * @value: (out): the float value
+/*!
+ * \brief Gets the float value of a spa pod object
  *
- * Gets the float value of a spa pod object
- *
- * Returns: TRUE if the value was obtained, FALSE otherwise
+ * \ingroup wpspapod
+ * \param self the spa pod object
+ * \param value (out): the float value
+ * \returns TRUE if the value was obtained, FALSE otherwise
  */
 gboolean
 wp_spa_pod_get_float (WpSpaPod *self, float *value)
@@ -1182,14 +1133,13 @@ wp_spa_pod_get_float (WpSpaPod *self, float *value)
   return spa_pod_get_float (self->pod, value) >= 0;
 }
 
-/**
- * wp_spa_pod_get_double:
- * @self: the spa pod object
- * @value: (out): the double value
+/*!
+ * \brief Gets the double value of a spa pod object
  *
- * Gets the double value of a spa pod object
- *
- * Returns: TRUE if the value was obtained, FALSE otherwise
+ * \ingroup wpspapod
+ * \param self the spa pod object
+ * \param value (out): the double value
+ * \returns TRUE if the value was obtained, FALSE otherwise
  */
 gboolean
 wp_spa_pod_get_double (WpSpaPod *self, double *value)
@@ -1199,14 +1149,13 @@ wp_spa_pod_get_double (WpSpaPod *self, double *value)
   return spa_pod_get_double (self->pod, value) >= 0;
 }
 
-/**
- * wp_spa_pod_get_string:
- * @self: the spa pod object
- * @value: (out): the string value
+/*!
+ * \brief Gets the string value of a spa pod object
  *
- * Gets the string value of a spa pod object
- *
- * Returns: TRUE if the value was obtained, FALSE otherwise
+ * \ingroup wpspapod
+ * \param self the spa pod object
+ * \param value (out): the string value
+ * \returns TRUE if the value was obtained, FALSE otherwise
  */
 gboolean
 wp_spa_pod_get_string (WpSpaPod *self, const char **value)
@@ -1216,15 +1165,14 @@ wp_spa_pod_get_string (WpSpaPod *self, const char **value)
   return spa_pod_get_string (self->pod, value) >= 0;
 }
 
-/**
- * wp_spa_pod_get_bytes:
- * @self: the spa pod object
- * @value: (out): the bytes value
- * @len: (out): the length of the bytes value
+/*!
+ * \brief Gets the bytes value and its len of a spa pod object
  *
- * Gets the bytes value and its len of a spa pod object
- *
- * Returns: TRUE if the value was obtained, FALSE otherwise
+ * \ingroup wpspapod
+ * \param self the spa pod object
+ * \param value (out): the bytes value
+ * \param len (out): the length of the bytes value
+ * \returns TRUE if the value was obtained, FALSE otherwise
  */
 gboolean
 wp_spa_pod_get_bytes (WpSpaPod *self, gconstpointer *value, guint32 *len)
@@ -1235,14 +1183,13 @@ wp_spa_pod_get_bytes (WpSpaPod *self, gconstpointer *value, guint32 *len)
   return spa_pod_get_bytes (self->pod, value, len) >= 0;
 }
 
-/**
- * wp_spa_pod_get_pointer:
- * @self: the spa pod object
- * @value: (out): the pointer value
+/*!
+ * \brief Gets the pointer value and its type name of a spa pod object
  *
- * Gets the pointer value and its type name of a spa pod object
- *
- * Returns: TRUE if the value was obtained, FALSE otherwise
+ * \ingroup wpspapod
+ * \param self the spa pod object
+ * \param value (out): the pointer value
+ * \returns TRUE if the value was obtained, FALSE otherwise
  */
 gboolean
 wp_spa_pod_get_pointer (WpSpaPod *self, gconstpointer *value)
@@ -1254,14 +1201,13 @@ wp_spa_pod_get_pointer (WpSpaPod *self, gconstpointer *value)
   return spa_pod_get_pointer (self->pod, &type, value) >= 0;
 }
 
-/**
- * wp_spa_pod_get_fd:
- * @self: the spa pod object
- * @value: (out): the Fd value
+/*!
+ * \brief Gets the Fd value of a spa pod object
  *
- * Gets the Fd value of a spa pod object
- *
- * Returns: TRUE if the value was obtained, FALSE otherwise
+ * \ingroup wpspapod
+ * \param self the spa pod object
+ * \param value (out): the Fd value
+ * \returns TRUE if the value was obtained, FALSE otherwise
  */
 gboolean
 wp_spa_pod_get_fd (WpSpaPod *self, gint64 *value)
@@ -1271,15 +1217,14 @@ wp_spa_pod_get_fd (WpSpaPod *self, gint64 *value)
   return spa_pod_get_fd (self->pod, value) >= 0;
 }
 
-/**
- * wp_spa_pod_get_rectangle:
- * @self: the spa pod object
- * @width: (out): the rectangle's width value
- * @height: (out): the rectangle's height value
+/*!
+ * \brief Gets the rectangle's width and height value of a spa pod object
  *
- * Gets the rectangle's width and height value of a spa pod object
- *
- * Returns: TRUE if the value was obtained, FALSE otherwise
+ * \ingroup wpspapod
+ * \param self the spa pod object
+ * \param width (out): the rectangle's width value
+ * \param height (out): the rectangle's height value
+ * \returns TRUE if the value was obtained, FALSE otherwise
  */
 gboolean
 wp_spa_pod_get_rectangle (WpSpaPod *self, guint32 *width, guint32 *height)
@@ -1294,15 +1239,14 @@ wp_spa_pod_get_rectangle (WpSpaPod *self, guint32 *width, guint32 *height)
   return res;
 }
 
-/**
- * wp_spa_pod_get_fraction:
- * @self: the spa pod object
- * @num: (out): the fractions's numerator value
- * @denom: (out): the fractions's denominator value
+/*!
+ * \brief Gets the fractions's numerator and denominator value of a spa pod object
  *
- * Gets the fractions's numerator and denominator value of a spa pod object
- *
- * Returns: TRUE if the value was obtained, FALSE otherwise
+ * \ingroup wpspapod
+ * \param self the spa pod object
+ * \param num (out): the fractions's numerator value
+ * \param denom (out): the fractions's denominator value
+ * \returns TRUE if the value was obtained, FALSE otherwise
  */
 gboolean
 wp_spa_pod_get_fraction (WpSpaPod *self, guint32 *num, guint32 *denom)
@@ -1317,14 +1261,13 @@ wp_spa_pod_get_fraction (WpSpaPod *self, guint32 *num, guint32 *denom)
   return res;
 }
 
-/**
- * wp_spa_pod_set_boolean:
- * @self: the spa pod object
- * @value: the boolean value
+/*!
+ * \brief Sets a boolean value in the spa pod object.
  *
- * Sets a boolean value in the spa pod object.
- *
- * Returns: TRUE if the value could be set, FALSE othewrise.
+ * \ingroup wpspapod
+ * \param self the spa pod object
+ * \param value the boolean value
+ * \returns TRUE if the value could be set, FALSE othewrise.
  */
 gboolean
 wp_spa_pod_set_boolean (WpSpaPod *self, gboolean value)
@@ -1335,14 +1278,13 @@ wp_spa_pod_set_boolean (WpSpaPod *self, gboolean value)
   return TRUE;
 }
 
-/**
- * wp_spa_pod_set_id:
- * @self: the spa pod object
- * @value: the Id value
+/*!
+ * \brief Sets an Id value in the spa pod object.
  *
- * Sets an Id value in the spa pod object.
- *
- * Returns: TRUE if the value could be set, FALSE othewrise.
+ * \ingroup wpspapod
+ * \param self the spa pod object
+ * \param value the Id value
+ * \returns TRUE if the value could be set, FALSE othewrise.
  */
 gboolean
 wp_spa_pod_set_id (WpSpaPod *self, guint32 value)
@@ -1353,17 +1295,16 @@ wp_spa_pod_set_id (WpSpaPod *self, guint32 value)
   return TRUE;
 }
 
-/**
- * wp_spa_pod_set_int:
- * @self: the spa pod object
- * @value: the int value
+/*!
+ * \brief Sets an int value in the spa pod object.
  *
- * Sets an int value in the spa pod object.
- *
- * Returns: TRUE if the value could be set, FALSE othewrise.
+ * \ingroup wpspapod
+ * \param self the spa pod object
+ * \param value the int value
+ * \returns TRUE if the value could be set, FALSE othewrise.
  */
 gboolean
-wp_spa_pod_set_int (WpSpaPod *self, gint value)
+wp_spa_pod_set_int (WpSpaPod *self, gint32 value)
 {
   g_return_val_if_fail (wp_spa_pod_is_int (self), FALSE);
   g_return_val_if_fail (!(self->flags & FLAG_CONSTANT), FALSE);
@@ -1371,17 +1312,16 @@ wp_spa_pod_set_int (WpSpaPod *self, gint value)
   return TRUE;
 }
 
-/**
- * wp_spa_pod_set_long:
- * @self: the spa pod object
- * @value: the long value
+/*!
+ * \brief Sets a long value in the spa pod object.
  *
- * Sets a long value in the spa pod object.
- *
- * Returns: TRUE if the value could be set, FALSE othewrise.
+ * \ingroup wpspapod
+ * \param self the spa pod object
+ * \param value the long value
+ * \returns TRUE if the value could be set, FALSE othewrise.
  */
 gboolean
-wp_spa_pod_set_long (WpSpaPod *self, glong value)
+wp_spa_pod_set_long (WpSpaPod *self, gint64 value)
 {
   g_return_val_if_fail (wp_spa_pod_is_long (self), FALSE);
   g_return_val_if_fail (!(self->flags & FLAG_CONSTANT), FALSE);
@@ -1389,14 +1329,13 @@ wp_spa_pod_set_long (WpSpaPod *self, glong value)
   return TRUE;
 }
 
-/**
- * wp_spa_pod_set_float:
- * @self: the spa pod object
- * @value: the float value
+/*!
+ * \brief Sets a float value in the spa pod object.
  *
- * Sets a float value in the spa pod object.
- *
- * Returns: TRUE if the value could be set, FALSE othewrise.
+ * \ingroup wpspapod
+ * \param self the spa pod object
+ * \param value the float value
+ * \returns TRUE if the value could be set, FALSE othewrise.
  */
 gboolean
 wp_spa_pod_set_float (WpSpaPod *self, float value)
@@ -1407,14 +1346,13 @@ wp_spa_pod_set_float (WpSpaPod *self, float value)
   return TRUE;
 }
 
-/**
- * wp_spa_pod_set_double:
- * @self: the spa pod object
- * @value: the double value
+/*!
+ * \brief Sets a double value in the spa pod object.
  *
- * Sets a double value in the spa pod object.
- *
- * Returns: TRUE if the value could be set, FALSE othewrise.
+ * \ingroup wpspapod
+ * \param self the spa pod object
+ * \param value the double value
+ * \returns TRUE if the value could be set, FALSE othewrise.
  */
 gboolean
 wp_spa_pod_set_double (WpSpaPod *self, double value)
@@ -1425,15 +1363,14 @@ wp_spa_pod_set_double (WpSpaPod *self, double value)
   return TRUE;
 }
 
-/**
- * wp_spa_pod_set_pointer:
- * @self: the spa pod object
- * @type_name: the name of the type of the pointer
- * @value: the pointer value
+/*!
+ * \brief Sets a pointer value with its type name in the spa pod object.
  *
- * Sets a pointer value with its type name in the spa pod object.
- *
- * Returns: TRUE if the value could be set, FALSE othewrise.
+ * \ingroup wpspapod
+ * \param self the spa pod object
+ * \param type_name the name of the type of the pointer
+ * \param value the pointer value
+ * \returns TRUE if the value could be set, FALSE othewrise.
  */
 gboolean
 wp_spa_pod_set_pointer (WpSpaPod *self, const char *type_name,
@@ -1450,14 +1387,13 @@ wp_spa_pod_set_pointer (WpSpaPod *self, const char *type_name,
   return TRUE;
 }
 
-/**
- * wp_spa_pod_set_fd:
- * @self: the spa pod object
- * @value: the Fd value
+/*!
+ * \brief Sets a Fd value in the spa pod object.
  *
- * Sets a Fd value in the spa pod object.
- *
- * Returns: TRUE if the value could be set, FALSE othewrise.
+ * \ingroup wpspapod
+ * \param self the spa pod object
+ * \param value the Fd value
+ * \returns TRUE if the value could be set, FALSE othewrise.
  */
 gboolean
 wp_spa_pod_set_fd (WpSpaPod *self, gint64 value)
@@ -1468,15 +1404,14 @@ wp_spa_pod_set_fd (WpSpaPod *self, gint64 value)
   return TRUE;
 }
 
-/**
- * wp_spa_pod_set_rectangle:
- * @self: the spa pod object
- * @width: the width value of the rectangle
- * @height: the height value of the rectangle
+/*!
+ * \brief Sets the width and height values of a rectangle in the spa pod object.
  *
- * Sets the width and height values of a rectangle in the spa pod object.
- *
- * Returns: TRUE if the value could be set, FALSE othewrise.
+ * \ingroup wpspapod
+ * \param self the spa pod object
+ * \param width the width value of the rectangle
+ * \param height the height value of the rectangle
+ * \returns TRUE if the value could be set, FALSE othewrise.
  */
 gboolean
 wp_spa_pod_set_rectangle (WpSpaPod *self, guint32 width, guint32 height)
@@ -1488,15 +1423,15 @@ wp_spa_pod_set_rectangle (WpSpaPod *self, guint32 width, guint32 height)
   return TRUE;
 }
 
-/**
- * wp_spa_pod_set_fraction:
- * @self: the spa pod object
- * @num: the numerator value of the farction
- * @denom: the denominator value of the fraction
+/*!
+ * \brief Sets the numerator and denominator values of a fraction in the
+ * spa pod object.
  *
- * Sets the numerator and denominator values of a fraction in the spa pod object.
- *
- * Returns: TRUE if the value could be set, FALSE othewrise.
+ * \ingroup wpspapod
+ * \param self the spa pod object
+ * \param num the numerator value of the farction
+ * \param denom the denominator value of the fraction
+ * \returns TRUE if the value could be set, FALSE othewrise.
  */
 gboolean
 wp_spa_pod_set_fraction (WpSpaPod *self, guint32 num, guint32 denom)
@@ -1508,15 +1443,14 @@ wp_spa_pod_set_fraction (WpSpaPod *self, guint32 num, guint32 denom)
   return TRUE;
 }
 
-/**
- * wp_spa_pod_set_pod:
- * @self: the spa pod object
- * @pod: the pod with the value to be set
+/*!
+ * \brief Sets the value of a spa pod object in the current spa pod object.
+ * The spa pod objects must be of the same value.
  *
- * Sets the value of a spa pod object in the current spa pod object. THe spa pod
- * objects must be of the same value.
- *
- * Returns: TRUE if the value could be set, FALSE othewrise.
+ * \ingroup wpspapod
+ * \param self the spa pod object
+ * \param pod the pod with the value to be set
+ * \returns TRUE if the value could be set, FALSE othewrise.
  */
 gboolean
 wp_spa_pod_set_pod (WpSpaPod *self, WpSpaPod *pod)
@@ -1589,14 +1523,13 @@ wp_spa_pod_set_pod (WpSpaPod *self, WpSpaPod *pod)
   return TRUE;
 }
 
-/**
- * wp_spa_pod_equal:
- * @self: the spa pod object
- * @pod: the pod with the value to be compared with
+/*!
+ * \brief Checks whether two spa pod objects have the same value or not
  *
- * Checks whether two spa pod objects have the same value or not
- *
- * Returns: TRUE if both spa pod objects have the same values, FALSE othewrise.
+ * \ingroup wpspapod
+ * \param self the spa pod object
+ * \param pod the pod with the value to be compared with
+ * \returns TRUE if both spa pod objects have the same values, FALSE othewrise.
  */
 gboolean
 wp_spa_pod_equal (WpSpaPod *self, WpSpaPod *pod)
@@ -1681,15 +1614,14 @@ wp_spa_pod_equal (WpSpaPod *self, WpSpaPod *pod)
   return TRUE;
 }
 
-/**
- * wp_spa_pod_get_object:
- * @self: the spa pod object
- * @id_name: (out): the id name of the object
- * @...: (out): the list of the object properties values, followed by %NULL
+/*!
+ * \brief Gets the object properties values of a spa pod object
  *
- * Gets the object properties values of a spa pod object
- *
- * Returns: TRUE if the object properties values were obtained, FALSE otherwise
+ * \ingroup wpspapod
+ * \param self the spa pod object
+ * \param id_name (out): the id name of the object,
+ * \param ... (out): the list of the object properties values, followed by NULL
+ * \returns TRUE if the object properties values were obtained, FALSE otherwise
  */
 gboolean
 wp_spa_pod_get_object (WpSpaPod *self, const char **id_name, ...)
@@ -1702,15 +1634,14 @@ wp_spa_pod_get_object (WpSpaPod *self, const char **id_name, ...)
   return res;
 }
 
-/**
- * wp_spa_pod_get_object_valist:
- * @self: the spa pod object
- * @id_name: (out): the id name of the object
- * @args: (out): the variable arguments passed to wp_spa_pod_get_object()
+/*!
+ * \brief This is the `va_list` version of wp_spa_pod_get_object()
  *
- * This is the `va_list` version of wp_spa_pod_get_object()
- *
- * Returns: TRUE if the object properties values were obtained, FALSE otherwise
+ * \ingroup wpspapod
+ * \param self the spa pod object
+ * \param id_name (out): the id name of the object
+ * \param args (out): the variable arguments passed to wp_spa_pod_get_object()
+ * \returns TRUE if the object properties values were obtained, FALSE otherwise
  */
 gboolean
 wp_spa_pod_get_object_valist (WpSpaPod *self, const char **id_name, va_list args)
@@ -1723,14 +1654,13 @@ wp_spa_pod_get_object_valist (WpSpaPod *self, const char **id_name, va_list args
   return res;
 }
 
-/**
- * wp_spa_pod_get_struct:
- * @self: the spa pod object
- * @...: (out): the list of the struct values, followed by %NULL
+/*!
+ * \brief Gets the struct's values of a spa pod object
  *
- * Gets the struct's values of a spa pod object
- *
- * Returns: TRUE if the struct values were obtained, FALSE otherwise
+ * \ingroup wpspapod
+ * \param self the spa pod object
+ * \param ... (out): the list of the struct values, followed by NULL
+ * \returns TRUE if the struct values were obtained, FALSE otherwise
  */
 gboolean
 wp_spa_pod_get_struct (WpSpaPod *self, ...)
@@ -1743,14 +1673,13 @@ wp_spa_pod_get_struct (WpSpaPod *self, ...)
   return res;
 }
 
-/**
- * wp_spa_pod_get_struct_valist:
- * @self: the spa pod object
- * @args: (out): the variable arguments passed to wp_spa_pod_get_struct()
+/*!
+ * \brief This is the `va_list` version of wp_spa_pod_get_struct()
  *
- * This is the `va_list` version of wp_spa_pod_get_struct()
- *
- * Returns: TRUE if the struct values were obtained, FALSE otherwise
+ * \ingroup wpspapod
+ * \param self the spa pod object
+ * \param args (out): the variable arguments passed to wp_spa_pod_get_struct()
+ * \returns TRUE if the struct values were obtained, FALSE otherwise
  */
 gboolean
 wp_spa_pod_get_struct_valist (WpSpaPod *self, va_list args)
@@ -1763,15 +1692,14 @@ wp_spa_pod_get_struct_valist (WpSpaPod *self, va_list args)
   return res;
 }
 
-/**
- * wp_spa_pod_get_property:
- * @self: the spa pod object
- * @key: (out) (optional): the name of the property
- * @value: (out) (optional): the spa pod value of the property
+/*!
+ * \brief Gets the name, flags and spa pod value of a spa pod property
  *
- * Gets the name, flags and spa pod value of a spa pod property
- *
- * Returns: TRUE if the value was obtained, FALSE otherwise
+ * \ingroup wpspapod
+ * \param self the spa pod object
+ * \param key (out) (optional): the name of the property
+ * \param value (out) (optional): the spa pod value of the property
+ * \returns TRUE if the value was obtained, FALSE otherwise
  */
 gboolean
 wp_spa_pod_get_property (WpSpaPod *self, const char **key,
@@ -1793,16 +1721,15 @@ wp_spa_pod_get_property (WpSpaPod *self, const char **key,
   return TRUE;
 }
 
-/**
- * wp_spa_pod_get_control:
- * @self: the spa pod object
- * @offset: (out) (optional): the offset of the control
- * @ctl_type: (out) (optional): the control type (Properties, Midi, ...)
- * @value: (out) (optional): the spa pod value of the control
+/*!
+ * \brief Gets the offset, type name and spa pod value of a spa pod control
  *
- * Gets the offset, type name and spa pod value of a spa pod control
- *
- * Returns: TRUE if the value was obtained, FALSE otherwise
+ * \ingroup wpspapod
+ * \param self the spa pod object
+ * \param offset (out) (optional): the offset of the control
+ * \param ctl_type (out) (optional): the control type (Properties, Midi, ...)
+ * \param value (out) (optional): the spa pod value of the control
+ * \returns TRUE if the value was obtained, FALSE otherwise
  */
 gboolean
 wp_spa_pod_get_control (WpSpaPod *self, guint32 *offset, const char **ctl_type,
@@ -1825,13 +1752,12 @@ wp_spa_pod_get_control (WpSpaPod *self, guint32 *offset, const char **ctl_type,
   return TRUE;
 }
 
-/**
- * wp_spa_pod_get_choice_child:
- * @self: a spa pod choice object
+/*!
+ * \brief Gets the child of a spa pod choice object
  *
- * Gets the child of a spa pod choice object
- *
- * Returns: (transfer full): the child of the spa pod choice object
+ * \ingroup wpspapod
+ * \param self a spa pod choice object
+ * \returns (transfer full): the child of the spa pod choice object
  */
 WpSpaPod *
 wp_spa_pod_get_choice_child (WpSpaPod *self)
@@ -1840,13 +1766,12 @@ wp_spa_pod_get_choice_child (WpSpaPod *self)
   return wp_spa_pod_new_wrap (SPA_POD_CHOICE_CHILD (self->pod));
 }
 
-/**
- * wp_spa_pod_get_array_child:
- * @self: a spa pod choice object
+/*!
+ * \brief Gets the child of a spa pod array object
  *
- * Gets the child of a spa pod array object
- *
- * Returns: (transfer full): the child of the spa pod array object
+ * \ingroup wpspapod
+ * \param self a spa pod choice object
+ * \returns (transfer full): the child of the spa pod array object
  */
 WpSpaPod *
 wp_spa_pod_get_array_child (WpSpaPod *self)
@@ -1855,11 +1780,10 @@ wp_spa_pod_get_array_child (WpSpaPod *self)
   return wp_spa_pod_new_wrap (SPA_POD_ARRAY_CHILD (self->pod));
 }
 
-/**
- * wp_spa_pod_builder_ref:
- * @self: a spa pod builder object
- *
- * Returns: (transfer full): @self with an additional reference count on it
+/*!
+ * \ingroup wpspapod
+ * \param self a spa pod builder object
+ * \returns (transfer full): \a self with an additional reference count on it
  */
 WpSpaPodBuilder *
 wp_spa_pod_builder_ref (WpSpaPodBuilder *self)
@@ -1873,12 +1797,12 @@ wp_spa_pod_builder_free (WpSpaPodBuilder *self)
   g_clear_pointer (&self->buf, g_free);
 }
 
-/**
- * wp_spa_pod_builder_unref:
- * @self: (transfer full): a spa pod builder object
+/*!
+ * \brief Decreases the reference count on \a self and frees it when the ref
+ * count reaches zero.
  *
- * Decreases the reference count on @self and frees it when the ref count
- * reaches zero.
+ * \ingroup wpspapod
+ * \param self (transfer full): a spa pod builder object
  */
 void
 wp_spa_pod_builder_unref (WpSpaPodBuilder *self)
@@ -1886,12 +1810,10 @@ wp_spa_pod_builder_unref (WpSpaPodBuilder *self)
   g_rc_box_release_full (self, (GDestroyNotify) wp_spa_pod_builder_free);
 }
 
-/**
- * wp_spa_pod_builder_new_array:
- *
- * Creates a spa pod builder of type array
- *
- * Returns: (transfer full): the new spa pod builder
+/*!
+ * \brief Creates a spa pod builder of type array
+ * \ingroup wpspapod
+ * \returns (transfer full): the new spa pod builder
  */
 WpSpaPodBuilder *
 wp_spa_pod_builder_new_array (void)
@@ -1902,13 +1824,12 @@ wp_spa_pod_builder_new_array (void)
   return self;
 }
 
-/**
- * wp_spa_pod_builder_new_choice:
- * @choice_type: the name of the choice type ("Range", "Step", ...)
+/*!
+ * \brief Creates a spa pod builder of type choice
  *
- * Creates a spa pod builder of type choice
- *
- * Returns: (transfer full): the new spa pod builder
+ * \ingroup wpspapod
+ * \param choice_type the name of the choice type ("Range", "Step", ...)
+ * \returns (transfer full): the new spa pod builder
  */
 WpSpaPodBuilder *
 wp_spa_pod_builder_new_choice (const char *choice_type)
@@ -1929,14 +1850,13 @@ wp_spa_pod_builder_new_choice (const char *choice_type)
   return self;
 }
 
-/**
- * wp_spa_pod_builder_new_object:
- * @type_name: the type name of the object type
- * @id_name: the Id name of the object
+/*!
+ * \brief Creates a spa pod builder of type object
  *
- * Creates a spa pod builder of type object
- *
- * Returns: (transfer full): the new spa pod builder
+ * \ingroup wpspapod
+ * \param type_name the type name of the object type
+ * \param id_name the Id name of the object
+ * \returns (transfer full): the new spa pod builder
  */
 WpSpaPodBuilder *
 wp_spa_pod_builder_new_object (const char *type_name, const char *id_name)
@@ -1967,12 +1887,11 @@ wp_spa_pod_builder_new_object (const char *type_name, const char *id_name)
   return self;
 }
 
-/**
- * wp_spa_pod_builder_new_struct:
+/*!
+ * \brief Creates a spa pod builder of type struct
  *
- * Creates a spa pod builder of type struct
- *
- * Returns: (transfer full): the new spa pod builder
+ * \ingroup wpspapod
+ * \returns (transfer full): the new spa pod builder
  */
 WpSpaPodBuilder *
 wp_spa_pod_builder_new_struct (void)
@@ -1984,12 +1903,11 @@ wp_spa_pod_builder_new_struct (void)
   return self;
 }
 
-/**
- * wp_spa_pod_builder_new_sequence:
+/*!
+ * \brief Creates a spa pod builder of type sequence
  *
- * Creates a spa pod builder of type sequence
- *
- * Returns: (transfer full): the new spa pod builder
+ * \ingroup wpspapod
+ * \returns (transfer full): the new spa pod builder
  */
 WpSpaPodBuilder *
 wp_spa_pod_builder_new_sequence (guint unit)
@@ -2001,24 +1919,25 @@ wp_spa_pod_builder_new_sequence (guint unit)
   return self;
 }
 
-/**
- * wp_spa_pod_builder_add_none:
- * @self: the spa pod builder object
+/*!
+ * \brief Adds a none value into the builder
  *
- * Adds a none value into the builder
+ * \ingroup wpspapod
+ * \param self the spa pod builder object
  */
+
 void
 wp_spa_pod_builder_add_none (WpSpaPodBuilder *self)
 {
   spa_pod_builder_none (&self->builder);
 }
 
-/**
- * wp_spa_pod_builder_add_boolean:
- * @self: the spa pod builder object
- * @value: the boolean value
+/*!
+ * \brief Adds a boolean value into the builder
  *
- * Adds a boolean value into the builder
+ * \ingroup wpspapod
+ * \param self the spa pod builder object
+ * \param value the boolean value
  */
 void
 wp_spa_pod_builder_add_boolean (WpSpaPodBuilder *self, gboolean value)
@@ -2026,12 +1945,12 @@ wp_spa_pod_builder_add_boolean (WpSpaPodBuilder *self, gboolean value)
   spa_pod_builder_bool (&self->builder, value ? true : false);
 }
 
-/**
- * wp_spa_pod_builder_add_id:
- * @self: the spa pod builder object
- * @value: the Id value
+/*!
+ * \brief Adds a Id value into the builder
  *
- * Adds a Id value into the builder
+ * \ingroup wpspapod
+ * \param self the spa pod builder object
+ * \param value the Id value
  */
 void
 wp_spa_pod_builder_add_id (WpSpaPodBuilder *self, guint32 value)
@@ -2039,38 +1958,38 @@ wp_spa_pod_builder_add_id (WpSpaPodBuilder *self, guint32 value)
   spa_pod_builder_id (&self->builder, value);
 }
 
-/**
- * wp_spa_pod_builder_add_int:
- * @self: the spa pod builder object
- * @value: the int value
+/*!
+ * \brief Adds a int value into the builder
  *
- * Adds a int value into the builder
+ * \ingroup wpspapod
+ * \param self the spa pod builder object
+ * \param value the int value
  */
 void
-wp_spa_pod_builder_add_int (WpSpaPodBuilder *self, gint value)
+wp_spa_pod_builder_add_int (WpSpaPodBuilder *self, gint32 value)
 {
   spa_pod_builder_int (&self->builder, value);
 }
 
-/**
- * wp_spa_pod_builder_add_long:
- * @self: the spa pod builder object
- * @value: the long value
+/*!
+ * \brief Adds a long value into the builder
  *
- * Adds a long value into the builder
+ * \ingroup wpspapod
+ * \param self the spa pod builder object
+ * \param value the long value
  */
 void
-wp_spa_pod_builder_add_long (WpSpaPodBuilder *self, glong value)
+wp_spa_pod_builder_add_long (WpSpaPodBuilder *self, gint64 value)
 {
   spa_pod_builder_long (&self->builder, value);
 }
 
-/**
- * wp_spa_pod_builder_add_float:
- * @self: the spa pod builder object
- * @value: the float value
+/*!
+ * \brief Adds a float value into the builder
  *
- * Adds a float value into the builder
+ * \ingroup wpspapod
+ * \param self the spa pod builder object
+ * \param value the float value
  */
 void
 wp_spa_pod_builder_add_float (WpSpaPodBuilder *self, float value)
@@ -2078,12 +1997,12 @@ wp_spa_pod_builder_add_float (WpSpaPodBuilder *self, float value)
   spa_pod_builder_float (&self->builder, value);
 }
 
-/**
- * wp_spa_pod_builder_add_double:
- * @self: the spa pod builder object
- * @value: the double value
+/*!
+ * \brief Adds a double value into the builder
  *
- * Adds a double value into the builder
+ * \ingroup wpspapod
+ * \param self the spa pod builder object
+ * \param value the double value
  */
 void
 wp_spa_pod_builder_add_double (WpSpaPodBuilder *self, double value)
@@ -2091,12 +2010,12 @@ wp_spa_pod_builder_add_double (WpSpaPodBuilder *self, double value)
   spa_pod_builder_double (&self->builder, value);
 }
 
-/**
- * wp_spa_pod_builder_add_string:
- * @self: the spa pod builder object
- * @value: the string value
+/*!
+ * \brief Adds a string value into the builder
  *
- * Adds a string value into the builder
+ * \ingroup wpspapod
+ * \param self the spa pod builder object
+ * \param value the string value
  */
 void
 wp_spa_pod_builder_add_string (WpSpaPodBuilder *self, const char *value)
@@ -2104,13 +2023,13 @@ wp_spa_pod_builder_add_string (WpSpaPodBuilder *self, const char *value)
   spa_pod_builder_string (&self->builder, value);
 }
 
-/**
- * wp_spa_pod_builder_add_bytes:
- * @self: the spa pod builder object
- * @value: the bytes value
- * @len: the length of the bytes value
+/*!
+ * \brief Adds a bytes value with its length into the builder
  *
- * Adds a bytes value with its length into the builder
+ * \ingroup wpspapod
+ * \param self the spa pod builder object
+ * \param value the bytes value
+ * \param len the length of the bytes value
  */
 void
 wp_spa_pod_builder_add_bytes (WpSpaPodBuilder *self, gconstpointer value,
@@ -2119,13 +2038,13 @@ wp_spa_pod_builder_add_bytes (WpSpaPodBuilder *self, gconstpointer value,
   spa_pod_builder_bytes (&self->builder, value, len);
 }
 
-/**
- * wp_spa_pod_builder_add_pointer:
- * @self: the spa pod builder object
- * @type_name: the type name that the pointer points to
- * @value: the pointer vaue
+/*!
+ * \brief Adds a pointer value with its type name into the builder
  *
- * Adds a pointer value with its type name into the builder
+ * \ingroup wpspapod
+ * \param self the spa pod builder object
+ * \param type_name the type name that the pointer points to
+ * \param value the pointer vaue
  */
 void
 wp_spa_pod_builder_add_pointer (WpSpaPodBuilder *self, const char *type_name,
@@ -2136,12 +2055,12 @@ wp_spa_pod_builder_add_pointer (WpSpaPodBuilder *self, const char *type_name,
   spa_pod_builder_pointer (&self->builder, type, value);
 }
 
-/**
- * wp_spa_pod_builder_add_fd:
- * @self: the spa pod builder object
- * @value: the Fd value
+/*!
+ * \brief Adds a Fd value into the builder
  *
- * Adds a Fd value into the builder
+ * \ingroup wpspapod
+ * \param self the spa pod builder object
+ * \param value the Fd value
  */
 void
 wp_spa_pod_builder_add_fd (WpSpaPodBuilder *self, gint64 value)
@@ -2149,13 +2068,13 @@ wp_spa_pod_builder_add_fd (WpSpaPodBuilder *self, gint64 value)
   spa_pod_builder_fd (&self->builder, value);
 }
 
-/**
- * wp_spa_pod_builder_add_rectangle:
- * @self: the spa pod builder object
- * @width: the width value of the rectangle
- * @height: the height value of the rectangle
+/*!
+ * \brief Adds the width and height values of a rectangle into the builder
  *
- * Adds the width and height values of a rectangle into the builder
+ * \ingroup wpspapod
+ * \param self the spa pod builder object
+ * \param width the width value of the rectangle
+ * \param height the height value of the rectangle
  */
 void
 wp_spa_pod_builder_add_rectangle (WpSpaPodBuilder *self, guint32 width,
@@ -2164,13 +2083,13 @@ wp_spa_pod_builder_add_rectangle (WpSpaPodBuilder *self, guint32 width,
   spa_pod_builder_rectangle (&self->builder, width, height);
 }
 
-/**
- * wp_spa_pod_builder_add_fraction:
- * @self: the spa pod builder object
- * @num: the numerator value of the fraction
- * @denom: the denominator value of the fraction
+/*!
+ * \brief Adds the numerator and denominator values of a fraction into the builder
  *
- * Adds the numerator and denominator values of a fraction into the builder
+ * \ingroup wpspapod
+ * \param self the spa pod builder object
+ * \param num the numerator value of the fraction
+ * \param denom the denominator value of the fraction
  */
 void
 wp_spa_pod_builder_add_fraction (WpSpaPodBuilder *self, guint32 num,
@@ -2179,12 +2098,12 @@ wp_spa_pod_builder_add_fraction (WpSpaPodBuilder *self, guint32 num,
   spa_pod_builder_fraction (&self->builder, num, denom);
 }
 
-/**
- * wp_spa_pod_builder_add_pod:
- * @self: the spa pod builder object
- * @pod: the pod value
+/*!
+ * \brief Adds a pod value into the builder
  *
- * Adds a pod value into the builder
+ * \ingroup wpspapod
+ * \param self the spa pod builder object
+ * \param pod the pod value
  */
 void
 wp_spa_pod_builder_add_pod (WpSpaPodBuilder *self, WpSpaPod *pod)
@@ -2192,12 +2111,12 @@ wp_spa_pod_builder_add_pod (WpSpaPodBuilder *self, WpSpaPod *pod)
   spa_pod_builder_primitive (&self->builder, pod->pod);
 }
 
-/**
- * wp_spa_pod_builder_add_property:
- * @self: the spa pod builder object
- * @key: the name of the property
+/*!
+ * \brief Adds a property into the builder
  *
- * Adds a property into the builder
+ * \ingroup wpspapod
+ * \param self the spa pod builder object
+ * \param key the name of the property
  */
 void
 wp_spa_pod_builder_add_property (WpSpaPodBuilder *self, const char *key)
@@ -2208,12 +2127,12 @@ wp_spa_pod_builder_add_property (WpSpaPodBuilder *self, const char *key)
   spa_pod_builder_prop (&self->builder, wp_spa_id_value_number (id), 0);
 }
 
-/**
- * wp_spa_pod_builder_add_property_id:
- * @self: the spa pod builder object
- * @id: the id of the property
+/*!
+ * \brief Adds a property into the builder
  *
- * Adds a property into the builder
+ * \ingroup wpspapod
+ * \param self the spa pod builder object
+ * \param id the id of the property
  */
 void
 wp_spa_pod_builder_add_property_id (WpSpaPodBuilder *self, guint32 id)
@@ -2221,13 +2140,13 @@ wp_spa_pod_builder_add_property_id (WpSpaPodBuilder *self, guint32 id)
   spa_pod_builder_prop (&self->builder, id, 0);
 }
 
-/**
- * wp_spa_pod_builder_add_control:
- * @self: the spa pod builder object
- * @offset: the offset of the control
- * @ctl_type: the type name of the control
+/*!
+ * \brief Adds a control into the builder
  *
- * Adds a control into the builder
+ * \ingroup wpspapod
+ * \param self the spa pod builder object
+ * \param offset the offset of the control
+ * \param ctl_type the type name of the control
  */
 void
 wp_spa_pod_builder_add_control (WpSpaPodBuilder *self, guint32 offset,
@@ -2239,12 +2158,12 @@ wp_spa_pod_builder_add_control (WpSpaPodBuilder *self, guint32 offset,
   spa_pod_builder_control (&self->builder, offset, wp_spa_id_value_number (id));
 }
 
-/**
- * wp_spa_pod_builder_add:
- * @self: the spa pod builder object
- * @...: a list of additional values, followed by %NULL
+/*!
+ * \brief Adds a list of values into the builder
  *
- * Adds a list of values into the builder
+ * \ingroup wpspapod
+ * \param self the spa pod builder object
+ * \param ... a list of additional values, followed by NULL
  */
 void
 wp_spa_pod_builder_add (WpSpaPodBuilder *self, ...)
@@ -2255,12 +2174,12 @@ wp_spa_pod_builder_add (WpSpaPodBuilder *self, ...)
   va_end (args);
 }
 
-/**
- * wp_spa_pod_builder_add_valist:
- * @self: the spa pod builder object
- * @args: the variable arguments passed to wp_spa_pod_builder_add()
+/*!
+ * \brief Adds a list of values into the builder
  *
- * Adds a list of values into the builder
+ * \ingroup wpspapod
+ * \param self the spa pod builder object
+ * \param args the variable arguments passed to wp_spa_pod_builder_add()
  */
 void
 wp_spa_pod_builder_add_valist (WpSpaPodBuilder *self, va_list args)
@@ -2340,13 +2259,12 @@ wp_spa_pod_builder_add_valist (WpSpaPodBuilder *self, va_list args)
   } while (TRUE);
 }
 
-/**
- * wp_spa_pod_builder_end:
- * @self: the spa pod builder object
+/*!
+ * \brief Ends the builder process and returns the constructed spa pod object
  *
- * Ends the builder process and returns the constructed spa pod object
- *
- * Returns: (transfer full): the constructed spa pod object
+ * \ingroup wpspapod
+ * \param self the spa pod builder object
+ * \returns (transfer full): the constructed spa pod object
  */
 WpSpaPod *
 wp_spa_pod_builder_end (WpSpaPodBuilder *self)
@@ -2368,11 +2286,10 @@ wp_spa_pod_builder_end (WpSpaPodBuilder *self)
   return ret;
 }
 
-/**
- * wp_spa_pod_parser_ref:
- * @self: a spa pod sparser object
- *
- * Returns: (transfer full): @self with an additional reference count on it
+/*!
+ * \ingroup wpspapod
+ * \param self a spa pod sparser object
+ * \returns (transfer full): \a self with an additional reference count on it
  */
 WpSpaPodParser *
 wp_spa_pod_parser_ref (WpSpaPodParser *self)
@@ -2386,12 +2303,12 @@ wp_spa_pod_parser_free (WpSpaPodParser *self)
   self->pod = NULL;
 }
 
-/**
- * wp_spa_pod_parser_unref:
- * @self: (transfer full): a spa pod parser object
+/*!
+ * \brief Decreases the reference count on \a self and frees it when the ref
+ * count reaches zero.
  *
- * Decreases the reference count on @self and frees it when the ref count
- * reaches zero.
+ * \ingroup wpspapod
+ * \param self (transfer full): a spa pod parser object
  */
 void
 wp_spa_pod_parser_unref (WpSpaPodParser *self)
@@ -2409,15 +2326,14 @@ wp_spa_pod_parser_new (WpSpaPod *pod, guint32 type)
   return self;
 }
 
-/**
- * wp_spa_pod_parser_new:
- * @pod: the object spa pod to parse
- * @id_name: the Id name of the object
+/*!
+ * \brief Creates an object spa pod parser. The \a pod object must be valid for
+ * the entire life-cycle of the returned parser.
  *
- * Creates an object spa pod parser. The @pod object must be valid for the
- * entire life-cycle of the returned parser.
- *
- * Returns: (transfer full): The new spa pod parser
+ * \ingroup wpspapod
+ * \param pod the object spa pod to parse
+ * \param id_name the Id name of the object
+ * \returns (transfer full): The new spa pod parser
  */
 WpSpaPodParser *
 wp_spa_pod_parser_new_object (WpSpaPod *pod, const char **id_name)
@@ -2438,14 +2354,13 @@ wp_spa_pod_parser_new_object (WpSpaPod *pod, const char **id_name)
   return self;
 }
 
-/**
- * wp_spa_pod_parser_new_struct:
- * @pod: the struct spa pod to parse
+/*!
+ * \brief Creates an struct spa pod parser. The \a pod object must be valid for
+ * the entire life-cycle of the returned parser.
  *
- * Creates an struct spa pod parser. The @pod object must be valid for the
- * entire life-cycle of the returned parser.
- *
- * Returns: (transfer full): The new spa pod parser
+ * \ingroup wpspapod
+ * \param pod the struct spa pod to parse
+ * \returns (transfer full): The new spa pod parser
  */
 WpSpaPodParser *
 wp_spa_pod_parser_new_struct (WpSpaPod *pod)
@@ -2459,14 +2374,13 @@ wp_spa_pod_parser_new_struct (WpSpaPod *pod)
   return self;
 }
 
-/**
- * wp_spa_pod_parser_get_boolean:
- * @self: the spa pod parser object
- * @value: (out): the boolean value
+/*!
+ * \brief Gets the boolean value from a spa pod parser
  *
- * Gets the boolean value from a spa pod parser
- *
- * Returns: TRUE if the value was obtained, FALSE otherwise
+ * \ingroup wpspapod
+ * \param self the spa pod parser object
+ * \param value (out): the boolean value
+ * \returns TRUE if the value was obtained, FALSE otherwise
  */
 gboolean
 wp_spa_pod_parser_get_boolean (WpSpaPodParser *self, gboolean *value)
@@ -2478,14 +2392,13 @@ wp_spa_pod_parser_get_boolean (WpSpaPodParser *self, gboolean *value)
   return res;
 }
 
-/**
- * wp_spa_pod_parser_get_id:
- * @self: the spa pod parser object
- * @value: (out): the Id value
+/*!
+ * \brief Gets the Id value from a spa pod parser object
  *
- * Gets the Id value from a spa pod parser object
- *
- * Returns: TRUE if the value was obtained, FALSE otherwise
+ * \ingroup wpspapod
+ * \param self the spa pod parser object
+ * \param value (out): the Id value
+ * \returns TRUE if the value was obtained, FALSE otherwise
  */
 gboolean
 wp_spa_pod_parser_get_id (WpSpaPodParser *self, guint32 *value)
@@ -2494,46 +2407,43 @@ wp_spa_pod_parser_get_id (WpSpaPodParser *self, guint32 *value)
   return spa_pod_parser_get_id (&self->parser, value) >= 0;
 }
 
-/**
- * wp_spa_pod_parser_get_int:
- * @self: the spa pod parser object
- * @value: (out): the int value
+/*!
+ * \brief Gets the int value from a spa pod parser object
  *
- * Gets the int value from a spa pod parser object
- *
- * Returns: TRUE if the value was obtained, FALSE otherwise
+ * \ingroup wpspapod
+ * \param self the spa pod parser object
+ * \param value (out): the int value
+ * \returns TRUE if the value was obtained, FALSE otherwise
  */
 gboolean
-wp_spa_pod_parser_get_int (WpSpaPodParser *self, gint *value)
+wp_spa_pod_parser_get_int (WpSpaPodParser *self, gint32 *value)
 {
   g_return_val_if_fail (value, FALSE);
   return spa_pod_parser_get_int (&self->parser, value) >= 0;
 }
 
-/**
- * wp_spa_pod_parser_get_long:
- * @self: the spa pod parser object
- * @value: (out): the long value
+/*!
+ * \brief Gets the long value from a spa pod parser object
  *
- * Gets the long value from a spa pod parser object
- *
- * Returns: TRUE if the value was obtained, FALSE otherwise
+ * \ingroup wpspapod
+ * \param self the spa pod parser object
+ * \param value (out): the long value
+ * \returns TRUE if the value was obtained, FALSE otherwise
  */
 gboolean
-wp_spa_pod_parser_get_long (WpSpaPodParser *self, glong *value)
+wp_spa_pod_parser_get_long (WpSpaPodParser *self, gint64 *value)
 {
   g_return_val_if_fail (value, FALSE);
   return spa_pod_parser_get_long (&self->parser, value) >= 0;
 }
 
-/**
- * wp_spa_pod_parser_get_float:
- * @self: the spa pod parser object
- * @value: (out): the float value
+/*!
+ * \brief Gets the float value from a spa pod parser object
  *
- * Gets the float value from a spa pod parser object
- *
- * Returns: TRUE if the value was obtained, FALSE otherwise
+ * \ingroup wpspapod
+ * \param self the spa pod parser object
+ * \param value (out): the float value
+ * \returns TRUE if the value was obtained, FALSE otherwise
  */
 gboolean
 wp_spa_pod_parser_get_float (WpSpaPodParser *self, float *value)
@@ -2542,14 +2452,13 @@ wp_spa_pod_parser_get_float (WpSpaPodParser *self, float *value)
   return spa_pod_parser_get_float (&self->parser, value) >= 0;
 }
 
-/**
- * wp_spa_pod_parser_get_double:
- * @self: the spa pod parser object
- * @value: (out): the double value
+/*!
+ * \brief Gets the double value from a spa pod parser object
  *
- * Gets the double value from a spa pod parser object
- *
- * Returns: TRUE if the value was obtained, FALSE otherwise
+ * \ingroup wpspapod
+ * \param self the spa pod parser object
+ * \param value (out): the double value
+ * \returns TRUE if the value was obtained, FALSE otherwise
  */
 gboolean
 wp_spa_pod_parser_get_double (WpSpaPodParser *self, double *value)
@@ -2558,14 +2467,13 @@ wp_spa_pod_parser_get_double (WpSpaPodParser *self, double *value)
   return spa_pod_parser_get_double (&self->parser, value) >= 0;
 }
 
-/**
- * wp_spa_pod_parser_get_string:
- * @self: the spa pod parser object
- * @value: (out): the string value
+/*!
+ * \brief Gets the string value from a spa pod parser object
  *
- * Gets the string value from a spa pod parser object
- *
- * Returns: TRUE if the value was obtained, FALSE otherwise
+ * \ingroup wpspapod
+ * \param self the spa pod parser object
+ * \param value (out): the string value
+ * \returns TRUE if the value was obtained, FALSE otherwise
  */
 gboolean
 wp_spa_pod_parser_get_string (WpSpaPodParser *self, const char **value)
@@ -2574,15 +2482,14 @@ wp_spa_pod_parser_get_string (WpSpaPodParser *self, const char **value)
   return spa_pod_parser_get_string (&self->parser, value) >= 0;
 }
 
-/**
- * wp_spa_pod_parser_get_bytes:
- * @self: the spa pod parser object
- * @value: (out): the bytes value
- * @len: (out): the length of the bytes value
+/*!
+ * \brief Gets the bytes value and its length from a spa pod parser object
  *
- * Gets the bytes value and its length from a spa pod parser object
- *
- * Returns: TRUE if the value was obtained, FALSE otherwise
+ * \ingroup wpspapod
+ * \param self the spa pod parser object
+ * \param value (out): the bytes value
+ * \param len (out): the length of the bytes value
+ * \returns TRUE if the value was obtained, FALSE otherwise
  */
 gboolean
 wp_spa_pod_parser_get_bytes (WpSpaPodParser *self, gconstpointer *value,
@@ -2591,14 +2498,13 @@ wp_spa_pod_parser_get_bytes (WpSpaPodParser *self, gconstpointer *value,
   return spa_pod_parser_get_bytes (&self->parser, value, len) >= 0;
 }
 
-/**
- * wp_spa_pod_parser_get_pointer:
- * @self: the spa pod parser object
- * @value: (out): the pointer value
+/*!
+ * \brief Gets the pointer value and its type name from a spa pod parser object
  *
- * Gets the pointer value and its type name from a spa pod parser object
- *
- * Returns: TRUE if the value was obtained, FALSE otherwise
+ * \ingroup wpspapod
+ * \param self the spa pod parser object
+ * \param value (out): the pointer value
+ * \returns TRUE if the value was obtained, FALSE otherwise
  */
 gboolean
 wp_spa_pod_parser_get_pointer (WpSpaPodParser *self, gconstpointer *value)
@@ -2608,14 +2514,13 @@ wp_spa_pod_parser_get_pointer (WpSpaPodParser *self, gconstpointer *value)
   return spa_pod_parser_get_pointer (&self->parser, &type, value) >= 0;
 }
 
-/**
- * wp_spa_pod_parser_get_fd:
- * @self: the spa pod parser object
- * @value: (out): the Fd value
+/*!
+ * \brief Gets the Fd value from a spa pod parser object
  *
- * Gets the Fd value from a spa pod parser object
- *
- * Returns: TRUE if the value was obtained, FALSE otherwise
+ * \ingroup wpspapod
+ * \param self the spa pod parser object
+ * \param value (out): the Fd value
+ * \returns TRUE if the value was obtained, FALSE otherwise
  */
 gboolean
 wp_spa_pod_parser_get_fd (WpSpaPodParser *self, gint64 *value)
@@ -2624,15 +2529,14 @@ wp_spa_pod_parser_get_fd (WpSpaPodParser *self, gint64 *value)
   return spa_pod_parser_get_fd (&self->parser, value) >= 0;
 }
 
-/**
- * wp_spa_pod_parser_get_rectangle:
- * @self: the spa pod parser object
- * @width: (out): the rectangle's width value
- * @height: (out): the rectangle's height value
+/*!
+ * \brief Gets the rectangle's width and height value from a spa pod parser object
  *
- * Gets the rectangle's width and height value from a spa pod parser object
- *
- * Returns: TRUE if the value was obtained, FALSE otherwise
+ * \ingroup wpspapod
+ * \param self the spa pod parser object
+ * \param width (out): the rectangle's width value
+ * \param height (out): the rectangle's height value
+ * \returns TRUE if the value was obtained, FALSE otherwise
  */
 gboolean
 wp_spa_pod_parser_get_rectangle (WpSpaPodParser *self, guint32 *width,
@@ -2647,16 +2551,15 @@ wp_spa_pod_parser_get_rectangle (WpSpaPodParser *self, guint32 *width,
   return res;
 }
 
-/**
- * wp_spa_pod_parser_get_fraction:
- * @self: the spa pod parser object
- * @num: (out): the fractions's numerator value
- * @denom: (out): the fractions's denominator value
+/*!
+ * \brief Gets the fractions's numerator and denominator value from a spa pod
+ * parser object
  *
- * Gets the fractions's numerator and denominator value from a spa pod parser
- * object
- *
- * Returns: TRUE if the value was obtained, FALSE otherwise
+ * \ingroup wpspapod
+ * \param self the spa pod parser object
+ * \param num (out): the fractions's numerator value
+ * \param denom (out): the fractions's denominator value
+ * \returns TRUE if the value was obtained, FALSE otherwise
  */
 gboolean
 wp_spa_pod_parser_get_fraction (WpSpaPodParser *self, guint32 *num,
@@ -2671,13 +2574,12 @@ wp_spa_pod_parser_get_fraction (WpSpaPodParser *self, guint32 *num,
   return res;
 }
 
-/**
- * wp_spa_pod_parser_get_pod:
- * @self: the spa pod parser object
+/*!
+ * \brief Gets the spa pod value from a spa pod parser object
  *
- * Gets the spa pod value from a spa pod parser object
- *
- * Returns: (transfer full): The spa pod value or NULL if it could not be
+ * \ingroup wpspapod
+ * \param self the spa pod parser object
+ * \returns (transfer full): The spa pod value or NULL if it could not be
  * obtained
  */
 WpSpaPod *
@@ -2691,14 +2593,13 @@ wp_spa_pod_parser_get_pod (WpSpaPodParser *self)
   return wp_spa_pod_new_wrap (p);
 }
 
-/**
- * wp_spa_pod_parser_get:
- * @self: the spa pod parser object
- * @...: (out): a list of values to get, followed by %NULL
+/*!
+ * \brief Gets a list of values from a spa pod parser object
  *
- * Gets a list of values from a spa pod parser object
- *
- * Returns: TRUE if the values were obtained, FALSE otherwise
+ * \ingroup wpspapod
+ * \param self the spa pod parser object
+ * \param ... (out): a list of values to get, followed by NULL
+ * \returns TRUE if the values were obtained, FALSE otherwise
  */
 gboolean
 wp_spa_pod_parser_get (WpSpaPodParser *self, ...)
@@ -2713,14 +2614,13 @@ wp_spa_pod_parser_get (WpSpaPodParser *self, ...)
   return res;
 }
 
-/**
- * wp_spa_pod_parser_get_valist:
- * @self: the spa pod parser object
- * @args: the variable arguments passed to wp_spa_pod_parser_get()
+/*!
+ * \brief This is the `va_list` version of wp_spa_pod_parser_get()
  *
- * This is the `va_list` version of wp_spa_pod_parser_get()
- *
- * Returns: TRUE if the values were obtained, FALSE otherwise
+ * \ingroup wpspapod
+ * \param self the spa pod parser object
+ * \param args the variable arguments passed to wp_spa_pod_parser_get()
+ * \returns TRUE if the values were obtained, FALSE otherwise
  */
 gboolean
 wp_spa_pod_parser_get_valist (WpSpaPodParser *self, va_list args)
@@ -2795,18 +2695,17 @@ wp_spa_pod_parser_get_valist (WpSpaPodParser *self, va_list args)
   return TRUE;
 }
 
-/**
- * wp_spa_pod_parser_end:
- * @self: the spa pod parser object
+/*!
+ * \brief Ends the parser process
  *
- * Ends the parser process
+ * \ingroup wpspapod
+ * \param self the spa pod parser object
  */
 void
 wp_spa_pod_parser_end (WpSpaPodParser *self)
 {
   spa_pod_parser_pop (&self->parser, &self->frame);
 }
-
 
 struct _WpSpaPodIterator
 {
@@ -3067,13 +2966,12 @@ wp_spa_pod_iterator_finalize (WpIterator *iterator)
   g_clear_pointer (&self->pod, wp_spa_pod_unref);
 }
 
-/**
- * wp_spa_pod_new_iterator:
- * @pod: a spa pod object
+/*!
+ * \brief Creates a new iterator for a spa pod object.
  *
- * Creates a new iterator for a spa pod object.
- *
- * Returns: (transfer full): the new spa pod iterator
+ * \ingroup wpspapod
+ * \param pod a spa pod object
+ * \returns (transfer full): the new spa pod iterator
  */
 WpIterator *
 wp_spa_pod_new_iterator (WpSpaPod *pod)

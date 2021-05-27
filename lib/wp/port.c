@@ -6,15 +6,22 @@
  * SPDX-License-Identifier: MIT
  */
 
-/**
- * SECTION: port
- * @title: PipeWire Port
- */
-
 #define G_LOG_DOMAIN "wp-port"
 
 #include "port.h"
 #include "private/pipewire-object-mixin.h"
+
+/*! \defgroup wpport WpPort */
+/*!
+ * \struct WpPort
+ *
+ * The WpPort class allows accessing the properties
+ * and methods of a PipeWire port object (`struct pw_port`).
+ *
+ * A WpPort is constructed internally when a new port appears
+ * on the PipeWire registry and it is made available through the
+ * WpObjectManager API.
+ */
 
 struct _WpPort
 {
@@ -24,15 +31,6 @@ struct _WpPort
 static void wp_port_pw_object_mixin_priv_interface_init (
     WpPwObjectMixinPrivInterface * iface);
 
-/**
- * WpPort:
- *
- * The #WpPort class allows accessing the properties and methods of a
- * PipeWire port object (`struct pw_port`).
- *
- * A #WpPort is constructed internally when a new port appears on the
- * PipeWire registry and it is made available through the #WpObjectManager API.
- */
 G_DEFINE_TYPE_WITH_CODE (WpPort, wp_port, WP_TYPE_GLOBAL_PROXY,
     G_IMPLEMENT_INTERFACE (WP_TYPE_PIPEWIRE_OBJECT,
         wp_pw_object_mixin_object_interface_init)
@@ -88,6 +86,14 @@ wp_port_pw_proxy_created (WpProxy * proxy, struct pw_proxy * pw_proxy)
 }
 
 static void
+wp_port_pw_proxy_destroyed (WpProxy * proxy)
+{
+  wp_pw_object_mixin_handle_pw_proxy_destroyed (proxy);
+
+  WP_PROXY_CLASS (wp_port_parent_class)->pw_proxy_destroyed (proxy);
+}
+
+static void
 wp_port_class_init (WpPortClass * klass)
 {
   GObjectClass *object_class = (GObjectClass *) klass;
@@ -106,8 +112,7 @@ wp_port_class_init (WpPortClass * klass)
   proxy_class->pw_iface_type = PW_TYPE_INTERFACE_Port;
   proxy_class->pw_iface_version = PW_VERSION_PORT;
   proxy_class->pw_proxy_created = wp_port_pw_proxy_created;
-  proxy_class->pw_proxy_destroyed =
-      wp_pw_object_mixin_handle_pw_proxy_destroyed;
+  proxy_class->pw_proxy_destroyed = wp_port_pw_proxy_destroyed;
 
   wp_pw_object_mixin_class_override_properties (object_class);
 }
@@ -129,6 +134,11 @@ wp_port_pw_object_mixin_priv_interface_init (
   iface->enum_params = wp_port_enum_params;
 }
 
+/*!
+ * \ingroup wpport
+ * \param self the port
+ * \returns the current direction of the port
+ */
 WpDirection
 wp_port_get_direction (WpPort * self)
 {

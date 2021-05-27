@@ -15,10 +15,9 @@ G_BEGIN_DECLS
 
 /* WpDevice */
 
-/**
- * WP_TYPE_DEVICE:
- *
- * The #WpDevice #GType
+/*!
+ * \brief The WpDevice GType
+ * \ingroup wpdevice
  */
 #define WP_TYPE_DEVICE (wp_device_get_type ())
 WP_API
@@ -30,20 +29,18 @@ WpDevice * wp_device_new_from_factory (WpCore * core,
 
 /* WpSpaDevice */
 
-/**
- * WpSpaDeviceFeatures:
- * @WP_SPA_DEVICE_FEATURE_ENABLED: enables a device
- *
- * Flags to be used as #WpObjectFeatures for #WpSpaDevice
+/*!
+ * \brief Flags to be used as WpObjectFeatures for WpSpaDevice
+ * \ingroup wpspadevice
  */
 typedef enum { /*< flags >*/
+  /*! enables a spa device */
   WP_SPA_DEVICE_FEATURE_ENABLED = (WP_PROXY_FEATURE_CUSTOM_START << 0),
 } WpSpaDeviceFeatures;
 
-/**
- * WP_TYPE_SPA_DEVICE:
- *
- * The #WpSpaDevice #GType
+/*!
+ * \brief The WpSpaDevice GType
+ * \ingroup wpspadevice
  */
 #define WP_TYPE_SPA_DEVICE (wp_spa_device_get_type ())
 WP_API

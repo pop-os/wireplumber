@@ -21,16 +21,14 @@ struct _WpSiNode
   WpNode *node;
   gchar name[96];
   gchar media_class[32];
-  gchar role[32];
-  guint priority;
   WpDirection direction;
 };
 
-static void si_node_port_info_init (WpSiPortInfoInterface * iface);
+static void si_node_linkable_init (WpSiLinkableInterface * iface);
 
 G_DECLARE_FINAL_TYPE(WpSiNode, si_node, WP, SI_NODE, WpSessionItem)
 G_DEFINE_TYPE_WITH_CODE (WpSiNode, si_node, WP_TYPE_SESSION_ITEM,
-    G_IMPLEMENT_INTERFACE (WP_TYPE_SI_PORT_INFO, si_node_port_info_init))
+    G_IMPLEMENT_INTERFACE (WP_TYPE_SI_LINKABLE, si_node_linkable_init))
 
 static void
 si_node_init (WpSiNode * self)
@@ -49,8 +47,6 @@ si_node_reset (WpSessionItem * item)
   g_clear_object (&self->node);
   self->name[0] = '\0';
   self->media_class[0] = '\0';
-  self->role[0] = '\0';
-  self->priority = 0;
   self->direction = WP_DIRECTION_INPUT;
 
   WP_SESSION_ITEM_CLASS (si_node_parent_class)->reset (item);
@@ -98,28 +94,10 @@ si_node_configure (WpSessionItem * item, WpProperties *p)
     wp_properties_set (si_props, "media.class", self->media_class);
   }
 
-  str = wp_properties_get (si_props, "role");
-  if (str) {
-    strncpy (self->role, str, sizeof (self->role) - 1);
-  } else {
-    str = wp_properties_get (node_props, PW_KEY_MEDIA_ROLE);
-    if (str)
-      strncpy (self->role, str, sizeof (self->role) - 1);
-    else
-      strncpy (self->role, "Unknown", sizeof (self->role) - 1);
-    wp_properties_set (si_props, "role", self->role);
-  }
-
   if (strstr (self->media_class, "Source") ||
       strstr (self->media_class, "Output"))
     self->direction = WP_DIRECTION_OUTPUT;
   wp_properties_setf (si_props, "direction", "%u", self->direction);
-
-  str = wp_properties_get (si_props, "priority");
-  if (str && sscanf(str, "%u", &self->priority) != 1)
-    return FALSE;
-  if (!str)
-    wp_properties_setf (si_props, "priority", "%u", self->priority);
 
   self->node = g_object_ref (node);
 
@@ -204,24 +182,19 @@ si_node_class_init (WpSiNodeClass * klass)
 }
 
 static GVariant *
-si_node_get_ports (WpSiPortInfo * item, const gchar * context)
+si_node_get_ports (WpSiLinkable * item, const gchar * context)
 {
   WpSiNode *self = WP_SI_NODE (item);
   g_auto (GVariantBuilder) b = G_VARIANT_BUILDER_INIT (G_VARIANT_TYPE_ARRAY);
   g_autoptr (WpIterator) it = NULL;
   g_auto (GValue) val = G_VALUE_INIT;
   WpDirection direction = self->direction;
-  gboolean monitor_context = FALSE;
   guint32 node_id;
 
-  /* context can only be NULL, "reverse" or "monitor" */
+  /* context can only be NULL, "reverse" */
   if (!g_strcmp0 (context, "reverse")) {
     direction = (self->direction == WP_DIRECTION_INPUT) ?
         WP_DIRECTION_OUTPUT : WP_DIRECTION_INPUT;
-  }
-  else if (!g_strcmp0 (context, "monitor")) {
-    direction = WP_DIRECTION_OUTPUT;
-    monitor_context = TRUE;
   }
   else if (context != NULL) {
     /* on any other context, return an empty list of ports */
@@ -237,23 +210,14 @@ si_node_get_ports (WpSiPortInfo * item, const gchar * context)
   {
     WpPort *port = g_value_get_object (&val);
     g_autoptr (WpProperties) props = NULL;
-    const gchar *str;
     const gchar *channel;
     guint32 port_id, channel_id = 0;
-    gboolean is_monitor = FALSE;
 
     if (wp_port_get_direction (port) != direction)
       continue;
 
-    /* skip monitor ports if not monitor context, or skip non-monitor ports if
-     * monitor context */
-    props = wp_pipewire_object_get_properties (WP_PIPEWIRE_OBJECT (port));
-    str = wp_properties_get (props, PW_KEY_PORT_MONITOR);
-    is_monitor = str && pw_properties_parse_bool (str);
-    if (is_monitor != monitor_context)
-      continue;
-
     port_id = wp_proxy_get_bound_id (WP_PROXY (port));
+    props = wp_pipewire_object_get_properties (WP_PIPEWIRE_OBJECT (port));
 
     /* try to find the audio channel; if channel is NULL, this will silently
        leave the channel_id to its default value, 0 */
@@ -272,7 +236,7 @@ si_node_get_ports (WpSiPortInfo * item, const gchar * context)
 }
 
 static void
-si_node_port_info_init (WpSiPortInfoInterface * iface)
+si_node_linkable_init (WpSiLinkableInterface * iface)
 {
   iface->get_ports = si_node_get_ports;
 }

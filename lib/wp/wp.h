@@ -14,7 +14,6 @@
 #include "core.h"
 #include "device.h"
 #include "endpoint.h"
-#include "endpoint-link.h"
 #include "error.h"
 #include "global-proxy.h"
 #include "iterator.h"
@@ -30,7 +29,6 @@
 #include "properties.h"
 #include "proxy.h"
 #include "proxy-interfaces.h"
-#include "session.h"
 #include "session-item.h"
 #include "si-factory.h"
 #include "si-interfaces.h"
@@ -43,11 +41,21 @@
 
 G_BEGIN_DECLS
 
+/*!
+ * \ingroup wp
+ * Flags for wp_init()
+ */
 typedef enum {
+  /*! Initialize PipeWire by calling pw_init() */
   WP_INIT_PIPEWIRE = (1<<0),
+  /*! Initialize support for dynamic spa types.
+   * See wp_spa_dynamic_type_init() */
   WP_INIT_SPA_TYPES = (1<<1),
+  /*! Override PipeWire's logging system with WirePlumber's one */
   WP_INIT_SET_PW_LOG = (1<<2),
+  /*! Set wp_log_writer_default() as GLib's default log writer function */
   WP_INIT_SET_GLIB_LOG = (1<<3),
+  /*! Initialize all of the above */
   WP_INIT_ALL = 0xf,
 } WpInitFlags;
 

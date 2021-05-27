@@ -14,15 +14,14 @@
 
 G_BEGIN_DECLS
 
-/**
- * WP_TYPE_GLOBAL_PROXY:
- *
- * The #WpGlobalProxy #GType
+/*!
+ * \brief The WpGlobalProxy GType
+ * \ingroup wpglobalproxy
  */
 #define WP_TYPE_GLOBAL_PROXY (wp_global_proxy_get_type ())
 WP_API
 G_DECLARE_DERIVABLE_TYPE (WpGlobalProxy, wp_global_proxy,
-                          WP, GLOBAL_PROXY, WpObject)
+                          WP, GLOBAL_PROXY, WpProxy)
 
 struct _WpGlobalProxyClass
 {

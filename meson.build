@@ -1,5 +1,5 @@
 project('wireplumber', ['c'],
-  version : '0.3.95',
+  version : '0.3.96',
   license : 'MIT',
   meson_version : '>= 0.54.0',
   default_options : [
@@ -68,8 +68,6 @@ endif
 
 gnome = import('gnome')
 pkgconfig = import('pkgconfig')
-gir = find_program('g-ir-scanner', required : get_option('introspection'))
-build_gir = gir.found()
 
 wp_lib_include_dir = include_directories('lib')
 

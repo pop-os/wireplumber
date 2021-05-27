@@ -6,17 +6,10 @@
  * SPDX-License-Identifier: MIT
  */
 
-/**
- * SECTION: endpoint
- * @title: PIpeWire Endpoint
- */
-
-#include "spa/param/param.h"
 #define G_LOG_DOMAIN "wp-endpoint"
 
 #include "endpoint.h"
 #include "node.h"
-#include "session.h"
 #include "object-manager.h"
 #include "error.h"
 #include "log.h"
@@ -28,6 +21,27 @@
 #include <pipewire/extensions/session-manager.h>
 #include <pipewire/extensions/session-manager/introspect-funcs.h>
 #include <spa/utils/result.h>
+
+/*! \defgroup wpendpoint WpEndpoint */
+/*!
+ * \struct WpEndpoint
+ *
+ * The WpEndpoint class allows accessing the properties and methods of a
+ * PipeWire endpoint object (`struct pw_endpoint` from the session-manager extension).
+ *
+ * A WpEndpoint is constructed internally when a new endpoint appears on the
+ * PipeWire registry and it is made available through the WpObjectManager API.
+ *
+ * \gproperties
+ *
+ * \gproperty{name, gchar *, G_PARAM_READABLE, The name of the endpoint}
+ *
+ * \gproperty{media-class, gchar *, G_PARAM_READABLE,
+ *   The media class of the endpoint (ex. "Audio/Sink")}
+ *
+ * \gproperty{direction, WpDirection, G_PARAM_READABLE,
+ *   The direction of the endpoint}
+ */
 
 enum {
   PROP_NAME = WP_PW_OBJECT_MIXIN_PROP_CUSTOM_START,
@@ -44,16 +58,6 @@ struct _WpEndpointPrivate
 static void wp_endpoint_pw_object_mixin_priv_interface_init (
     WpPwObjectMixinPrivInterface * iface);
 
-/**
- * WpEndpoint:
- *
- * The #WpEndpoint class allows accessing the properties and methods of a
- * PipeWire endpoint object (`struct pw_endpoint` from the session-manager
- * extension).
- *
- * A #WpEndpoint is constructed internally when a new endpoint appears on the
- * PipeWire registry and it is made available through the #WpObjectManager API.
- */
 G_DEFINE_TYPE_WITH_CODE (WpEndpoint, wp_endpoint, WP_TYPE_GLOBAL_PROXY,
     G_ADD_PRIVATE (WpEndpoint)
     G_IMPLEMENT_INTERFACE (WP_TYPE_PIPEWIRE_OBJECT,
@@ -141,6 +145,14 @@ wp_endpoint_pw_proxy_created (WpProxy * proxy, struct pw_proxy * pw_proxy)
 }
 
 static void
+wp_endpoint_pw_proxy_destroyed (WpProxy * proxy)
+{
+  wp_pw_object_mixin_handle_pw_proxy_destroyed (proxy);
+
+  WP_PROXY_CLASS (wp_endpoint_parent_class)->pw_proxy_destroyed (proxy);
+}
+
+static void
 wp_endpoint_class_init (WpEndpointClass * klass)
 {
   GObjectClass *object_class = (GObjectClass *) klass;
@@ -158,34 +170,18 @@ wp_endpoint_class_init (WpEndpointClass * klass)
   proxy_class->pw_iface_type = PW_TYPE_INTERFACE_Endpoint;
   proxy_class->pw_iface_version = PW_VERSION_ENDPOINT;
   proxy_class->pw_proxy_created = wp_endpoint_pw_proxy_created;
-  proxy_class->pw_proxy_destroyed =
-      wp_pw_object_mixin_handle_pw_proxy_destroyed;
+  proxy_class->pw_proxy_destroyed = wp_endpoint_pw_proxy_destroyed;
 
   wp_pw_object_mixin_class_override_properties (object_class);
 
-  /**
-   * WpEndpoint:name:
-   *
-   * The name of the endpoint
-   */
   g_object_class_install_property (object_class, PROP_NAME,
       g_param_spec_string ("name", "name", "name", NULL,
           G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
-  /**
-   * WpEndpoint:media-class:
-   *
-   * The media class of the endpoint (ex. "Audio/Sink")
-   */
   g_object_class_install_property (object_class, PROP_MEDIA_CLASS,
       g_param_spec_string ("media-class", "media-class", "media-class", NULL,
           G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
-  /**
-   * WpEndpoint:direction:
-   *
-   * The direction of the endpoint
-   */
   g_object_class_install_property (object_class, PROP_DIRECTION,
       g_param_spec_enum ("direction", "direction", "direction",
           WP_TYPE_DIRECTION, 0, G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
@@ -218,13 +214,12 @@ wp_endpoint_pw_object_mixin_priv_interface_init (
   iface->set_param = wp_endpoint_set_param;
 }
 
-/**
- * wp_endpoint_get_name:
- * @self: the endpoint
- *
- * Requires %WP_PIPEWIRE_OBJECT_FEATURE_INFO
- *
- * Returns: the name of the endpoint
+/*!
+ * \brief Gets the name of the endpoint
+ * \remarks Requires WP_PIPEWIRE_OBJECT_FEATURE_INFO
+ * \ingroup wpendpoint
+ * \param self the endpoint
+ * \returns the name of the endpoint
  */
 const gchar *
 wp_endpoint_get_name (WpEndpoint * self)
@@ -237,13 +232,12 @@ wp_endpoint_get_name (WpEndpoint * self)
   return ((struct pw_endpoint_info *) d->info)->name;
 }
 
-/**
- * wp_endpoint_get_media_class:
- * @self: the endpoint
- *
- * Requires %WP_PIPEWIRE_OBJECT_FEATURE_INFO
- *
- * Returns: the media class of the endpoint (ex. "Audio/Sink")
+/*!
+ * \brief Gets the media class of the endpoint (ex. "Audio/Sink")
+ * \remarks Requires WP_PIPEWIRE_OBJECT_FEATURE_INFO
+ * \ingroup wpendpoint
+ * \param self the endpoint
+ * \returns the media class of the endpoint
  */
 const gchar *
 wp_endpoint_get_media_class (WpEndpoint * self)
@@ -256,13 +250,12 @@ wp_endpoint_get_media_class (WpEndpoint * self)
   return ((struct pw_endpoint_info *) d->info)->media_class;
 }
 
-/**
- * wp_endpoint_get_direction:
- * @self: the endpoint
- *
- * Requires %WP_PIPEWIRE_OBJECT_FEATURE_INFO
- *
- * Returns: the direction of this endpoint
+/*!
+ * \brief Gets the direction of the endpoint
+ * \remarks Requires WP_PIPEWIRE_OBJECT_FEATURE_INFO
+ * \ingroup wpendpoint
+ * \param self the endpoint
+ * \returns the direction of this endpoint
  */
 WpDirection
 wp_endpoint_get_direction (WpEndpoint * self)
@@ -273,36 +266,6 @@ wp_endpoint_get_direction (WpEndpoint * self)
 
   WpPwObjectMixinData *d = wp_pw_object_mixin_get_data (self);
   return (WpDirection) ((struct pw_endpoint_info *) d->info)->direction;
-}
-
-/**
- * wp_endpoint_create_link:
- * @self: the endpoint
- * @props: the link properties
- *
- * Creates a #WpEndpointLink between @self and another endpoint, which
- * must be specified in @props.
- * @props may contain:
- *  - `endpoint-link.output.endpoint`: the bound id of the endpoint
- *        that is in the %WP_DIRECTION_OUTPUT direction
- *  - `endpoint-link.input.endpoint`: the bound id of the endpoint
- *        that is in the %WP_DIRECTION_INPUT direction
- *
- * The id of @self is not necessary to be specified, so only one of
- * `endpoint-link.output.endpoint`, `endpoint-link.input.endpoint`
- * is actually required.
- */
-void
-wp_endpoint_create_link (WpEndpoint * self, WpProperties * props)
-{
-  WpPwObjectMixinData *d = wp_pw_object_mixin_get_data (self);
-  int res;
-
-  res = pw_endpoint_create_link (d->iface, wp_properties_peek_dict (props));
-  if (res < 0) {
-    wp_warning_object (self, "pw_endpoint_create_link: %d: %s", res,
-        spa_strerror (res));
-  }
 }
 
 /* WpImplEndpoint */
@@ -335,116 +298,11 @@ static struct spa_param_info impl_param_info[] = {
   SPA_PARAM_INFO (SPA_PARAM_PropInfo, SPA_PARAM_INFO_READ)
 };
 
-static void
-on_si_link_exported (WpSessionItem * link, GAsyncResult * res, gpointer data)
-{
-  WpImplEndpoint *self = WP_IMPL_ENDPOINT (data);
-  g_autoptr (GError) error = NULL;
-
-  if (!wp_object_activate_finish (WP_OBJECT (link), res, &error)) {
-    wp_warning_object (self, "failed to export link: %s", error->message);
-    g_object_unref (link);
-  }
-}
-
 static int
 impl_create_link (void *object, const struct spa_dict *props)
 {
-  WpImplEndpoint *self = WP_IMPL_ENDPOINT (object);
-  const gchar *self_ep, *peer_ep;
-  guint32 peer_ep_id;
-  g_autoptr (WpSiEndpoint) peer_si_endpoint = NULL;
-  g_autoptr (WpSession) session = NULL;
-  g_autoptr (WpEndpoint) peer_ep_proxy = NULL;
-
-  /* find the session */
-  session = wp_session_item_get_associated_proxy (
-      WP_SESSION_ITEM (self->item), WP_TYPE_SESSION);
-  g_return_val_if_fail (session, -ENAVAIL);
-
-  if (self->info.direction == PW_DIRECTION_OUTPUT) {
-    self_ep = spa_dict_lookup (props, PW_KEY_ENDPOINT_LINK_OUTPUT_ENDPOINT);
-    peer_ep = spa_dict_lookup (props, PW_KEY_ENDPOINT_LINK_INPUT_ENDPOINT);
-  } else {
-    self_ep = spa_dict_lookup (props, PW_KEY_ENDPOINT_LINK_INPUT_ENDPOINT);
-    peer_ep = spa_dict_lookup (props, PW_KEY_ENDPOINT_LINK_OUTPUT_ENDPOINT);
-  }
-
-  wp_debug_object (self, "requested link between %s [self] & %s [peer]",
-      self_ep, peer_ep);
-
-  /* verify arguments */
-  if (!peer_ep) {
-    wp_warning_object (self,
-        "a peer endpoint must be specified at the very least");
-    return -EINVAL;
-  }
-  if (self_ep && ((guint32) atoi (self_ep))
-          != wp_proxy_get_bound_id (WP_PROXY (self))) {
-    wp_warning_object (self,
-        "creating links for other endpoints is now allowed");
-    return -EACCES;
-  }
-
-  /* convert to int */
-  peer_ep_id = (guint32) atoi (peer_ep);
-
-  /* find the peer endpoint */
-  peer_ep_proxy = wp_session_lookup_endpoint (session,
-      WP_CONSTRAINT_TYPE_G_PROPERTY, "bound-id", "=u", peer_ep_id, NULL);
-  if (!peer_ep_proxy) {
-    wp_warning_object (self, "endpoint %d not found in session", peer_ep_id);
-    return -EINVAL;
-  }
-
-  g_object_get (peer_ep_proxy, "item", &peer_si_endpoint, NULL);
-
-  wp_info_object (self, "creating endpoint link between "
-      "%s " WP_OBJECT_FORMAT ", %s " WP_OBJECT_FORMAT,
-      wp_endpoint_get_name (WP_ENDPOINT (self)),
-      WP_OBJECT_ARGS (self->item),
-      wp_endpoint_get_name (peer_ep_proxy),
-      WP_OBJECT_ARGS (peer_si_endpoint));
-
-  /* create the link */
-  {
-    g_autoptr (WpSessionItem) link = NULL;
-    g_autoptr (WpCore) core = NULL;
-    WpProperties *props = NULL;
-    WpSiEndpoint *out_endpoint, *in_endpoint;
-
-    core = wp_object_get_core (WP_OBJECT (self));
-    link = wp_session_item_make (core, "si-standard-link");
-    if (!link) {
-      wp_warning_object (self, "si-standard-link factory is not available");
-      return -ENAVAIL;
-    }
-
-    if (self->info.direction == PW_DIRECTION_OUTPUT) {
-      out_endpoint = self->item;
-      in_endpoint = peer_si_endpoint;
-    } else {
-      out_endpoint = peer_si_endpoint;
-      in_endpoint = self->item;
-    }
-
-    props = wp_properties_new_empty ();
-    wp_properties_setf (props, "out.item", "%p", out_endpoint);
-    wp_properties_setf (props, "in.item", "%p", in_endpoint);
-    wp_properties_setf (props, "session", "%p", session);
-    wp_properties_setf (props, "manage.lifetime", "%u", TRUE);
-
-    if (G_UNLIKELY (!wp_session_item_configure (link, props))) {
-      g_critical ("si-standard-link configuration failed");
-      return -ENAVAIL;
-    }
-
-    wp_object_activate (WP_OBJECT (link), WP_SESSION_ITEM_FEATURE_EXPORTED,
-        NULL, (GAsyncReadyCallback) on_si_link_exported, self);
-    link = NULL;
-  }
-
-  return 0;
+  /* not implemented */
+  return -EINVAL;
 }
 
 static const struct pw_endpoint_methods impl_endpoint = {
@@ -518,9 +376,8 @@ wp_impl_endpoint_constructed (GObject * object)
 
   self->info.direction = (enum pw_direction) direction;
 
-  /* associate with the session */
-  self->info.session_id = wp_session_item_get_associated_proxy_id (
-      WP_SESSION_ITEM (self->item), WP_TYPE_SESSION);
+  /* associate with the session (no session anymore, use -1) */
+  self->info.session_id = SPA_ID_INVALID;
 
   /* construct export properties (these will come back through
     the registry and appear in wp_proxy_get_global_properties) */
@@ -696,6 +553,7 @@ wp_impl_endpoint_activate_execute_step (WpObject * object,
     }
 
     /* bind */
+    wp_proxy_watch_bind_error (WP_PROXY (self), WP_TRANSITION (transition));
     wp_proxy_set_pw_proxy (WP_PROXY (self), pw_core_export (pw_core,
             PW_TYPE_INTERFACE_Endpoint,
             wp_properties_peek_dict (self->immutable_props),
@@ -709,6 +567,14 @@ wp_impl_endpoint_activate_execute_step (WpObject * object,
   }
 }
 
+/*!
+ * \struct WpImplEndpoint
+ *
+ * \gproperties
+ *
+ * \gproperty{item, WpSiEndpoint *, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY,
+ *   The session item that implements this endpoint}
+ */
 static void
 wp_impl_endpoint_class_init (WpImplEndpointClass * klass)
 {
@@ -807,6 +673,12 @@ wp_endpoint_impl_pw_object_mixin_priv_interface_init (
   iface->emit_param = wp_impl_endpoint_emit_param;
 }
 
+/*!
+ * \ingroup wpendpoint
+ * \param core the core
+ * \param item the session item that implements the endpoint
+ * \returns (transfer full): a new WpImplEndpoint
+ */
 WpImplEndpoint *
 wp_impl_endpoint_new (WpCore * core, WpSiEndpoint * item)
 {

@@ -6,11 +6,6 @@
  * SPDX-License-Identifier: MIT
  */
 
-/**
- * SECTION: object-interest
- * @title: Object Interest
- */
-
 #define G_LOG_DOMAIN "wp-object-interest"
 
 #include "object-interest.h"
@@ -21,6 +16,19 @@
 #include "error.h"
 
 #include <pipewire/pipewire.h>
+
+/*! \defgroup wpobjectinterest WpObjectInterest */
+/*!
+ * \struct WpObjectInterest
+ *
+ * An object interest is a helper that is used in WpObjectManager to
+ * declare interest in certain kinds of objects.
+ *
+ * An interest is defined by a GType and a set of constraints on the object's
+ * properties. An object "matches" the interest if it is of the specified
+ * GType (either the same type or a descendant of it) and all the constraints
+ * are satisfied.
+ */
 
 struct constraint
 {
@@ -39,66 +47,55 @@ struct _WpObjectInterest
   struct pw_array constraints;
 };
 
-/**
- * WpObjectInterest:
- * An object interest is a helper that is used in #WpObjectManager to
- * declare interest in certain kinds of objects.
- *
- * An interest is defined by a #GType and a set of constraints on the object's
- * properties. An object "matches" the interest if it is of the specified
- * #GType (either the same type or a descendant of it) and all the constraints
- * are satisfied.
- */
 G_DEFINE_BOXED_TYPE (WpObjectInterest, wp_object_interest,
                      wp_object_interest_copy, wp_object_interest_unref)
 
-/**
- * wp_object_interest_new:
- * @gtype: the type of the object to declare interest in
- * @...: a set of constraints, terminated with %NULL
+/*!
+ * \brief Creates a new interest that declares interest in objects of the specified
+ * \a gtype, with the constraints specified in the variable arguments.
  *
- * Creates a new interest that declares interest in objects of the specified
- * @gtype, with the constraints specified in the variable arguments.
- *
- * The variable arguments should be a list of constraints terminated with %NULL,
+ * The variable arguments should be a list of constraints terminated with NULL,
  * where each constraint consists of the following arguments:
- *  - a #WpConstraintType: the constraint type
+ *  - a `WpConstraintType`: the constraint type
  *  - a `const gchar *`: the subject name
  *  - a `const gchar *`: the format string
  *  - 0 or more arguments according to the format string
  *
  * The format string is interpreted as follows:
  *  - the first character is the constraint verb:
- *     - `=`: %WP_CONSTRAINT_VERB_EQUALS
- *     - `!`: %WP_CONSTRAINT_VERB_NOT_EQUALS
- *     - `c`: %WP_CONSTRAINT_VERB_IN_LIST
- *     - `~`: %WP_CONSTRAINT_VERB_IN_RANGE
- *     - `#`: %WP_CONSTRAINT_VERB_MATCHES
- *     - `+`: %WP_CONSTRAINT_VERB_IS_PRESENT
- *     - `-`: %WP_CONSTRAINT_VERB_IS_ABSENT
- *  - the rest of the characters are interpreted as a #GVariant format string,
+ *     - `=`: WP_CONSTRAINT_VERB_EQUALS
+ *     - `!`: WP_CONSTRAINT_VERB_NOT_EQUALS
+ *     - `c`: WP_CONSTRAINT_VERB_IN_LIST
+ *     - `~`: WP_CONSTRAINT_VERB_IN_RANGE
+ *     - `#`: WP_CONSTRAINT_VERB_MATCHES
+ *     - `+`: WP_CONSTRAINT_VERB_IS_PRESENT
+ *     - `-`: WP_CONSTRAINT_VERB_IS_ABSENT
+ *  - the rest of the characters are interpreted as a GVariant format string,
  *    as it would be used in g_variant_new()
  *
  * The rest of this function's arguments up to the start of the next constraint
- * depend on the #GVariant format part of the format string and are used to
- * construct a #GVariant for the constraint's value argument.
+ * depend on the GVariant format part of the format string and are used to
+ * construct a GVariant for the constraint's value argument.
  *
  * For further reading on the constraint's arguments, see
  * wp_object_interest_add_constraint()
  *
- * For example, this interest matches objects that are descendands of #WpProxy
+ * For example, this interest matches objects that are descendands of WpProxy
  * with a "bound-id" between 0 and 100 (inclusive), with a pipewire property
  * called "format.dsp" that contains the string "audio" somewhere in the value
  * and with a pipewire property "port.name" being present (with any value):
- * |[
+ * \code
  * interest = wp_object_interest_new (WP_TYPE_PROXY,
  *     WP_CONSTRAINT_TYPE_G_PROPERTY, "bound-id", "~(uu)", 0, 100,
  *     WP_CONSTRAINT_TYPE_PW_PROPERTY, "format.dsp", "#s", "*audio*",
  *     WP_CONSTRAINT_TYPE_PW_PROPERTY, "port.name", "+",
  *     NULL);
- * ]|
+ * \endcode
  *
- * Returns: (transfer full): the new object interest
+ * \ingroup wpobjectinterest
+ * \param gtype the type of the object to declare interest in
+ * \param ... a set of constraints, terminated with NULL
+ * \returns (transfer full): the new object interest
  */
 WpObjectInterest *
 wp_object_interest_new (GType gtype, ...)
@@ -111,14 +108,13 @@ wp_object_interest_new (GType gtype, ...)
   return self;
 }
 
-/**
- * wp_object_interest_new_valist:
- * @gtype: the type of the object to declare interest in
- * @args: pointer to va_list containing the constraints
+/*!
+ * \brief va_list version of wp_object_interest_new()
  *
- * va_list version of wp_object_interest_new()
- *
- * Returns: (transfer full): the new object interest
+ * \ingroup wpobjectinterest
+ * \param gtype the type of the object to declare interest in
+ * \param args pointer to va_list containing the constraints
+ * \returns (transfer full): the new object interest
  */
 WpObjectInterest *
 wp_object_interest_new_valist (GType gtype, va_list *args)
@@ -151,15 +147,16 @@ wp_object_interest_new_valist (GType gtype, va_list *args)
   return self;
 }
 
-/**
- * wp_object_interest_new_type: (rename-to wp_object_interest_new)
- * @gtype: the type of the object to declare interest in
+/*!
+ * \brief Creates a new interest that declares interest in objects of the
+ * specified \a gtype, without any property constraints.
  *
- * Creates a new interest that declares interest in objects of the specified
- * @gtype, without any property constraints. To add property constraints,
- * you can call wp_object_interest_add_constraint() afterwards.
+ * To add property constraints, you can call wp_object_interest_add_constraint()
+ * afterwards.
  *
- * Returns: (transfer full): the new object interest
+ * \ingroup wpobjectinterest
+ * \param gtype the type of the object to declare interest in
+ * \returns (transfer full): the new object interest
  */
 WpObjectInterest *
 wp_object_interest_new_type (GType gtype)
@@ -172,51 +169,44 @@ wp_object_interest_new_type (GType gtype)
   return self;
 }
 
-/**
- * wp_object_interest_add_constraint:
- * @self: the object interest
- * @type: the constraint type
- * @subject: the subject that the constraint applies to
- * @verb: the operation that is performed to check the constraint
- * @value: (transfer floating)(nullable): the value to check for
- *
- * Adds a constraint to this interest. Constraints consist of a @type,
- * a @subject, a @verb and, depending on the @verb, a @value.
+/*!
+ * \brief Adds a constraint to this interest. Constraints consist of a \a type,
+ * a \a subject, a \a verb and, depending on the \a verb, a \a value.
  *
  * Constraints are almost like a spoken language sentence that declare a
  * condition that must be true in order to consider that an object can match
  * this interest. For instance, a constraint can be "pipewire property
  * 'object.id' equals 10". This would be translated to:
- * |[
+ * \code
  * wp_object_interest_add_constraint (i,
  *    WP_CONSTRAINT_TYPE_PW_PROPERTY, "object.id",
  *    WP_CONSTRAINT_VERB_EQUALS, g_variant_new_int (10));
- * ]|
+ * \endcode
  *
- * Some verbs require a @value and some others do not. For those that do,
- * the @value must be of a specific type:
- *  - %WP_CONSTRAINT_VERB_EQUALS: @value can be a string, a (u)int32,
- *    a (u)int64, a double or a boolean. The @subject value must equal this
+ * Some verbs require a \a value and some others do not. For those that do,
+ * the \a value must be of a specific type:
+ *  - WP_CONSTRAINT_VERB_EQUALS: \a value can be a string, a (u)int32,
+ *    a (u)int64, a double or a boolean. The \a subject value must equal this
  *    value for the constraint to be satisfied
- *  - %WP_CONSTRAINT_VERB_IN_LIST: @value must be a tuple that contains any
+ *  - WP_CONSTRAINT_VERB_IN_LIST: \a value must be a tuple that contains any
  *    number of items of the same type; the items can be string, (u)int32,
- *    (u)int64 or double. These items make a list that the @subject's value
- *    will be checked against. If any of the items equals the @subject value,
+ *    (u)int64 or double. These items make a list that the \a subject's value
+ *    will be checked against. If any of the items equals the \a subject value,
  *    the constraint is satisfied
- *  - %WP_CONSTRAINT_VERB_IN_RANGE: @value must be a tuple that contains exactly
+ *  - WP_CONSTRAINT_VERB_IN_RANGE: \a value must be a tuple that contains exactly
  *    2 numbers of the same type ((u)int32, (u)int64 or double), meaning the
- *    minimum and maximum (inclusive) of the range. If the @subject value is a
+ *    minimum and maximum (inclusive) of the range. If the \a subject value is a
  *    number within this range, the constraint is satisfied
- *  - %WP_CONSTRAINT_VERB_MATCHES: @value must be a string that defines a
- *    pattern usable with #GPatternSpec. If the @subject value matches this
+ *  - WP_CONSTRAINT_VERB_MATCHES: \a value must be a string that defines a
+ *    pattern usable with GPatternSpec If the \a subject value matches this
  *    pattern, the constraint is satisfied
  *
- * In case the type of the @subject value is not the same type as the one
- * requested by the type of the @value, the @subject value is converted.
- * For #GObject properties, this conversion is done using g_value_transform(),
+ * In case the type of the \a subject value is not the same type as the one
+ * requested by the type of the \a value, the \a subject value is converted.
+ * For GObject properties, this conversion is done using g_value_transform(),
  * so limitations of this function apply. In the case of PipeWire properties,
  * which are *always* strings, conversion is done as follows:
- *  - to boolean: `"true"` or `"1"` means %TRUE, `"false"` or `"0"` means %FALSE
+ *  - to boolean: `"true"` or `"1"` means TRUE, `"false"` or `"0"` means FALSE
  *  - to int / uint / int64 / uint64: One of the `strtol()` family of functions
  *    is used to convert, using base 10
  *  - to double: `strtod()` is used
@@ -224,6 +214,13 @@ wp_object_interest_new_type (GType gtype)
  * This method does not fail if invalid arguments are given. However,
  * wp_object_interest_validate() should be called after adding all the
  * constraints on an interest in order to catch errors.
+ *
+ * \ingroup wpobjectinterest
+ * \param self the object interest
+ * \param type the constraint type
+ * \param subject the subject that the constraint applies to
+ * \param verb the operation that is performed to check the constraint
+ * \param value (transfer floating)(nullable): the value to check for
  */
 void
 wp_object_interest_add_constraint (WpObjectInterest * self,
@@ -247,11 +244,10 @@ wp_object_interest_add_constraint (WpObjectInterest * self,
   self->valid = FALSE;
 }
 
-/**
- * wp_object_interest_copy:
- * @self: the object interest to copy
- *
- * Returns: (transfer full): a deep copy of @self
+/*!
+ * \ingroup wpobjectinterest
+ * \param self the object interest to copy
+ * \returns (transfer full): a deep copy of \a self
  */
 WpObjectInterest *
 wp_object_interest_copy (WpObjectInterest * self)
@@ -279,11 +275,10 @@ wp_object_interest_copy (WpObjectInterest * self)
   return copy;
 }
 
-/**
- * wp_object_interest_ref:
- * @self: the object interest to ref
- *
- * Returns: (transfer full): @self with an additional reference count on it
+/*!
+ * \ingroup wpobjectinterest
+ * \param self the object interest to ref
+ * \returns (transfer full): \a self with an additional reference count on it
  */
 WpObjectInterest *
 wp_object_interest_ref (WpObjectInterest *self)
@@ -307,12 +302,12 @@ wp_object_interest_free (WpObjectInterest * self)
   g_slice_free (WpObjectInterest, self);
 }
 
-/**
- * wp_object_interest_unref:
- * @self: (transfer full): the object interest to unref
+/*!
+ * \brief Decreases the reference count on \a self and frees it when the ref
+ * count reaches zero.
  *
- * Decreases the reference count on @self and frees it when the ref count
- * reaches zero.
+ * \ingroup wpobjectinterest
+ * \param self (transfer full): the object interest to unref
  */
 void
 wp_object_interest_unref (WpObjectInterest * self)
@@ -321,16 +316,18 @@ wp_object_interest_unref (WpObjectInterest * self)
     wp_object_interest_free (self);
 }
 
-/**
- * wp_object_interest_validate:
- * @self: the object interest to validate
- * @error: (out) (optional): the error, in case validation failed
+/*!
+ * \brief Validates the interest, ensuring that the interest GType
+ * is a valid object and that all the constraints have been expressed properly.
  *
- * Validates the interest, ensuring that the interest #GType is a valid
- * object and that all the constraints have been expressed properly.
+ * \remark This is called internally when \a self is first used to find a match,
+ * so it is not necessary to call it explicitly
  *
- * Returns: %TRUE if the interest is valid and can be used in a match,
- *   %FALSE otherwise
+ * \ingroup wpobjectinterest
+ * \param self the object interest to validate
+ * \param error (out) (optional): the error, in case validation failed
+ * \returns TRUE if the interest is valid and can be used in a match,
+ *   FALSE otherwise
  */
 gboolean
 wp_object_interest_validate (WpObjectInterest * self, GError ** error)
@@ -685,21 +682,20 @@ constraint_verb_in_range (gchar subj_type, const GValue * subj_val,
   return TRUE;
 }
 
-/**
- * wp_object_interest_matches:
- * @self: the object interest
- * @object: the target object to check for a match
+/*!
+ * \brief Checks if the specified \a object matches the type and all the
+ * constraints that are described in \a self
  *
- * Checks if the specified @object matches the type and all the constraints
- * that are described in @self
- *
- * If @self is configured to match #GObject subclasses, this is equivalent to
+ * If \a self is configured to match GObject subclasses, this is equivalent to
  * `wp_object_interest_matches_full (self, G_OBJECT_TYPE (object), object,
- * NULL, NULL)` and if it is configured to match #WpProperties, this is
+ * NULL, NULL)` and if it is configured to match WpProperties, this is
  * equivalent to `wp_object_interest_matches_full (self, self->gtype, NULL,
  * (WpProperties *) object, NULL);`
  *
- * Returns: %TRUE if the object matches, %FALSE otherwise
+ * \ingroup wpobjectinterest
+ * \param self the object interest
+ * \param object the target object to check for a match
+ * \returns TRUE if the object matches, FALSE otherwise
  */
 gboolean
 wp_object_interest_matches (WpObjectInterest * self, gpointer object)
@@ -716,34 +712,34 @@ wp_object_interest_matches (WpObjectInterest * self, gpointer object)
   }
 }
 
-/**
- * wp_object_interest_matches_full:
- * @self: the object interest
- * @object_type: the type to be checked against the interest's type
- * @object: (type GObject)(transfer none)(nullable): the object to be used for
- *   checking constraints of type %WP_CONSTRAINT_TYPE_G_PROPERTY
- * @pw_props: (transfer none)(nullable): the properties to be used for
- *   checking constraints of type %WP_CONSTRAINT_TYPE_PW_PROPERTY
- * @pw_global_props: (transfer none)(nullable): the properties to be used for
- *   checking constraints of type %WP_CONSTRAINT_TYPE_PW_GLOBAL_PROPERTY
+/*!
+ * \brief A low-level version of wp_object_interest_matches().
  *
- * A low-level version of wp_object_interest_matches(). In this version,
- * the object's type is directly given in @object_type and is not inferred
- * from the @object. @object is only used to check for constraints against
- * #GObject properties.
+ * In this version, the object's type is directly given in \a object_type and
+ * is not inferred from the \a object. \a object is only used to check for
+ * constraints against GObject properties.
  *
- * @pw_props and @pw_global_props are used to check constraints against
+ * \a pw_props and \a pw_global_props are used to check constraints against
  * PipeWire object properties and global properties, respectively.
  *
- * @object, @pw_props and @pw_global_props may be %NULL, but in case there
+ * \a object, \a pw_props and \a pw_global_props may be NULL, but in case there
  * are any constraints that require them, the match will fail.
- * As a special case, if @object is not %NULL and is a subclass of #WpProxy,
- * then @pw_props and @pw_global_props, if required, will be internally
- * retrieved from @object by calling wp_pipewire_object_get_properties() and
+ * As a special case, if \a object is not NULL and is a subclass of WpProxy,
+ * then \a pw_props and \a pw_global_props, if required, will be internally
+ * retrieved from \a object by calling wp_pipewire_object_get_properties() and
  * wp_global_proxy_get_global_properties() respectively.
  *
- * Returns: %TRUE if the the type matches this interest and the properties
- *   match the constraints, %FALSE otherwise
+ * \ingroup wpobjectinterest
+ * \param self the object interest
+ * \param object_type the type to be checked against the interest's type
+ * \param object (type GObject)(transfer none)(nullable): the object to be used for
+ *   checking constraints of type WP_CONSTRAINT_TYPE_G_PROPERTY
+ * \param pw_props (transfer none)(nullable): the properties to be used for
+ *   checking constraints of type WP_CONSTRAINT_TYPE_PW_PROPERTY
+ * \param pw_global_props (transfer none)(nullable): the properties to be used for
+ *   checking constraints of type WP_CONSTRAINT_TYPE_PW_GLOBAL_PROPERTY
+ * \returns TRUE if the the type matches this interest and the properties
+ *   match the constraints, FALSE otherwise
  */
 gboolean
 wp_object_interest_matches_full (WpObjectInterest * self,

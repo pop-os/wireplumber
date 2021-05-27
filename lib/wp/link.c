@@ -6,15 +6,24 @@
  * SPDX-License-Identifier: MIT
  */
 
-/**
- * SECTION: link
- * @title: PipeWire Link
- */
-
 #define G_LOG_DOMAIN "wp-link"
 
 #include "link.h"
 #include "private/pipewire-object-mixin.h"
+
+/*! \defgroup wplink WpLink */
+/*!
+ * \struct WpLink
+ *
+ * The WpLink class allows accessing the properties and methods of a
+ * PipeWire link object (`struct pw_link`).
+ *
+ * A WpLink is constructed internally when a new link appears on the
+ * PipeWire registry and it is made available through the WpObjectManager API.
+ * Alternatively, a WpLink can also be constructed using
+ * wp_link_new_from_factory(), which creates a new link object
+ * on the remote PipeWire server by calling into a factory.
+ */
 
 struct _WpLink
 {
@@ -24,18 +33,6 @@ struct _WpLink
 static void wp_link_pw_object_mixin_priv_interface_init (
     WpPwObjectMixinPrivInterface * iface);
 
-/**
- * WpLink:
- *
- * The #WpLink class allows accessing the properties and methods of a
- * PipeWire link object (`struct pw_link`).
- *
- * A #WpLink is constructed internally when a new link appears on the
- * PipeWire registry and it is made available through the #WpObjectManager API.
- * Alternatively, a #WpLink can also be constructed using
- * wp_link_new_from_factory(), which creates a new link object
- * on the remote PipeWire server by calling into a factory.
- */
 G_DEFINE_TYPE_WITH_CODE (WpLink, wp_link, WP_TYPE_GLOBAL_PROXY,
     G_IMPLEMENT_INTERFACE (WP_TYPE_PIPEWIRE_OBJECT,
         wp_pw_object_mixin_object_interface_init)
@@ -80,6 +77,14 @@ wp_link_pw_proxy_created (WpProxy * proxy, struct pw_proxy * pw_proxy)
 }
 
 static void
+wp_link_pw_proxy_destroyed (WpProxy * proxy)
+{
+  wp_pw_object_mixin_handle_pw_proxy_destroyed (proxy);
+
+  WP_PROXY_CLASS (wp_link_parent_class)->pw_proxy_destroyed (proxy);
+}
+
+static void
 wp_link_class_init (WpLinkClass * klass)
 {
   GObjectClass *object_class = (GObjectClass *) klass;
@@ -97,8 +102,7 @@ wp_link_class_init (WpLinkClass * klass)
   proxy_class->pw_iface_type = PW_TYPE_INTERFACE_Link;
   proxy_class->pw_iface_version = PW_VERSION_LINK;
   proxy_class->pw_proxy_created = wp_link_pw_proxy_created;
-  proxy_class->pw_proxy_destroyed =
-      wp_pw_object_mixin_handle_pw_proxy_destroyed;
+  proxy_class->pw_proxy_destroyed = wp_link_pw_proxy_destroyed;
 
   wp_pw_object_mixin_class_override_properties (object_class);
 }
@@ -110,23 +114,23 @@ wp_link_pw_object_mixin_priv_interface_init (
   wp_pw_object_mixin_priv_interface_info_init_no_params (iface, link, LINK);
 }
 
-/**
- * wp_link_new_from_factory:
- * @core: the wireplumber core
- * @factory_name: the pipewire factory name to construct the link
- * @properties: (nullable) (transfer full): the properties to pass to the factory
- *
- * Constructs a link on the PipeWire server by asking the remote factory
- * @factory_name to create it.
+/*!
+ * \brief Constructs a link on the PipeWire server by asking the remote factory
+ * \a factory_name to create it.
  *
  * Because of the nature of the PipeWire protocol, this operation completes
  * asynchronously at some point in the future. In order to find out when
  * this is done, you should call wp_object_activate(), requesting at least
- * %WP_PROXY_FEATURE_BOUND. When this feature is ready, the link is ready for
+ * WP_PROXY_FEATURE_BOUND. When this feature is ready, the link is ready for
  * use on the server. If the link cannot be created, this activation operation
  * will fail.
  *
- * Returns: (nullable) (transfer full): the new link or %NULL if the core
+ * \ingroup wplink
+ * \param core the wireplumber core
+ * \param factory_name the pipewire factory name to construct the link
+ * \param properties (nullable) (transfer full): the properties to pass to the
+ *   factory
+ * \returns (nullable) (transfer full): the new link or NULL if the core
  *   is not connected and therefore the link cannot be created
  */
 WpLink *
@@ -134,32 +138,24 @@ wp_link_new_from_factory (WpCore * core,
     const gchar * factory_name, WpProperties * properties)
 {
   g_autoptr (WpProperties) props = properties;
-  WpLink *self = NULL;
-  struct pw_core *pw_core = wp_core_get_pw_core (core);
-
-  if (G_UNLIKELY (!pw_core)) {
-    g_critical ("The WirePlumber core is not connected; link cannot be created");
-    return NULL;
-  }
-
-  self = g_object_new (WP_TYPE_LINK, "core", core, NULL);
-  wp_proxy_set_pw_proxy (WP_PROXY (self), pw_core_create_object (pw_core,
-          factory_name, PW_TYPE_INTERFACE_Link, PW_VERSION_LINK,
-          props ? wp_properties_peek_dict (props) : NULL, 0));
-  return self;
+  return g_object_new (WP_TYPE_LINK,
+      "core", core,
+      "factory-name", factory_name,
+      "global-properties", props,
+      NULL);
 }
 
-/**
- * wp_link_get_linked_object_ids:
- * @self: the link
- * @output_node: (out) (optional): the bound id of the output (source) node
- * @output_port: (out) (optional): the bound id of the output (source) port
- * @input_node: (out) (optional): the bound id of the input (sink) node
- * @input_port: (out) (optional): the bound id of the input (sink) port
+/*!
+ * \brief Retrieves the ids of the objects that are linked by this link
  *
- * Retrieves the ids of the objects that are linked by this link
+ * \remark Requires WP_PIPEWIRE_OBJECT_FEATURE_INFO
  *
- * Note: Using this method requires %WP_PIPEWIRE_OBJECT_FEATURE_INFO
+ * \ingroup wplink
+ * \param self the link
+ * \param output_node (out) (optional): the bound id of the output (source) node
+ * \param output_port (out) (optional): the bound id of the output (source) port
+ * \param input_node (out) (optional): the bound id of the input (sink) node
+ * \param input_port (out) (optional): the bound id of the input (sink) port
  */
 void
 wp_link_get_linked_object_ids (WpLink * self,

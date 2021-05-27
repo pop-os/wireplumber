@@ -6,16 +6,8 @@
  * SPDX-License-Identifier: MIT
  */
 
-/**
- * SECTION: error
- * @title: Error codes
- *
- * Error domain and codes for #GError
- */
-
 #include "error.h"
 
-/**
- * wp_domain_library_quark:
- */
+/*! \defgroup wperror Errors */
+
 G_DEFINE_QUARK (wireplumber-library, wp_domain_library);

@@ -87,7 +87,6 @@ function createLink (si_ep, si_target)
     ["in.item"] = in_item,
     ["out.item.port.context"] = out_context,
     ["in.item.port.context"] = in_context,
-    ["manage.lifetime"] = false,
     ["passive"] = true,
     ["is.policy.endpoint.device.link"] = true,
   } then
@@ -95,21 +94,28 @@ function createLink (si_ep, si_target)
     return
   end
 
-  -- activate and register
-  si_link:activate (Feature.SessionItem.ACTIVE, function (link)
-    Log.info (link, "link activated")
-    link:register ()
-  end)
+  -- register
+  si_link:register ()
+
+  -- activate
+  si_link:activate (Feature.SessionItem.ACTIVE, pendingOperation())
 end
 
-function getSiLinkAndSiPeer (si_ep)
+function getSiLinkAndSiPeer (si_ep, target_media_class)
   for silink in silinks_om:iterate() do
     local out_id = tonumber(silink.properties["out.item.id"])
     local in_id = tonumber(silink.properties["in.item.id"])
-    if out_id == si_ep.id then
-      return silink, getSessionItemById (in_id, siportinfos_om)
-    elseif in_id == si_ep.id then
-      return silink, getSessionItemById (out_id, siportinfos_om)
+    if out_id == si_ep.id or in_id == si_ep.id then
+      local is_out = out_id == si_ep.id and true or false
+      for peer in silinkables_om:iterate() do
+        if peer.id == (is_out and in_id or out_id) then
+          local peer_node = peer:get_associated_proxy ("node")
+          local peer_media_class = peer_node.properties["media.class"]
+          if peer_media_class == target_media_class then
+            return silink, peer
+          end
+        end
+      end
     end
   end
   return nil, nil
@@ -126,14 +132,14 @@ function handleSiEndpoint (si_ep)
   Log.info (si_ep, "handling endpoint " .. si_ep.properties["name"])
 
   -- find proper target item
-  local si_target = findUndefinedTarget (target_media_class, siportinfos_om)
+  local si_target = findUndefinedTarget (target_media_class, silinkables_om)
   if not si_target then
     Log.info (si_ep, "target item not found")
     return
   end
 
   -- Check if item is linked to proper target endpoint, otherwise re-link
-  local si_link, si_peer = getSiLinkAndSiPeer (si_ep)
+  local si_link, si_peer = getSiLinkAndSiPeer (si_ep, target_media_class)
   if si_link then
     if si_peer and si_peer.id == si_target.id then
       Log.info (si_ep, "already linked to proper target")
@@ -158,20 +164,42 @@ function reevaluateLinks ()
   for silink in silinks_om:iterate() do
     local out_id = tonumber (silink.properties["out.item.id"])
     local in_id = tonumber (silink.properties["in.item.id"])
-    if (getSessionItemById (out_id, siendpoints_om) and not getSessionItemById (in_id, siportinfos_om)) or
-        (getSessionItemById (in_id, siendpoints_om) and not getSessionItemById (out_id, siportinfos_om)) then
+    if (getSessionItemById (out_id, siendpoints_om) and not getSessionItemById (in_id, silinkables_om)) or
+        (getSessionItemById (in_id, siendpoints_om) and not getSessionItemById (out_id, silinkables_om)) then
       silink:remove ()
       Log.info (silink, "link removed")
     end
   end
 end
 
+pending_ops = 0
+pending_rescan = false
+
+function pendingOperation()
+  pending_ops = pending_ops + 1
+  return function()
+    pending_ops = pending_ops - 1
+    if pending_ops == 0 and pending_rescan then
+      pending_rescan = false
+      reevaluateLinks ()
+    end
+  end
+end
+
+function maybeReevaluateLinks ()
+  if pending_ops == 0 then
+    reevaluateLinks ()
+  else
+    pending_rescan = true
+  end
+end
+
 default_nodes = Plugin.find("default-nodes-api")
 siendpoints_om = ObjectManager { Interest { type = "SiEndpoint" }}
-siportinfos_om = ObjectManager { Interest { type = "SiPortInfo",
-  -- only handle si-audio-adapter and si-node
-  Constraint {
-    "si.factory.name", "c", "si-audio-adapter", "si-node", type = "pw-global" },
+silinkables_om = ObjectManager { Interest { type = "SiLinkable",
+  -- only handle device si-audio-adapter items
+  Constraint { "si.factory.name", "=", "si-audio-adapter", type = "pw-global" },
+  Constraint { "is.device", "=", true, type = "pw-global" },
   }
 }
 silinks_om = ObjectManager { Interest { type = "SiLink",
@@ -182,14 +210,14 @@ silinks_om = ObjectManager { Interest { type = "SiLink",
 -- listen for default node changes if config.follow is enabled
 if config.follow then
   default_nodes:connect("changed", function (p)
-    reevaluateLinks ()
+    maybeReevaluateLinks ()
   end)
 end
 
-siportinfos_om:connect("objects-changed", function (om)
-  reevaluateLinks ()
+silinkables_om:connect("objects-changed", function (om)
+  maybeReevaluateLinks ()
 end)
 
 siendpoints_om:activate()
-siportinfos_om:activate()
+silinkables_om:activate()
 silinks_om:activate()

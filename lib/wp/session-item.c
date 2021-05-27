@@ -6,17 +6,25 @@
  * SPDX-License-Identifier: MIT
  */
 
-/**
- * SECTION: session-item
- * @title: Session Items
- */
-
 #define G_LOG_DOMAIN "wp-si"
 
 #include "session-item.h"
 #include "log.h"
 #include "error.h"
 #include "private/registry.h"
+
+/*! \defgroup wpsessionitem WpSessionItem */
+/*!
+ * \struct WpSessionItem
+ *
+ * \gproperties
+ *
+ * \gproperty{id, guint, G_PARAM_READABLE,
+ *   The session item unique id}
+ *
+ * \gproperty{properties, WpProperties *, G_PARAM_READABLE,
+ *   The session item properties}
+ */
 
 enum {
   STEP_ACTIVATE = WP_TRANSITION_STEP_CUSTOM_START,
@@ -36,9 +44,6 @@ enum {
   PROP_PROPERTIES,
 };
 
-/**
- * WpSessionItem:
- */
 G_DEFINE_ABSTRACT_TYPE_WITH_PRIVATE (WpSessionItem, wp_session_item,
     WP_TYPE_OBJECT)
 
@@ -80,7 +85,7 @@ wp_session_item_dispose (GObject * object)
 }
 
 static void
-wp_session_item_get_property (GObject * object, guint property_id,
+wp_session_item_get_gobject_property (GObject * object, guint property_id,
     GValue * value, GParamSpec * pspec)
 {
   WpSessionItem *self = WP_SESSION_ITEM (object);
@@ -193,7 +198,7 @@ wp_session_item_class_init (WpSessionItemClass * klass)
   GObjectClass * object_class = (GObjectClass *) klass;
 
   object_class->dispose = wp_session_item_dispose;
-  object_class->get_property = wp_session_item_get_property;
+  object_class->get_property = wp_session_item_get_gobject_property;
 
   wpobject_class->get_supported_features =
       session_item_default_get_supported_features;
@@ -216,11 +221,10 @@ wp_session_item_class_init (WpSessionItemClass * klass)
           G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 }
 
-/**
- * wp_session_item_get_id:
- * @self: the session item
- *
- * Gets the unique Id of the session item
+/*!
+ * \brief Gets the unique Id of the session item
+ * \ingroup wpsessionitem
+ * \param self the session item
  */
 guint
 wp_session_item_get_id (WpSessionItem * self)
@@ -233,12 +237,13 @@ wp_session_item_get_id (WpSessionItem * self)
   return priv->id;
 }
 
-/**
- * wp_session_item_reset: (virtual reset)
- * @self: the session item
+/*!
+ * \brief Resets the session item.
  *
- * Resets the session item. This essentially removes the configuration and
- * and deactivates all active features.
+ * This essentially removes the configuration and deactivates all active features.
+ *
+ * \ingroup wpsessionitem
+ * \param self the session item
  */
 void
 wp_session_item_reset (WpSessionItem * self)
@@ -249,12 +254,11 @@ wp_session_item_reset (WpSessionItem * self)
   return WP_SESSION_ITEM_GET_CLASS (self)->reset (self);
 }
 
-/**
- * wp_session_item_configure: (virtual configure)
- * @self: the session item
- * @props: (transfer full): the properties used to configure the item
- *
- * Returns: %TRUE on success, %FALSE if the item could not be configured
+/*!
+ * \ingroup wpsessionitem
+ * \param self the session item
+ * \param props (transfer full): the properties used to configure the item
+ * \returns TRUE on success, FALSE if the item could not be configured
  */
 gboolean
 wp_session_item_configure (WpSessionItem * self, WpProperties * props)
@@ -266,11 +270,10 @@ wp_session_item_configure (WpSessionItem * self, WpProperties * props)
   return WP_SESSION_ITEM_GET_CLASS (self)->configure (self, props);
 }
 
-/**
- * wp_session_item_is_configured:
- * @self: the session item
- *
- * Returns: %TRUE if the item is configured, %FALSE otherwise
+/*!
+ * \ingroup wpsessionitem
+ * \param self the session item
+ * \returns TRUE if the item is configured, FALSE otherwise
  */
 gboolean
 wp_session_item_is_configured (WpSessionItem * self)
@@ -283,21 +286,20 @@ wp_session_item_is_configured (WpSessionItem * self)
   return priv->properties != NULL;
 }
 
-/**
- * wp_session_item_get_associated_proxy: (virtual get_associated_proxy)
- * @self: the session item
- * @proxy_type: a #WpProxy subclass #GType
- *
- * An associated proxy is a #WpProxy subclass instance that is somehow related
- * to this item. For example:
- *  - An exported #WpSiEndpoint should have at least:
- *      - an associated #WpEndpoint
- *      - an associated #WpSession
+/*!
+ * \brief An associated proxy is a WpProxy subclass instance that
+ * is somehow related to this item. For example:
+ *  - An exported WpSiEndpoint should have at least:
+ *      - an associated WpSiEndpoint
+ *      - an associated WpSession
  *  - In cases where the item wraps a single PipeWire node, it should also
- *    have an associated #WpNode
+ *    have an associated WpNode
  *
- * Returns: (nullable) (transfer full) (type WpProxy): the associated proxy
- *   of the specified @proxy_type, or %NULL if there is no association to
+ * \ingroup wpsessionitem
+ * \param self the session item
+ * \param proxy_type a WpProxy subclass GType
+ * \returns (nullable) (transfer full) (type WpProxy): the associated proxy
+ *   of the specified @em proxy_type, or NULL if there is no association to
  *   such a proxy
  */
 gpointer
@@ -311,12 +313,11 @@ wp_session_item_get_associated_proxy (WpSessionItem * self, GType proxy_type)
   return WP_SESSION_ITEM_GET_CLASS (self)->get_associated_proxy (self, proxy_type);
 }
 
-/**
- * wp_session_item_get_associated_proxy_id:
- * @self: the session item
- * @proxy_type: a #WpProxy subclass #GType
- *
- * Returns: the bound id of the associated proxy of the specified @proxy_type,
+/*!
+ * \ingroup wpsessionitem
+ * \param self the session item
+ * \param proxy_type a WpProxy subclass GType
+ * \returns the bound id of the associated proxy of the specified @em proxy_type,
  *   or `SPA_ID_INVALID` if there is no association to such a proxy
  */
 guint32
@@ -330,11 +331,11 @@ wp_session_item_get_associated_proxy_id (WpSessionItem * self, GType proxy_type)
   return wp_proxy_get_bound_id (proxy);
 }
 
-/**
- * wp_session_item_register:
- * @self: (transfer full): the session item
+/*!
+ * \brief Registers the session item to its associated core
  *
- * Registers the session item to its associated core
+ * \ingroup wpsessionitem
+ * \param self (transfer full): the session item
  */
 void
 wp_session_item_register (WpSessionItem * self)
@@ -347,11 +348,11 @@ wp_session_item_register (WpSessionItem * self)
   wp_registry_register_object (wp_core_get_registry (core), self);
 }
 
-/**
- * wp_session_item_remove:
- * @self: (transfer none): the session item
+/*!
+ * \brief Removes the session item from the registry
  *
- * Removes the session item from the registry
+ * \ingroup wpsessionitem
+ * \param self (transfer none): the session item
  */
 void
 wp_session_item_remove (WpSessionItem * self)
@@ -364,11 +365,10 @@ wp_session_item_remove (WpSessionItem * self)
   wp_registry_remove_object (wp_core_get_registry (core), self);
 }
 
-/**
- * wp_session_item_get_properties:
- * @self: the session item
- *
- * Returns: (transfer full): the item's properties.
+/*!
+ * \ingroup wpsessionitem
+ * \param self the session item
+ * \returns (transfer full): the item's properties.
  */
 WpProperties *
 wp_session_item_get_properties (WpSessionItem * self)
@@ -381,13 +381,31 @@ wp_session_item_get_properties (WpSessionItem * self)
   return priv->properties ? wp_properties_ref (priv->properties) : NULL;
 }
 
-/**
- * wp_session_item_set_properties:
- * @self: the session item
- * @props: (transfer full): the new properties to set
+/*!
+ * \ingroup wpsessionitem
+ * \param self the session item
+ * \param key the property key
+ * \returns the item property value for the given key.
+ */
+const gchar *
+wp_session_item_get_property (WpSessionItem * self, const gchar *key)
+{
+  WpSessionItemPrivate *priv = NULL;
+
+  g_return_val_if_fail (WP_IS_SESSION_ITEM (self), NULL);
+
+  priv = wp_session_item_get_instance_private (self);
+  return priv->properties ? wp_properties_get (priv->properties, key) : NULL;
+}
+
+/*!
+ * \brief Sets the item's properties.
  *
- * Sets the item's properties. This should only be done by sub-classes after
- * the configuration has been done.
+ * This should only be done by sub-classes after the configuration has been done.
+ *
+ * \ingroup wpsessionitem
+ * \param self the session item
+ * \param props (transfer full): the new properties to set
  */
 void
 wp_session_item_set_properties (WpSessionItem * self,
@@ -410,13 +428,15 @@ on_session_item_proxy_destroyed_deferred (WpSessionItem * item)
   return G_SOURCE_REMOVE;
 }
 
-/**
- * wp_session_item_handle_proxy_destroyed:
- * @proxy: the proxy that was destroyed by the server
- * @item: the associated session item
+/*!
+ * \brief Helper callback for sub-classes that deffers and unexports
+ * the session item.
  *
- * Helper callback for sub-classes that deffers and unexports the session item.
  * Only meant to be used when the pipewire proxy destroyed signal is triggered.
+ *
+ * \ingroup wpsessionitem
+ * \param proxy the proxy that was destroyed by the server
+ * \param item the associated session item
  */
 void
 wp_session_item_handle_proxy_destroyed (WpProxy * proxy, WpSessionItem * item)

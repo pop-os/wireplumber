@@ -22,16 +22,11 @@ struct _WpSiStandardLink
   GWeakRef in_item;
   const gchar *out_item_port_context;
   const gchar *in_item_port_context;
-  WpSession *session;
-  gboolean manage_lifetime;
   gboolean passive;
 
   /* activate */
   GPtrArray *node_links;
   guint n_async_ops_wait;
-
-  /* export */
-  WpImplEndpointLink *impl_endpoint_link;
 };
 
 static void si_standard_link_link_init (WpSiLinkInterface * iface);
@@ -50,52 +45,9 @@ si_standard_link_init (WpSiStandardLink * self)
 }
 
 static void
-on_item_features_changed (WpObject * item, GParamSpec * param,
-    WpSessionItem * link)
-{
-  guint features = wp_object_get_active_features (item);
-
-  /* item was deactivated; destroy the associated link */
-  if (!(features & WP_SESSION_ITEM_FEATURE_ACTIVE)) {
-    wp_trace_object (link, "destroying because item " WP_OBJECT_FORMAT
-        " was deactivated", WP_OBJECT_ARGS (item));
-    wp_session_item_reset (link);
-    g_object_unref (link);
-  }
-}
-
-static void
-on_link_features_changed (WpObject * link, GParamSpec * param, gpointer data)
-{
-  guint features = wp_object_get_active_features (link);
-
-  if (!(features & WP_SESSION_ITEM_FEATURE_EXPORTED)) {
-    wp_trace_object (link, "destroying because impl proxy was destroyed");
-    wp_session_item_reset (WP_SESSION_ITEM (link));
-    g_object_unref (link);
-  }
-}
-
-static void
 si_standard_link_reset (WpSessionItem * item)
 {
   WpSiStandardLink *self = WP_SI_STANDARD_LINK (item);
-
-  /* disconnect all signals */
-  if (self->manage_lifetime) {
-    g_autoptr (WpSessionItem) si_out = g_weak_ref_get (&self->out_item);
-    g_autoptr (WpSessionItem) si_in = g_weak_ref_get (&self->in_item);
-    if (si_out) {
-      g_signal_handlers_disconnect_by_func (si_out,
-          G_CALLBACK (on_item_features_changed), self);
-    }
-    if (si_in) {
-      g_signal_handlers_disconnect_by_func (si_in,
-          G_CALLBACK (on_item_features_changed), self);
-    }
-    g_signal_handlers_disconnect_by_func (self,
-        G_CALLBACK (on_link_features_changed), NULL);
-  }
 
   /* deactivate first */
   wp_object_deactivate (WP_OBJECT (self),
@@ -106,8 +58,6 @@ si_standard_link_reset (WpSessionItem * item)
   g_weak_ref_set (&self->in_item, NULL);
   self->out_item_port_context = NULL;
   self->in_item_port_context = NULL;
-  g_clear_object (&self->session);
-  self->manage_lifetime = FALSE;
   self->passive = FALSE;
 
   WP_SESSION_ITEM_CLASS (si_standard_link_parent_class)->reset (item);
@@ -120,7 +70,7 @@ get_and_validate_item (WpProperties * props, const gchar *key)
   const gchar *str = NULL;
 
   str = wp_properties_get (props, key);
-  if (!str || sscanf(str, "%p", &res) != 1 || !WP_IS_SI_PORT_INFO (res) ||
+  if (!str || sscanf(str, "%p", &res) != 1 || !WP_IS_SI_LINKABLE (res) ||
       !(wp_object_get_active_features (WP_OBJECT (res)) &
           WP_SESSION_ITEM_FEATURE_ACTIVE))
     return NULL;
@@ -134,7 +84,6 @@ si_standard_link_configure (WpSessionItem * item, WpProperties * p)
   WpSiStandardLink *self = WP_SI_STANDARD_LINK (item);
   g_autoptr (WpProperties) si_props = wp_properties_ensure_unique_owner (p);
   WpSessionItem *out_item, *in_item;
-  WpSession *session = NULL;
   const gchar *str;
 
   /* reset previous config */
@@ -158,13 +107,6 @@ si_standard_link_configure (WpSessionItem * item, WpProperties * p)
   self->in_item_port_context = wp_properties_get (si_props,
       "in.item.port.context");
 
-  str = wp_properties_get (si_props, "manage.lifetime");
-  if (str && sscanf(str, "%u", &self->manage_lifetime) != 1)
-    return FALSE;
-  if (!str)
-    wp_properties_setf (si_props, "manage.lifetime", "%u",
-        self->manage_lifetime);
-
   str = wp_properties_get (si_props, "passive");
   if (str && sscanf(str, "%u", &self->passive) != 1)
     return FALSE;
@@ -172,26 +114,8 @@ si_standard_link_configure (WpSessionItem * item, WpProperties * p)
     wp_properties_setf (si_props, "passive", "%u",
         self->passive);
 
-  /* session is optional (only needed if we want to export) */
-  str = wp_properties_get (si_props, "session");
-  if (str && (sscanf(str, "%p", &session) != 1 || !WP_IS_SESSION (session)))
-    return FALSE;
-  if (!str)
-    wp_properties_setf (si_props, "session", "%p", session);
-
-  if (self->manage_lifetime) {
-    g_signal_connect_object (out_item, "notify::active-features",
-        G_CALLBACK (on_item_features_changed), self, 0);
-    g_signal_connect_object (in_item, "notify::active-features",
-        G_CALLBACK (on_item_features_changed), self, 0);
-    g_signal_connect (self, "notify::active-features",
-        G_CALLBACK (on_link_features_changed), NULL);
-  }
-
   g_weak_ref_set(&self->out_item, out_item);
   g_weak_ref_set(&self->in_item, in_item);
-  if (session)
-    self->session = g_object_ref (session);
 
   wp_properties_set (si_props, "si.factory.name", SI_FACTORY_NAME);
   wp_session_item_set_properties (WP_SESSION_ITEM (self),
@@ -202,14 +126,6 @@ si_standard_link_configure (WpSessionItem * item, WpProperties * p)
 static gpointer
 si_standard_link_get_associated_proxy (WpSessionItem * item, GType proxy_type)
 {
-  WpSiStandardLink *self = WP_SI_STANDARD_LINK (item);
-
-  if (proxy_type == WP_TYPE_SESSION)
-    return self->session ? g_object_ref (self->session) : NULL;
-  else if (proxy_type == WP_TYPE_ENDPOINT_LINK)
-    return self->impl_endpoint_link ?
-        g_object_ref (self->impl_endpoint_link) : NULL;
-
   return NULL;
 }
 
@@ -222,17 +138,17 @@ si_standard_link_disable_active (WpSessionItem *si)
   WpSiAcquisition *out_acquisition, *in_acquisition;
 
   if (si_out) {
-    out_acquisition = wp_si_port_info_get_acquisition (
-        WP_SI_PORT_INFO (si_out));
+    out_acquisition = wp_si_linkable_get_acquisition (
+        WP_SI_LINKABLE (si_out));
     if (out_acquisition)
       wp_si_acquisition_release (out_acquisition, WP_SI_LINK (self),
-          WP_SI_PORT_INFO (si_out));
+          WP_SI_LINKABLE (si_out));
   }
   if (si_in) {
-    in_acquisition = wp_si_port_info_get_acquisition (WP_SI_PORT_INFO (si_in));
+    in_acquisition = wp_si_linkable_get_acquisition (WP_SI_LINKABLE (si_in));
     if (in_acquisition)
       wp_si_acquisition_release (in_acquisition, WP_SI_LINK (self),
-          WP_SI_PORT_INFO (si_in));
+          WP_SI_LINKABLE (si_in));
   }
 
   g_clear_pointer (&self->node_links, g_ptr_array_unref);
@@ -240,34 +156,6 @@ si_standard_link_disable_active (WpSessionItem *si)
 
   wp_object_update_features (WP_OBJECT (self), 0,
       WP_SESSION_ITEM_FEATURE_ACTIVE);
-}
-
-static void
-si_standard_link_disable_exported (WpSessionItem *si)
-{
-  WpSiStandardLink *self = WP_SI_STANDARD_LINK (si);
-
-  g_clear_object (&self->impl_endpoint_link);
-  wp_object_update_features (WP_OBJECT (self), 0,
-      WP_SESSION_ITEM_FEATURE_EXPORTED);
-}
-
-static void
-on_item_acquired (WpSiAcquisition * acq, GAsyncResult * res,
-    WpTransition * transition)
-{
-  WpSiStandardLink *self = wp_transition_get_source_object (transition);
-  g_autoptr (GError) error = NULL;
-
-  if (!wp_si_acquisition_acquire_finish (acq, res, &error)) {
-    wp_transition_return_error (transition, g_steal_pointer (&error));
-    return;
-  }
-
-  self->n_async_ops_wait--;
-  if (self->n_async_ops_wait == 0)
-    wp_object_update_features (WP_OBJECT (self),
-        WP_SESSION_ITEM_FEATURE_ACTIVE, 0);
 }
 
 static void
@@ -301,7 +189,6 @@ create_links (WpSiStandardLink * self, WpTransition * transition,
   guint32 out_channel, in_channel;
   gboolean link_all = FALSE;
   guint i;
-  guint32 eplink_id;
 
   /* tuple format:
       uint32 node_id;
@@ -315,9 +202,6 @@ create_links (WpSiStandardLink * self, WpTransition * transition,
 
   core = wp_object_get_core (WP_OBJECT (self));
   g_return_val_if_fail (core, FALSE);
-
-  eplink_id = wp_session_item_get_associated_proxy_id (WP_SESSION_ITEM (self),
-      WP_TYPE_ENDPOINT_LINK);
 
   self->n_async_ops_wait = 0;
   self->node_links = g_ptr_array_new_with_free_func (g_object_unref);
@@ -366,8 +250,6 @@ create_links (WpSiStandardLink * self, WpTransition * transition,
         wp_properties_setf (props, PW_KEY_LINK_OUTPUT_PORT, "%u", out_port_id);
         wp_properties_setf (props, PW_KEY_LINK_INPUT_NODE, "%u", in_node_id);
         wp_properties_setf (props, PW_KEY_LINK_INPUT_PORT, "%u", in_port_id);
-        if (eplink_id != SPA_ID_INVALID)
-          wp_properties_setf (props, "endpoint-link.id", "%u", eplink_id);
         if (self->passive)
           wp_properties_set (props, PW_KEY_LINK_PASSIVE, "true");
 
@@ -401,7 +283,171 @@ create_links (WpSiStandardLink * self, WpTransition * transition,
     }
   }
   g_variant_iter_free (iter);
-  return TRUE;
+  return self->node_links > 0;
+}
+
+static void
+get_ports_and_create_links (WpSiStandardLink *self, WpTransition *transition)
+{
+  g_autoptr (WpSiLinkable) si_out = NULL;
+  g_autoptr (WpSiLinkable) si_in = NULL;
+  g_autoptr (GVariant) out_ports = NULL;
+  g_autoptr (GVariant) in_ports = NULL;
+
+  si_out = WP_SI_LINKABLE (g_weak_ref_get (&self->out_item));
+  si_in = WP_SI_LINKABLE (g_weak_ref_get (&self->in_item));
+
+  g_return_if_fail (si_out);
+  g_return_if_fail (si_in);
+
+  out_ports = wp_si_linkable_get_ports (si_out, self->out_item_port_context);
+  in_ports = wp_si_linkable_get_ports (si_in, self->in_item_port_context);
+
+  if (!create_links (self, transition, out_ports, in_ports))
+      wp_transition_return_error (transition, g_error_new (WP_DOMAIN_LIBRARY,
+          WP_LIBRARY_ERROR_INVARIANT,
+          "Failed to create links because of wrong ports"));
+}
+
+static void
+on_adapters_ready (GObject *obj, GAsyncResult * res, gpointer p)
+{
+  WpTransition *transition = p;
+  WpSiStandardLink *self = wp_transition_get_source_object (transition);
+  g_autoptr (GError) error = NULL;
+
+  wp_si_adapter_set_ports_format_finish (WP_SI_ADAPTER (obj), res, &error);
+  if (error) {
+    wp_transition_return_error (transition, g_steal_pointer (&error));
+    return;
+  }
+
+  /* create links */
+  get_ports_and_create_links (self, transition);
+}
+
+static void
+on_out_adapter_ready (GObject *obj, GAsyncResult * res, gpointer p)
+{
+  WpTransition *transition = p;
+  WpSiStandardLink *self = wp_transition_get_source_object (transition);
+  g_autoptr (GError) error = NULL;
+  g_autoptr (WpSiAdapter) si_out = NULL;
+  g_autoptr (WpSiAdapter) si_in = NULL;
+  g_autoptr (WpSpaPod) format = NULL;
+  const gchar *mode = NULL;
+
+  wp_si_adapter_set_ports_format_finish (WP_SI_ADAPTER (obj), res, &error);
+  if (error) {
+    wp_transition_return_error (transition, g_steal_pointer (&error));
+    return;
+  }
+
+  si_out = WP_SI_ADAPTER (g_weak_ref_get (&self->out_item));
+  si_in = WP_SI_ADAPTER (g_weak_ref_get (&self->in_item));
+
+  g_return_if_fail (si_out);
+  g_return_if_fail (si_in);
+
+  /* Get out-format and set in-format */
+  format = wp_si_adapter_get_ports_format (si_out, &mode);
+  g_return_if_fail (mode);
+  g_return_if_fail (format);
+  wp_si_adapter_set_ports_format (si_in, wp_spa_pod_ref (format), mode,
+      on_adapters_ready, transition);
+}
+
+static void
+configure_and_link_adapters (WpSiStandardLink *self,
+    WpTransition *transition)
+{
+  g_autoptr (WpSiAdapter) si_out = NULL;
+  g_autoptr (WpSiAdapter) si_in = NULL;
+  gboolean out_is_device = FALSE;
+  gboolean in_is_device = FALSE;
+  const gchar *str = NULL;
+
+  si_out = WP_SI_ADAPTER (g_weak_ref_get (&self->out_item));
+  si_in = WP_SI_ADAPTER (g_weak_ref_get (&self->in_item));
+
+  g_return_if_fail (si_out);
+  g_return_if_fail (si_in);
+
+  str = wp_session_item_get_property (WP_SESSION_ITEM (si_out), "is.device");
+  out_is_device = str && pw_properties_parse_bool (str);
+  str = wp_session_item_get_property (WP_SESSION_ITEM (si_in), "is.device");
+  in_is_device = str && pw_properties_parse_bool (str);
+
+  /* Out is device node, In is not */
+  if (out_is_device && !in_is_device) {
+    const gchar *out_mode = NULL;
+    g_autoptr (WpSpaPod) out_format =
+        wp_si_adapter_get_ports_format (si_out, &out_mode);
+    g_autoptr (WpSpaPod) in_format =
+        wp_si_adapter_get_ports_format (si_in, NULL);
+    g_return_if_fail (out_mode);
+    g_return_if_fail (out_format);
+    if (in_format && wp_spa_pod_equal (out_format, in_format))
+      get_ports_and_create_links (self, transition);
+    else
+      wp_si_adapter_set_ports_format (si_in, wp_spa_pod_ref (out_format),
+          out_mode, on_adapters_ready, transition);
+  }
+
+  /* Out is not device node, In is */
+  else if (!out_is_device && in_is_device) {
+    const gchar *in_mode = NULL;
+    g_autoptr (WpSpaPod) in_format =
+        wp_si_adapter_get_ports_format (si_in, &in_mode);
+    g_autoptr (WpSpaPod) out_format =
+        wp_si_adapter_get_ports_format (si_out, NULL);
+    g_return_if_fail (in_format);
+    g_return_if_fail (in_mode);
+    if (out_format && wp_spa_pod_equal (in_format, out_format))
+      get_ports_and_create_links (self, transition);
+    else
+      wp_si_adapter_set_ports_format (si_out, wp_spa_pod_ref (in_format),
+          in_mode, on_adapters_ready, transition);
+  }
+
+  /* Both Out and In are device nodes */
+  else if (out_is_device && in_is_device) {
+    const gchar *out_mode = NULL;
+    g_autoptr (WpSpaPod) out_format =
+        wp_si_adapter_get_ports_format (si_out, &out_mode);
+    g_autoptr (WpSpaPod) in_format =
+        wp_si_adapter_get_ports_format (si_out, NULL);
+    g_return_if_fail (out_mode);
+    g_return_if_fail (out_format);
+    g_return_if_fail (in_format);
+    if (wp_spa_pod_equal (out_format, in_format))
+      get_ports_and_create_links (self, transition);
+    else
+      wp_si_adapter_set_ports_format (si_in, wp_spa_pod_ref (out_format),
+          out_mode, on_adapters_ready, transition);
+  }
+
+  /* Neither Out or In are device nodes */
+  else if (!out_is_device && !in_is_device) {
+    const gchar *mode = NULL;
+    g_autoptr (WpSpaPod) out_format = wp_si_adapter_get_ports_format (si_out,
+        &mode);
+    if (out_format) {
+      wp_si_adapter_set_ports_format (si_in, wp_spa_pod_ref (out_format), mode,
+          on_adapters_ready, transition);
+    } else {
+      g_autoptr (WpSpaPod) in_format = wp_si_adapter_get_ports_format (si_in,
+          &mode);
+      if (in_format) {
+        wp_si_adapter_set_ports_format (si_out, wp_spa_pod_ref (in_format),
+            mode, on_adapters_ready, transition);
+      } else {
+        /* Use default format */
+        wp_si_adapter_set_ports_format (si_out, NULL, NULL,
+            on_out_adapter_ready, transition);
+      }
+    }
+  }
 }
 
 static void
@@ -409,18 +455,32 @@ si_standard_link_do_link (WpSiStandardLink *self, WpTransition *transition)
 {
   g_autoptr (WpSessionItem) si_out = g_weak_ref_get (&self->out_item);
   g_autoptr (WpSessionItem) si_in = g_weak_ref_get (&self->in_item);
-  g_autoptr (GVariant) out_ports = NULL;
-  g_autoptr (GVariant) in_ports = NULL;
 
-  out_ports = wp_si_port_info_get_ports (WP_SI_PORT_INFO (si_out),
-      self->out_item_port_context);
-  in_ports = wp_si_port_info_get_ports (WP_SI_PORT_INFO (si_in),
-      self->in_item_port_context);
-
-  if (!create_links (self, transition, out_ports, in_ports))
-      wp_transition_return_error (transition, g_error_new (WP_DOMAIN_LIBRARY,
+  if (WP_IS_SI_ADAPTER (si_out) && WP_IS_SI_ADAPTER (si_in))
+    configure_and_link_adapters (self, transition);
+  else if (!WP_IS_SI_ADAPTER (si_out) && !WP_IS_SI_ADAPTER (si_in))
+    get_ports_and_create_links (self, transition);
+  else
+    wp_transition_return_error (transition, g_error_new (WP_DOMAIN_LIBRARY,
           WP_LIBRARY_ERROR_INVARIANT,
-          "Bad port info returned from one of the items"));
+          "Adapters cannot be linked with non-adapters"));
+}
+
+static void
+on_item_acquired (WpSiAcquisition * acq, GAsyncResult * res,
+    WpTransition * transition)
+{
+  WpSiStandardLink *self = wp_transition_get_source_object (transition);
+  g_autoptr (GError) error = NULL;
+
+  if (!wp_si_acquisition_acquire_finish (acq, res, &error)) {
+    wp_transition_return_error (transition, g_steal_pointer (&error));
+    return;
+  }
+
+  self->n_async_ops_wait--;
+  if (self->n_async_ops_wait == 0)
+    si_standard_link_do_link (self, transition);
 }
 
 static void
@@ -449,8 +509,8 @@ si_standard_link_enable_active (WpSessionItem *si, WpTransition *transition)
   }
 
   /* acquire */
-  out_acquisition = wp_si_port_info_get_acquisition (WP_SI_PORT_INFO (si_out));
-  in_acquisition = wp_si_port_info_get_acquisition (WP_SI_PORT_INFO (si_in));
+  out_acquisition = wp_si_linkable_get_acquisition (WP_SI_LINKABLE (si_out));
+  in_acquisition = wp_si_linkable_get_acquisition (WP_SI_LINKABLE (si_in));
   if (out_acquisition && in_acquisition)
     self->n_async_ops_wait = 2;
   else if (out_acquisition || in_acquisition)
@@ -463,47 +523,14 @@ si_standard_link_enable_active (WpSessionItem *si, WpTransition *transition)
 
   if (out_acquisition) {
     wp_si_acquisition_acquire (out_acquisition, WP_SI_LINK (self),
-        WP_SI_PORT_INFO (si_out), (GAsyncReadyCallback) on_item_acquired,
+        WP_SI_LINKABLE (si_out), (GAsyncReadyCallback) on_item_acquired,
         transition);
   }
   if (in_acquisition) {
     wp_si_acquisition_acquire (in_acquisition, WP_SI_LINK (self),
-        WP_SI_PORT_INFO (si_in), (GAsyncReadyCallback) on_item_acquired,
+        WP_SI_LINKABLE (si_in), (GAsyncReadyCallback) on_item_acquired,
         transition);
   }
-}
-
-static void
-on_impl_endpoint_link_activated (WpObject * object, GAsyncResult * res,
-    WpTransition * transition)
-{
-  WpSiStandardLink *self = wp_transition_get_source_object (transition);
-  g_autoptr (GError) error = NULL;
-
-  if (!wp_object_activate_finish (object, res, &error)) {
-    wp_transition_return_error (transition, g_steal_pointer (&error));
-    return;
-  }
-
-  wp_object_update_features (WP_OBJECT (self),
-      WP_SESSION_ITEM_FEATURE_EXPORTED, 0);
-}
-
-static void
-si_standard_link_enable_exported (WpSessionItem *si, WpTransition *transition)
-{
-  WpSiStandardLink *self = WP_SI_STANDARD_LINK (si);
-  g_autoptr (WpCore) core = wp_object_get_core (WP_OBJECT (self));
-
-  self->impl_endpoint_link = wp_impl_endpoint_link_new (core,
-      WP_SI_LINK (self));
-
-  g_signal_connect_object (self->impl_endpoint_link, "pw-proxy-destroyed",
-      G_CALLBACK (wp_session_item_handle_proxy_destroyed), self, 0);
-
-  wp_object_activate (WP_OBJECT (self->impl_endpoint_link),
-      WP_OBJECT_FEATURES_ALL, NULL,
-      (GAsyncReadyCallback) on_impl_endpoint_link_activated, transition);
 }
 
 static void
@@ -529,9 +556,7 @@ si_standard_link_class_init (WpSiStandardLinkClass * klass)
   si_class->configure = si_standard_link_configure;
   si_class->get_associated_proxy = si_standard_link_get_associated_proxy;
   si_class->disable_active = si_standard_link_disable_active;
-  si_class->disable_exported = si_standard_link_disable_exported;
   si_class->enable_active = si_standard_link_enable_active;
-  si_class->enable_exported = si_standard_link_enable_exported;
 }
 
 static GVariant *
@@ -542,18 +567,18 @@ si_standard_link_get_registration_info (WpSiLink * item)
   return g_variant_builder_end (&b);
 }
 
-static WpSiPortInfo *
+static WpSiLinkable *
 si_standard_link_get_out_item (WpSiLink * item)
 {
   WpSiStandardLink *self = WP_SI_STANDARD_LINK (item);
-  return WP_SI_PORT_INFO (g_weak_ref_get (&self->out_item));
+  return WP_SI_LINKABLE (g_weak_ref_get (&self->out_item));
 }
 
-static WpSiPortInfo *
+static WpSiLinkable *
 si_standard_link_get_in_item (WpSiLink * item)
 {
   WpSiStandardLink *self = WP_SI_STANDARD_LINK (item);
-  return WP_SI_PORT_INFO (g_weak_ref_get (&self->in_item));
+  return WP_SI_LINKABLE (g_weak_ref_get (&self->in_item));
 }
 
 static void

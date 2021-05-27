@@ -19,6 +19,10 @@ struct pw_context;
 struct pw_core;
 typedef struct _WpObjectManager WpObjectManager;
 
+/*!
+ * \brief The WpCore GType
+ * \ingroup wpcore
+ */
 #define WP_TYPE_CORE (wp_core_get_type ())
 WP_API
 G_DECLARE_FINAL_TYPE (WpCore, wp_core, WP, CORE, GObject)

@@ -13,20 +13,18 @@
 
 G_BEGIN_DECLS
 
-/**
- * WpMetadataFeatures:
- * @WP_METADATA_FEATURE_DATA: caches metadata locally
- *
- * An extension of #WpProxyFeatures
+/*!
+ * \brief An extension of WpProxyFeatures for WpMetadata objects
+ * \ingroup wpmetadata
  */
 typedef enum { /*< flags >*/
+  /*! caches metadata locally */
   WP_METADATA_FEATURE_DATA = (WP_PROXY_FEATURE_CUSTOM_START << 0),
 } WpMetadataFeatures;
 
-/**
- * WP_TYPE_METADATA:
- *
- * The #WpMetadata #GType
+/*!
+ * \brief The WpMetadata GType
+ * \ingroup wpmetadata
  */
 #define WP_TYPE_METADATA (wp_metadata_get_type ())
 
@@ -56,10 +54,9 @@ void wp_metadata_set (WpMetadata * self, guint32 subject,
 WP_API
 void wp_metadata_clear (WpMetadata * self);
 
-/**
- * WP_TYPE_IMPL_MEATADATA:
- *
- * The #WpImplMetadata #GType
+/*!
+ * \brief The WpImplMetadata GType
+ * \ingroup wpmetadata
  */
 #define WP_TYPE_IMPL_METADATA (wp_impl_metadata_get_type ())
 

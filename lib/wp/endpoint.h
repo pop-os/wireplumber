@@ -17,10 +17,9 @@
 
 G_BEGIN_DECLS
 
-/**
- * WP_TYPE_ENDPOINT:
- *
- * The #WpEndpoint #GType
+/*!
+ * \brief The WpEndpoint GType
+ * \ingroup wpendpoint
  */
 #define WP_TYPE_ENDPOINT (wp_endpoint_get_type ())
 WP_API
@@ -40,13 +39,9 @@ const gchar * wp_endpoint_get_media_class (WpEndpoint * self);
 WP_API
 WpDirection wp_endpoint_get_direction (WpEndpoint * self);
 
-WP_API
-void wp_endpoint_create_link (WpEndpoint * self, WpProperties * props);
-
-/**
- * WP_TYPE_IMPL_ENDPOINT:
- *
- * The #WpImplEndpoint #GType
+/*!
+ * \brief The WpImplEndpoint GType
+ * \ingroup wpendpoint
  */
 #define WP_TYPE_IMPL_ENDPOINT (wp_impl_endpoint_get_type ())
 WP_API

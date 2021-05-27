@@ -1,11 +1,9 @@
 wp_lib_sources = files(
-  'private/pipewire-object-mixin.c',
   'client.c',
   'component-loader.c',
   'core.c',
   'device.c',
   'endpoint.c',
-  'endpoint-link.c',
   'error.c',
   'global-proxy.c',
   'iterator.c',
@@ -21,7 +19,6 @@ wp_lib_sources = files(
   'properties.c',
   'proxy.c',
   'proxy-interfaces.c',
-  'session.c',
   'session-item.c',
   'si-factory.c',
   'si-interfaces.c',
@@ -32,14 +29,17 @@ wp_lib_sources = files(
   'wp.c',
 )
 
-wp_lib_headers = files(
+wp_lib_priv_sources = files(
+  'private/pipewire-object-mixin.c',
+)
+
+wp_lib_parse_headers = files(
   'client.h',
   'component-loader.h',
   'core.h',
   'defs.h',
   'device.h',
   'endpoint.h',
-  'endpoint-link.h',
   'error.h',
   'global-proxy.h',
   'iterator.h',
@@ -55,7 +55,6 @@ wp_lib_headers = files(
   'properties.h',
   'proxy.h',
   'proxy-interfaces.h',
-  'session.h',
   'session-item.h',
   'si-factory.h',
   'si-interfaces.h',
@@ -63,6 +62,9 @@ wp_lib_headers = files(
   'spa-type.h',
   'state.h',
   'transition.h',
+)
+
+wp_lib_headers = wp_lib_parse_headers + files(
   'wp.h',
 )
 
@@ -71,7 +73,7 @@ install_headers(wp_lib_headers,
 )
 
 enums = gnome.mkenums_simple('wpenums',
-  sources: wp_lib_headers,
+  sources: wp_lib_parse_headers,
   header_prefix: '#include "wp/defs.h"',
   decorator: 'WP_API',
   install_header: true,
@@ -93,7 +95,7 @@ wpversion = configure_file(
 wp_gen_sources += [wpversion]
 
 wp_lib = library('wireplumber-' + wireplumber_api_version,
-  wp_lib_sources, wpenums_c, wpenums_h, wpversion,
+  wp_lib_sources, wp_lib_priv_sources, wpenums_c, wpenums_h, wpversion,
   c_args : [
     '-D_GNU_SOURCE',
     '-DG_LOG_USE_STRUCTURED',
@@ -108,17 +110,6 @@ wp_lib = library('wireplumber-' + wireplumber_api_version,
   soversion: wireplumber_so_version,
   version: meson.project_version(),
 )
-
-if build_gir
-  wp_gir = gnome.generate_gir(wp_lib,
-    namespace: 'Wp',
-    nsversion: wireplumber_api_version,
-    sources: [wp_lib_sources, wp_lib_headers, wpenums_c, wpenums_h],
-    includes: ['GLib-2.0', 'GObject-2.0', 'Gio-2.0'],
-    install: true,
-  )
-  wp_gen_sources += wp_gir
-endif
 
 wp_dep = declare_dependency(
   link_with: wp_lib,

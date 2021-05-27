@@ -13,10 +13,9 @@
 
 G_BEGIN_DECLS
 
-/**
- * WP_TYPE_COMPONENT_LOADER:
- *
- * The #WpComponentLoader #GType
+/*!
+ * \brief The WpComponentLoader GType
+ * \ingroup wpcomponentloader
  */
 #define WP_TYPE_COMPONENT_LOADER (wp_component_loader_get_type ())
 WP_API

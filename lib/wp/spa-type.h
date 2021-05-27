@@ -14,13 +14,26 @@
 
 G_BEGIN_DECLS
 
+/*!
+ * \ingroup wpspatype
+ */
 typedef guint32 WpSpaType;
+/*!
+ * \ingroup wpspatype
+ */
 typedef gconstpointer WpSpaIdTable;
+/*!
+ * \ingroup wpspatype
+ */
 typedef gconstpointer WpSpaIdValue;
 struct spa_type_info;
 
 /* WpSpaType */
 
+/*!
+ * \brief The WpSpaType GType
+ * \ingroup wpspatype
+ */
 #define WP_TYPE_SPA_TYPE (wp_spa_type_get_type ())
 WP_API
 GType wp_spa_type_get_type (void);
@@ -51,9 +64,10 @@ WpSpaIdTable wp_spa_type_get_object_id_values_table (WpSpaType type);
 WP_API
 WpSpaIdTable wp_spa_type_get_values_table (WpSpaType type);
 
-
-/* WpSpaIdTable */
-
+/*!
+ * \brief The WpSpaIdTable GType
+ * \ingroup wpspatype
+ */
 #define WP_TYPE_SPA_ID_TABLE (wp_spa_id_table_get_type ())
 WP_API
 GType wp_spa_id_table_get_type (void);
@@ -75,9 +89,10 @@ WP_API
 WpSpaIdValue wp_spa_id_table_find_value_from_short_name (WpSpaIdTable table,
     const gchar * short_name);
 
-
-/* WpSpaIdValue */
-
+/*!
+ * \brief The WpSpaIdValue GType
+ * \ingroup wpspatype
+ */
 #define WP_TYPE_SPA_ID_VALUE (wp_spa_id_value_get_type ())
 WP_API
 GType wp_spa_id_value_get_type (void);

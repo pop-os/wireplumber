@@ -15,10 +15,9 @@ G_BEGIN_DECLS
 
 /* WpState */
 
-/**
- * WP_TYPE_STATE:
- *
- * The #WpState #GType
+/*!
+ * \brief The WpState GType
+ * \ingroup wpstate
  */
 #define WP_TYPE_STATE (wp_state_get_type ())
 WP_API

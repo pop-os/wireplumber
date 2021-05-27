@@ -16,10 +16,9 @@
 
 G_BEGIN_DECLS
 
-/**
- * WP_TYPE_OBJECT_MANAGER:
- *
- * The #WpObjectManager #GType
+/*!
+ * \brief The WpObjectManager GType
+ * \ingroup wpobjectmanager
  */
 #define WP_TYPE_OBJECT_MANAGER (wp_object_manager_get_type ())
 WP_API

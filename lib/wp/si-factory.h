@@ -14,10 +14,9 @@
 
 G_BEGIN_DECLS
 
-/**
- * WP_TYPE_SI_FACTORY:
- *
- * The #WpSiFactory #GType
+/*!
+ * \brief The WpSiFactory GType
+ * \ingroup wpsifactory
  */
 #define WP_TYPE_SI_FACTORY (wp_si_factory_get_type ())
 WP_API

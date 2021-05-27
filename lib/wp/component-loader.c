@@ -6,17 +6,30 @@
  * SPDX-License-Identifier: MIT
  */
 
-/**
- * SECTION: component-loader
- * @title: Components
- */
-
 #define G_LOG_DOMAIN "wp-comp-loader"
 
 #include "component-loader.h"
 #include "wp.h"
 #include "private/registry.h"
 #include <pipewire/impl.h>
+
+/*! \defgroup wpcomponentloader WpComponentLoader */
+/*!
+ * \struct WpComponentLoader
+ *
+ * The component loader is a plugin that provides the ability to load components.
+ *
+ * Components can be:
+ *  - WirePlumber modules (libraries that provide WpPlugin and WpSiFactory objects)
+ *  - PipeWire modules (libraries that extend libpipewire)
+ *  - Scripts (ex. lua scripts)
+ *  - Configuration files
+ *
+ * The WirePlumber library provides built-in support for loading WirePlumber
+ * and PipeWire modules, without a component loader. For other kinds of
+ * components, like the lua scripts and config files, a component loader is
+ * provided in by external WirePlumber module.
+ */
 
 #define WP_MODULE_INIT_SYMBOL "wireplumber__module_init"
 typedef gboolean (*WpModuleInitFunc) (WpCore *, GVariant *, GError **);
@@ -113,16 +126,22 @@ wp_component_loader_load (WpComponentLoader * self, const gchar * component,
       args, error);
 }
 
-/**
- * wp_core_load_component:
- * @self: the core
- * @component: the module name or file name
- * @type: the type of the component
- * @args: (transfer floating)(nullable): additional arguments for the component,
- *   usually a dict or a string
- * @error: (out) (optional): return location for errors, or NULL to ignore
+/*!
+ * \brief Loads the specified \a component on \a self
  *
- * Returns: %TRUE if loaded, %FALSE if there was an error
+ * The \a type will determine which component loader to use. The following types
+ * are built-in and will always work without a component loader:
+ *  - "module" - Loads a WirePlumber module
+ *  - "pw_module" - Loads a PipeWire module
+ *
+ * \ingroup wpcomponentloader
+ * \param self the core
+ * \param component the module name or file name
+ * \param type the type of the component
+ * \param args (transfer floating)(nullable): additional arguments for the component,
+ *   usually a dict or a string
+ * \param error (out) (optional): return location for errors, or NULL to ignore
+ * \returns TRUE if loaded, FALSE if there was an error
  */
 gboolean
 wp_core_load_component (WpCore * self, const gchar * component,

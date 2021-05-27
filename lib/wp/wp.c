@@ -11,35 +11,17 @@
 #include "wp.h"
 #include <pipewire/pipewire.h>
 
-/**
- * SECTION: wp
- * @title: Library Initialization
+/*!
+ * \defgroup wp Library Initialization
+ * \{
  */
 
-
-/**
- * WpInitFlags:
- * @WP_INIT_PIPEWIRE: Initializes libpipewire by calling `pw_init()`
- * @WP_INIT_SPA_TYPES: Initializes WirePlumber's SPA types integration,
- *     required for using #WpSpaPod among other things
- * @WP_INIT_SET_PW_LOG: Enables redirecting debug log messages from
- *     libpipewire to GLib's logging system, by installing WirePlumber's
- *     implementation of `struct spa_log` (see wp_spa_log_get_instance())
- *     with `pw_log_set()`
- * @WP_INIT_SET_GLIB_LOG: Installs WirePlumber's debug log handler,
- *     wp_log_writer_default(), on GLib with g_log_set_writer_func()
- * @WP_INIT_ALL: Enables all of the above
+/*!
+ * \param flags: initialization flags
  *
- * See wp_init()
- */
-
-/**
- * wp_init:
- * @flags: initialization flags
- *
- * Initializes WirePlumber and PipeWire underneath. @flags can modify
- * which parts are initialized, in cases where you want to handle part
- * of this initialization externally.
+ * Initializes WirePlumber and PipeWire underneath.
+ * \em flags can modify which parts are initialized, in cases where you want
+ * to handle part of this initialization externally.
  */
 void
 wp_init (WpInitFlags flags)
@@ -72,14 +54,15 @@ wp_init (WpInitFlags flags)
   g_type_ensure (WP_TYPE_CLIENT);
   g_type_ensure (WP_TYPE_DEVICE);
   g_type_ensure (WP_TYPE_ENDPOINT);
-  g_type_ensure (WP_TYPE_ENDPOINT_LINK);
   g_type_ensure (WP_TYPE_LINK);
   g_type_ensure (WP_TYPE_METADATA);
   g_type_ensure (WP_TYPE_NODE);
   g_type_ensure (WP_TYPE_PORT);
-  g_type_ensure (WP_TYPE_SESSION);
 }
 
+/*!
+ * \returns The Wireplumber module directory
+ */
 const gchar *
 wp_get_module_dir (void)
 {
@@ -92,6 +75,9 @@ wp_get_module_dir (void)
   return module_dir;
 }
 
+/*!
+ * \returns The Wireplumber configuration directory
+ */
 const gchar *
 wp_get_config_dir (void)
 {
@@ -104,6 +90,9 @@ wp_get_config_dir (void)
   return config_dir;
 }
 
+/*!
+ * \returns The Wireplumber data directory
+ */
 const gchar *
 wp_get_data_dir (void)
 {
@@ -115,3 +104,5 @@ wp_get_data_dir (void)
   }
   return data_dir;
 }
+
+/*! \} */
