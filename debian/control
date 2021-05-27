@@ -4,6 +4,7 @@ Priority: optional
 Maintainer: Utopia Maintenance Team <pkg-utopia-maintainers@alioth-lists.debian.net>
 Uploaders: Sjoerd Simons <sjoerd@debian.org>
 Build-Depends: debhelper-compat (= 13),
+               doxygen (>= 1.9.0),
                gobject-introspection,
                libgirepository1.0-dev,
                libglib2.0-dev (>= 2.58),
@@ -12,6 +13,7 @@ Build-Depends: debhelper-compat (= 13),
                libspa-0.2-dev,
                meson (>= 0.54.0),
                pkg-config (>= 0.22),
+               python3-lxml,
                systemd,
 # Only used for automated tests
                dbus <!nocheck>,
@@ -55,6 +57,7 @@ Architecture: linux-any
 Depends: ${shlibs:Depends},
          ${misc:Depends},
          pipewire (>= 0.3.20),
+Recommends: pipewire-pulse
 Section: video
 Description: modular session / policy manager for PipeWire
  WirePlumber is a modular session / policy manager for PipeWire and a
