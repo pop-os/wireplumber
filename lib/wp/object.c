@@ -103,6 +103,7 @@ wp_feature_activation_transition_class_init (
 }
 
 /*!
+ * \brief Gets the features requested to be activated in this transition.
  * \ingroup wpfeatureactivationtransition
  * \param self the transition
  * \returns the features that were requested to be activated in this transition;
@@ -143,6 +144,7 @@ struct _WpObjectPrivate
   WpObjectFeatures ft_active;
   GQueue *transitions; // element-type: WpFeatureActivationTransition*
   GSource *idle_advnc_source;
+  GWeakRef ongoing_transition;
 };
 
 enum {
@@ -161,6 +163,7 @@ wp_object_init (WpObject * self)
 
   g_weak_ref_init (&priv->core, NULL);
   priv->transitions = g_queue_new ();
+  g_weak_ref_init (&priv->ongoing_transition, NULL);
 }
 
 static void
@@ -189,6 +192,7 @@ wp_object_finalize (GObject * object)
   g_warn_if_fail (g_queue_is_empty (priv->transitions));
   g_clear_pointer (&priv->transitions, g_queue_free);
   g_clear_pointer (&priv->idle_advnc_source, g_source_unref);
+  g_weak_ref_clear (&priv->ongoing_transition);
   g_weak_ref_clear (&priv->core);
 
   /* everything must have been deactivated in dispose() */
@@ -263,6 +267,8 @@ wp_object_class_init (WpObjectClass * klass)
 }
 
 /*!
+ * \brief Gets the core associated with this object.
+ *
  * \ingroup wpobject
  * \param self the object
  * \returns (transfer full): the core associated with this object
@@ -277,6 +283,7 @@ wp_object_get_core (WpObject * self)
 }
 
 /*!
+ * \brief Gets the active features of this object.
  * \ingroup wpobject
  * \param self the object
  * \returns A bitset containing the active features of this object
@@ -291,6 +298,7 @@ wp_object_get_active_features (WpObject * self)
 }
 
 /*!
+ * \brief Gets the supported features of this object.
  * \ingroup wpobject
  * \param self the object
  * \returns A bitset containing the supported features of this object;
@@ -308,25 +316,46 @@ wp_object_get_supported_features (WpObject * self)
 static gboolean
 wp_object_advance_transitions (WpObject * self)
 {
-  /* keep \a self alive; in rare cases, the last transition may be
-     holding the last ref on \a self and g_queue_peek_head will crash
-     right after droping that last ref */
-  g_autoptr (WpObject) self_ref = g_object_ref (self);
   WpObjectPrivate *priv = wp_object_get_instance_private (self);
-  WpTransition *t;
+  g_autoptr (WpTransition) t = NULL;
 
   /* clear before advancing; a transition may need to schedule
      a new call to wp_object_advance_transitions() */
   g_clear_pointer (&priv->idle_advnc_source, g_source_unref);
 
-  while ((t = g_queue_peek_head (priv->transitions))) {
+  /* advance ongoing transition if any */
+  t = g_weak_ref_get (&priv->ongoing_transition);
+  if (t) {
     wp_transition_advance (t);
     if (!wp_transition_get_completed (t))
-      break;
-    g_object_unref (g_queue_pop_head (priv->transitions));
+      return G_SOURCE_REMOVE;
+  }
+
+  /* set next transition and advance */
+  if (!g_queue_is_empty (priv->transitions)) {
+    WpTransition *next = g_queue_pop_head (priv->transitions);
+    g_weak_ref_set (&priv->ongoing_transition, next);
+    wp_transition_advance (next);
   }
 
   return G_SOURCE_REMOVE;
+}
+
+static void
+on_transition_completed (WpTransition * transition, GParamSpec * param,
+    WpObject * self)
+{
+  WpObjectPrivate *priv = wp_object_get_instance_private (self);
+
+  /* advance pending transitions */
+  if (!g_queue_is_empty (priv->transitions) && !priv->idle_advnc_source) {
+    g_autoptr (WpCore) core = g_weak_ref_get (&priv->core);
+    g_return_if_fail (core != NULL);
+
+    wp_core_idle_add (core, &priv->idle_advnc_source,
+        G_SOURCE_FUNC (wp_object_advance_transitions), g_object_ref (self),
+        g_object_unref);
+  }
 }
 
 /*!
@@ -385,12 +414,15 @@ wp_object_activate_closure (WpObject * self,
       WP_TYPE_FEATURE_ACTIVATION_TRANSITION, self, cancellable, closure);
   wp_transition_set_source_tag (transition, wp_object_activate);
   wp_transition_set_data (transition, GUINT_TO_POINTER (features), NULL);
+  g_signal_connect_object (transition, "notify::completed",
+      G_CALLBACK (on_transition_completed), self, 0);
 
-  g_queue_push_tail (priv->transitions, g_object_ref (transition));
+  g_queue_push_tail (priv->transitions, transition);
 
   if (!priv->idle_advnc_source) {
     wp_core_idle_add (core, &priv->idle_advnc_source,
-        G_SOURCE_FUNC (wp_object_advance_transitions), self, NULL);
+        G_SOURCE_FUNC (wp_object_advance_transitions), g_object_ref (self),
+        g_object_unref);
   }
 }
 
@@ -457,6 +489,7 @@ wp_object_update_features (WpObject * self, WpObjectFeatures activated,
 
   WpObjectPrivate *priv = wp_object_get_instance_private (self);
   guint old_ft = priv->ft_active;
+  g_autoptr (WpTransition) t = NULL;
 
   priv->ft_active |= activated;
   priv->ft_active &= ~deactivated;
@@ -467,11 +500,13 @@ wp_object_update_features (WpObject * self, WpObjectFeatures activated,
     g_object_notify (G_OBJECT (self), "active-features");
   }
 
-  if (!g_queue_is_empty (priv->transitions) && !priv->idle_advnc_source) {
+  t = g_weak_ref_get (&priv->ongoing_transition);
+  if ((t || !g_queue_is_empty (priv->transitions)) && !priv->idle_advnc_source) {
     g_autoptr (WpCore) core = g_weak_ref_get (&priv->core);
     g_return_if_fail (core != NULL);
 
     wp_core_idle_add (core, &priv->idle_advnc_source,
-        G_SOURCE_FUNC (wp_object_advance_transitions), self, NULL);
+        G_SOURCE_FUNC (wp_object_advance_transitions), g_object_ref (self),
+        g_object_unref);
   }
 }

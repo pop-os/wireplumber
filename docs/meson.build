@@ -40,7 +40,7 @@ if build_doc or build_gir
     configuration: doxy_wp_conf_data
   )
 
-  doxyxml_wp_depfiles = [wp_lib_sources, wp_lib_parse_headers]
+  doxyxml_wp_depfiles = [wp_lib_sources, wp_lib_headers]
   doxyxml_wp = custom_target('doxyxml_wp',
     command: [doxygen_p, doxyfile_wp],
     depend_files: doxyxml_wp_depfiles,
@@ -106,11 +106,30 @@ if build_gir
     build_by_default: true,
   )
 
+  # A dummy library dependency to force meson to make the gir target
+  # depend on wp-gtkdoc.h, because generate_gir() doesn't add dependencies
+  # on its sources (meson bug)
+  # fixed in 0.59 by https://github.com/mesonbuild/meson/pull/8805
+  dummy_c = custom_target('dummy_c',
+    command: ['echo', 'int dummy(void) { return 0; }'],
+    capture: true,
+    output: 'dummy.c',
+    build_by_default: true,
+  )
+  libdummy = library('dummy',
+    wp_gtkdoc_h, dummy_c,
+    install: false,
+    soversion: '0',
+    version: '0.0.0',
+  )
+  dummy_dep = declare_dependency(link_with: libdummy)
+
   gnome.generate_gir(wp_lib,
-    dependencies: wp_dep,
+    dependencies: [wp_dep, dummy_dep],
     namespace: 'Wp',
     nsversion: wireplumber_api_version,
-    sources: [wpenums_h, wp_lib_parse_headers, wp_gtkdoc_h],
+    sources: [wpenums_h, wp_gtkdoc_h, wp_lib_headers],
+    include_directories: [wpenums_include_dir],
     includes: ['GLib-2.0', 'GObject-2.0', 'Gio-2.0'],
     install: true,
   )

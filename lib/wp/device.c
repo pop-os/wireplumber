@@ -143,8 +143,9 @@ wp_device_set_param (gpointer instance, guint32 id, guint32 flags,
     WpSpaPod * param)
 {
   WpPwObjectMixinData *d = wp_pw_object_mixin_get_data (instance);
+  g_autoptr (WpSpaPod) p = param;
   return pw_device_set_param (d->iface, id, flags,
-      wp_spa_pod_get_spa_pod (param));
+      wp_spa_pod_get_spa_pod (p));
 }
 
 static void
@@ -342,7 +343,8 @@ spa_device_event_event (void *data, const struct spa_event *event)
 
   if (child && !g_strcmp0 (type, "ObjectConfig") &&
       WP_IS_PIPEWIRE_OBJECT (child) && props) {
-    wp_pipewire_object_set_param (WP_PIPEWIRE_OBJECT (child), "Props", 0, props);
+    wp_pipewire_object_set_param (WP_PIPEWIRE_OBJECT (child), "Props", 0,
+        g_steal_pointer (&props));
   }
 }
 
@@ -564,6 +566,8 @@ wp_spa_device_class_init (WpSpaDeviceClass * klass)
 }
 
 /*!
+ * \brief Constructs an SPA Device object from an existing device handle.
+ *
  * \ingroup wpspadevice
  * \param core the wireplumber core
  * \param spa_device_handle the spa device handle
@@ -622,6 +626,8 @@ wp_spa_device_new_from_spa_factory (WpCore * core,
 }
 
 /*!
+ * \brief Gets the properties of this device.
+ *
  * \ingroup wpspadevice
  * \param self the spa device
  * \returns (transfer full): the device properties
@@ -634,6 +640,8 @@ wp_spa_device_get_properties (WpSpaDevice * self)
 }
 
 /*!
+ * \brief Gets one of the objects managed by this device.
+ *
  * \ingroup wpspadevice
  * \param self the spa device
  * \param id the (device-internal) id of the object to get
@@ -650,6 +658,8 @@ wp_spa_device_get_managed_object (WpSpaDevice * self, guint id)
 }
 
 /*!
+ * \brief Stores or removes a managed object into/from a device.
+ *
  * \ingroup wpspadevice
  * \param self the spa device
  * \param id the (device-internal) id of the object

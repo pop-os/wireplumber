@@ -30,6 +30,8 @@ struct _WpSiAudioAdapter
   gboolean monitor;
   WpDirection direction;
   gboolean is_device;
+  gboolean dont_remix;
+  gboolean is_autoconnect;
   WpSpaPod *format;
   gchar mode[32];
   GTask *format_task;
@@ -66,6 +68,8 @@ si_audio_adapter_reset (WpSessionItem * item)
   self->monitor = FALSE;
   self->direction = WP_DIRECTION_INPUT;
   self->is_device = FALSE;
+  self->dont_remix = FALSE;
+  self->is_autoconnect = FALSE;
   if (self->format_task) {
     g_task_return_new_error (self->format_task, WP_DOMAIN_LIBRARY,
         WP_LIBRARY_ERROR_OPERATION_FAILED,
@@ -84,7 +88,7 @@ si_audio_adapter_configure (WpSessionItem * item, WpProperties *p)
   WpSiAudioAdapter *self = WP_SI_AUDIO_ADAPTER (item);
   g_autoptr (WpProperties) si_props = wp_properties_ensure_unique_owner (p);
   WpNode *node = NULL;
-  WpProperties *node_props = NULL;
+  g_autoptr (WpProperties) node_props = NULL;
   const gchar *str;
 
   /* reset previous config */
@@ -95,6 +99,12 @@ si_audio_adapter_configure (WpSessionItem * item, WpProperties *p)
     return FALSE;
 
   node_props = wp_pipewire_object_get_properties (WP_PIPEWIRE_OBJECT (node));
+
+  str = wp_properties_get (node_props, PW_KEY_STREAM_DONT_REMIX);
+  self->dont_remix = str && pw_properties_parse_bool (str);
+
+  str = wp_properties_get (node_props, PW_KEY_NODE_AUTOCONNECT);
+  self->is_autoconnect = str && pw_properties_parse_bool (str);
 
   str = wp_properties_get (si_props, "name");
   if (str) {
@@ -143,6 +153,8 @@ si_audio_adapter_configure (WpSessionItem * item, WpProperties *p)
 
   wp_properties_set (si_props, "si.factory.name", SI_FACTORY_NAME);
   wp_properties_setf (si_props, "is.device", "%u", self->is_device);
+  wp_properties_setf (si_props, "dont.remix", "%u", self->dont_remix);
+  wp_properties_setf (si_props, "is.autoconnect", "%u", self->is_autoconnect);
   wp_session_item_set_properties (WP_SESSION_ITEM (self),
       g_steal_pointer (&si_props));
   return TRUE;
@@ -242,7 +254,7 @@ on_node_enum_format_done (WpPipewireObject * proxy, GAsyncResult * res,
   /* set the chosen format on the node */
   format = format_audio_raw_build (&spa_format);
   wp_pipewire_object_set_param (WP_PIPEWIRE_OBJECT (self->node), "Format", 0,
-      format);
+      wp_spa_pod_ref (format));
 
   /* set chosen format in the ports */
   wp_si_adapter_set_ports_format (WP_SI_ADAPTER (self), wp_spa_pod_ref (format),
@@ -263,7 +275,7 @@ on_feature_ports_ready (WpObject * node, GAsyncResult * res,
   }
 
   /* If device node, enum available formats and set one of them */
-  if (self->is_device)
+  if (self->is_device || self->dont_remix || !self->is_autoconnect)
     wp_pipewire_object_enum_params (WP_PIPEWIRE_OBJECT (self->node),
         "EnumFormat", NULL, NULL,
         (GAsyncReadyCallback) on_node_enum_format_done, transition);
@@ -442,13 +454,13 @@ build_adapter_format (WpSiAudioAdapter * self, WpSpaPod *format)
 }
 
 static void
-si_audio_adapter_set_ports_format (WpSiAdapter * item, WpSpaPod *format,
+si_audio_adapter_set_ports_format (WpSiAdapter * item, WpSpaPod *f,
     const gchar *mode, GAsyncReadyCallback callback, gpointer data)
 {
   WpSiAudioAdapter *self = WP_SI_AUDIO_ADAPTER (item);
   g_autoptr (WpCore) core = wp_object_get_core (WP_OBJECT (self));
+  g_autoptr (WpSpaPod) format = f;
   g_autoptr (WpSpaPod) new_format = NULL;
-  g_autoptr (WpSpaPod) pod = NULL;
 
   g_return_if_fail (core);
 
@@ -478,16 +490,15 @@ si_audio_adapter_set_ports_format (WpSiAdapter * item, WpSpaPod *format,
   strncpy (self->mode, mode ? mode : "dsp", sizeof (self->mode) - 1);
 
   /* configure DSP with chosen format */
-  pod = wp_spa_pod_new_object (
-      "Spa:Pod:Object:Param:PortConfig", "PortConfig",
-      "direction",  "I", self->direction,
-      "mode",       "K", self->mode,
-      "monitor",    "b", self->monitor,
-      "control",    "b", self->control_port,
-      "format",     "P", self->format,
-      NULL);
   wp_pipewire_object_set_param (WP_PIPEWIRE_OBJECT (self->node),
-      "PortConfig", 0, pod);
+      "PortConfig", 0, wp_spa_pod_new_object (
+          "Spa:Pod:Object:Param:PortConfig", "PortConfig",
+          "direction",  "I", self->direction,
+          "mode",       "K", self->mode,
+          "monitor",    "b", self->monitor,
+          "control",    "b", self->control_port,
+          "format",     "P", self->format,
+          NULL));
 
   /* sync until new ports are available */
   wp_core_sync (core, NULL, (GAsyncReadyCallback) on_sync_done, self);

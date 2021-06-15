@@ -182,6 +182,8 @@ si_audio_endpoint_enable_active (WpSessionItem *si, WpTransition *transition)
   g_autofree gchar *name = g_strdup_printf ("control.%s", self->name);
   g_autofree gchar *desc = g_strdup_printf ("%s %s Endpoint", self->role,
       (self->direction == WP_DIRECTION_OUTPUT) ? "Capture" : "Playback");
+  g_autofree gchar *media = g_strdup_printf ("Audio/%s/Virtual",
+      (self->direction == WP_DIRECTION_OUTPUT) ? "Source" : "Sink");
 
   if (!wp_session_item_is_configured (si)) {
     wp_transition_return_error (transition,
@@ -194,10 +196,11 @@ si_audio_endpoint_enable_active (WpSessionItem *si, WpTransition *transition)
   self->node = wp_node_new_from_factory (core, "adapter",
       wp_properties_new (
           PW_KEY_NODE_NAME, name,
-          PW_KEY_MEDIA_CLASS, "Audio/Duplex",
+          PW_KEY_MEDIA_CLASS, media,
           PW_KEY_FACTORY_NAME, "support.null-audio-sink",
           PW_KEY_NODE_DESCRIPTION, desc,
           "monitor.channel-volumes", "true",
+          "wireplumber.is-endpoint", "true",
           NULL));
   if (!self->node) {
     wp_transition_return_error (transition,
@@ -481,13 +484,13 @@ build_adapter_format (WpSiAudioEndpoint * self, WpSpaPod *format)
 }
 
 static void
-si_audio_endpoint_set_ports_format (WpSiAdapter * item, WpSpaPod *format,
+si_audio_endpoint_set_ports_format (WpSiAdapter * item, WpSpaPod *f,
     const gchar *mode, GAsyncReadyCallback callback, gpointer data)
 {
   WpSiAudioEndpoint *self = WP_SI_AUDIO_ENDPOINT (item);
   g_autoptr (WpCore) core = wp_object_get_core (WP_OBJECT (self));
+  g_autoptr (WpSpaPod) format = f;
   g_autoptr (WpSpaPod) new_format = NULL;
-  g_autoptr (WpSpaPod) pod = NULL;
 
   g_return_if_fail (core);
 
@@ -517,15 +520,14 @@ si_audio_endpoint_set_ports_format (WpSiAdapter * item, WpSpaPod *format,
   strncpy (self->mode, mode ? mode : "dsp", sizeof (self->mode) - 1);
 
   /* configure DSP with chosen format */
-  pod = wp_spa_pod_new_object (
-      "Spa:Pod:Object:Param:PortConfig", "PortConfig",
-      "direction",  "I", WP_DIRECTION_INPUT,
-      "mode",       "K", self->mode,
-      "monitor",    "b", TRUE,
-      "format",     "P", self->format,
-      NULL);
   wp_pipewire_object_set_param (WP_PIPEWIRE_OBJECT (self->node),
-      "PortConfig", 0, pod);
+      "PortConfig", 0, wp_spa_pod_new_object (
+          "Spa:Pod:Object:Param:PortConfig", "PortConfig",
+          "direction",  "I", WP_DIRECTION_INPUT,
+          "mode",       "K", self->mode,
+          "monitor",    "b", TRUE,
+          "format",     "P", self->format,
+          NULL));
 
   /* sync until new ports are available */
   wp_core_sync (core, NULL, (GAsyncReadyCallback) on_sync_done, self);
