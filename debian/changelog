@@ -12,6 +12,8 @@ wireplumber (0.4.0-1) UNRELEASED; urgency=medium
 
   [ Dylan Aïssi ]
   * New upstream version 0.4.0
+  * Remove d/p/meson-force-the-gir-target-to-depend-on-wp-gtkdoc.h.patch,
+      applied upstream.
 
  -- Dylan Aïssi <daissi@debian.org>  Tue, 15 Jun 2021 17:39:40 +0200
 
