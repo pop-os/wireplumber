@@ -57,6 +57,9 @@ libwireplumber-0.4.so.0 libwireplumber-0.4-0 #MINVER#
  wp_impl_node_new_from_pw_factory@Base 0.3.95
  wp_impl_node_new_wrap@Base 0.3.95
  wp_init@Base 0.3.95
+ wp_init_flags_get_type@Base 0.4.0
+ wp_interest_match_flags_get_type@Base 0.4.0
+ wp_interest_match_get_type@Base 0.4.0
  wp_iterator_fold@Base 0.3.95
  wp_iterator_foreach@Base 0.3.95
  wp_iterator_get_type@Base 0.3.95
@@ -105,7 +108,7 @@ libwireplumber-0.4.so.0 libwireplumber-0.4-0 #MINVER#
  wp_object_get_supported_features@Base 0.3.95
  wp_object_get_type@Base 0.3.95
  wp_object_interest_add_constraint@Base 0.3.95
- wp_object_interest_copy@Base 0.3.95
+#MISSING: 0.4.0# wp_object_interest_copy@Base 0.3.95
  wp_object_interest_get_type@Base 0.3.95
  wp_object_interest_matches@Base 0.3.95
  wp_object_interest_matches_full@Base 0.3.95
@@ -423,8 +426,6 @@ libwireplumber-module-default-nodes-api.so libwireplumber-0.4-0 #MINVER#
 libwireplumber-module-default-nodes.so libwireplumber-0.4-0 #MINVER#
  wireplumber__module_init@Base 0.3.95
 libwireplumber-module-default-profile.so libwireplumber-0.4-0 #MINVER#
- wireplumber__module_init@Base 0.3.95
-libwireplumber-module-default-routes.so libwireplumber-0.4-0 #MINVER#
  wireplumber__module_init@Base 0.3.95
 libwireplumber-module-device-activation.so libwireplumber-0.4-0 #MINVER#
  wireplumber__module_init@Base 0.3.95
