@@ -15,6 +15,7 @@ wireplumber (0.4.0-1) UNRELEASED; urgency=medium
   * Remove d/p/meson-force-the-gir-target-to-depend-on-wp-gtkdoc.h.patch,
       applied upstream.
   * Update symbols file
+  * Add a versioned dependency for gir1.2-wp-0.4
 
  -- Dylan Aïssi <daissi@debian.org>  Tue, 15 Jun 2021 17:39:40 +0200
 
