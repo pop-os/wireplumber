@@ -108,7 +108,6 @@ libwireplumber-0.4.so.0 libwireplumber-0.4-0 #MINVER#
  wp_object_get_supported_features@Base 0.3.95
  wp_object_get_type@Base 0.3.95
  wp_object_interest_add_constraint@Base 0.3.95
-#MISSING: 0.4.0# wp_object_interest_copy@Base 0.3.95
  wp_object_interest_get_type@Base 0.3.95
  wp_object_interest_matches@Base 0.3.95
  wp_object_interest_matches_full@Base 0.3.95
