@@ -1,4 +1,4 @@
-wireplumber (0.4.0-1) UNRELEASED; urgency=medium
+wireplumber (0.4.0-1) experimental; urgency=medium
 
   * Team upload.
 
@@ -17,7 +17,7 @@ wireplumber (0.4.0-1) UNRELEASED; urgency=medium
   * Update symbols file
   * Add a versioned dependency for gir1.2-wp-0.4
 
- -- Dylan Aïssi <daissi@debian.org>  Tue, 15 Jun 2021 17:39:40 +0200
+ -- Dylan Aïssi <daissi@debian.org>  Wed, 16 Jun 2021 12:09:12 +0200
 
 wireplumber (0.3.95-1) experimental; urgency=medium
 
