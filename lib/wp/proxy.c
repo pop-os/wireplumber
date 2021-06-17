@@ -274,6 +274,7 @@ wp_proxy_get_bound_id (WpProxy * self)
 }
 
 /*!
+ * \brief Gets the interface type of the proxied object
  * \ingroup wpproxy
  * \param self the proxy
  * \param version (out) (optional): the version of the interface
@@ -296,6 +297,7 @@ wp_proxy_get_interface_type (WpProxy * self, guint32 * version)
 }
 
 /*!
+ * \brief Gets the `pw_proxy` wrapped by this proxy object
  * \ingroup wpproxy
  * \param self the proxy
  * \returns a pointer to the underlying `pw_proxy` object
@@ -341,6 +343,11 @@ static void
 bind_error (WpProxy * proxy, int seq, int res, const gchar *msg,
     WpTransition * transition)
 {
+  WpProxyPrivate *priv = wp_proxy_get_instance_private (proxy);
+
+  if (priv->pw_proxy)
+    pw_proxy_destroy (priv->pw_proxy);
+
   wp_transition_return_error (transition, g_error_new (WP_DOMAIN_LIBRARY,
           WP_LIBRARY_ERROR_OPERATION_FAILED, "%s", msg));
 }

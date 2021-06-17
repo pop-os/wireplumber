@@ -91,8 +91,8 @@ function createLink (si, si_target_ep)
   end
 
   Log.info (string.format("link %s <-> %s",
-      node.properties["node.name"],
-      si_target_ep.properties["name"]))
+      tostring(node.properties["node.name"]),
+      tostring(si_target_ep.properties["name"])))
 
   -- create and configure link
   local si_link = SessionItem ( "si-standard-link" )
@@ -137,7 +137,7 @@ function isSiLinkableValid (si)
 
   -- only handle stream session items
   local media_class = node.properties["media.class"]
-  if not string.find (media_class, "Stream") then
+  if not media_class or not string.find (media_class, "Stream") then
     return false
   end
 
@@ -158,9 +158,9 @@ function handleSiLinkable (si)
   end
 
   local node = si:get_associated_proxy ("node")
-  local media_class = node.properties["media.class"]
-  local media_role = node.properties["media.role"]
-  Log.info (si, "handling item " .. node.properties["node.name"] ..
+  local media_class = node.properties["media.class"] or ""
+  local media_role = node.properties["media.role"] or ""
+  Log.info (si, "handling item " .. tostring(node.properties["node.name"]) ..
       " with role " .. media_role)
 
   -- find proper target endpoint
@@ -174,7 +174,7 @@ function handleSiLinkable (si)
   local si_link, si_peer_ep = getSiLinkAndSiPeerEndpoint (si)
   if si_link then
     if si_peer_ep and si_peer_ep.id == si_target_ep.id then
-      Log.info (si, "already linked to proper target endpoint")
+      Log.debug (si, "already linked to proper target endpoint")
       return
     end
 
@@ -193,7 +193,7 @@ function unhandleSiLinkable (si)
   end
 
   local node = si:get_associated_proxy ("node")
-  Log.info (si, "unhandling item " .. node.properties["node.name"])
+  Log.info (si, "unhandling item " .. tostring(node.properties["node.name"]))
 
   -- remove any links associated with this item
   for silink in silinks_om:iterate() do

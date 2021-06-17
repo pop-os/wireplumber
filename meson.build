@@ -1,5 +1,5 @@
 project('wireplumber', ['c'],
-  version : '0.3.96',
+  version : '0.4.0',
   license : 'MIT',
   meson_version : '>= 0.54.0',
   default_options : [
@@ -68,6 +68,7 @@ endif
 
 gnome = import('gnome')
 pkgconfig = import('pkgconfig')
+fs = import('fs')
 
 wp_lib_include_dir = include_directories('lib')
 

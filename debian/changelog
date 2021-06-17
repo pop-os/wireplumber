@@ -1,5 +1,8 @@
-wireplumber (0.3.96-1) UNRELEASED; urgency=medium
+wireplumber (0.4.0-1) experimental; urgency=medium
 
+  * Team upload.
+
+  [ Frederic Danis ]
   * New upstream version 0.3.96
   * debian: Stop disabling doc and force gobject-introspection
   * d/patches: Remove merged patches
@@ -7,7 +10,14 @@ wireplumber (0.3.96-1) UNRELEASED; urgency=medium
   * debian: Update libwireplumber-0.4 symbols
   * d/patches: meson: force the gir target to depend on wp-gtkdoc.h
 
- -- Frederic Danis <frederic.danis@collabora.com>  Wed, 27 May 2021 08:52:29 +0200
+  [ Dylan Aïssi ]
+  * New upstream version 0.4.0
+  * Remove d/p/meson-force-the-gir-target-to-depend-on-wp-gtkdoc.h.patch,
+      applied upstream.
+  * Update symbols file
+  * Add a versioned dependency for gir1.2-wp-0.4
+
+ -- Dylan Aïssi <daissi@debian.org>  Wed, 16 Jun 2021 12:09:12 +0200
 
 wireplumber (0.3.95-1) experimental; urgency=medium
 

@@ -42,8 +42,8 @@ function createLink (si, si_target)
   end
 
   Log.info (string.format("link %s <-> %s",
-      node.properties["node.name"],
-      target_node.properties["node.name"]))
+      tostring(node.properties["node.name"]),
+      tostring(target_node.properties["node.name"])))
 
   -- create and configure link
   local si_link = SessionItem ( "si-standard-link" )
@@ -176,7 +176,7 @@ function isSiLinkableValid (si)
 
   -- only handle stream session items
   local media_class = node.properties["media.class"]
-  if not string.find (media_class, "Stream") then
+  if not media_class or not string.find (media_class, "Stream") then
     return false
   end
 
@@ -189,6 +189,22 @@ function isSiLinkableValid (si)
   return true
 end
 
+function getNodeAutoconnect (node)
+  local auto_connect = node.properties["node.autoconnect"]
+  if auto_connect then
+    return (auto_connect == "true" or auto_connect == "1")
+  end
+  return false
+end
+
+function getNodeReconnect (node)
+  local dont_reconnect = node.properties["node.dont-reconnect"]
+  if dont_reconnect then
+    return not (dont_reconnect == "true" or dont_reconnect == "1")
+  end
+  return true
+end
+
 function handleSiLinkable (si)
   -- check if item is valid
   if not isSiLinkableValid (si) then
@@ -196,12 +212,26 @@ function handleSiLinkable (si)
   end
 
   local node = si:get_associated_proxy ("node")
-  local media_class = node.properties["media.class"]
-  Log.info (si, "handling item " .. node.properties["node.name"])
+  local media_class = node.properties["media.class"] or ""
+  Log.info (si, "handling item " .. tostring(node.properties["node.name"]))
+
+  local autoconnect = getNodeAutoconnect (node)
+  if not autoconnect then
+    Log.info (si, "node does not need to be autoconnected")
+    return
+  end
+
+  -- get reconnect
+  local reconnect = getNodeReconnect (node)
 
   -- find target
   local si_target = findDefinedTarget (node)
-  if not si_target then
+  if not si_target and not reconnect then
+    Log.info (si, "removing item and node")
+    si:remove()
+    node:request_destroy()
+    return
+  elseif not si_target and reconnect then
     si_target = findUndefinedTarget (media_class)
   end
   if not si_target then
@@ -211,11 +241,11 @@ function handleSiLinkable (si)
 
   -- Check if item is linked to proper target, otherwise re-link
   local target_node = si_target:get_associated_proxy ("node")
-  local target_media_class = target_node.properties["media.class"]
+  local target_media_class = target_node.properties["media.class"] or ""
   local si_link, si_peer = getSiLinkAndSiPeer (si, target_media_class)
   if si_link then
     if si_peer and si_peer.id == si_target.id then
-      Log.info (si, "already linked to proper target")
+      Log.debug (si, "already linked to proper target")
       return
     end
 
@@ -234,7 +264,7 @@ function unhandleSiLinkable (si)
   end
 
   local node = si:get_associated_proxy ("node")
-  Log.info (si, "unhandling item " .. node.properties["node.name"])
+  Log.info (si, "unhandling item " .. tostring(node.properties["node.name"]))
 
   -- remove any links associated with this item
   for silink in silinks_om:iterate() do
