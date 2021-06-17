@@ -122,7 +122,7 @@ wp_global_proxy_get_property (GObject * object, guint property_id,
     g_value_set_uint (value, wp_global_proxy_get_permissions (self));
     break;
   case PROP_GLOBAL_PROPERTIES:
-    g_value_set_boxed (value, wp_global_proxy_get_global_properties (self));
+    g_value_take_boxed (value, wp_global_proxy_get_global_properties (self));
     break;
   default:
     G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -321,11 +321,13 @@ wp_global_proxy_request_destroy (WpGlobalProxy * self)
 
   if (priv->global && core) {
     WpRegistry *reg = wp_core_get_registry (core);
-    pw_registry_destroy (reg->pw_registry, priv->global->id);
+    if (reg->pw_registry)
+      pw_registry_destroy (reg->pw_registry, priv->global->id);
   }
 }
 
 /*!
+ * \brief Gets the permissions of a pipewire global
  * \ingroup wpglobalproxy
  * \param self the pipewire global
  * \returns the permissions that wireplumber has on this object
@@ -342,6 +344,7 @@ wp_global_proxy_get_permissions (WpGlobalProxy * self)
 }
 
 /*!
+ * \brief Gets the global properties of a pipewire global
  * \ingroup wpglobalproxy
  * \param self the pipewire global
  * \returns (transfer full): the global (immutable) properties of this

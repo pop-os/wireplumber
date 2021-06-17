@@ -57,6 +57,40 @@ typedef enum {
 } WpConstraintVerb;
 
 /*!
+ * \brief Flags that indicate which constraints have been matched in
+ *  wp_object_interest_matches_full()
+ * \ingroup wpobjectinterest
+ */
+typedef enum { /*< flags >*/
+  WP_INTEREST_MATCH_NONE = 0,
+  WP_INTEREST_MATCH_GTYPE = (1 << 0),
+  WP_INTEREST_MATCH_PW_GLOBAL_PROPERTIES = (1 << 1),
+  WP_INTEREST_MATCH_PW_PROPERTIES = (1 << 2),
+  WP_INTEREST_MATCH_G_PROPERTIES = (1 << 3),
+} WpInterestMatch;
+
+/*!
+ * \brief Special WpInterestMatch value that indicates that all constraints
+ * have been matched
+ * \ingroup wpobjectinterest
+ */
+static const gint WP_INTEREST_MATCH_ALL =
+    (WP_INTEREST_MATCH_GTYPE |
+     WP_INTEREST_MATCH_PW_GLOBAL_PROPERTIES |
+     WP_INTEREST_MATCH_PW_PROPERTIES |
+     WP_INTEREST_MATCH_G_PROPERTIES);
+
+/*!
+ * \brief Flags to alter the behaviour of wp_object_interest_matches_full()
+ * \ingroup wpobjectinterest
+ */
+typedef enum { /*< flags >*/
+  WP_INTEREST_MATCH_FLAGS_NONE = 0,
+  /*! check all the constraints instead of returning after the first mis-match */
+  WP_INTEREST_MATCH_FLAGS_CHECK_ALL = (1 << 0),
+} WpInterestMatchFlags;
+
+/*!
  * \brief The WpObjectInterest GType
  * \ingroup wpobjectinterest
  */
@@ -81,9 +115,6 @@ void wp_object_interest_add_constraint (WpObjectInterest * self,
     WpConstraintVerb verb, GVariant * value);
 
 WP_API
-WpObjectInterest * wp_object_interest_copy (WpObjectInterest * self);
-
-WP_API
 WpObjectInterest * wp_object_interest_ref (WpObjectInterest *self);
 
 WP_API
@@ -96,9 +127,9 @@ WP_API
 gboolean wp_object_interest_matches (WpObjectInterest * self, gpointer object);
 
 WP_API
-gboolean wp_object_interest_matches_full (WpObjectInterest * self,
-    GType object_type, gpointer object, WpProperties * pw_props,
-    WpProperties * pw_global_props);
+WpInterestMatch wp_object_interest_matches_full (WpObjectInterest * self,
+    WpInterestMatchFlags flags, GType object_type, gpointer object,
+    WpProperties * pw_props, WpProperties * pw_global_props);
 
 G_DEFINE_AUTOPTR_CLEANUP_FUNC (WpObjectInterest, wp_object_interest_unref)
 

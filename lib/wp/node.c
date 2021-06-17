@@ -268,8 +268,9 @@ wp_node_set_param (gpointer instance, guint32 id, guint32 flags,
     WpSpaPod * param)
 {
   WpPwObjectMixinData *d = wp_pw_object_mixin_get_data (instance);
+  g_autoptr (WpSpaPod) p = param;
   return pw_node_set_param (d->iface, id, flags,
-      wp_spa_pod_get_spa_pod (param));
+      wp_spa_pod_get_spa_pod (p));
 }
 
 static void
@@ -314,9 +315,10 @@ wp_node_new_from_factory (WpCore * core,
 }
 
 /*!
+ * \brief Gets the current state of the node
  * \ingroup wpnode
  * \param self the node
- * \param error the error
+ * \param error (out) (optional) (transfer none): the error
  * \returns the current state of the node
  */
 WpNodeState
@@ -756,8 +758,9 @@ wp_impl_node_set_param (gpointer instance, guint32 id, guint32 flags,
     WpSpaPod * param)
 {
   WpPwObjectMixinData *d = wp_pw_object_mixin_get_data (instance);
+  g_autoptr (WpSpaPod) p = param;
   return spa_node_set_param (d->iface, id, flags,
-      wp_spa_pod_get_spa_pod (param));
+      wp_spa_pod_get_spa_pod (p));
 }
 
 static void
@@ -771,9 +774,10 @@ wp_impl_node_pw_object_mixin_priv_interface_init (
 }
 
 /*!
+ * \brief Constructs a node object from an existing `pw_impl_node`.
  * \ingroup wpimplnode
  * \param core the wireplumber core
- * \param node an existing pw_impl_node to wrap
+ * \param node an existing `pw_impl_node` to wrap
  * \returns (transfer full): A new WpImplNode wrapping \a node
  */
 WpImplNode *

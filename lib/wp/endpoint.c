@@ -201,8 +201,9 @@ wp_endpoint_set_param (gpointer instance, guint32 id, guint32 flags,
     WpSpaPod * param)
 {
   WpPwObjectMixinData *d = wp_pw_object_mixin_get_data (instance);
+  g_autoptr (WpSpaPod) p = param;
   return pw_endpoint_set_param (d->iface, id, flags,
-      wp_spa_pod_get_spa_pod (param));
+      wp_spa_pod_get_spa_pod (p));
 }
 
 static void
@@ -352,10 +353,14 @@ on_si_endpoint_properties_changed (WpSiEndpoint * item, WpImplEndpoint * self)
 }
 
 static void
-on_node_params_changed (WpNode * node, guint32 param_id, WpImplEndpoint * self)
+on_node_params_changed (WpNode * node, const gchar *param_name,
+    WpImplEndpoint * self)
 {
-  if (param_id == SPA_PARAM_PropInfo || param_id == SPA_PARAM_Props)
+  if (!g_strcmp0 (param_name, "PropInfo") || !g_strcmp0 (param_name, "Props")) {
+    guint32 param_id = wp_spa_id_value_number (
+        wp_spa_id_value_from_short_name ("Spa:Enum:ParamId", param_name));
     wp_pw_object_mixin_notify_params_changed (self, param_id);
+  }
 }
 
 static void
@@ -430,6 +435,7 @@ wp_impl_endpoint_dispose (GObject * object)
 
   g_clear_pointer (&self->immutable_props, wp_properties_unref);
   g_clear_pointer (&self->info.name, g_free);
+  g_clear_pointer (&self->info.media_class, g_free);
 
   wp_object_update_features (WP_OBJECT (self), 0,
       WP_PIPEWIRE_OBJECT_FEATURE_INFO |
@@ -674,6 +680,8 @@ wp_endpoint_impl_pw_object_mixin_priv_interface_init (
 }
 
 /*!
+ * \brief Creates a new endpoint implementation
+ *
  * \ingroup wpendpoint
  * \param core the core
  * \param item the session item that implements the endpoint

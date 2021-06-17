@@ -82,9 +82,10 @@ timeout_save_callback (WpDefaultProfile *self)
 {
   WpDefaultProfilePrivate *priv =
       wp_default_profile_get_instance_private (self);
+  g_autoptr (GError) error = NULL;
 
-  if (!wp_state_save (priv->state, "group", priv->profiles))
-    wp_warning_object (self, "could not save profiles");
+  if (!wp_state_save (priv->state, priv->profiles, &error))
+    wp_warning_object (self, "%s", error->message);
 
   return G_SOURCE_REMOVE;
 }
@@ -281,6 +282,8 @@ wp_default_profile_finalize (GObject * object)
 
   g_clear_pointer (&priv->profiles, wp_properties_unref);
   g_clear_object (&priv->state);
+
+  G_OBJECT_CLASS (wp_default_profile_parent_class)->finalize (object);
 }
 
 static void
@@ -292,11 +295,7 @@ wp_default_profile_init (WpDefaultProfile * self)
   priv->state = wp_state_new (STATE_NAME);
 
   /* Load the saved profiles */
-  priv->profiles = wp_state_load (priv->state, "group");
-  if (!priv->profiles) {
-    wp_warning_object (self, "could not load profiles");
-    return;
-  }
+  priv->profiles = wp_state_load (priv->state);
 }
 
 static void
