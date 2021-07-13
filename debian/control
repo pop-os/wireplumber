@@ -4,7 +4,7 @@ Priority: optional
 Maintainer: Utopia Maintenance Team <pkg-utopia-maintainers@alioth-lists.debian.net>
 Uploaders: Sjoerd Simons <sjoerd@debian.org>
 Build-Depends: debhelper-compat (= 13),
-               doxygen (>= 1.9.0),
+               doxygen (>= 1.8.0),
                gobject-introspection,
                libgirepository1.0-dev,
                libglib2.0-dev (>= 2.62),
