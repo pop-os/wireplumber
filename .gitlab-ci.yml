@@ -1,6 +1,8 @@
 stages:
   - container
+  - container_coverity
   - build
+  - analysis
   - pages
 
 variables:
@@ -15,6 +17,9 @@ include:
   - project: 'freedesktop/ci-templates'
     ref: *templates_sha
     file: '/templates/fedora.yml'
+  - project: 'freedesktop/ci-templates'
+    ref: *templates_sha
+    file: '/templates/ubuntu.yml'
 
 .fedora:
   variables:
@@ -45,10 +50,55 @@ include:
       pip3 install lxml Sphinx sphinx-rtd-theme breathe ;
       dnf -y install glib2-doc --setopt='tsflags='
 
+.ubuntu:
+  variables:
+    # Update this tag when you want to trigger a rebuild
+    FDO_DISTRIBUTION_TAG: '2021-06-28.2'
+    FDO_DISTRIBUTION_VERSION: '20.04'
+    FDO_DISTRIBUTION_PACKAGES: >-
+      debhelper-compat
+      findutils
+      git
+      ninja-build
+      pkg-config
+      python3-pip
+      dbus
+      libdbus-1-dev
+      libglib2.0-dev
+      liblua5.3-dev
+      libgirepository1.0-dev
+      doxygen
+      python3-lxml
+    FDO_DISTRIBUTION_EXEC: >-
+      pip3 install meson
+
+.coverity:
+  variables:
+    FDO_REPO_SUFFIX: 'coverity'
+    FDO_BASE_IMAGE: registry.freedesktop.org/$FDO_UPSTREAM_REPO/fedora/$FDO_DISTRIBUTION_VERSION:$FDO_DISTRIBUTION_TAG
+    FDO_DISTRIBUTION_PACKAGES: >-
+      curl
+    FDO_DISTRIBUTION_EXEC: >-
+      mkdir -p /opt ;
+      cd /opt ;
+      curl -o /tmp/cov-analysis-linux64.tgz https://scan.coverity.com/download/linux64
+      --form project=$COVERITY_SCAN_PROJECT_NAME --form token=$COVERITY_SCAN_TOKEN ;
+      tar xf /tmp/cov-analysis-linux64.tgz ;
+      mv cov-analysis-linux64-* coverity ;
+      rm /tmp/cov-analysis-linux64.tgz
+  only:
+    variables:
+      - $COVERITY
+
+.not_coverity:
+  except:
+    variables:
+      - $COVERITY
+
 .build:
   before_script:
     # setup the environment
-    - export BUILD_ID="$CI_JOB_NAME"
+    - export BUILD_ID="$CI_JOB_ID"
     - export PREFIX="$PWD/prefix-$BUILD_ID"
     - export PW_BUILD_DIR="$PWD/build-pipewire-$BUILD_ID"
     # Build pipewire
@@ -56,10 +106,12 @@ include:
     - git clone --depth=1 --branch="$PIPEWIRE_HEAD"
         https://gitlab.freedesktop.org/pipewire/pipewire.git
     - meson "$PW_BUILD_DIR" pipewire --prefix="$PREFIX"
-        -Dpipewire-alsa=disabled -Dpipewire-pulseaudio=disabled -Dpipewire-jack=disabled
-        -Dalsa=disabled -Dv4l2=disabled -Djack=disabled -Dbluez5=disabled -Dvulkan=disabled
-        -Dgstreamer=disabled -Dsystemd=disabled
+        -Dpipewire-alsa=disabled -Dpipewire-jack=disabled
+        -Dalsa=disabled -Dv4l2=disabled -Djack=disabled -Dbluez5=disabled
+        -Dvulkan=disabled -Dgstreamer=disabled -Dsystemd=disabled
         -Ddocs=disabled -Dman=disabled -Dexamples=disabled -Dpw-cat=disabled
+        -Dsdl2=disabled -Dsndfile=disabled -Dlibpulse=disabled -Davahi=disabled
+        -Decho-cancel-webrtc=disabled -Dsession-managers=[]
         -Dvideotestsrc=enabled -Daudiotestsrc=enabled -Dtest=enabled
     - ninja -C "$PW_BUILD_DIR" install
     # misc environment only for wireplumber
@@ -68,8 +120,7 @@ include:
     - export PKG_CONFIG_PATH="$(dirname $(find "$PREFIX" -name 'libpipewire-*.pc')):$PKG_CONFIG_PATH"
   script:
     # Build wireplumber
-    - meson "$WP_BUILD_DIR" . --prefix="$PREFIX"
-        -Dintrospection=enabled -Ddoc=enabled
+    - meson "$WP_BUILD_DIR" . --prefix="$PREFIX" $BUILD_OPTIONS
     - cd "$WP_BUILD_DIR"
     - ninja
     - ninja test
@@ -86,22 +137,113 @@ container_fedora:
     - .fedora
     - .fdo.container-build@fedora
   stage: container
+  variables:
+    GIT_STRATEGY: none
 
-build_on_fedora:
+container_ubuntu:
+  extends:
+    - .ubuntu
+    - .fdo.container-build@ubuntu
+  stage: container
+  variables:
+    GIT_STRATEGY: none
+
+container_coverity:
   extends:
     - .fedora
+    - .coverity
+    - .fdo.container-build@fedora
+  stage: container_coverity
+  variables:
+    GIT_STRATEGY: none
+
+build_on_fedora_with_docs:
+  extends:
+    - .fedora
+    - .not_coverity
     - .fdo.distribution-image@fedora
     - .build
   stage: build
+  variables:
+    BUILD_OPTIONS: -Dintrospection=enabled -Ddoc=enabled -Dsystem-lua=false
+
+build_on_fedora_no_docs:
+  extends:
+    - .fedora
+    - .not_coverity
+    - .fdo.distribution-image@fedora
+    - .build
+  stage: build
+  variables:
+    BUILD_OPTIONS: -Dintrospection=enabled -Ddoc=disabled -Dsystem-lua=false
+
+build_on_fedora_wpipc:
+  extends:
+    - .fedora
+    - .not_coverity
+    - .fdo.distribution-image@fedora
+    - .build
+  stage: build
+  variables:
+    BUILD_OPTIONS: -Dintrospection=disabled -Ddoc=disabled -Dsystem-lua=false -Dwpipc=enabled
+
+build_on_ubuntu_with_gir:
+  extends:
+    - .ubuntu
+    - .not_coverity
+    - .fdo.distribution-image@ubuntu
+    - .build
+  stage: build
+  variables:
+    BUILD_OPTIONS: -Dintrospection=enabled -Ddoc=disabled -Dsystem-lua=true
+
+build_on_ubuntu_no_gir:
+  extends:
+    - .ubuntu
+    - .not_coverity
+    - .fdo.distribution-image@ubuntu
+    - .build
+  stage: build
+  variables:
+    BUILD_OPTIONS: -Dintrospection=disabled -Ddoc=disabled -Dsystem-lua=true
+
+build_with_coverity:
+  extends:
+    - .fedora
+    - .coverity
+    - .fdo.suffixed-image@fedora
+    - .build
+  stage: analysis
+  script:
+    - export PATH=/opt/coverity/bin:$PATH
+    - meson "$WP_BUILD_DIR" . --prefix="$PREFIX"
+        -Dintrospection=disabled -Ddoc=disabled -Dwpipc=enabled
+    - cov-configure --config coverity_conf.xml
+        --comptype gcc --compiler cc --template
+        --xml-option=append_arg@C:--ppp_translator
+        --xml-option=append_arg@C:"replace/GLIB_(DEPRECATED|AVAILABLE)_ENUMERATOR_IN_\d_\d\d(_FOR\(\w+\)|)\s+=/ ="
+    - cov-build --dir cov-int --config coverity_conf.xml ninja -C "$WP_BUILD_DIR"
+    - tar caf wireplumber.tar.gz cov-int
+    - curl https://scan.coverity.com/builds?project=$COVERITY_SCAN_PROJECT_NAME
+        --form token=$COVERITY_SCAN_TOKEN --form email=$GITLAB_USER_EMAIL
+        --form file=@wireplumber.tar.gz --form version="`git describe --tags`"
+        --form description="`git describe --tags` / $CI_COMMIT_TITLE / $CI_COMMIT_REF_NAME:$CI_PIPELINE_ID "
+  artifacts:
+    name: wireplumber-coverity-$CI_COMMIT_SHA
+    when: always
+    paths:
+      - build-*/meson-logs
+      - cov-int/build-log.txt
 
 pages:
+  extends:
+    - .not_coverity
   stage: pages
   dependencies:
-    - build_on_fedora
+    - build_on_fedora_with_docs
   script:
-    - export PREFIX="$PWD/prefix-build_on_fedora"
     - mkdir public
-    - cp -R $PREFIX/share/doc/wireplumber/html/* public/
+    - cp -R prefix-*/share/doc/wireplumber/html/* public/
   artifacts:
     paths:
       - public

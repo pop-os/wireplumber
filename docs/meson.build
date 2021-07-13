@@ -14,9 +14,9 @@ python_gir = pymod.find_installation(
 )
 
 if get_option('doc').enabled() or get_option('introspection').enabled()
-  doxygen_p = find_program('doxygen', version: '>= 1.9.0', required: true)
+  doxygen_p = find_program('doxygen', version: '>= 1.8.0', required: true)
 elif get_option('doc').auto() or get_option('introspection').auto()
-  doxygen_p = find_program('doxygen', version: '>= 1.9.0', required: false)
+  doxygen_p = find_program('doxygen', version: '>= 1.8.0', required: false)
 else
   doxygen_p = disabler()
 endif
@@ -33,7 +33,7 @@ build_gir = python_gir.found() and doxygen_p.found() and gir_p.found()
 if build_doc or build_gir
   doxy_wp_conf_data = configuration_data()
   doxy_wp_conf_data.set('OUTPUT_DIR', meson.current_build_dir() / 'wp')
-  doxy_wp_conf_data.set('INPUT', meson.source_root() / 'lib' / 'wp')
+  doxy_wp_conf_data.set('INPUT', meson.current_source_dir() / '..' / 'lib' / 'wp')
   doxyfile_wp = configure_file(
     input: 'Doxyfile.in',
     output: 'Doxyfile-wp',
@@ -54,8 +54,8 @@ endif
 if build_doc
   sphinx_files = files(
     '_static'/'custom.css',
-    meson.source_root()/'README.rst',
-    meson.source_root()/'NEWS.rst',
+    meson.current_source_dir()/'..'/'README.rst',
+    meson.current_source_dir()/'..'/'NEWS.rst',
   )
   subdir('rst')
 

@@ -1,5 +1,5 @@
 project('wireplumber', ['c'],
-  version : '0.4.0',
+  version : '0.4.1',
   license : 'MIT',
   meson_version : '>= 0.54.0',
   default_options : [
@@ -39,7 +39,13 @@ endif
 
 cc = meson.get_compiler('c')
 
-glib_req_version = '>= 2.58'
+glib_req_version = '>= 2.62'
+add_project_arguments([
+    '-DGLIB_VERSION_MIN_REQUIRED=GLIB_VERSION_2_62',
+    '-DGLIB_VERSION_MAX_ALLOWED=GLIB_VERSION_2_62',
+  ], language: 'c'
+)
+
 glib_dep = dependency('glib-2.0', version : glib_req_version)
 gobject_dep = dependency('gobject-2.0', version : glib_req_version)
 gmodule_dep = dependency('gmodule-2.0', version : glib_req_version)
@@ -51,15 +57,27 @@ mathlib = cc.find_library('m')
 threads_dep = dependency('threads')
 
 if get_option('system-lua')
-  lua_dep = dependency('lua', version: ['>=5.3.0', '<5.4.0'], required: false)
+  lua_dep = dependency('lua-5.4', required: false)
+  if not lua_dep.found()
+    lua_dep = dependency('lua5.4', required: false)
+  endif
+  if not lua_dep.found()
+    lua_dep = dependency('lua54', required: false)
+  endif
+  if not lua_dep.found()
+    lua_dep = dependency('lua-5.3', required: false)
+  endif
   if not lua_dep.found()
     lua_dep = dependency('lua5.3', required: false)
-    if not lua_dep.found()
-      lua_dep = dependency('lua53', required: false)
-      if not lua_dep.found()
-        lua_dep = dependency('lua-5.3', required: true , allow_fallback: false)
-      endif
-    endif
+  endif
+  if not lua_dep.found()
+    lua_dep = dependency('lua53', required: false)
+  endif
+  if not lua_dep.found()
+    lua_dep = dependency('lua', version: ['>=5.3.0'], required: false)
+  endif
+  if not lua_dep.found()
+    error ('Could not find lua. Lua version 5.4 or 5.3 required')
   endif
 else
   lua_proj = subproject('lua', default_options: ['default_library=static'])
