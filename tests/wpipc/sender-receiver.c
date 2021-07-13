@@ -17,19 +17,16 @@ struct event_data {
   int connections;
   int n_events;
   GMutex mutex;
+  GCond cond;
 };
 
 static void
 wait_for_event (struct event_data *data, int n_events)
 {
-  while (true) {
-    g_mutex_lock (&data->mutex);
-    if (data->n_events == n_events) {
-      g_mutex_unlock (&data->mutex);
-      break;
-    }
-    g_mutex_unlock (&data->mutex);
-  }
+  g_mutex_lock (&data->mutex);
+  while (data->n_events < n_events)
+    g_cond_wait (&data->cond, &data->mutex);
+  g_mutex_unlock (&data->mutex);
 }
 
 static void
@@ -52,6 +49,7 @@ sender_state_callback (struct wpipc_receiver *self, int sender_fd,
       break;
   }
   data->n_events++;
+  g_cond_signal (&data->cond);
   g_mutex_unlock (&data->mutex);
 }
 
@@ -65,6 +63,7 @@ reply_callback (struct wpipc_sender *self, const uint8_t *buffer, size_t size, v
   g_mutex_lock (&data->mutex);
   g_assert_cmpmem (buffer, size, data->expected_data, data->expected_size);
   data->n_events++;
+  g_cond_signal (&data->cond);
   g_mutex_unlock (&data->mutex);
 }
 
@@ -104,6 +103,7 @@ test_wpipc_sender_connect ()
   };
   struct event_data data;
   g_mutex_init (&data.mutex);
+  g_cond_init (&data.cond);
   data.n_events = 0;
   data.connections = 0;
   struct wpipc_receiver *r = wpipc_receiver_new (TEST_ADDRESS, 16, &events, &data, 0);
@@ -130,6 +130,7 @@ test_wpipc_sender_connect ()
   wpipc_receiver_stop (r);
 
   /* clean up */
+  g_cond_clear (&data.cond);
   g_mutex_clear (&data.mutex);
   wpipc_sender_free (s);
   wpipc_receiver_free (r);
@@ -143,6 +144,7 @@ lost_connection_handler (struct wpipc_sender *self, int receiver_fd, void *p)
 
   g_mutex_lock (&data->mutex);
   data->n_events++;
+  g_cond_signal (&data->cond);
   g_mutex_unlock (&data->mutex);
 }
 
@@ -151,6 +153,7 @@ test_wpipc_sender_lost_connection ()
 {
   struct event_data data;
   g_mutex_init (&data.mutex);
+  g_cond_init (&data.cond);
   struct wpipc_receiver *r = wpipc_receiver_new (TEST_ADDRESS, 16, NULL, NULL, 0);
   g_assert_nonnull (r);
   struct wpipc_sender *s = wpipc_sender_new (TEST_ADDRESS, 16, lost_connection_handler, &data, 0);
@@ -165,9 +168,22 @@ test_wpipc_sender_lost_connection ()
   wpipc_receiver_free (r);
   wait_for_event (&data, 1);
 
+  /* make sure the connection was lost */
+  g_assert_false (wpipc_sender_is_connected (s));
+
+  /* create a new receiver */
+  struct wpipc_receiver *r2 = wpipc_receiver_new (TEST_ADDRESS, 16, NULL, NULL, 0);
+  g_assert_nonnull (r2);
+
+  /* re-connect sender with new receiver */
+  g_assert_true (wpipc_sender_connect (s));
+  g_assert_true (wpipc_sender_is_connected (s));
+
   /* clean up */
+  g_cond_clear (&data.cond);
   g_mutex_clear (&data.mutex);
   wpipc_sender_free (s);
+  wpipc_receiver_free (r2);
 }
 
 static void
@@ -179,6 +195,7 @@ test_wpipc_sender_send ()
   g_assert_nonnull (s);
   struct event_data data;
   g_mutex_init (&data.mutex);
+  g_cond_init (&data.cond);
   data.n_events = 0;
 
   /* start receiver */
@@ -192,7 +209,7 @@ test_wpipc_sender_send ()
   data.n_events = 0;
   data.expected_data = (const uint8_t *)"h";
   data.expected_size = 1;
-  g_assert_true (wpipc_sender_send (s, (const uint8_t *)"h1", 1, reply_callback, &data));
+  g_assert_true (wpipc_sender_send (s, (const uint8_t *)"h", 1, reply_callback, &data));
   wait_for_event (&data, 1);
 
   /* send 2 bytes message (should realloc once to 4) */
@@ -224,6 +241,7 @@ test_wpipc_sender_send ()
   wpipc_receiver_stop (r);
 
   /* clean up */
+  g_cond_clear (&data.cond);
   g_mutex_clear (&data.mutex);
   wpipc_sender_free (s);
   wpipc_receiver_free (r);
@@ -237,6 +255,7 @@ test_wpipc_multiple_senders_send ()
   struct wpipc_sender *senders[50];
   struct event_data data;
   g_mutex_init (&data.mutex);
+  g_cond_init (&data.cond);
   data.n_events = 0;
 
   /* start receiver */
@@ -262,6 +281,7 @@ test_wpipc_multiple_senders_send ()
   wpipc_receiver_stop (r);
 
   /* clean up */
+  g_cond_clear (&data.cond);
   g_mutex_clear (&data.mutex);
   for (int i = 0; i < 50; i++)
     wpipc_sender_free (senders[i]);

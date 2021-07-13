@@ -215,10 +215,10 @@ builder_add_bytes_lua_number (WpSpaPodBuilder *b, WpSpaIdValue key_id,
 {
   if (lua_isinteger (L, idx)) {
     gint64 value = lua_tointeger (L, idx);
-    wp_spa_pod_builder_add_bytes (b, (gconstpointer)&value, sizeof (&value));
+    wp_spa_pod_builder_add_bytes (b, (gconstpointer)&value, sizeof (value));
   } else {
     double value = lua_tonumber (L, idx);
-    wp_spa_pod_builder_add_bytes (b, (gconstpointer)&value, sizeof (&value));
+    wp_spa_pod_builder_add_bytes (b, (gconstpointer)&value, sizeof (value));
   }
   return TRUE;
 }
@@ -355,11 +355,16 @@ static gboolean
 builder_add_value (WpSpaPodBuilder *b, WpSpaType array_type, lua_State *L,
     int idx)
 {
+  int ltype = lua_type (L, idx);
   guint i;
+
+  if (ltype < 0 || ltype >= MAX_LUA_TYPES)
+    return FALSE;
+
   for (i = 0; primitive_lua_types[i].primitive_type; i++) {
     const struct primitive_lua_type *t = primitive_lua_types + i;
     if (t->primitive_type == array_type) {
-      primitive_lua_add_func f = t->primitive_lua_add_funcs[lua_type (L, idx)];
+      primitive_lua_add_func f = t->primitive_lua_add_funcs[ltype];
       if (f) {
         return f (b, NULL, L, idx);
       }
@@ -599,9 +604,9 @@ object_add_property (WpSpaPodBuilder *b, WpSpaIdTable table,
   guint i;
   WpSpaIdValue prop_id = NULL;
   WpSpaType prop_type = WP_SPA_TYPE_INVALID;
+  int ltype = lua_type (L, idx);
 
-  /* Return if type is none */
-  if (lua_type (L, idx) == LUA_TNONE)
+  if (ltype < 0 || ltype >= MAX_LUA_TYPES)
     return FALSE;
 
   /* Get the property type name */
@@ -616,7 +621,7 @@ object_add_property (WpSpaPodBuilder *b, WpSpaIdTable table,
   for (i = 0; primitive_lua_types[i].primitive_type; i++) {
     const struct primitive_lua_type *t = primitive_lua_types + i;
     if (t->primitive_type == prop_type) {
-      primitive_lua_add_func f = t->primitive_lua_add_funcs[lua_type (L, idx)];
+      primitive_lua_add_func f = t->primitive_lua_add_funcs[ltype];
       if (f) {
         wp_spa_pod_builder_add_property (b, key);
         return f (b, prop_id, L, idx);
@@ -916,7 +921,7 @@ push_luapod (lua_State *L, WpSpaPod *pod, WpSpaIdValue field_idval)
   /* Boolean */
   else if (wp_spa_pod_is_boolean (pod)) {
     gboolean value = FALSE;
-    wp_spa_pod_get_boolean (pod, &value);
+    g_warn_if_fail (wp_spa_pod_get_boolean (pod, &value));
     lua_pushboolean (L, value);
   }
 
@@ -925,7 +930,7 @@ push_luapod (lua_State *L, WpSpaPod *pod, WpSpaIdValue field_idval)
     guint32 value = 0;
     WpSpaIdTable idtable = NULL;
     WpSpaIdValue idval = NULL;
-    wp_spa_pod_get_id (pod, &value);
+    g_warn_if_fail (wp_spa_pod_get_id (pod, &value));
     if (field_idval && SPA_TYPE_Id ==
             wp_spa_id_value_get_value_type (field_idval, &idtable)) {
       idval = wp_spa_id_table_find_value (idtable, value);
@@ -939,7 +944,7 @@ push_luapod (lua_State *L, WpSpaPod *pod, WpSpaIdValue field_idval)
   /* Int */
   else if (wp_spa_pod_is_int (pod)) {
     gint value = 0;
-    wp_spa_pod_get_int (pod, &value);
+    g_warn_if_fail (wp_spa_pod_get_int (pod, &value));
     lua_pushinteger (L, value);
   }
 
@@ -953,21 +958,21 @@ push_luapod (lua_State *L, WpSpaPod *pod, WpSpaIdValue field_idval)
   /* Float */
   else if (wp_spa_pod_is_float (pod)) {
     float value = 0;
-    wp_spa_pod_get_float (pod, &value);
+    g_warn_if_fail (wp_spa_pod_get_float (pod, &value));
     lua_pushnumber (L, value);
   }
 
   /* Double */
   else if (wp_spa_pod_is_double (pod)) {
     double value = 0;
-    wp_spa_pod_get_double (pod, &value);
+    g_warn_if_fail (wp_spa_pod_get_double (pod, &value));
     lua_pushnumber (L, value);
   }
 
   /* String */
   else if (wp_spa_pod_is_string (pod)) {
     const gchar *value = NULL;
-    wp_spa_pod_get_string (pod, &value);
+    g_warn_if_fail (wp_spa_pod_get_string (pod, &value));
     lua_pushstring (L, value);
   }
 
@@ -975,7 +980,7 @@ push_luapod (lua_State *L, WpSpaPod *pod, WpSpaIdValue field_idval)
   else if (wp_spa_pod_is_bytes (pod)) {
     gconstpointer value = NULL;
     guint32 size = 0;
-    wp_spa_pod_get_bytes (pod, &value, &size);
+    g_warn_if_fail (wp_spa_pod_get_bytes (pod, &value, &size));
     char str[size + 1];
     for (guint i = 0; i < size; i++)
       str[i] = ((const gchar *)value)[i];
@@ -986,7 +991,7 @@ push_luapod (lua_State *L, WpSpaPod *pod, WpSpaIdValue field_idval)
   /* Pointer */
   else if (wp_spa_pod_is_pointer (pod)) {
     gconstpointer value = NULL;
-    wp_spa_pod_get_pointer (pod, &value);
+    g_warn_if_fail (wp_spa_pod_get_pointer (pod, &value));
     if (!value)
       lua_pushnil (L);
     else
@@ -996,14 +1001,14 @@ push_luapod (lua_State *L, WpSpaPod *pod, WpSpaIdValue field_idval)
   /* Fd */
   else if (wp_spa_pod_is_fd (pod)) {
     gint64 value = 0;
-    wp_spa_pod_get_fd (pod, &value);
+    g_warn_if_fail (wp_spa_pod_get_fd (pod, &value));
     lua_pushinteger (L, value);
   }
 
   /* Rectangle */
   else if (wp_spa_pod_is_rectangle (pod)) {
     guint32 width = 0, height = 0;
-    wp_spa_pod_get_rectangle (pod, &width, &height);
+    g_warn_if_fail (wp_spa_pod_get_rectangle (pod, &width, &height));
     lua_newtable (L);
     lua_pushstring (L, "Rectangle");
     lua_setfield (L, -2, "pod_type");
@@ -1016,7 +1021,7 @@ push_luapod (lua_State *L, WpSpaPod *pod, WpSpaIdValue field_idval)
   /* Fraction */
   else if (wp_spa_pod_is_fraction (pod)) {
     guint32 num = 0, denom = 0;
-    wp_spa_pod_get_fraction (pod, &num, &denom);
+    g_warn_if_fail (wp_spa_pod_get_fraction (pod, &num, &denom));
     lua_newtable (L);
     lua_pushstring (L, "Fraction");
     lua_setfield (L, -2, "pod_type");
@@ -1033,7 +1038,7 @@ push_luapod (lua_State *L, WpSpaPod *pod, WpSpaIdValue field_idval)
     const gchar *id_name = NULL;
     g_auto (GValue) item = G_VALUE_INIT;
     g_autoptr (WpIterator) it = NULL;
-    wp_spa_pod_get_object (pod, &id_name, NULL);
+    g_warn_if_fail (wp_spa_pod_get_object (pod, &id_name, NULL));
     lua_newtable (L);
     lua_pushstring (L, "Object");
     lua_setfield (L, -2, "pod_type");
@@ -1047,7 +1052,7 @@ push_luapod (lua_State *L, WpSpaPod *pod, WpSpaIdValue field_idval)
       g_autoptr (WpSpaPod) val = NULL;
       //FIXME: this is suboptimal because _get_property() converts
       // the key to a short name and we convert it back
-      wp_spa_pod_get_property (prop, &key, &val);
+      g_warn_if_fail (wp_spa_pod_get_property (prop, &key, &val));
       if (key) {
         push_luapod (L, val,
             wp_spa_id_table_find_value_from_short_name (values_table, key));
@@ -1085,7 +1090,8 @@ push_luapod (lua_State *L, WpSpaPod *pod, WpSpaIdValue field_idval)
       guint32 offset = 0;
       const char *type_name = NULL;
       g_autoptr (WpSpaPod) val = NULL;
-      wp_spa_pod_get_control (control, &offset, &type_name, &val);
+      g_warn_if_fail (wp_spa_pod_get_control (control, &offset, &type_name,
+          &val));
       lua_newtable (L);
       lua_pushinteger (L, offset);
       lua_setfield (L, -2, "offset");
