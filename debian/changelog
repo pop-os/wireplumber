@@ -1,11 +1,11 @@
-wireplumber (0.4.1-1) UNRELEASED; urgency=medium
+wireplumber (0.4.1-1) experimental; urgency=medium
 
   * Team upload.
   * New upstream version 0.4.1
   * Bump GLib requirement to 2.62
   * Relaxe doxygen requirement to 1.8
 
- -- Dylan Aïssi <daissi@debian.org>  Tue, 13 Jul 2021 15:37:44 +0200
+ -- Dylan Aïssi <daissi@debian.org>  Thu, 22 Jul 2021 10:16:45 +0200
 
 wireplumber (0.4.0-1) experimental; urgency=medium
 
