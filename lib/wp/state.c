@@ -8,13 +8,106 @@
 
 #define G_LOG_DOMAIN "wp-state"
 
-#define WP_STATE_DIR_NAME "wireplumber"
-
 #include <stdio.h>
 #include <errno.h>
 
 #include "log.h"
 #include "state.h"
+#include "wp.h"
+
+#define ESCAPED_CHARACTER '\\'
+
+static char *
+escape_string (const gchar *str)
+{
+  char *res = NULL;
+  size_t str_size, i, j;
+
+  g_return_val_if_fail (str, NULL);
+  str_size = strlen (str);
+  g_return_val_if_fail (str_size > 0, NULL);
+
+  res = g_malloc_n ((str_size * 2) + 1, sizeof(gchar));
+
+  j = 0;
+  for (i = 0; i < str_size; i++) {
+    switch (str[i]) {
+      case ESCAPED_CHARACTER:
+        res[j++] = ESCAPED_CHARACTER;
+        res[j++] = ESCAPED_CHARACTER;
+        break;
+      case ' ':
+        res[j++] = ESCAPED_CHARACTER;
+        res[j++] = 's';
+        break;
+      case '=':
+        res[j++] = ESCAPED_CHARACTER;
+        res[j++] = 'e';
+        break;
+      case '[':
+        res[j++] = ESCAPED_CHARACTER;
+        res[j++] = 'o';
+        break;
+      case ']':
+        res[j++] = ESCAPED_CHARACTER;
+        res[j++] = 'c';
+        break;
+      default:
+        res[j++] = str[i];
+        break;
+    }
+  }
+  res[j++] = '\0';
+
+  return res;
+}
+
+static char *
+compress_string (const gchar *str)
+{
+  char *res = NULL;
+  size_t str_size, i, j;
+
+  g_return_val_if_fail (str, NULL);
+  str_size = strlen (str);
+  g_return_val_if_fail (str_size > 0, NULL);
+
+  res = g_malloc_n (str_size + 1, sizeof(gchar));
+
+  j = 0;
+  for (i = 0; i < str_size - 1; i++) {
+    if (str[i] == ESCAPED_CHARACTER) {
+      switch (str[i + 1]) {
+        case ESCAPED_CHARACTER:
+          res[j++] = ESCAPED_CHARACTER;
+          break;
+        case 's':
+          res[j++] = ' ';
+          break;
+        case 'e':
+          res[j++] = '=';
+          break;
+        case 'o':
+          res[j++] = '[';
+          break;
+        case 'c':
+          res[j++] = ']';
+          break;
+        default:
+          res[j++] = str[i];
+          break;
+      }
+      i++;
+    } else {
+      res[j++] = str[i];
+    }
+  }
+  if (i < str_size)
+    res[j++] = str[i];
+  res[j++] = '\0';
+
+  return res;
+}
 
 /*! \defgroup wpstate WpState */
 /*!
@@ -45,14 +138,27 @@ struct _WpState
 
 G_DEFINE_TYPE (WpState, wp_state, G_TYPE_OBJECT)
 
+/* Gets the full path to the WirePlumber XDG_STATE_HOME subdirectory */
+static const gchar *
+wp_get_xdg_state_dir (void)
+{
+  static gchar xdg_dir[PATH_MAX] = {0};
+  if (xdg_dir[0] == '\0') {
+    g_autofree gchar *path = NULL;
+    g_autofree gchar *base = g_strdup (g_getenv ("XDG_STATE_HOME"));
+    if (!base)
+      base = g_build_filename (g_get_home_dir (), ".local", "state", NULL);
+
+    path = g_build_filename (base, "wireplumber", NULL);
+    (void) g_strlcpy (xdg_dir, path, sizeof (xdg_dir));
+  }
+  return xdg_dir;
+}
+
 static char *
 get_new_location (const char *name)
 {
-  g_autofree gchar *path = NULL;
-
-  /* Get the config path */
-  path = g_build_filename (g_get_user_config_dir (), WP_STATE_DIR_NAME, NULL);
-  g_return_val_if_fail (path, NULL);
+  const gchar *path = wp_get_xdg_state_dir ();
 
   /* Create the directory if it doesn't exist */
   if (g_mkdir_with_parents (path, 0700) < 0)
@@ -217,9 +323,12 @@ wp_state_save (WpState *self, WpProperties *props, GError ** error)
   for (it = wp_properties_new_iterator (props);
       wp_iterator_next (it, &item);
       g_value_unset (&item)) {
-    const gchar *key = wp_properties_iterator_item_get_key (&item);
-    const gchar *val = wp_properties_iterator_item_get_value (&item);
-    g_key_file_set_string (keyfile, self->name, key, val);
+    WpPropertiesItem *pi = g_value_get_boxed (&item);
+    const gchar *key = wp_properties_item_get_key (pi);
+    const gchar *val = wp_properties_item_get_value (pi);
+    g_autofree gchar *escaped_key = escape_string (key);
+    if (escaped_key)
+      g_key_file_set_string (keyfile, self->name, escaped_key, val);
   }
 
   if (!g_key_file_save_to_file (keyfile, self->location, &err)) {
@@ -262,12 +371,15 @@ wp_state_load (WpState *self)
     return g_steal_pointer (&props);
 
   for (guint i = 0; keys[i]; i++) {
+    g_autofree gchar *compressed_key = NULL;
     const gchar *key = keys[i];
     g_autofree gchar *val = NULL;
     val = g_key_file_get_string (keyfile, self->name, key, NULL);
     if (!val)
       continue;
-    wp_properties_set (props, key, val);
+    compressed_key = compress_string (key);
+    if (compressed_key)
+      wp_properties_set (props, compressed_key, val);
   }
 
   g_strfreev (keys);

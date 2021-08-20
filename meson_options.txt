@@ -4,6 +4,9 @@ option('doc', type : 'feature', value : 'auto',
        description: 'Enable documentation.')
 option('system-lua', type : 'boolean', value : 'false',
        description : 'Use lua from the system instead of the bundled one')
+option('system-lua-version',
+       type: 'string', value : 'auto',
+       description: 'The system lua version to use or "auto" for auto-detection')
 option('systemd',
        type: 'feature', value: 'auto',
        description: 'Enable installing systemd units')
@@ -19,7 +22,5 @@ option('systemd-system-unit-dir',
 option('systemd-user-unit-dir',
        type : 'string',
        description : 'Directory for user systemd units')
-option('wpipc', type : 'feature', value : 'disabled',
-       description: 'Build the wpipc library and module-ipc')
 option('glib-supp', type : 'string', value : '',
        description: 'The glib.supp valgrind suppressions file to be used when running valgrind')

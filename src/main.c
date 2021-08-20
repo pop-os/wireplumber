@@ -334,6 +334,7 @@ main (gint argc, gchar **argv)
   g_autoptr (GOptionContext) context = NULL;
   g_autoptr (GError) error = NULL;
   g_autoptr (WpProperties) properties = NULL;
+  g_autofree gchar *config_file_path = NULL;
 
   wp_init (WP_INIT_ALL);
 
@@ -344,21 +345,27 @@ main (gint argc, gchar **argv)
     return WP_EXIT_USAGE;
   }
 
+  if (!config_file)
+    config_file = "wireplumber.conf";
+
+  config_file_path = wp_find_file (
+      WP_LOOKUP_DIR_ENV_CONFIG |
+      WP_LOOKUP_DIR_XDG_CONFIG_HOME |
+      WP_LOOKUP_DIR_ETC |
+      WP_LOOKUP_DIR_PREFIX_SHARE,
+      config_file, NULL);
+  if (config_file_path == NULL) {
+    fprintf (stderr, "Unable to find the required configuration file %s\n",
+             config_file);
+    return WP_EXIT_CONFIG;
+  }
+
   properties = wp_properties_new (
-      PW_KEY_CONFIG_NAME, config_file ? config_file : "wireplumber.conf",
+      PW_KEY_CONFIG_NAME, config_file_path,
       PW_KEY_APP_NAME, "WirePlumber",
       "wireplumber.daemon", "true",
       "wireplumber.export-core", "true",
       NULL);
-
-  if (!g_path_is_absolute (wp_get_config_dir ())) {
-    g_autofree gchar *cwd = g_get_current_dir ();
-    g_autofree gchar *conf_dir =
-        g_build_filename (cwd, wp_get_config_dir (), NULL);
-    wp_properties_set (properties, PW_KEY_CONFIG_PREFIX, conf_dir);
-  } else {
-    wp_properties_set (properties, PW_KEY_CONFIG_PREFIX, wp_get_config_dir ());
-  }
 
   /* init wireplumber daemon */
   d.loop = g_main_loop_new (NULL, FALSE);

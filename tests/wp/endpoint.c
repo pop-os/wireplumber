@@ -419,6 +419,11 @@ test_endpoint_with_props (TestEndpointFixture *fixture, gconstpointer data)
 
     g_assert_cmpint (pw_context_add_spa_lib (fixture->base.server.context,
             "audiotestsrc", "audiotestsrc/libspa-audiotestsrc"), ==, 0);
+    if (!test_is_spa_lib_installed (&fixture->base, "audiotestsrc")) {
+      g_test_skip ("The pipewire audiotestsrc factory was not found");
+      return;
+    }
+
     g_assert_nonnull (pw_context_load_module (fixture->base.server.context,
             "libpipewire-module-adapter", NULL, NULL));
   }
@@ -620,7 +625,8 @@ test_endpoint_with_props (TestEndpointFixture *fixture, gconstpointer data)
     g_assert_nonnull (iterator);
 
     g_assert_true (wp_iterator_next (iterator, &item));
-    g_assert_nonnull ((pod = g_value_dup_boxed (&item)));
+    pod = g_value_dup_boxed (&item);
+    g_assert_nonnull (pod);
 
     g_assert_true (wp_spa_pod_get_object (pod, NULL,
             "volume", "f", &float_value,

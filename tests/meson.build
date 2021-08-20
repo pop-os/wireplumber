@@ -30,7 +30,12 @@ endif
 
 # The common test environment
 common_test_env = environment({
+  'HOME': '/invalid',
+  'XDG_RUNTIME_DIR': '/invalid',
+  'PIPEWIRE_RUNTIME_DIR': '/tmp',
   'XDG_CONFIG_HOME': meson.current_build_dir() / '.config',
+  'XDG_STATE_HOME': meson.current_build_dir() / '.local' / 'state',
+  'FILE_MONITOR_DIR': meson.current_build_dir() / '.local' / 'file_monitor',
   'WIREPLUMBER_CONFIG_DIR': '/invalid',
   'WIREPLUMBER_DATA_DIR': '/invalid',
   'WIREPLUMBER_MODULE_DIR': meson.current_build_dir() / '..' / 'modules',
@@ -56,6 +61,5 @@ endif
 
 subdir('wp')
 subdir('wplua')
-subdir('wpipc', if_found: wpipc_dep)
 subdir('modules')
 subdir('examples')

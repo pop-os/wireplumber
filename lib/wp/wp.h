@@ -20,6 +20,7 @@
 #include "link.h"
 #include "log.h"
 #include "metadata.h"
+#include "module.h"
 #include "node.h"
 #include "object-interest.h"
 #include "object-manager.h"
@@ -66,10 +67,33 @@ WP_API
 const gchar * wp_get_module_dir (void);
 
 WP_API
+G_DEPRECATED_FOR (wp_find_file)
 const gchar * wp_get_config_dir (void);
 
 WP_API
+G_DEPRECATED_FOR (wp_find_file)
 const gchar * wp_get_data_dir (void);
+
+/*!
+ * \brief Flags to specify lookup directories
+ * \ingroup wp
+ */
+typedef enum { /*< flags >*/
+  WP_LOOKUP_DIR_ENV_CONFIG = (1 << 0),       /*!< $WIREPLUMBER_CONFIG_DIR */
+  WP_LOOKUP_DIR_ENV_DATA = (1 << 1),         /*!< $WIREPLUMBER_DATA_DIR */
+
+  WP_LOOKUP_DIR_XDG_CONFIG_HOME = (1 << 10), /*!< XDG_CONFIG_HOME/wireplumber */
+  WP_LOOKUP_DIR_ETC = (1 << 11),             /*!< ($prefix)/etc/wireplumber */
+  WP_LOOKUP_DIR_PREFIX_SHARE = (1 << 12),    /*!< $prefix/share/wireplumber */
+} WpLookupDirs;
+
+WP_API
+gchar * wp_find_file (WpLookupDirs dirs, const gchar *filename,
+    const char *subdir);
+
+WP_API
+WpIterator * wp_new_files_iterator (WpLookupDirs dirs, const gchar *subdir,
+    const gchar *suffix);
 
 G_END_DECLS
 
