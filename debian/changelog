@@ -4,6 +4,7 @@ wireplumber (0.4.2-1) UNRELEASED; urgency=medium
   * New upstream version 0.4.2
   * Conf files are now in /usr/share/wireplumber/ instead of /etc/wireplumber/
   * Update symbols file
+  * Bump required PipeWire version to 0.3.32
 
  -- Dylan Aïssi <daissi@debian.org>  Fri, 20 Aug 2021 10:56:33 +0200
 
