@@ -1,5 +1,5 @@
 project('wireplumber', ['c'],
-  version : '0.4.1',
+  version : '0.4.2',
   license : 'MIT',
   meson_version : '>= 0.54.0',
   default_options : [
@@ -13,29 +13,10 @@ wireplumber_so_version = '0'
 
 wireplumber_headers_dir = get_option('includedir') / 'wireplumber-' + wireplumber_api_version / 'wp'
 
-if get_option('bindir').startswith('/')
-  wireplumber_bin_dir = get_option('bindir')
-else
-  wireplumber_bin_dir = get_option('prefix') / get_option('bindir')
-endif
-
-if get_option('libdir').startswith('/')
-  wireplumber_module_dir = get_option('libdir') / 'wireplumber-' + wireplumber_api_version
-else
-  wireplumber_module_dir = get_option('prefix') / get_option('libdir') / 'wireplumber-' + wireplumber_api_version
-endif
-
-if get_option('sysconfdir').startswith('/')
-  wireplumber_config_dir = get_option('sysconfdir') / 'wireplumber'
-else
-  wireplumber_config_dir = get_option('prefix') / get_option('sysconfdir') / 'wireplumber'
-endif
-
-if get_option('datadir').startswith('/')
-  wireplumber_data_dir = get_option('datadir') / 'wireplumber'
-else
-  wireplumber_data_dir = get_option('prefix') / get_option('datadir') / 'wireplumber'
-endif
+wireplumber_bin_dir = get_option('prefix') / get_option('bindir')
+wireplumber_module_dir = get_option('prefix') / get_option('libdir') / 'wireplumber-' + wireplumber_api_version
+wireplumber_data_dir = get_option('prefix') / get_option('datadir') / 'wireplumber'
+wireplumber_config_dir = get_option('prefix') / get_option('sysconfdir') / 'wireplumber'
 
 cc = meson.get_compiler('c')
 
@@ -56,33 +37,47 @@ pipewire_dep = dependency('libpipewire-0.3', version: '>= 0.3.26')
 mathlib = cc.find_library('m')
 threads_dep = dependency('threads')
 
-if get_option('system-lua')
-  lua_dep = dependency('lua-5.4', required: false)
-  if not lua_dep.found()
-    lua_dep = dependency('lua5.4', required: false)
-  endif
-  if not lua_dep.found()
-    lua_dep = dependency('lua54', required: false)
-  endif
-  if not lua_dep.found()
-    lua_dep = dependency('lua-5.3', required: false)
-  endif
-  if not lua_dep.found()
-    lua_dep = dependency('lua5.3', required: false)
-  endif
-  if not lua_dep.found()
-    lua_dep = dependency('lua53', required: false)
-  endif
-  if not lua_dep.found()
-    lua_dep = dependency('lua', version: ['>=5.3.0'], required: false)
-  endif
-  if not lua_dep.found()
-    error ('Could not find lua. Lua version 5.4 or 5.3 required')
+system_lua = get_option('system-lua')
+if system_lua
+  if get_option('system-lua-version') != 'auto'
+    lua_version_requested = get_option('system-lua-version')
+    lua_dep = dependency('lua-' + lua_version_requested, required: false)
+    if not lua_dep.found()
+      lua_dep = dependency('lua' + lua_version_requested, required: false)
+    endif
+
+    if not lua_dep.found()
+      error('Specified Lua version "' + lua_version_requested + '" not found')
+    endif
+  else
+    lua_dep = dependency('lua-5.4', required: false)
+    if not lua_dep.found()
+      lua_dep = dependency('lua5.4', required: false)
+    endif
+    if not lua_dep.found()
+      lua_dep = dependency('lua54', required: false)
+    endif
+    if not lua_dep.found()
+      lua_dep = dependency('lua-5.3', required: false)
+    endif
+    if not lua_dep.found()
+      lua_dep = dependency('lua5.3', required: false)
+    endif
+    if not lua_dep.found()
+      lua_dep = dependency('lua53', required: false)
+    endif
+    if not lua_dep.found()
+      lua_dep = dependency('lua', version: ['>=5.3.0'], required: false)
+    endif
+    if not lua_dep.found()
+      error ('Could not find lua. Lua version 5.4 or 5.3 required')
+    endif
   endif
 else
   lua_proj = subproject('lua', default_options: ['default_library=static'])
   lua_dep = lua_proj.get_variable('lua_dep')
 endif
+summary({'Lua version': lua_dep.version() + (system_lua ? ' (system)' : ' (built-in)')})
 
 gnome = import('gnome')
 pkgconfig = import('pkgconfig')

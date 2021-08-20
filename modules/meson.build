@@ -166,15 +166,13 @@ shared_library(
   dependencies : [wp_dep, pipewire_dep, mathlib],
 )
 
-if wpipc_dep.found()
-  shared_library(
-    'wireplumber-module-ipc',
-    [
-      'module-ipc.c',
-    ],
-    c_args : [common_c_args, '-DG_LOG_DOMAIN="m-ipc"'],
-    install : true,
-    install_dir : wireplumber_module_dir,
-    dependencies : [wp_dep, pipewire_dep, wpipc_dep],
-  )
-endif
+shared_library(
+  'wireplumber-module-file-monitor-api',
+  [
+    'module-file-monitor-api.c',
+  ],
+  c_args : [common_c_args, '-DG_LOG_DOMAIN="m-file-monitor-api"'],
+  install : true,
+  install_dir : wireplumber_module_dir,
+  dependencies : [wp_dep, pipewire_dep],
+)

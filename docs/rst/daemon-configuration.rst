@@ -120,26 +120,37 @@ and ignored. Possible commands are
 Location of configuration files
 -------------------------------
 
-WirePlumber's default location of its configuration files is determined at
-compile time by the build system. Typically, it ends up being `/etc/wireplumber`.
+WirePlumber's default locations of its configuration files are determined at
+compile time by the build system. Typically, those end up being
+`XDG_CONFIG_DIR/wireplumber`, `/etc/wireplumber`, and
+`/usr/share/wireplumber`, in that order of priority.
 
-In more detail, this is controlled by the `--sysconfdir` meson option. When
-this is set to an absolute path, such as `/etc`, the location of the
-configuration files is set to be `$sysconfdir/wireplumber`. When this is set
-to a relative path, such as `etc`, then the installation prefix (`--prefix`)
+In more detail, the latter two are controlled by the `--sysconfdir` and `--datadir`
+meson options. When those are set to an absolute path, such as `/etc`, the
+location of the configuration files is set to be `$sysconfdir/wireplumber`.
+When set to a relative path, such as `etc`, then the installation prefix (`--prefix`)
 is prepended to the path: `$prefix/$sysconfdir/wireplumber`
 
-WirePlumber expects its `wireplumber.conf` to reside in that directory.
-It is possible to override that at runtime by setting the
-`WIREPLUMBER_CONFIG_FILE` environment variable::
+The three locations are intended for custom user configuration,
+host-specific configuration and distribution-provided configuration,
+respectively. At runtime, WirePlumber will search the directories
+for the highest-priority directory to contain the `wireplumber.conf`
+configuration file. This allows a user or system administrator to easily
+override the distribution provided configuration files by placing an equally
+named file in the respective directory.
 
-  WIREPLUMBER_CONFIG_FILE=src/config/wireplumber.conf wireplumber
+It is possible to override the lookup path at runtime by passing the
+`--config-file` or `-c` option::
+
+  wireplumber --config-file=src/config/wireplumber.conf
 
 It is also possible to override the whole configuration directory, so that
 all other configuration files are being read from a different location as well,
 by setting the `WIREPLUMBER_CONFIG_DIR` environment variable::
 
   WIREPLUMBER_CONFIG_DIR=src/config wireplumber
+
+If `WIREPLUMBER_CONFIG_DIR` is set, the default locations are ignored.
 
 Location of modules
 -------------------

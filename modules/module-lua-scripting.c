@@ -128,42 +128,13 @@ static gchar *
 find_script (const gchar * script, gboolean daemon)
 {
   if ((!daemon || g_path_is_absolute (script)) &&
-      g_file_test (script, G_FILE_TEST_EXISTS | G_FILE_TEST_IS_REGULAR))
+      g_file_test (script, G_FILE_TEST_IS_REGULAR))
     return g_strdup (script);
 
-  /* /etc/wireplumber/scripts */
-  {
-    g_autofree gchar * file = g_build_filename (
-        wp_get_config_dir (), "scripts", script, NULL);
-
-    wp_trace ("trying %s", file);
-
-    if (g_file_test (file, G_FILE_TEST_EXISTS | G_FILE_TEST_IS_REGULAR))
-      return g_steal_pointer (&file);
-  }
-
-  {
-    g_autofree gchar * file = g_build_filename (
-        wp_get_data_dir (), "scripts", script, NULL);
-
-    wp_trace ("trying %s", file);
-
-    if (g_file_test (file, G_FILE_TEST_EXISTS | G_FILE_TEST_IS_REGULAR))
-      return g_steal_pointer (&file);
-  }
-
-  /* {XDG_DATA_DIRS,/usr/local/share,/usr/share}/wireplumber/scripts */
-  const gchar * const * data_dirs = g_get_system_data_dirs ();
-  for (; *data_dirs; data_dirs++) {
-    g_autofree gchar * file = g_build_filename (
-        *data_dirs, "wireplumber", "scripts", script, NULL);
-
-    wp_trace ("trying %s", file);
-
-    if (g_file_test (file, G_FILE_TEST_EXISTS | G_FILE_TEST_IS_REGULAR))
-      return g_steal_pointer (&file);
-  }
-  return NULL;
+  return wp_find_file (WP_LOOKUP_DIR_ENV_DATA |
+                       WP_LOOKUP_DIR_ETC |
+                       WP_LOOKUP_DIR_PREFIX_SHARE,
+                       script, "scripts");
 }
 
 static gboolean

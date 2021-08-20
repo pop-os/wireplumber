@@ -6,6 +6,7 @@
  * SPDX-License-Identifier: MIT
  */
 
+#include <glib/gstdio.h>
 #include <wp/wp.h>
 #include <pipewire/pipewire.h>
 #include <wplua/wplua.h>
@@ -54,9 +55,44 @@ glib_get_real_time (lua_State *L)
   return 1;
 }
 
+static gboolean
+access_parse_mode (const gchar * mode_str, gint *mode)
+{
+  *mode = 0;
+
+  if (!mode_str)
+    return FALSE;
+  else {
+    for (guint i = 0; i < strlen (mode_str); i++) {
+      switch (mode_str[i]) {
+        case 'r': *mode |= R_OK; break;
+        case 'w': *mode |= W_OK; break;
+        case 'x': *mode |= X_OK; break;
+        case 'f': *mode |= F_OK; break;
+        case '-': break;
+        default:
+          return FALSE;
+      }
+    }
+  }
+  return TRUE;
+}
+
+static int
+glib_access (lua_State *L)
+{
+  const gchar *filename = luaL_checkstring (L, 1);
+  int mode = 0;
+  if (!access_parse_mode (luaL_checkstring (L, 2), &mode))
+      luaL_error (L, "invalid mode string: '%s'", lua_tostring (L, 2));
+  lua_pushboolean (L, g_access (filename, mode) >= 0);
+  return 1;
+}
+
 static const luaL_Reg glib_methods[] = {
   { "get_monotonic_time", glib_get_monotonic_time },
   { "get_real_time", glib_get_real_time },
+  { "access", glib_access },
   { NULL, NULL }
 };
 
@@ -511,6 +547,7 @@ object_interest_new_add_constraint (lua_State *L, GType type,
 
   switch (verb) {
   case WP_CONSTRAINT_VERB_EQUALS:
+  case WP_CONSTRAINT_VERB_NOT_EQUALS:
   case WP_CONSTRAINT_VERB_MATCHES: {
     lua_geti (L, constraint_idx, 3);
     value = constraint_value_to_variant (L, -1);
@@ -643,15 +680,17 @@ static const luaL_Reg object_interest_methods[] = {
 static WpObjectInterest *
 get_optional_object_interest (lua_State *L, int idx, GType def_type)
 {
-  if (lua_isnil (L, idx))
+  if (lua_isnoneornil (L, idx))
     return NULL;
   else if (lua_isuserdata (L, idx))
     return wplua_checkboxed (L, idx, WP_TYPE_OBJECT_INTEREST);
   else if (lua_istable (L, idx)) {
     object_interest_new_index (L, idx, def_type);
     return wplua_toboxed (L, -1);
-  } else
+  } else {
+    luaL_error (L, "expected Interest or none/nil");
     return NULL;
+  }
 }
 
 /* WpObjectManager */
@@ -869,6 +908,75 @@ node_new (lua_State *L)
 }
 
 static int
+node_get_state (lua_State *L)
+{
+  WpNode *node = wplua_checkobject (L, 1, WP_TYPE_NODE);
+  const gchar *error = NULL;
+  WpNodeState state = wp_node_get_state (node, &error);
+  wplua_enum_to_lua (L, state, WP_TYPE_NODE_STATE);
+  lua_pushstring (L, error ? error : "");
+  return 2;
+}
+
+static int
+node_get_n_input_ports (lua_State *L)
+{
+  WpNode *node = wplua_checkobject (L, 1, WP_TYPE_NODE);
+  guint max = 0;
+  guint ports = wp_node_get_n_input_ports (node, &max);
+  lua_pushinteger (L, ports);
+  lua_pushinteger (L, max);
+  return 2;
+}
+
+static int
+node_get_n_output_ports (lua_State *L)
+{
+  WpNode *node = wplua_checkobject (L, 1, WP_TYPE_NODE);
+  guint max = 0;
+  guint ports = wp_node_get_n_output_ports (node, &max);
+  lua_pushinteger (L, ports);
+  lua_pushinteger (L, max);
+  return 2;
+}
+
+static int
+node_get_n_ports (lua_State *L)
+{
+  WpNode *node = wplua_checkobject (L, 1, WP_TYPE_NODE);
+  guint ports = wp_node_get_n_ports (node);
+  lua_pushinteger (L, ports);
+  return 1;
+}
+
+static int
+node_iterate_ports (lua_State *L)
+{
+  WpNode *node = wplua_checkobject (L, 1, WP_TYPE_NODE);
+  WpObjectInterest *oi = get_optional_object_interest (L, 2, WP_TYPE_PORT);
+  WpIterator *it = oi ?
+      wp_node_new_ports_filtered_iterator_full (node,
+          wp_object_interest_ref (oi)) :
+      wp_node_new_ports_iterator (node);
+  return push_wpiterator (L, it);
+}
+
+static int
+node_lookup_port (lua_State *L)
+{
+  WpNode *node = wplua_checkobject (L, 1, WP_TYPE_NODE);
+  WpObjectInterest *oi = get_optional_object_interest (L, 2, WP_TYPE_PORT);
+  WpPort *port = oi ?
+      wp_node_lookup_port_full (node, wp_object_interest_ref (oi)) :
+      wp_node_lookup_port (node, G_TYPE_OBJECT, NULL);
+  if (port) {
+    wplua_pushobject (L, port);
+    return 1;
+  }
+  return 0;
+}
+
+static int
 node_send_command (lua_State *L)
 {
   WpNode *node = wplua_checkobject (L, 1, WP_TYPE_NODE);
@@ -878,6 +986,12 @@ node_send_command (lua_State *L)
 }
 
 static const luaL_Reg node_methods[] = {
+  { "get_state", node_get_state },
+  { "get_n_input_ports", node_get_n_input_ports },
+  { "get_n_output_ports", node_get_n_output_ports },
+  { "get_n_ports", node_get_n_ports },
+  { "iterate_ports", node_iterate_ports },
+  { "lookup_port", node_lookup_port },
   { "send_command", node_send_command },
   { NULL, NULL }
 };
@@ -900,6 +1014,22 @@ impl_node_new (lua_State *L)
   wplua_pushobject (L, d);
   return 1;
 }
+
+/* Port */
+
+static int
+port_get_direction (lua_State *L)
+{
+  WpPort *port = wplua_checkobject (L, 1, WP_TYPE_PORT);
+  WpDirection direction = wp_port_get_direction (port);
+  wplua_enum_to_lua (L, direction, WP_TYPE_DIRECTION);
+  return 1;
+}
+
+static const luaL_Reg port_methods[] = {
+  { "get_direction", port_get_direction },
+  { NULL, NULL }
+};
 
 /* Link */
 
@@ -1167,6 +1297,35 @@ static const luaL_Reg state_methods[] = {
   { NULL, NULL }
 };
 
+/* ImplModule */
+
+static int
+impl_module_new (lua_State *L)
+{
+  const char *name, *args = NULL;
+  WpProperties *properties = NULL;
+
+  name = luaL_checkstring (L, 1);
+
+  if (lua_type (L, 2) != LUA_TNONE)
+    args = luaL_checkstring (L, 2);
+
+  if (lua_type (L, 3) != LUA_TNONE) {
+    luaL_checktype (L, 3, LUA_TTABLE);
+    properties = wplua_table_to_properties (L, 2);
+  }
+
+  WpImplModule *m = wp_impl_module_load (get_wp_export_core (L),
+     name, args, properties);
+
+  if (m) {
+    wplua_pushobject (L, m);
+    return 1;
+  } else {
+    return 0;
+  }
+}
+
 void
 wp_lua_scripting_api_init (lua_State *L)
 {
@@ -1210,6 +1369,8 @@ wp_lua_scripting_api_init (lua_State *L)
       node_new, node_methods);
   wplua_register_type_methods (L, WP_TYPE_IMPL_NODE,
       impl_node_new, NULL);
+  wplua_register_type_methods (L, WP_TYPE_PORT,
+      NULL, port_methods);
   wplua_register_type_methods (L, WP_TYPE_LINK,
       link_new, NULL);
   wplua_register_type_methods (L, WP_TYPE_CLIENT,
@@ -1220,6 +1381,8 @@ wp_lua_scripting_api_init (lua_State *L)
       NULL, pipewire_object_methods);
   wplua_register_type_methods (L, WP_TYPE_STATE,
       state_new, state_methods);
+  wplua_register_type_methods (L, WP_TYPE_IMPL_MODULE,
+      impl_module_new, NULL);
 
   wplua_load_uri (L, URI_API, 0, 0, &error);
   if (G_UNLIKELY (error))
