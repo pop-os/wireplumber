@@ -1,4 +1,4 @@
-wireplumber (0.4.2-1) UNRELEASED; urgency=medium
+wireplumber (0.4.2-1) experimental; urgency=medium
 
   * Team upload.
   * New upstream version 0.4.2
@@ -6,7 +6,7 @@ wireplumber (0.4.2-1) UNRELEASED; urgency=medium
   * Update symbols file
   * Bump required PipeWire version to 0.3.32
 
- -- Dylan Aïssi <daissi@debian.org>  Fri, 20 Aug 2021 10:56:33 +0200
+ -- Dylan Aïssi <daissi@debian.org>  Fri, 20 Aug 2021 11:26:29 +0200
 
 wireplumber (0.4.1-1) experimental; urgency=medium
 
