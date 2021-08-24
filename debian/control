@@ -17,7 +17,7 @@ Build-Depends: debhelper-compat (= 13),
                systemd,
 # Only used for automated tests
                dbus <!nocheck>,
-               pipewire <!nocheck>,
+               pipewire (>= 0.3.32) <!nocheck>,
 Standards-Version: 4.5.1
 Homepage: https://gitlab.freedesktop.org/pipewire/wireplumber
 Vcs-Browser: https://salsa.debian.org/utopia-team/wireplumber
@@ -56,7 +56,7 @@ Package: wireplumber
 Architecture: linux-any
 Depends: ${shlibs:Depends},
          ${misc:Depends},
-         pipewire (>= 0.3.20),
+         pipewire (>= 0.3.32),
 Recommends: pipewire-pulse
 Section: video
 Description: modular session / policy manager for PipeWire

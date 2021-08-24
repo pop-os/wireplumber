@@ -2,6 +2,7 @@ wireplumber (0.4.2-2) UNRELEASED; urgency=medium
 
   * Team upload.
   * Remove conffiles that moved to /usr/share/wireplumber/ (Closes: #992604)
+  * Add missing lowest required PipeWire version in d/control.
 
  -- Dylan Aïssi <daissi@debian.org>  Tue, 24 Aug 2021 10:00:19 +0200
 
