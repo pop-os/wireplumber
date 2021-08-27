@@ -1,10 +1,10 @@
-wireplumber (0.4.2-3) UNRELEASED; urgency=medium
+wireplumber (0.4.2-3) experimental; urgency=medium
 
   * Team upload.
   * Really remove previous conffiles (Closes: #992604)
   * Standards-Version: 4.6.0 (no changes needed)
 
- -- Dylan Aïssi <daissi@debian.org>  Fri, 27 Aug 2021 15:34:54 +0200
+ -- Dylan Aïssi <daissi@debian.org>  Fri, 27 Aug 2021 15:44:46 +0200
 
 wireplumber (0.4.2-2) experimental; urgency=medium
 
