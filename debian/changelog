@@ -1,3 +1,10 @@
+wireplumber (0.4.2-3) UNRELEASED; urgency=medium
+
+  * Team upload.
+  * Really remove previous conffiles (Closes: #992604)
+
+ -- Dylan Aïssi <daissi@debian.org>  Fri, 27 Aug 2021 15:34:54 +0200
+
 wireplumber (0.4.2-2) experimental; urgency=medium
 
   * Team upload.
