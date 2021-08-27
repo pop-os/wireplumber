@@ -18,7 +18,7 @@ Build-Depends: debhelper-compat (= 13),
 # Only used for automated tests
                dbus <!nocheck>,
                pipewire (>= 0.3.32) <!nocheck>,
-Standards-Version: 4.5.1
+Standards-Version: 4.6.0
 Homepage: https://gitlab.freedesktop.org/pipewire/wireplumber
 Vcs-Browser: https://salsa.debian.org/utopia-team/wireplumber
 Vcs-Git: https://salsa.debian.org/utopia-team/wireplumber.git
