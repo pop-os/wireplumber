@@ -1,3 +1,10 @@
+wireplumber (0.4.2-4) unstable; urgency=medium
+
+  * Team upload.
+  * Wireplumber is ready for an upload to unstable.
+
+ -- Dylan Aïssi <daissi@debian.org>  Wed, 01 Sep 2021 11:04:02 +0200
+
 wireplumber (0.4.2-3) experimental; urgency=medium
 
   * Team upload.
