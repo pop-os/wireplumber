@@ -1,9 +1,9 @@
-wireplumber (0.4.2-5) UNRELEASED; urgency=medium
+wireplumber (0.4.2-5) unstable; urgency=medium
 
   * Add upstream patches to prevent a failure to start when
      the SPA plugin is not available (Closes: #994085)
 
- -- Dylan Aïssi <daissi@debian.org>  Wed, 15 Sep 2021 15:04:48 +0200
+ -- Dylan Aïssi <daissi@debian.org>  Wed, 15 Sep 2021 16:04:57 +0200
 
 wireplumber (0.4.2-4) unstable; urgency=medium
 
