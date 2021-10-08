@@ -10,7 +10,7 @@
 #include <errno.h>
 #include <pipewire/keys.h>
 
-#define DEFAULT_CONFIG_KEYS 1
+#define COMPILING_MODULE_DEFAULT_NODES 1
 #include "module-default-nodes/common.h"
 
 #define NAME "default-nodes"
@@ -39,6 +39,7 @@ struct _WpDefaultNodes
   WpObjectManager *metadata_om;
   WpObjectManager *nodes_om;
   GSource *timeout_source;
+  GSource *idle_source;
 
   /* properties */
   guint save_interval_ms;
@@ -65,9 +66,8 @@ load_state (WpDefaultNodes * self)
 }
 
 static gboolean
-timeout_save_state_callback (gpointer data)
+timeout_save_state_callback (WpDefaultNodes *self)
 {
-  WpDefaultNodes *self = data;
   g_autoptr (WpProperties) props = wp_properties_new_empty ();
   g_autoptr (GError) error = NULL;
 
@@ -87,15 +87,15 @@ timeout_save_state_callback (gpointer data)
 static void
 timer_start (WpDefaultNodes *self)
 {
-  g_autoptr (WpCore) core = wp_object_get_core (WP_OBJECT (self));
-  g_return_if_fail (core);
+  if (!self->timeout_source && self->use_persistent_storage) {
+    g_autoptr (WpCore) core = wp_object_get_core (WP_OBJECT (self));
+    g_return_if_fail (core);
 
-  if (self->timeout_source || !self->use_persistent_storage)
-    return;
-
-  /* Add the timeout callback */
-  wp_core_timeout_add (core, &self->timeout_source, self->save_interval_ms,
-      timeout_save_state_callback, self, NULL);
+    /* Add the timeout callback */
+    wp_core_timeout_add_closure (core, &self->timeout_source,
+        self->save_interval_ms, g_cclosure_new_object (
+            G_CALLBACK (timeout_save_state_callback), G_OBJECT (self)));
+  }
 }
 
 static WpNode *
@@ -107,7 +107,8 @@ find_highest_priority_node (WpDefaultNodes * self, gint node_t)
   WpNode *res = NULL;
 
   it = wp_object_manager_new_filtered_iterator (self->nodes_om, WP_TYPE_NODE,
-      WP_CONSTRAINT_TYPE_PW_PROPERTY, PW_KEY_MEDIA_CLASS, "=s", MEDIA_CLASS[node_t],
+      WP_CONSTRAINT_TYPE_PW_PROPERTY, PW_KEY_MEDIA_CLASS, "#s", MEDIA_CLASS_MATCH[node_t],
+      WP_CONSTRAINT_TYPE_G_PROPERTY, N_PORTS_KEY[node_t], "!u", 0,
       NULL);
 
   for (; wp_iterator_next (it, &val); g_value_unset (&val)) {
@@ -136,7 +137,8 @@ reevaluate_default_node (WpDefaultNodes * self, WpMetadata *m, gint node_t)
   if (node_name) {
     node = wp_object_manager_lookup (self->nodes_om, WP_TYPE_NODE,
         WP_CONSTRAINT_TYPE_PW_PROPERTY, PW_KEY_NODE_NAME, "=s", node_name,
-        WP_CONSTRAINT_TYPE_PW_PROPERTY, PW_KEY_MEDIA_CLASS, "=s", MEDIA_CLASS[node_t],
+        WP_CONSTRAINT_TYPE_PW_PROPERTY, PW_KEY_MEDIA_CLASS, "#s", MEDIA_CLASS_MATCH[node_t],
+        WP_CONSTRAINT_TYPE_G_PROPERTY, N_PORTS_KEY[node_t], "!u", 0,
         NULL);
   }
 
@@ -156,7 +158,7 @@ reevaluate_default_node (WpDefaultNodes * self, WpMetadata *m, gint node_t)
     self->defaults[node_t].value = g_strdup (node_name);
 
     wp_info_object (self, "set default node for %s: %s",
-        MEDIA_CLASS[node_t], node_name);
+        NODE_TYPE_STR[node_t], node_name);
 
     g_snprintf (buf, sizeof(buf), "{ \"name\": \"%s\" }", node_name);
     wp_metadata_set (m, 0, DEFAULT_KEY[node_t], "Spa:String:JSON", buf);
@@ -203,21 +205,46 @@ on_metadata_changed (WpMetadata *m, guint32 subject,
   }
 }
 
-static void
-on_nodes_changed (WpObjectManager * om, WpDefaultNodes * self)
+static gboolean
+rescan (WpDefaultNodes * self)
 {
   g_autoptr (WpMetadata) metadata = NULL;
+
+  g_clear_pointer (&self->idle_source, g_source_unref);
 
   /* Get the metadata */
   metadata = wp_object_manager_lookup (self->metadata_om, WP_TYPE_METADATA,
       NULL);
   if (!metadata)
-    return;
+    return G_SOURCE_REMOVE;
 
-  wp_trace_object (om, "nodes changed, re-evaluating defaults");
+  wp_trace_object (self, "nodes changed, re-evaluating defaults");
   reevaluate_default_node (self, metadata, AUDIO_SINK);
   reevaluate_default_node (self, metadata, AUDIO_SOURCE);
   reevaluate_default_node (self, metadata, VIDEO_SOURCE);
+
+  return G_SOURCE_REMOVE;
+}
+
+static void
+schedule_rescan (WpDefaultNodes * self)
+{
+  if (!self->idle_source) {
+    g_autoptr (WpCore) core = wp_object_get_core (WP_OBJECT (self));
+    g_return_if_fail (core);
+
+    wp_core_idle_add_closure (core, &self->idle_source,
+        g_cclosure_new_object (G_CALLBACK (rescan), G_OBJECT (self)));
+  }
+}
+
+static void
+on_node_added (WpObjectManager * om, WpNode * node, WpDefaultNodes * self)
+{
+  g_signal_connect_object (node, "notify::n-input-ports",
+      G_CALLBACK (schedule_rescan), self, G_CONNECT_SWAPPED);
+  g_signal_connect_object (node, "notify::n-output-ports",
+      G_CALLBACK (schedule_rescan), self, G_CONNECT_SWAPPED);
 }
 
 static void
@@ -246,8 +273,12 @@ on_metadata_added (WpObjectManager *om, WpMetadata *metadata, gpointer d)
   wp_object_manager_add_interest (self->nodes_om, WP_TYPE_NODE, NULL);
   wp_object_manager_request_object_features (self->nodes_om, WP_TYPE_NODE,
       WP_PIPEWIRE_OBJECT_FEATURES_MINIMAL);
-  g_signal_connect_object (self->nodes_om, "objects-changed",
-      G_CALLBACK (on_nodes_changed), self, 0);
+  g_signal_connect_object (self->nodes_om, "object-added",
+      G_CALLBACK (on_node_added), self, 0);
+  g_signal_connect_object (self->nodes_om, "object-added",
+      G_CALLBACK (schedule_rescan), self, G_CONNECT_SWAPPED);
+  g_signal_connect_object (self->nodes_om, "object-removed",
+      G_CALLBACK (schedule_rescan), self, G_CONNECT_SWAPPED);
   wp_core_install_object_manager (core, self->nodes_om);
 }
 
@@ -281,6 +312,11 @@ static void
 wp_default_nodes_disable (WpPlugin * plugin)
 {
   WpDefaultNodes * self = WP_DEFAULT_NODES (plugin);
+
+  /* Clear the current rescan callback */
+  if (self->idle_source)
+      g_source_destroy (self->idle_source);
+  g_clear_pointer (&self->idle_source, g_source_unref);
 
   /* Clear the current timeout callback */
   if (self->timeout_source)

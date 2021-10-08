@@ -45,6 +45,7 @@ struct _WpInitTransition
 enum {
   STEP_LOAD_COMPONENTS = WP_TRANSITION_STEP_CUSTOM_START,
   STEP_CONNECT,
+  STEP_CHECK_MEDIA_SESSION,
   STEP_ACTIVATE_PLUGINS,
   STEP_ACTIVATE_SCRIPTS,
 };
@@ -64,7 +65,8 @@ wp_init_transition_get_next_step (WpTransition * transition, guint step)
   switch (step) {
   case WP_TRANSITION_STEP_NONE: return STEP_LOAD_COMPONENTS;
   case STEP_LOAD_COMPONENTS:    return STEP_CONNECT;
-  case STEP_CONNECT:            return STEP_ACTIVATE_PLUGINS;
+  case STEP_CONNECT:            return STEP_CHECK_MEDIA_SESSION;
+  case STEP_CHECK_MEDIA_SESSION:return STEP_ACTIVATE_PLUGINS;
   case STEP_ACTIVATE_SCRIPTS:   return WP_TRANSITION_STEP_NONE;
 
   case STEP_ACTIVATE_PLUGINS: {
@@ -100,6 +102,19 @@ on_plugin_added (WpObjectManager * om, WpObject * p, WpInitTransition *self)
   self->pending_plugins++;
   wp_object_activate (p, WP_PLUGIN_FEATURE_ENABLED, NULL,
       (GAsyncReadyCallback) on_plugin_activated, self);
+}
+
+static void
+check_media_session (WpObjectManager * om, WpInitTransition *self)
+{
+  if (wp_object_manager_get_n_objects (om) > 0) {
+    wp_transition_return_error (WP_TRANSITION (self), g_error_new (
+        WP_DOMAIN_DAEMON, WP_EXIT_SOFTWARE,
+        "pipewire-media-session appears to be running; "
+        "please stop it before starting wireplumber"));
+    return;
+  }
+  wp_transition_advance (WP_TRANSITION (self));
 }
 
 static void
@@ -204,9 +219,23 @@ wp_init_transition_execute_step (WpTransition * transition, guint step)
     break;
   }
 
+  case STEP_CHECK_MEDIA_SESSION: {
+    wp_info_object (self, "Checking for session manager conflicts...");
+
+    self->om = wp_object_manager_new ();
+    wp_object_manager_add_interest (self->om, WP_TYPE_CLIENT,
+        WP_CONSTRAINT_TYPE_PW_GLOBAL_PROPERTY,
+        "application.name", "=s", "pipewire-media-session", NULL);
+    g_signal_connect_object (self->om, "installed",
+        G_CALLBACK (check_media_session), self, 0);
+    wp_core_install_object_manager (core, self->om);
+    break;
+  }
+
   case STEP_ACTIVATE_PLUGINS: {
     const char *engine = pw_properties_get (props, "wireplumber.script-engine");
 
+    g_clear_object (&self->om);
     wp_info_object (self, "Activating plugins...");
 
     self->om = wp_object_manager_new ();
@@ -301,13 +330,32 @@ on_disconnected (WpCore *core, WpDaemon * d)
 }
 
 static gboolean
-signal_handler (gpointer data)
+signal_handler (int signal, gpointer data)
 {
   WpDaemon *d = data;
-  wp_message ("stopped by signal");
+  wp_message ("stopped by signal: %s", strsignal (signal));
   daemon_exit (d, WP_EXIT_OK);
   return G_SOURCE_CONTINUE;
 }
+
+static gboolean
+signal_handler_int (gpointer data)
+{
+  return signal_handler (SIGINT, data);
+}
+
+static gboolean
+signal_handler_hup (gpointer data)
+{
+  return signal_handler (SIGHUP, data);
+}
+
+static gboolean
+signal_handler_term (gpointer data)
+{
+  return signal_handler (SIGTERM, data);
+}
+
 
 static gboolean
 init_start (WpTransition * transition)
@@ -373,9 +421,9 @@ main (gint argc, gchar **argv)
   g_signal_connect (d.core, "disconnected", G_CALLBACK (on_disconnected), &d);
 
   /* watch for exit signals */
-  g_unix_signal_add (SIGINT, signal_handler, &d);
-  g_unix_signal_add (SIGTERM, signal_handler, &d);
-  g_unix_signal_add (SIGHUP, signal_handler, &d);
+  g_unix_signal_add (SIGINT, signal_handler_int, &d);
+  g_unix_signal_add (SIGTERM, signal_handler_term, &d);
+  g_unix_signal_add (SIGHUP, signal_handler_hup, &d);
 
   /* initialization transition */
   g_idle_add ((GSourceFunc) init_start,

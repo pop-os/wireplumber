@@ -1,5 +1,5 @@
 project('wireplumber', ['c'],
-  version : '0.4.2',
+  version : '0.4.3',
   license : 'MIT',
   meson_version : '>= 0.54.0',
   default_options : [
@@ -79,6 +79,11 @@ else
 endif
 summary({'Lua version': lua_dep.version() + (system_lua ? ' (system)' : ' (built-in)')})
 
+systemd = dependency('systemd', required: get_option('systemd'))
+libsystemd_dep = dependency('libsystemd',required: get_option('systemd'))
+summary({'systemd conf data': systemd.found(),
+         'libsystemd': libsystemd_dep.found()}, bool_yn: true)
+
 gnome = import('gnome')
 pkgconfig = import('pkgconfig')
 fs = import('fs')
@@ -109,4 +114,7 @@ subdir('lib')
 subdir('docs')
 subdir('modules')
 subdir('src')
-subdir('tests')
+
+if get_option('tests')
+  subdir('tests')
+endif
