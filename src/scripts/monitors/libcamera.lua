@@ -59,14 +59,14 @@ function createNode(parent, id, type, factory, properties)
 
   -- set the node name
   local name =
-      (factory:find("sink") and "v4l2_output") or
-       (factory:find("source") and "v4l2_input" or factory)
+      (factory:find("sink") and "libcamera_output") or
+       (factory:find("source") and "libcamera_input" or factory)
       .. "." ..
-      (dev_props["device.name"]:gsub("^v4l2_device%.(.+)", "%1") or
+      (dev_props["device.name"]:gsub("^libcamera_device%.(.+)", "%1") or
        dev_props["device.name"] or
        dev_props["device.nick"] or
        dev_props["device.alias"] or
-       "v4l2-device")
+       "libcamera-device")
   -- sanitize name
   name = name:gsub("([^%w_%-%.])", "_")
 
@@ -82,7 +82,7 @@ function createNode(parent, id, type, factory, properties)
   end
 
   -- set the node description
-  local desc = dev_props["device.description"] or "v4l2-device"
+  local desc = dev_props["device.description"] or "libcamera-device"
   -- sanitize description, replace ':' with ' '
   properties["node.description"] = desc:gsub("(:)", " ")
 
@@ -97,7 +97,7 @@ end
 
 function createDevice(parent, id, type, factory, properties)
   -- ensure the device has an appropriate name
-  local name = "v4l2_device." ..
+  local name = "libcamera_device." ..
       (properties["device.name"] or
        properties["device.bus-id"] or
        properties["device.bus-path"] or
@@ -130,10 +130,10 @@ function createDevice(parent, id, type, factory, properties)
   parent:store_managed_object(id, device)
 end
 
-monitor = SpaDevice("api.v4l2.enum.udev", config.properties or {})
+monitor = SpaDevice("api.libcamera.enum.client", config.properties or {})
 if monitor then
   monitor:connect("create-object", createDevice)
   monitor:activate(Feature.SpaDevice.ENABLED)
 else
-  Log.message("PipeWire's V4L SPA missing or broken. Video4Linux not supported.")
+  Log.message("PipeWire's libcamera SPA missing or broken. libcamera not supported.")
 end

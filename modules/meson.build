@@ -58,6 +58,17 @@ shared_library(
   dependencies : [wp_dep, pipewire_dep],
 )
 
+shared_library(
+  'wireplumber-module-route-settings-api',
+  [
+    'module-route-settings-api.c',
+  ],
+  c_args : [common_c_args, '-DG_LOG_DOMAIN="m-route-settings-api"'],
+  install : true,
+  install_dir : wireplumber_module_dir,
+  dependencies : [wp_dep, pipewire_dep],
+)
+
 subdir('module-reserve-device')
 shared_library(
   'wireplumber-module-reserve-device',
@@ -176,3 +187,16 @@ shared_library(
   install_dir : wireplumber_module_dir,
   dependencies : [wp_dep, pipewire_dep],
 )
+
+if libsystemd_dep.found()
+  shared_library(
+    'wireplumber-module-logind',
+    [
+      'module-logind.c',
+    ],
+    c_args : [common_c_args, '-DG_LOG_DOMAIN="m-logind"'],
+    install : true,
+    install_dir : wireplumber_module_dir,
+    dependencies : [wp_dep, pipewire_dep, libsystemd_dep],
+  )
+endif
