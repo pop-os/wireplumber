@@ -1,2 +1,0 @@
-fix_object_constructors_to_fail_gracefully.patch
-add_basic_check_for_nil_monitor.patch
