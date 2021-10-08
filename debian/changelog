@@ -1,4 +1,4 @@
-wireplumber (0.4.3-1) UNRELEASED; urgency=medium
+wireplumber (0.4.3-1) unstable; urgency=medium
 
   * Team upload.
   * New upstream version 0.4.3
@@ -8,7 +8,7 @@ wireplumber (0.4.3-1) UNRELEASED; urgency=medium
   * Update symbols file
   * Add libsystemd-dev to Build-Depends
 
- -- Dylan Aïssi <daissi@debian.org>  Fri, 08 Oct 2021 15:34:54 +0200
+ -- Dylan Aïssi <daissi@debian.org>  Fri, 08 Oct 2021 15:57:11 +0200
 
 wireplumber (0.4.2-5) unstable; urgency=medium
 
