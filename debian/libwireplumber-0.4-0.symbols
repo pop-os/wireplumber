@@ -441,6 +441,8 @@ libwireplumber-module-device-activation.so libwireplumber-0.4-0 #MINVER#
  wireplumber__module_init@Base 0.3.95
 libwireplumber-module-file-monitor-api.so libwireplumber-0.4-0 #MINVER#
  wireplumber__module_init@Base 0.4.2
+libwireplumber-module-logind.so libwireplumber-0.4-0 #MINVER#
+ wireplumber__module_init@Base 0.4.3
 libwireplumber-module-lua-scripting.so libwireplumber-0.4-0 #MINVER#
  wireplumber__module_init@Base 0.3.95
 libwireplumber-module-metadata.so libwireplumber-0.4-0 #MINVER#
