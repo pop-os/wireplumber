@@ -3,6 +3,7 @@ wireplumber (0.4.4-1) UNRELEASED; urgency=medium
   * Team upload.
   * New upstream version 0.4.4
   * Update symbols file
+  * Bump meson version requirement to 0.56
 
  -- Dylan Aïssi <daissi@debian.org>  Mon, 18 Oct 2021 09:55:50 +0200
 
