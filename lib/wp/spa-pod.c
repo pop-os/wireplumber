@@ -14,6 +14,7 @@
 #include <spa/utils/type-info.h>
 #include <spa/pod/builder.h>
 #include <spa/pod/parser.h>
+#include <spa/pod/filter.h>
 
 #define WP_SPA_POD_BUILDER_REALLOC_STEP_SIZE 64
 #define WP_SPA_POD_ID_PROPERTY_NAME_MAX 16
@@ -1794,6 +1795,59 @@ wp_spa_pod_get_array_child (WpSpaPod *self)
 }
 
 /*!
+ * \brief Fixates choices in an object pod so that they only have one value
+ *
+ * \ingroup wpspapod
+ * \param self a spa pod
+ * \returns TRUE if the pod was an object and it went through the fixation
+ *   procedure, FALSE otherwise
+ */
+gboolean
+wp_spa_pod_fixate (WpSpaPod *self)
+{
+  g_return_val_if_fail (self, FALSE);
+
+  if (wp_spa_pod_is_object (self))
+    return spa_pod_object_fixate ((struct spa_pod_object *) self->pod) == 0;
+  return FALSE;
+}
+
+/*!
+ * \brief Returns the intersection between \a self and \a filter
+ *
+ * This is typically used to intersect pods that describe formats, in order to
+ * find a common format that is accceptable by both sides. For that purpose,
+ * this is not exactly an intersection with its mathematical meaning.
+ * Object properties can be thought of as format constraints. When one side does
+ * not specify a specific property, it is considered to accept any value for it,
+ * so the value of this property from the other side is added in the result.
+ *
+ * Both input pods are left unmodified after this function call.
+ *
+ * If NULL is passed in the \a filter, this function just copies \a self and
+ * returns the copy.
+ *
+ * \param self the first pod
+ * \param filter (nullable): the second pod
+ * \return (transfer full) (nullable): a new pod that contains the intersection
+ *   between \a self and \a filter, or NULL if the intersection was not possible
+ *   to make
+ */
+WpSpaPod *
+wp_spa_pod_filter (WpSpaPod *self, WpSpaPod *filter)
+{
+  char buffer[1024];
+  struct spa_pod_builder b = SPA_POD_BUILDER_INIT(&buffer, sizeof(buffer));
+  struct spa_pod *result = NULL;
+
+  g_return_val_if_fail (self, NULL);
+
+  if (spa_pod_filter(&b, &result, self->pod, filter ? filter->pod : NULL) >= 0)
+    return wp_spa_pod_new_wrap_copy (result);
+  return NULL;
+}
+
+/*!
  * \brief Increases the reference count of a spa pod builder
  *
  * \ingroup wpspapod
@@ -2259,9 +2313,14 @@ wp_spa_pod_builder_add_valist (WpSpaPodBuilder *self, va_list args)
       case 'P':  /* Pod */
       case 'V':  /* Choice */
       case 'O':  /* Object */
-      case 'T':  /* Struct */
-        spa_pod_builder_primitive (&self->builder, va_arg(args, WpSpaPod *)->pod);
+      case 'T': { /* Struct */
+        WpSpaPod *arg = va_arg(args, WpSpaPod *);
+        if (arg == NULL)
+          spa_pod_builder_none (&self->builder);
+        else
+          spa_pod_builder_primitive (&self->builder, arg->pod);
         break;
+      }
       case 'K': { /* Id as string - WirePlumber extension */
         const char * id = va_arg(args, const char *);
         if (key) {

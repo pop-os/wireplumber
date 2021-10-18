@@ -14,7 +14,7 @@ clean:
 
 run: all
 	WIREPLUMBER_DEBUG=$(WIREPLUMBER_DEBUG) \
-	./wp-uninstalled.sh $(DBG) ./build/src/wireplumber
+	./wp-uninstalled.sh $(DBG) wireplumber
 
 test:
 	meson test -C build
@@ -26,4 +26,5 @@ gdb:
 	$(MAKE) run DBG=gdb
 
 valgrind:
-	$(MAKE) run DBG=valgrind
+	G_SLICE=always-malloc \
+	$(MAKE) run DBG="valgrind --leak-check=full"
