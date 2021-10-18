@@ -1,6 +1,7 @@
 libwireplumber-0.4.so.0 libwireplumber-0.4-0 #MINVER#
 * Build-Depends-Package: libwireplumber-0.4-dev
  wp_client_get_type@Base 0.3.95
+ wp_client_send_error@Base 0.4.4
  wp_client_update_permissions@Base 0.3.95
  wp_client_update_permissions_array@Base 0.3.95
  wp_component_loader_get_type@Base 0.3.95
@@ -299,6 +300,8 @@ libwireplumber-0.4.so.0 libwireplumber-0.4-0 #MINVER#
  wp_spa_pod_copy@Base 0.3.95
  wp_spa_pod_ensure_unique_owner@Base 0.3.95
  wp_spa_pod_equal@Base 0.3.95
+ wp_spa_pod_filter@Base 0.4.4
+ wp_spa_pod_fixate@Base 0.4.4
  wp_spa_pod_get_array_child@Base 0.3.95
  wp_spa_pod_get_boolean@Base 0.3.95
  wp_spa_pod_get_bytes@Base 0.3.95
