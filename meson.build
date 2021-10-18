@@ -1,7 +1,7 @@
 project('wireplumber', ['c'],
-  version : '0.4.3',
+  version : '0.4.4',
   license : 'MIT',
-  meson_version : '>= 0.54.0',
+  meson_version : '>= 0.56.0',
   default_options : [
     'warning_level=1',
     'buildtype=debugoptimized',
@@ -33,7 +33,7 @@ gmodule_dep = dependency('gmodule-2.0', version : glib_req_version)
 gio_dep = dependency('gio-2.0', version : glib_req_version)
 giounix_dep = dependency('gio-unix-2.0', version : glib_req_version)
 spa_dep = dependency('libspa-0.2', version: '>= 0.2')
-pipewire_dep = dependency('libpipewire-0.3', version: '>= 0.3.26')
+pipewire_dep = dependency('libpipewire-0.3', version: '>= 0.3.37')
 mathlib = cc.find_library('m')
 threads_dep = dependency('threads')
 
@@ -81,8 +81,10 @@ summary({'Lua version': lua_dep.version() + (system_lua ? ' (system)' : ' (built
 
 systemd = dependency('systemd', required: get_option('systemd'))
 libsystemd_dep = dependency('libsystemd',required: get_option('systemd'))
+libelogind_dep = dependency('libelogind', required: get_option('elogind'))
 summary({'systemd conf data': systemd.found(),
-         'libsystemd': libsystemd_dep.found()}, bool_yn: true)
+         'libsystemd': libsystemd_dep.found(),
+         'libelogind': libelogind_dep.found()}, bool_yn: true)
 
 gnome = import('gnome')
 pkgconfig = import('pkgconfig')
@@ -118,3 +120,21 @@ subdir('src')
 if get_option('tests')
   subdir('tests')
 endif
+
+conf_uninstalled = configuration_data()
+conf_uninstalled.set('MESON', '')
+conf_uninstalled.set('MESON_SOURCE_ROOT', meson.project_source_root())
+conf_uninstalled.set('MESON_BUILD_ROOT', meson.project_build_root())
+
+wp_uninstalled = configure_file(
+  input : 'wp-uninstalled.sh',
+  output : 'wp-uninstalled.sh.in',
+  configuration : conf_uninstalled,
+)
+
+wireplumber_uninstalled = custom_target('wp-uninstalled',
+  output : 'wp-uninstalled.sh',
+  input : wp_uninstalled,
+  build_by_default : true,
+  command : ['cp', '@INPUT@', '@OUTPUT@'],
+)

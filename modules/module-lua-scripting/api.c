@@ -1117,8 +1117,20 @@ client_update_permissions (lua_State *L)
   return 0;
 }
 
+static int
+client_send_error (lua_State *L)
+{
+  WpClient *client = wplua_checkobject (L, 1, WP_TYPE_CLIENT);
+  guint id = luaL_checkinteger (L, 2);
+  int res = luaL_checkinteger (L, 3);
+  const char *message = luaL_checkstring (L, 4);
+  wp_client_send_error (client, id, res, message);
+  return 0;
+}
+
 static const luaL_Reg client_methods[] = {
   { "update_permissions", client_update_permissions },
+  { "send_error", client_send_error },
   { NULL, NULL }
 };
 
@@ -1314,12 +1326,12 @@ impl_module_new (lua_State *L)
 
   name = luaL_checkstring (L, 1);
 
-  if (lua_type (L, 2) != LUA_TNONE)
+  if (lua_type (L, 2) != LUA_TNONE && lua_type (L, 2) != LUA_TNIL)
     args = luaL_checkstring (L, 2);
 
-  if (lua_type (L, 3) != LUA_TNONE) {
+  if (lua_type (L, 3) != LUA_TNONE && lua_type (L, 3) != LUA_TNIL) {
     luaL_checktype (L, 3, LUA_TTABLE);
-    properties = wplua_table_to_properties (L, 2);
+    properties = wplua_table_to_properties (L, 3);
   }
 
   WpImplModule *m = wp_impl_module_load (get_wp_export_core (L),
