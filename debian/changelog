@@ -2,6 +2,7 @@ wireplumber (0.4.5-1) UNRELEASED; urgency=medium
 
   * Team upload.
   * New upstream version 0.4.5
+  * Update symbols file
 
  -- Dylan Aïssi <daissi@debian.org>  Fri, 12 Nov 2021 22:24:03 +0100
 
