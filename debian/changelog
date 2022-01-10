@@ -4,6 +4,7 @@ wireplumber (0.4.6-1) UNRELEASED; urgency=medium
   * New upstream version 0.4.6
   * Simplify debian/watch file
   * Bump minimum pipewire to 0.3.43
+  * Update symbols file
 
  -- Dylan Aïssi <daissi@debian.org>  Mon, 10 Jan 2022 11:21:38 +0100
 
