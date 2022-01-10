@@ -11,6 +11,7 @@
 #include "object.h"
 #include "log.h"
 #include "core.h"
+#include "error.h"
 
 /*! \defgroup wpfeatureactivationtransition WpFeatureActivationTransition */
 /*!
@@ -467,6 +468,45 @@ wp_object_deactivate (WpObject * self, WpObjectFeatures features)
 }
 
 /*!
+ * \brief Aborts the current object activation by returning a transition error
+ * if any transitions are pending.
+ *
+ * This is usually used to stop any pending activation if an error happened.
+ *
+ * \ingroup wpobject
+ * \param self the object
+ * \param msg the message used in the transition error
+ * \since 0.4.6
+ */
+void
+wp_object_abort_activation (WpObject * self, const gchar *msg)
+{
+  WpObjectPrivate *priv;
+  g_autoptr (WpTransition) t = NULL;
+
+  g_return_if_fail (WP_IS_OBJECT (self));
+
+  priv =  wp_object_get_instance_private (self);
+
+  g_clear_pointer (&priv->idle_advnc_source, g_source_unref);
+
+  /* abort ongoing transition if any */
+  t = g_weak_ref_get (&priv->ongoing_transition);
+  if (t)
+    wp_transition_return_error (t, g_error_new (WP_DOMAIN_LIBRARY,
+            WP_LIBRARY_ERROR_OPERATION_FAILED,
+            "Object activation aborted: %s", msg));
+
+  /* abort queued transitions */
+  while (!g_queue_is_empty (priv->transitions)) {
+    WpTransition *next = g_queue_pop_head (priv->transitions);
+    wp_transition_return_error (next, g_error_new (WP_DOMAIN_LIBRARY,
+            WP_LIBRARY_ERROR_OPERATION_FAILED,
+            "Object activation aborted: %s", msg));
+  }
+}
+
+/*!
  * \brief Allows subclasses to update the currently active features.
  *
  * \a activated should contain new features and \a deactivated
@@ -475,7 +515,6 @@ wp_object_deactivate (WpObject * self, WpObjectFeatures features)
  *
  * \remark Private method to be called by subclasses only.
  *
- * \protected
  * \ingroup wpobject
  * \param self the object
  * \param activated the features that were activated, or 0

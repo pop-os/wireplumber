@@ -96,7 +96,6 @@ wp_iterator_new (const WpIteratorMethods *methods, size_t user_size)
  * \brief Gets the implementation-specific storage of an iterator
  * \note this only for use by implementations of WpIterator
  *
- * \protected
  * \ingroup wpiterator
  * \param self an iterator object
  * \returns a pointer to the implementation-specific storage area
@@ -174,7 +173,7 @@ wp_iterator_next (WpIterator *self, GValue *item)
 }
 
 /*!
- * \brief Iterates over all items of the iterator calling a function.
+ * \brief Fold a function over the items of the iterator.
  *
  * \ingroup wpiterator
  * \param self the iterator
@@ -196,7 +195,7 @@ wp_iterator_fold (WpIterator *self, WpIteratorFoldFunc func, GValue *ret,
 }
 
 /*!
- * \brief Fold a function over the items of the iterator.
+ * \brief Iterates over all items of the iterator calling a function.
  *
  * \ingroup wpiterator
  * \param self the iterator

@@ -162,8 +162,6 @@ wp_global_proxy_step_bind (WpObject * object,
   WpGlobalProxy *self = WP_GLOBAL_PROXY (object);
   WpGlobalProxyPrivate *priv = wp_global_proxy_get_instance_private (self);
 
-  wp_proxy_watch_bind_error (WP_PROXY (self), WP_TRANSITION (transition));
-
   /* Create the pipewire object if global is NULL */
   if (priv->global == NULL && priv->factory_name[0] != '\0') {
     g_autoptr (WpCore) core = NULL;
@@ -389,6 +387,16 @@ wp_global_proxy_bind (WpGlobalProxy * self)
 
   if (!priv->global || !priv->global->proxy)
     return FALSE;
+
+  /*
+   * We can bind only if the WpGlobal will unbind this proxy on removal, so
+   * assert here that this is so. Why: pw_registry_bind can race with the global
+   * id being replaced with a different object on server side, so we must rely
+   * on the registry_global messages to know if the object was replaced.  If the
+   * race occurs, and a wrong object is going to be bound here, what will then
+   * happen is that WpGlobal will dispose this proxy and no problem arises.
+   */
+  g_return_val_if_fail (priv->global->proxy == self, FALSE);
 
   p = wp_global_bind (priv->global);
   if (!p)

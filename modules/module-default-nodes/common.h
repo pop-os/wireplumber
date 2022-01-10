@@ -37,18 +37,6 @@ static const gchar * DEFAULT_CONFIG_KEY[N_DEFAULT_NODES] = {
   [VIDEO_SOURCE] = "default.configured.video.source",
 };
 
-static const gchar * MEDIA_CLASS_MATCH[N_DEFAULT_NODES] = {
-  [AUDIO_SINK] = "Audio/*",
-  [AUDIO_SOURCE] = "Audio/*",
-  [VIDEO_SOURCE] = "Video/*",
-};
-
-static const gchar * N_PORTS_KEY[N_DEFAULT_NODES] = {
-  [AUDIO_SINK] = "n-input-ports",
-  [AUDIO_SOURCE] = "n-output-ports",
-  [VIDEO_SOURCE] = "n-output-ports",
-};
-
 #endif
 
 static int
@@ -62,7 +50,7 @@ json_object_find (const char *obj, const char *key, char *value, size_t len)
   if (spa_json_enter_object(&it[0], &it[1]) <= 0)
     return -EINVAL;
 
-  while (spa_json_get_string(&it[1], k, sizeof(k)-1) > 0) {
+  while (spa_json_get_string(&it[1], k, sizeof(k)) > 0) {
     if (strcmp(k, key) == 0) {
       if (spa_json_get_string(&it[1], value, len) <= 0)
         continue;

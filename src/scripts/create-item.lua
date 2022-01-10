@@ -22,6 +22,8 @@ function configProperties(node)
     ["client.id"] = np["client.id"],
     ["object.path"] = np["object.path"],
     ["priority.session"] = np["priority.session"],
+    ["device.id"] = np["device.id"],
+    ["card.profile.device"] = np["card.profile.device"],
   }
 
   for k, v in pairs(np) do
@@ -67,9 +69,13 @@ function addItem (node, item_type)
   end
 
   -- activate item
-  items[id]:activate (Features.ALL, function (item)
-    Log.info(item, "activated item for node " .. tostring(id))
-    item:register ()
+  items[id]:activate (Features.ALL, function (item, e)
+    if e then
+      Log.message(item, "failed to activate item: " .. tostring(e));
+    else
+      Log.info(item, "activated item for node " .. tostring(id))
+      item:register ()
+   end
   end)
 end
 
