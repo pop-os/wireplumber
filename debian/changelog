@@ -1,3 +1,11 @@
+wireplumber (0.4.6-1) UNRELEASED; urgency=medium
+
+  * Team upload.
+  * New upstream version 0.4.6
+  * Simplify debian/watch file
+
+ -- Dylan Aïssi <daissi@debian.org>  Mon, 10 Jan 2022 11:21:38 +0100
+
 wireplumber (0.4.5-1) unstable; urgency=medium
 
   * Team upload.
