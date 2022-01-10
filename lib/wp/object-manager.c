@@ -46,6 +46,11 @@
  * that match the interests of this WpObjectManager will immediately become
  * available to get through wp_object_manager_new_iterator() and the
  * WpObjectManager \c object-added signal will be emitted for all of them.
+ * However, note that if these objects need to be prepared (to activate some
+ * features on them), the emission of \c object-added will be delayed. To know
+ * when it is safe to access the initial set of objects, wait until the
+ * \c installed signal has been emitted. That signal is emitted asynchronously
+ * after all the initial objects have been prepared.
  *
  * \gproperties
  *
@@ -106,11 +111,11 @@
  * Flags: G_SIGNAL_RUN_FIRST
  * \endparblock
  *
- * \par object-changed
+ * \par objects-changed
  * \parblock
  * \code
  * void
- * object_changed_callback (WpObjectManager * self,
+ * objects_changed_callback (WpObjectManager * self,
  *                          gpointer user_data)
  * \endcode
  *
@@ -1094,7 +1099,7 @@ expose_tmp_globals (WpCore *core, GAsyncResult *res, WpRegistry *self)
       WpGlobal *g = g_ptr_array_index (tmp_globals, i);
 
       /* if global was already removed, drop it */
-      if (g->flags == 0)
+      if (g->flags == 0 || g->id == SPA_ID_INVALID)
         continue;
 
       wp_object_manager_add_global (om, g);
@@ -1346,6 +1351,9 @@ wp_global_rm_flag (WpGlobal *global, guint rm_flag)
 
       /* remove FEATURE_BOUND to destroy the underlying pw_proxy */
       wp_object_deactivate (WP_OBJECT (proxy), WP_PROXY_FEATURE_BOUND);
+
+      /* stop all in-progress activations */
+      wp_object_abort_activation (WP_OBJECT (proxy), "PipeWire proxy removed");
 
       /* if the proxy is not owning the global, unref it */
       if (global->flags == 0)

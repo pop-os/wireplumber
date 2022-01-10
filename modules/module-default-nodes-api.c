@@ -16,7 +16,6 @@ struct _WpDefaultNodesApi
 
   gchar *defaults[N_DEFAULT_NODES];
   WpObjectManager *om;
-  GSource *idle_source;
 };
 
 enum {
@@ -36,15 +35,18 @@ wp_default_nodes_api_init (WpDefaultNodesApi * self)
 {
 }
 
-static gboolean
-emit_changed_cb (gpointer data)
+static void
+sync_changed_notification (WpCore * core, GAsyncResult * res,
+    WpDefaultNodesApi * self)
 {
-  WpDefaultNodesApi *self = data;
+  g_autoptr (GError) error = NULL;
+  if (!wp_core_sync_finish (core, res, &error)) {
+    wp_warning_object (self, "core sync error: %s", error->message);
+    return;
+  }
 
   g_signal_emit (self, signals[SIGNAL_CHANGED], 0);
-
-  g_clear_pointer (&self->idle_source, g_source_unref);
-  return G_SOURCE_REMOVE;
+  return;
 }
 
 static void
@@ -52,7 +54,8 @@ schedule_changed_notification (WpDefaultNodesApi *self)
 {
   g_autoptr (WpCore) core = wp_object_get_core (WP_OBJECT (self));
   g_return_if_fail (core);
-  wp_core_idle_add (core, &self->idle_source, emit_changed_cb, self, NULL);
+  wp_core_sync_closure (core, NULL, g_cclosure_new_object (
+      G_CALLBACK (sync_changed_notification), G_OBJECT (self)));
 }
 
 static void
@@ -141,10 +144,6 @@ wp_default_nodes_api_disable (WpPlugin * plugin)
 {
   WpDefaultNodesApi * self = WP_DEFAULT_NODES_API (plugin);
 
-  if (self->idle_source)
-    g_source_destroy (self->idle_source);
-  g_clear_pointer (&self->idle_source, g_source_unref);
-
   for (guint i = 0; i < N_DEFAULT_NODES; i++)
     g_clear_pointer (&self->defaults[i], g_free);
   g_clear_object (&self->om);
@@ -161,14 +160,22 @@ wp_default_nodes_api_get_default_node (WpDefaultNodesApi * self,
       break;
     }
   }
+
   if (node_t != -1 && self->defaults[node_t]) {
-    g_autoptr (WpNode) node = wp_object_manager_lookup (self->om,
+    g_autoptr (WpIterator) it = NULL;
+    g_auto (GValue) val = G_VALUE_INIT;
+    it = wp_object_manager_new_filtered_iterator (self->om,
         WP_TYPE_NODE,
         WP_CONSTRAINT_TYPE_PW_PROPERTY,
         PW_KEY_NODE_NAME, "=s", self->defaults[node_t],
         NULL);
-    if (node)
-      return wp_proxy_get_bound_id (WP_PROXY (node));
+    for (; wp_iterator_next (it, &val); g_value_unset (&val)) {
+      WpNode *node = g_value_get_object (&val);
+      const gchar *mc = wp_pipewire_object_get_property (
+          WP_PIPEWIRE_OBJECT (node), PW_KEY_MEDIA_CLASS);
+      if (!g_str_has_prefix (mc, "Stream/"))
+        return wp_proxy_get_bound_id (WP_PROXY (node));
+    }
   }
   return SPA_ID_INVALID;
 }

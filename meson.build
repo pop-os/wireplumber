@@ -1,5 +1,5 @@
 project('wireplumber', ['c'],
-  version : '0.4.5',
+  version : '0.4.6',
   license : 'MIT',
   meson_version : '>= 0.56.0',
   default_options : [
@@ -33,7 +33,7 @@ gmodule_dep = dependency('gmodule-2.0', version : glib_req_version)
 gio_dep = dependency('gio-2.0', version : glib_req_version)
 giounix_dep = dependency('gio-unix-2.0', version : glib_req_version)
 spa_dep = dependency('libspa-0.2', version: '>= 0.2')
-pipewire_dep = dependency('libpipewire-0.3', version: '>= 0.3.37')
+pipewire_dep = dependency('libpipewire-0.3', version: '>= 0.3.43')
 mathlib = cc.find_library('m')
 threads_dep = dependency('threads')
 
@@ -138,3 +138,16 @@ wireplumber_uninstalled = custom_target('wp-uninstalled',
   build_by_default : true,
   command : ['cp', '@INPUT@', '@OUTPUT@'],
 )
+
+if meson.version().version_compare('>= 0.58')
+  builddir = meson.project_build_root()
+  srcdir = meson.project_source_root()
+
+  devenv = environment({
+    'WIREPLUMBER_MODULE_DIR': builddir / 'modules',
+    'WIREPLUMBER_CONFIG_DIR': srcdir / 'src' / 'config',
+    'WIREPLUMBER_DATA_DIR': srcdir / 'src',
+  })
+
+  meson.add_devenv(devenv)
+endif

@@ -35,7 +35,7 @@
  * \code
  * void
  * changed_callback (WpMetadata * self,
- *                   guint object,
+ *                   guint subject,
  *                   gchar * key,
  *                   gchar * type,
  *                   gchar * value,
@@ -472,6 +472,7 @@ wp_metadata_find (WpMetadata * self, guint32 subject, const gchar * key,
     if (g_strcmp0 (k, key) == 0) {
       if (type)
         *type = t;
+      g_value_unset (&val);
       return v;
     }
   }
@@ -663,7 +664,6 @@ wp_impl_metadata_activate_execute_step (WpObject * object,
       prop_impl = SPA_DICT_INIT_ARRAY(items);
       props = &prop_impl;
     }
-    wp_proxy_watch_bind_error (WP_PROXY (self), WP_TRANSITION (transition));
     wp_proxy_set_pw_proxy (WP_PROXY (self), pw_core_export (pw_core,
             PW_TYPE_INTERFACE_Metadata, props, priv->iface, 0)
     );

@@ -287,6 +287,12 @@ function prepareDevice(parent, id, type, factory, properties)
       end
     end)
 
+    rd:connect("release-requested", function (rd)
+        Log.info("release requested")
+        parent:store_managed_object(id, nil)
+        rd:call("release")
+    end)
+
     if jack_device then
       rd:connect("notify::owner-name-changed", function (rd, pspec)
         if rd["state"] == "busy" and
@@ -309,7 +315,7 @@ function createMonitor ()
   local m = SpaDevice("api.alsa.enum.udev", config.properties)
   if m == nil then
     Log.message("PipeWire's SPA ALSA udev plugin(\"api.alsa.enum.udev\")"
-      .. "missing or broken. Sound Cards Cannot be enumerated")
+      .. "missing or broken. Sound Cards cannot be enumerated")
     return nil
   end
 

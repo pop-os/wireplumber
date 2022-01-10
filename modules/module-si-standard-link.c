@@ -27,6 +27,8 @@ struct _WpSiStandardLink
 
   /* activate */
   GPtrArray *node_links;
+  guint n_active_links;
+  guint n_failed_links;
   guint n_async_ops_wait;
 };
 
@@ -153,6 +155,8 @@ si_standard_link_disable_active (WpSessionItem *si)
   }
 
   g_clear_pointer (&self->node_links, g_ptr_array_unref);
+  self->n_active_links = 0;
+  self->n_failed_links = 0;
   self->n_async_ops_wait = 0;
 
   wp_object_update_features (WP_OBJECT (self), 0,
@@ -164,17 +168,29 @@ on_link_activated (WpObject * proxy, GAsyncResult * res,
     WpTransition * transition)
 {
   WpSiStandardLink *self = wp_transition_get_source_object (transition);
-  g_autoptr (GError) error = NULL;
+  guint len = self->node_links->len;
 
-  if (!wp_object_activate_finish (proxy, res, &error)) {
-    wp_transition_return_error (transition, g_steal_pointer (&error));
+  /* Count the number of failed and active links */
+  if (wp_object_activate_finish (proxy, res, NULL))
+    self->n_active_links++;
+  else
+    self->n_failed_links++;
+
+  /* Wait for all links to finish activation */
+  if (self->n_failed_links + self->n_active_links != len)
     return;
-  }
 
-  self->n_async_ops_wait--;
-  if (self->n_async_ops_wait == 0)
+  /* We only active feature if all links activated successfully */
+  if (self->n_failed_links > 0) {
+    g_clear_pointer (&self->node_links, g_ptr_array_unref);
+    wp_transition_return_error (transition, g_error_new (
+        WP_DOMAIN_LIBRARY, WP_LIBRARY_ERROR_OPERATION_FAILED,
+        "%d of %d PipeWire links failed to activate",
+        self->n_failed_links, len));
+  } else {
     wp_object_update_features (WP_OBJECT (self),
         WP_SESSION_ITEM_FEATURE_ACTIVE, 0);
+  }
 }
 
 struct port
@@ -225,32 +241,33 @@ static gboolean
 create_links (WpSiStandardLink * self, WpTransition * transition,
     GVariant * out_ports, GVariant * in_ports)
 {
+  g_autoptr (WpCore) core = wp_object_get_core (WP_OBJECT (self));
   g_autoptr (GArray) in_ports_arr = NULL;
-  g_autoptr (WpCore) core = NULL;
   struct port out_port = {0};
   struct port *in_port;
   GVariantIter *iter = NULL;
   guint i;
+
+  /* Clear old links if any */
+  self->n_active_links = 0;
+  self->n_failed_links = 0;
+  g_clear_pointer (&self->node_links, g_ptr_array_unref);
 
   /* tuple format:
       uint32 node_id;
       uint32 port_id;
       uint32 channel;  // enum spa_audio_channel
    */
-  if (!out_ports || !g_variant_is_of_type (out_ports, G_VARIANT_TYPE("a(uuu)")))
+  if (!g_variant_is_of_type (out_ports, G_VARIANT_TYPE("a(uuu)")))
     return FALSE;
-  if (!in_ports || !g_variant_is_of_type (in_ports, G_VARIANT_TYPE("a(uuu)")))
+  if (!g_variant_is_of_type (in_ports, G_VARIANT_TYPE("a(uuu)")))
     return FALSE;
-
-  core = wp_object_get_core (WP_OBJECT (self));
-  g_return_val_if_fail (core, FALSE);
-
-  self->n_async_ops_wait = 0;
-  self->node_links = g_ptr_array_new_with_free_func (g_object_unref);
 
   i = g_variant_n_children (in_ports);
   if (i == 0)
     return FALSE;
+
+  self->node_links = g_ptr_array_new_with_free_func (g_object_unref);
 
   /* transfer the in ports to an array so that we can
      mark them when they are linked */
@@ -309,7 +326,6 @@ create_links (WpSiStandardLink * self, WpTransition * transition,
     g_ptr_array_add (self->node_links, link);
 
     /* activate to ensure it is created without errors */
-    self->n_async_ops_wait++;
     wp_object_activate_closure (WP_OBJECT (link),
         WP_PIPEWIRE_OBJECT_FEATURES_MINIMAL, NULL,
         g_cclosure_new_object (
@@ -330,11 +346,23 @@ get_ports_and_create_links (WpSiStandardLink *self, WpTransition *transition)
   si_out = WP_SI_LINKABLE (g_weak_ref_get (&self->out_item));
   si_in = WP_SI_LINKABLE (g_weak_ref_get (&self->in_item));
 
-  g_return_if_fail (si_out);
-  g_return_if_fail (si_in);
+  if (!si_out || !si_in ||
+      !wp_session_item_is_configured (WP_SESSION_ITEM (si_out)) ||
+      !wp_session_item_is_configured (WP_SESSION_ITEM (si_in))) {
+    wp_transition_return_error (transition,
+        g_error_new (WP_DOMAIN_LIBRARY, WP_LIBRARY_ERROR_OPERATION_FAILED,
+            "si-standard-link: in/out items are not valid anymore"));
+    return;
+  }
 
   out_ports = wp_si_linkable_get_ports (si_out, self->out_item_port_context);
   in_ports = wp_si_linkable_get_ports (si_in, self->in_item_port_context);
+  if (!out_ports || !in_ports) {
+    wp_transition_return_error (transition, g_error_new (WP_DOMAIN_LIBRARY,
+          WP_LIBRARY_ERROR_INVARIANT,
+          "Failed to create links because one of the nodes has no ports"));
+    return;
+  }
 
   if (!create_links (self, transition, out_ports, in_ports))
       wp_transition_return_error (transition, g_error_new (WP_DOMAIN_LIBRARY,
@@ -426,6 +454,14 @@ on_main_adapter_ready (GObject *obj, GAsyncResult * res, gpointer p)
   main = g_object_get_data (G_OBJECT (transition), "adapter_main");
   other = g_object_get_data (G_OBJECT (transition), "adapter_other");
 
+  if (!wp_session_item_is_configured (WP_SESSION_ITEM (main->si)) ||
+      !wp_session_item_is_configured (WP_SESSION_ITEM (other->si))) {
+    wp_transition_return_error (transition,
+        g_error_new (WP_DOMAIN_LIBRARY, WP_LIBRARY_ERROR_OPERATION_FAILED,
+            "si-standard-link: in/out items are not valid anymore"));
+    return;
+  }
+
   if (self->passthrough) {
     wp_si_adapter_set_ports_format (other->si, NULL, "passthrough",
         on_adapters_ready, transition);
@@ -444,15 +480,26 @@ on_main_adapter_ready (GObject *obj, GAsyncResult * res, gpointer p)
 static void
 configure_and_link_adapters (WpSiStandardLink *self, WpTransition *transition)
 {
+  g_autoptr (WpSiAdapter) si_out =
+      WP_SI_ADAPTER (g_weak_ref_get (&self->out_item));
+  g_autoptr (WpSiAdapter) si_in =
+      WP_SI_ADAPTER (g_weak_ref_get (&self->in_item));
   struct adapter *out, *in, *main, *other;
   const gchar *str = NULL;
 
+  if (!si_out || !si_in ||
+      !wp_session_item_is_configured (WP_SESSION_ITEM (si_out)) ||
+      !wp_session_item_is_configured (WP_SESSION_ITEM (si_in))) {
+    wp_transition_return_error (transition,
+        g_error_new (WP_DOMAIN_LIBRARY, WP_LIBRARY_ERROR_OPERATION_FAILED,
+            "si-standard-link: in/out items are not valid anymore"));
+    return;
+  }
+
   out = g_slice_new0 (struct adapter);
   in = g_slice_new0 (struct adapter);
-  out->si = WP_SI_ADAPTER (g_weak_ref_get (&self->out_item));
-  in->si = WP_SI_ADAPTER (g_weak_ref_get (&self->in_item));
-  g_return_if_fail (out->si);
-  g_return_if_fail (in->si);
+  out->si = g_steal_pointer (&si_out);
+  in->si = g_steal_pointer (&si_in);
 
   str = wp_session_item_get_property (WP_SESSION_ITEM (out->si), "item.node.type");
   out->is_device = !g_strcmp0 (str, "device");
@@ -537,6 +584,15 @@ si_standard_link_do_link (WpSiStandardLink *self, WpTransition *transition)
   g_autoptr (WpSessionItem) si_out = g_weak_ref_get (&self->out_item);
   g_autoptr (WpSessionItem) si_in = g_weak_ref_get (&self->in_item);
 
+  if (!si_out || !si_in ||
+      !wp_session_item_is_configured (si_out) ||
+      !wp_session_item_is_configured (si_in)) {
+    wp_transition_return_error (transition,
+        g_error_new (WP_DOMAIN_LIBRARY, WP_LIBRARY_ERROR_OPERATION_FAILED,
+            "si-standard-link: in/out items are not valid anymore"));
+    return;
+  }
+
   if (WP_IS_SI_ADAPTER (si_out) && WP_IS_SI_ADAPTER (si_in))
     configure_and_link_adapters (self, transition);
   else if (!WP_IS_SI_ADAPTER (si_out) && !WP_IS_SI_ADAPTER (si_in))
@@ -582,9 +638,11 @@ si_standard_link_enable_active (WpSessionItem *si, WpTransition *transition)
   /* make sure in/out items are valid */
   si_out = g_weak_ref_get (&self->out_item);
   si_in = g_weak_ref_get (&self->in_item);
-  if (!si_out || !si_in) {
+  if (!si_out || !si_in ||
+      !wp_session_item_is_configured (si_out) ||
+      !wp_session_item_is_configured (si_in)) {
     wp_transition_return_error (transition,
-        g_error_new (WP_DOMAIN_LIBRARY, WP_LIBRARY_ERROR_INVARIANT,
+        g_error_new (WP_DOMAIN_LIBRARY, WP_LIBRARY_ERROR_OPERATION_FAILED,
             "si-standard-link: in/out items are not valid anymore"));
     return;
   }
