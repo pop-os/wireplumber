@@ -1,3 +1,10 @@
+wireplumber (0.4.7-1) UNRELEASED; urgency=medium
+
+  * Team upload.
+  * New upstream version 0.4.7
+
+ -- Dylan Aïssi <daissi@debian.org>  Thu, 13 Jan 2022 11:01:25 +0100
+
 wireplumber (0.4.6-1) unstable; urgency=medium
 
   * Team upload.
