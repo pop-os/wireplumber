@@ -8,11 +8,44 @@
 --
 -- SPDX-License-Identifier: MIT
 
+-- Receive script arguments from config.lua
+local config = ... or {}
+config_restore_props = config.properties["restore-props"] or false
+config_restore_target = config.properties["restore-target"] or false
+
+-- preprocess rules and create Interest objects
+for _, r in ipairs(config.rules or {}) do
+  r.interests = {}
+  for _, i in ipairs(r.matches) do
+    local interest_desc = { type = "properties" }
+    for _, c in ipairs(i) do
+      c.type = "pw"
+      table.insert(interest_desc, Constraint(c))
+    end
+    local interest = Interest(interest_desc)
+    table.insert(r.interests, interest)
+  end
+  r.matches = nil
+end
+
+-- applies properties from config.rules when asked to
+function rulesApplyProperties(properties)
+  for _, r in ipairs(config.rules or {}) do
+    if r.apply_properties then
+      for _, interest in ipairs(r.interests) do
+        if interest:matches(properties) then
+          for k, v in pairs(r.apply_properties) do
+            properties[k] = v
+          end
+        end
+      end
+    end
+  end
+end
+
 -- the state storage
 state = State("restore-stream")
 state_table = state:load()
-
-route_settings = Plugin.find("route-settings-api")
 
 -- simple serializer {"foo", "bar"} -> "foo;bar;"
 function serializeArray(a)
@@ -69,7 +102,7 @@ function storeAfterTimeout()
   end)
 end
 
-function findSuitableKey(node)
+function findSuitableKey(properties)
   local keys = {
     "media.role",
     "application.id",
@@ -78,13 +111,12 @@ function findSuitableKey(node)
     "node.name",
   }
   local key = nil
-  local node_props = node.properties
 
   for _, k in ipairs(keys) do
-    local p = node_props[k]
+    local p = properties[k]
     if p then
       key = string.format("%s:%s:%s",
-          node_props["media.class"]:gsub("^Stream/", ""), k, p)
+          properties["media.class"]:gsub("^Stream/", ""), k, p)
       break
     end
   end
@@ -103,13 +135,20 @@ function saveTarget(subject, key, type, value)
     return
   end
 
-  local key_base = findSuitableKey(node)
+  local stream_props = node.properties
+  rulesApplyProperties(stream_props)
+
+  if stream_props["state.restore-target"] == false then
+    return
+  end
+
+  local key_base = findSuitableKey(stream_props)
   if not key_base then
     return
   end
 
   Log.info(node, "saving stream target for " ..
-      tostring(node.properties["node.name"]))
+      tostring(stream_props["node.name"]))
 
   local target_id = value
   local target_name = nil
@@ -218,105 +257,120 @@ end
 
 
 function saveStream(node)
-  local key_base = findSuitableKey(node)
-  if not key_base then
-    return
+  local stream_props = node.properties
+  rulesApplyProperties(stream_props)
+
+  if config_restore_props and stream_props["state.restore-props"] ~= false then
+    local key_base = findSuitableKey(stream_props)
+    if not key_base then
+      return
+    end
+
+    Log.info(node, "saving stream props for " ..
+        tostring(stream_props["node.name"]))
+
+    for p in node:iterate_params("Props") do
+      local props = parseParam(p, "Props")
+      if not props then
+        goto skip_prop
+      end
+
+      if props.volume then
+        state_table[key_base .. ":volume"] = tostring(props.volume)
+      end
+      if props.mute ~= nil then
+        state_table[key_base .. ":mute"] = tostring(props.mute)
+      end
+      if props.channelVolumes then
+        state_table[key_base .. ":channelVolumes"] = serializeArray(props.channelVolumes)
+      end
+      if props.channelMap then
+        state_table[key_base .. ":channelMap"] = serializeArray(props.channelMap)
+      end
+
+      ::skip_prop::
+    end
+
+    storeAfterTimeout()
   end
-
-  Log.info(node, "saving stream props for " ..
-      tostring(node.properties["node.name"]))
-
-  for p in node:iterate_params("Props") do
-    local props = parseParam(p, "Props")
-    if not props then
-      goto skip_prop
-    end
-
-    if props.volume then
-      state_table[key_base .. ":volume"] = tostring(props.volume)
-    end
-    if props.mute ~= nil then
-      state_table[key_base .. ":mute"] = tostring(props.mute)
-    end
-    if props.channelVolumes then
-      state_table[key_base .. ":channelVolumes"] = serializeArray(props.channelVolumes)
-    end
-    if props.channelMap then
-      state_table[key_base .. ":channelMap"] = serializeArray(props.channelMap)
-    end
-
-    ::skip_prop::
-  end
-
-  storeAfterTimeout()
 end
 
 function restoreStream(node)
-  local key_base = findSuitableKey(node)
+  local stream_props = node.properties
+  rulesApplyProperties(stream_props)
+
+  local key_base = findSuitableKey(stream_props)
   if not key_base then
     return
   end
 
-  local needsRestore = false
-  local props = { "Spa:Pod:Object:Param:Props", "Props" }
+  if config_restore_props and stream_props["state.restore-props"] ~= false then
+    local needsRestore = false
+    local props = { "Spa:Pod:Object:Param:Props", "Props" }
 
-  local str = state_table[key_base .. ":volume"]
-  needsRestore = str and true or needsRestore
-  props.volume = str and tonumber(str) or nil
+    local str = state_table[key_base .. ":volume"]
+    needsRestore = str and true or needsRestore
+    props.volume = str and tonumber(str) or nil
 
-  local str = state_table[key_base .. ":mute"]
-  needsRestore = str and true or needsRestore
-  props.mute = str and (str == "true") or nil
+    local str = state_table[key_base .. ":mute"]
+    needsRestore = str and true or needsRestore
+    props.mute = str and (str == "true") or nil
 
-  local str = state_table[key_base .. ":channelVolumes"]
-  needsRestore = str and true or needsRestore
-  props.channelVolumes = str and parseArray(str, tonumber) or nil
+    local str = state_table[key_base .. ":channelVolumes"]
+    needsRestore = str and true or needsRestore
+    props.channelVolumes = str and parseArray(str, tonumber) or nil
 
-  local str = state_table[key_base .. ":channelMap"]
-  needsRestore = str and true or needsRestore
-  props.channelMap = str and parseArray(str) or nil
+    local str = state_table[key_base .. ":channelMap"]
+    needsRestore = str and true or needsRestore
+    props.channelMap = str and parseArray(str) or nil
 
-  local str = state_table[key_base .. ":target"]
-  if str then
-    restoreTarget(node, str)
+    -- convert arrays to Spa Pod
+    if props.channelVolumes then
+      table.insert(props.channelVolumes, 1, "Spa:Float")
+      props.channelVolumes = Pod.Array(props.channelVolumes)
+    end
+    if props.channelMap then
+      table.insert(props.channelMap, 1, "Spa:Enum:AudioChannel")
+      props.channelMap = Pod.Array(props.channelMap)
+    end
+
+    if needsRestore then
+      Log.info(node, "restore values from " .. key_base)
+
+      local param = Pod.Object(props)
+      Log.debug(param, "setting props on " .. tostring(node))
+      node:set_param("Props", param)
+    end
   end
 
-  -- convert arrays to Spa Pod
-  if props.channelVolumes then
-    table.insert(props.channelVolumes, 1, "Spa:Float")
-    props.channelVolumes = Pod.Array(props.channelVolumes)
-  end
-  if props.channelMap then
-    table.insert(props.channelMap, 1, "Spa:Enum:AudioChannel")
-    props.channelMap = Pod.Array(props.channelMap)
-  end
-
-  if needsRestore then
-    Log.info(node, "restore values from " .. key_base)
-
-    local param = Pod.Object(props)
-    Log.debug(param, "setting props on " .. tostring(node))
-    node:set_param("Props", param)
+  if config_restore_target and stream_props["state.restore-target"] ~= false then
+    local str = state_table[key_base .. ":target"]
+    if str then
+      restoreTarget(node, str)
+    end
   end
 end
 
-metadata_om = ObjectManager {
-  Interest {
-    type = "metadata",
-    Constraint { "metadata.name", "=", "default" },
+if config_restore_target then
+  metadata_om = ObjectManager {
+    Interest {
+      type = "metadata",
+      Constraint { "metadata.name", "=", "default" },
+    }
   }
-}
-metadata_om:connect("object-added", function (om, metadata)
-  -- process existing metadata
-  for s, k, t, v in metadata:iterate(Id.ANY) do
-    saveTarget(s, k, t, v)
-  end
-  -- and watch for changes
-  metadata:connect("changed", function (m, subject, key, type, value)
-    saveTarget(subject, key, type, value)
+
+  metadata_om:connect("object-added", function (om, metadata)
+    -- process existing metadata
+    for s, k, t, v in metadata:iterate(Id.ANY) do
+      saveTarget(s, k, t, v)
+    end
+    -- and watch for changes
+    metadata:connect("changed", function (m, subject, key, type, value)
+      saveTarget(subject, key, type, value)
+    end)
   end)
-end)
-metadata_om:activate()
+  metadata_om:activate()
+end
 
 function handleRouteSettings(subject, key, type, value)
   if type ~= "Spa:String:JSON" then
@@ -325,47 +379,51 @@ function handleRouteSettings(subject, key, type, value)
   if string.find(key, "^restore.stream.") == nil then
     return
   end
+  if value == nil then
+    return
+  end
+  local json = Json.Raw (value);
+  if json == nil or not json:is_object () then
+    return
+  end
 
+  local vparsed = json:parse()
   local key_base = string.sub(key, string.len("restore.stream.") + 1)
   local str;
 
   key_base = string.gsub(key_base, "%.", ":", 1);
 
-  str = route_settings:call("convert", value, "volume");
-  if str then
-      state_table[key_base .. ":volume"] = str
+  if vparsed.volume ~= nil then
+    state_table[key_base .. ":volume"] = tostring (vparsed.volume)
   end
-  str = route_settings:call("convert", value, "mute");
-  if str then
-      state_table[key_base .. ":mute"] = str
+  if vparsed.mute ~= nil then
+    state_table[key_base .. ":mute"] = tostring (vparsed.mute)
   end
-  str = route_settings:call("convert", value, "channels");
-  if str then
-      state_table[key_base .. ":channelMap"] = str
+  if vparsed.channels ~= nil then
+    state_table[key_base .. ":channelMap"] = serializeArray (vparsed.channels)
   end
-  str = route_settings:call("convert", value, "volumes");
-  if str then
-    state_table[key_base .. ":channelVolumes"] = str
+  if vparsed.volumes ~= nil then
+    state_table[key_base .. ":channelVolumes"] = serializeArray (vparsed.volumes)
   end
 
   storeAfterTimeout()
 end
 
-rs_metadata_om = ObjectManager {
-  Interest {
-    type = "metadata",
-    Constraint { "metadata.name", "=", "route-settings" },
-  }
-}
-rs_metadata_om:connect("object-added", function (om, metadata)
+
+rs_metadata = ImplMetadata("route-settings")
+rs_metadata:activate(Features.ALL, function (m, e)
+  if e then
+    Log.warning("failed to activate route-settings metadata: " .. tostring(e))
+    return
+  end
+
   -- copy state into the metadata
-  moveToMetadata("Output/Audio:media.role:Notification", metadata)
+  moveToMetadata("Output/Audio:media.role:Notification", m)
   -- watch for changes
-  metadata:connect("changed", function (m, subject, key, type, value)
+  m:connect("changed", function (m, subject, key, type, value)
     handleRouteSettings(subject, key, type, value)
   end)
 end)
-rs_metadata_om:activate()
 
 allnodes_om = ObjectManager { Interest { type = "node" } }
 allnodes_om:activate()
