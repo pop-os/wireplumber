@@ -4,6 +4,7 @@ wireplumber (0.4.8-1) UNRELEASED; urgency=medium
   * New upstream version 0.4.8
   * Install the upstream changelog file NEWS.rst (Closes: #1003836)
   * Update symbols file
+  * Bump minimum pipewire to 0.3.45
 
  -- Dylan Aïssi <daissi@debian.org>  Mon, 07 Feb 2022 18:46:38 +0100
 
