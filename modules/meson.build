@@ -58,17 +58,6 @@ shared_library(
   dependencies : [wp_dep, pipewire_dep],
 )
 
-shared_library(
-  'wireplumber-module-route-settings-api',
-  [
-    'module-route-settings-api.c',
-  ],
-  c_args : [common_c_args, '-DG_LOG_DOMAIN="m-route-settings-api"'],
-  install : true,
-  install_dir : wireplumber_module_dir,
-  dependencies : [wp_dep, pipewire_dep],
-)
-
 subdir('module-reserve-device')
 shared_library(
   'wireplumber-module-reserve-device',
@@ -155,6 +144,7 @@ shared_library(
   [
     'module-lua-scripting.c',
     'module-lua-scripting/pod.c',
+    'module-lua-scripting/json.c',
     'module-lua-scripting/api.c',
     'module-lua-scripting/config.c',
      m_lua_scripting_resources,

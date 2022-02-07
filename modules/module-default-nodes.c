@@ -11,17 +11,22 @@
 #include <pipewire/pipewire.h>
 #include <pipewire/keys.h>
 
-#define COMPILING_MODULE_DEFAULT_NODES 1
 #include "module-default-nodes/common.h"
 
 #define NAME "default-nodes"
 #define DEFAULT_SAVE_INTERVAL_MS 1000
 #define DEFAULT_USE_PERSISTENT_STORAGE TRUE
+#define DEFAULT_AUTO_ECHO_CANCEL TRUE
+#define DEFAULT_ECHO_CANCEL_SINK_NAME "echo-cancel-sink"
+#define DEFAULT_ECHO_CANCEL_SOURCE_NAME "echo-cancel-source"
 
 enum {
   PROP_0,
   PROP_SAVE_INTERVAL_MS,
   PROP_USE_PERSISTENT_STORAGE,
+  PROP_AUTO_ECHO_CANCEL,
+  PROP_ECHO_CANCEL_SINK_NAME,
+  PROP_ECHO_CANCEL_SOURCE_NAME,
 };
 
 typedef struct _WpDefaultNode WpDefaultNode;
@@ -44,6 +49,8 @@ struct _WpDefaultNodes
   /* properties */
   guint save_interval_ms;
   gboolean use_persistent_storage;
+  gboolean auto_echo_cancel;
+  gchar *echo_cancel_names[2];
 };
 
 G_DECLARE_FINAL_TYPE (WpDefaultNodes, wp_default_nodes,
@@ -108,6 +115,7 @@ node_has_available_routes (WpDefaultNodes * self, WpNode *node)
   gint dev_id = dev_id_str ? atoi (dev_id_str) : -1;
   gint cpd = cpd_str ? atoi (cpd_str) : -1;
   g_autoptr (WpDevice) device = NULL;
+  gint found = 0;
 
   if (dev_id == -1 || cpd == -1)
     return TRUE;
@@ -168,6 +176,7 @@ node_has_available_routes (WpDefaultNodes * self, WpNode *node)
         for (; wp_iterator_next (it, &v); g_value_unset (&v)) {
           gint32 *d = (gint32 *)g_value_get_pointer (&v);
           if (d && *d == cpd) {
+            found++;
             if (route_avail != SPA_PARAM_AVAILABILITY_no)
               return TRUE;
           }
@@ -175,8 +184,27 @@ node_has_available_routes (WpDefaultNodes * self, WpNode *node)
       }
     }
   }
+  /* The node is part of a profile without routes so we assume it
+   * is available. This can happen for Pro Audio profiles */
+  if (found == 0)
+    return TRUE;
 
   return FALSE;
+}
+
+static gboolean
+is_echo_cancel_node (WpDefaultNodes * self, WpNode *node, WpDirection direction)
+{
+  const gchar *name = wp_pipewire_object_get_property (
+      WP_PIPEWIRE_OBJECT (node), PW_KEY_NODE_NAME);
+  const gchar *virtual_str = wp_pipewire_object_get_property (
+      WP_PIPEWIRE_OBJECT (node), PW_KEY_NODE_VIRTUAL);
+  gboolean virtual = virtual_str && pw_properties_parse_bool (virtual_str);
+
+  if (!name || !virtual)
+    return FALSE;
+
+  return g_strcmp0 (name, self->echo_cancel_names[direction]) == 0;
 }
 
 static WpNode *
@@ -209,8 +237,11 @@ find_best_media_class_node (WpDefaultNodes * self, const gchar *media_class,
       if (!node_has_available_routes (self, node))
         continue;
 
-      if (name && node_name && g_strcmp0 (name, node_name) == 0)
+      if (self->auto_echo_cancel && is_echo_cancel_node (self, node, direction))
         prio += 10000;
+
+      if (name && node_name && g_strcmp0 (name, node_name) == 0)
+        prio += 20000;
 
       if (prio > highest_prio || res == NULL) {
         highest_prio = prio;
@@ -286,7 +317,6 @@ reevaluate_default_node (WpDefaultNodes * self, WpMetadata *m, gint node_t)
 {
   WpNode *node = NULL;
   const gchar *node_name = NULL;
-  gchar buf[1024];
 
   node = find_best_node (self, node_t);
   if (node)
@@ -297,14 +327,17 @@ reevaluate_default_node (WpDefaultNodes * self, WpMetadata *m, gint node_t)
   if (node && node_name &&
       g_strcmp0 (node_name, self->defaults[node_t].value) != 0)
   {
+    g_autoptr (WpSpaJson) json = NULL;
+
     g_free (self->defaults[node_t].value);
     self->defaults[node_t].value = g_strdup (node_name);
 
     wp_info_object (self, "set default node for %s: %s",
         NODE_TYPE_STR[node_t], node_name);
 
-    g_snprintf (buf, sizeof(buf), "{ \"name\": \"%s\" }", node_name);
-    wp_metadata_set (m, 0, DEFAULT_KEY[node_t], "Spa:String:JSON", buf);
+    json = wp_spa_json_new_object ("name", "s", node_name, NULL);
+    wp_metadata_set (m, 0, DEFAULT_KEY[node_t], "Spa:String:JSON",
+        wp_spa_json_get_data (json));
   } else if (!node && self->defaults[node_t].value) {
     g_clear_pointer (&self->defaults[node_t].value, g_free);
     wp_info_object (self, "unset default node for %s", NODE_TYPE_STR[node_t]);
@@ -485,7 +518,6 @@ on_metadata_changed (WpMetadata *m, guint32 subject,
 {
   WpDefaultNodes * self = WP_DEFAULT_NODES (d);
   gint node_t = -1;
-  gchar name[1024];
 
   if (subject == 0) {
     for (gint i = 0; i < N_DEFAULT_NODES; i++) {
@@ -499,10 +531,11 @@ on_metadata_changed (WpMetadata *m, guint32 subject,
   if (node_t != -1) {
     g_clear_pointer (&self->defaults[node_t].config_value, g_free);
 
-    if (value && !g_strcmp0 (type, "Spa:String:JSON") &&
-        json_object_find (value, "name", name, sizeof(name)) == 0)
-    {
-      self->defaults[node_t].config_value = g_strdup (name);
+    if (value && !g_strcmp0 (type, "Spa:String:JSON")) {
+      g_autoptr (WpSpaJson) json = wp_spa_json_new_from_string (value);
+      g_autofree gchar *name = NULL;
+      if (wp_spa_json_object_get (json, "name", "s", &name, NULL))
+        self->defaults[node_t].config_value = g_strdup (name);
     }
 
     wp_debug_object (m, "changed '%s' -> '%s'", key,
@@ -517,6 +550,17 @@ on_metadata_changed (WpMetadata *m, guint32 subject,
 }
 
 static void
+on_object_added (WpObjectManager *om, WpPipewireObject *proxy, gpointer d)
+{
+  WpDefaultNodes * self = WP_DEFAULT_NODES (d);
+
+  if (WP_IS_DEVICE (proxy)) {
+    g_signal_connect_object (proxy, "params-changed",
+        G_CALLBACK (schedule_rescan), self, G_CONNECT_SWAPPED);
+  }
+}
+
+static void
 on_metadata_added (WpObjectManager *om, WpMetadata *metadata, gpointer d)
 {
   WpDefaultNodes * self = WP_DEFAULT_NODES (d);
@@ -524,12 +568,11 @@ on_metadata_added (WpObjectManager *om, WpMetadata *metadata, gpointer d)
   g_return_if_fail (core);
 
   for (gint i = 0; i < N_DEFAULT_NODES; i++) {
-    gchar buf[1024];
     if (self->defaults[i].config_value) {
-      g_snprintf (buf, sizeof(buf), "{ \"name\": \"%s\" }",
-          self->defaults[i].config_value);
+      g_autoptr (WpSpaJson) json = wp_spa_json_new_object (
+          "name", "s", self->defaults[i].config_value, NULL);
       wp_metadata_set (metadata, 0, DEFAULT_CONFIG_KEY[i], "Spa:String:JSON",
-          buf);
+          wp_spa_json_get_data (json));
     }
   }
 
@@ -550,6 +593,8 @@ on_metadata_added (WpObjectManager *om, WpMetadata *metadata, gpointer d)
       WP_OBJECT_FEATURES_ALL);
   g_signal_connect_object (self->rescan_om, "objects-changed",
       G_CALLBACK (schedule_rescan), self, G_CONNECT_SWAPPED);
+  g_signal_connect_object (self->rescan_om, "object-added",
+      G_CALLBACK (on_object_added), self, 0);
   wp_core_install_object_manager (core, self->rescan_om);
 }
 
@@ -612,10 +657,32 @@ wp_default_nodes_set_property (GObject * object, guint property_id,
   case PROP_USE_PERSISTENT_STORAGE:
     self->use_persistent_storage =  g_value_get_boolean (value);
     break;
+  case PROP_AUTO_ECHO_CANCEL:
+    self->auto_echo_cancel = g_value_get_boolean (value);
+    break;
+  case PROP_ECHO_CANCEL_SINK_NAME:
+    g_clear_pointer (&self->echo_cancel_names[WP_DIRECTION_INPUT], g_free);
+    self->echo_cancel_names[WP_DIRECTION_INPUT] = g_value_dup_string (value);
+    break;
+  case PROP_ECHO_CANCEL_SOURCE_NAME:
+    g_clear_pointer (&self->echo_cancel_names[WP_DIRECTION_OUTPUT], g_free);
+    self->echo_cancel_names[WP_DIRECTION_OUTPUT] = g_value_dup_string (value);
+    break;
   default:
     G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
     break;
   }
+}
+
+static void
+wp_default_nodes_finalize (GObject * object)
+{
+  WpDefaultNodes * self = WP_DEFAULT_NODES (object);
+
+  g_clear_pointer (&self->echo_cancel_names[WP_DIRECTION_INPUT], g_free);
+  g_clear_pointer (&self->echo_cancel_names[WP_DIRECTION_OUTPUT], g_free);
+
+  G_OBJECT_CLASS (wp_default_nodes_parent_class)->finalize (object);
 }
 
 static void
@@ -624,6 +691,7 @@ wp_default_nodes_class_init (WpDefaultNodesClass * klass)
   GObjectClass *object_class = (GObjectClass *) klass;
   WpPluginClass *plugin_class = (WpPluginClass *) klass;
 
+  object_class->finalize = wp_default_nodes_finalize;
   object_class->set_property = wp_default_nodes_set_property;
 
   plugin_class->enable = wp_default_nodes_enable;
@@ -638,6 +706,21 @@ wp_default_nodes_class_init (WpDefaultNodesClass * klass)
       g_param_spec_boolean ("use-persistent-storage", "use-persistent-storage",
           "use-persistent-storage", DEFAULT_USE_PERSISTENT_STORAGE,
           G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
+
+  g_object_class_install_property (object_class, PROP_AUTO_ECHO_CANCEL,
+      g_param_spec_boolean ("auto-echo-cancel", "auto-echo-cancel",
+          "auto-echo-cancel", DEFAULT_AUTO_ECHO_CANCEL,
+          G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
+
+  g_object_class_install_property (object_class, PROP_ECHO_CANCEL_SINK_NAME,
+      g_param_spec_string ("echo-cancel-sink-name", "echo-cancel-sink-name",
+          "echo-cancel-sink-name", DEFAULT_ECHO_CANCEL_SINK_NAME,
+          G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
+
+  g_object_class_install_property (object_class, PROP_ECHO_CANCEL_SOURCE_NAME,
+      g_param_spec_string ("echo-cancel-source-name", "echo-cancel-source-name",
+          "echo-cancel-source-name", DEFAULT_ECHO_CANCEL_SOURCE_NAME,
+          G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
 }
 
 WP_PLUGIN_EXPORT gboolean
@@ -645,11 +728,19 @@ wireplumber__module_init (WpCore * core, GVariant * args, GError ** error)
 {
   guint save_interval_ms = DEFAULT_SAVE_INTERVAL_MS;
   gboolean use_persistent_storage = DEFAULT_USE_PERSISTENT_STORAGE;
+  gboolean auto_echo_cancel = DEFAULT_AUTO_ECHO_CANCEL;
+  const gchar *echo_cancel_sink_name = DEFAULT_ECHO_CANCEL_SINK_NAME;
+  const gchar *echo_cancel_source_name = DEFAULT_ECHO_CANCEL_SOURCE_NAME;
 
   if (args) {
     g_variant_lookup (args, "save-interval-ms", "u", &save_interval_ms);
     g_variant_lookup (args, "use-persistent-storage", "b",
         &use_persistent_storage);
+    g_variant_lookup (args, "auto-echo-cancel", "&s", &auto_echo_cancel);
+    g_variant_lookup (args, "echo-cancel-sink-name", "&s",
+        &echo_cancel_sink_name);
+    g_variant_lookup (args, "echo-cancel-source-name", "&s",
+        &echo_cancel_source_name);
   }
 
   wp_plugin_register (g_object_new (wp_default_nodes_get_type (),
@@ -657,6 +748,9 @@ wireplumber__module_init (WpCore * core, GVariant * args, GError ** error)
           "core", core,
           "save-interval-ms", save_interval_ms,
           "use-persistent-storage", use_persistent_storage,
+          "auto-echo-cancel", auto_echo_cancel,
+          "echo-cancel-sink-name", echo_cancel_sink_name,
+          "echo-cancel-source-name", echo_cancel_source_name,
           NULL));
   return TRUE;
 }
