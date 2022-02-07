@@ -1,4 +1,4 @@
-wireplumber (0.4.8-1) UNRELEASED; urgency=medium
+wireplumber (0.4.8-1) unstable; urgency=medium
 
   * Team upload.
   * New upstream version 0.4.8
@@ -6,7 +6,7 @@ wireplumber (0.4.8-1) UNRELEASED; urgency=medium
   * Update symbols file
   * Bump minimum pipewire to 0.3.45
 
- -- Dylan Aïssi <daissi@debian.org>  Mon, 07 Feb 2022 18:46:38 +0100
+ -- Dylan Aïssi <daissi@debian.org>  Mon, 07 Feb 2022 23:21:05 +0100
 
 wireplumber (0.4.7-1) unstable; urgency=medium
 
