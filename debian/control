@@ -57,6 +57,7 @@ Package: wireplumber
 Architecture: linux-any
 Depends: ${shlibs:Depends},
          ${misc:Depends},
+         libwireplumber-0.4-0 (= ${binary:Version}),
          pipewire (>= 0.3.45),
 Recommends: pipewire-pulse
 Section: video
