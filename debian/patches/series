@@ -1,1 +1,2 @@
 fix_va_list_APIs_for_different_arches.patch
+si-audio-adapter-relax-format-parsing.patch
