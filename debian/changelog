@@ -1,3 +1,12 @@
+wireplumber (0.4.8-4) unstable; urgency=medium
+
+  * Team upload
+  * d/p/si-audio-adapter-relax-format-parsing.patch:
+    Add patch from upstream to fix interop with Pipewire 0.3.48
+    (Closes: #1007100)
+
+ -- Simon McVittie <smcv@debian.org>  Fri, 11 Mar 2022 10:26:20 +0000
+
 wireplumber (0.4.8-3) unstable; urgency=medium
 
   * Team upload.
