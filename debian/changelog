@@ -1,4 +1,4 @@
-wireplumber (0.4.9-1) UNRELEASED; urgency=medium
+wireplumber (0.4.9-1) unstable; urgency=medium
 
   * Team upload.
   * New upstream version 0.4.9
@@ -9,7 +9,7 @@ wireplumber (0.4.9-1) UNRELEASED; urgency=medium
   * Update symbols file
   * Simplify debian/salsa-ci.yml
 
- -- Dylan Aïssi <daissi@debian.org>  Wed, 23 Mar 2022 09:21:36 +0100
+ -- Dylan Aïssi <daissi@debian.org>  Wed, 23 Mar 2022 10:03:02 +0100
 
 wireplumber (0.4.8-4) unstable; urgency=medium
 
