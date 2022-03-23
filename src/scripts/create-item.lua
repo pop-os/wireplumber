@@ -21,6 +21,8 @@ function configProperties(node)
     ["node.id"] = node["bound-id"],
     ["client.id"] = np["client.id"],
     ["object.path"] = np["object.path"],
+    ["object.serial"] = np["object.serial"],
+    ["target.object"] = np["target.object"],
     ["priority.session"] = np["priority.session"],
     ["device.id"] = np["device.id"],
     ["card.profile.device"] = np["card.profile.device"],
@@ -58,24 +60,36 @@ end
 
 function addItem (node, item_type)
   local id = node["bound-id"]
+  local item
 
   -- create item
-  items[id] = SessionItem ( item_type )
+  item = SessionItem ( item_type )
+  items[id] = item
 
   -- configure item
-  if not items[id]:configure(configProperties(node)) then
-    Log.warning(items[id], "failed to configure item for node " .. tostring(id))
+  if not item:configure(configProperties(node)) then
+    Log.warning(item, "failed to configure item for node " .. tostring(id))
     return
   end
+
+  item:register ()
 
   -- activate item
   items[id]:activate (Features.ALL, function (item, e)
     if e then
       Log.message(item, "failed to activate item: " .. tostring(e));
+      if item then
+        item:remove ()
+      end
     else
       Log.info(item, "activated item for node " .. tostring(id))
-      item:register ()
-   end
+
+      -- Trigger object managers to update status
+      item:remove ()
+      if item["active-features"] ~= 0 then
+        item:register ()
+      end
+    end
   end)
 end
 

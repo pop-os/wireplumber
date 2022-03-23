@@ -19,14 +19,36 @@ device_defaults.properties = {
   ["echo-cancel-source-name"] = "echo-cancel-source",
 }
 
+-- Sets persistent device profiles that should never change when wireplumber is
+-- running, even if a new profile with higher priority becomes available
+device_defaults.persistent_profiles = {
+  {
+    matches = {
+      {
+        -- Matches all devices
+        { "device.name", "matches", "*" },
+      },
+    },
+    profile_names = {
+      "off",
+      "pro-audio"
+    }
+  },
+}
+
 function device_defaults.enable()
   -- Selects appropriate default nodes and enables saving and restoring them
   load_module("default-nodes", device_defaults.properties)
 
-  -- Selects appropriate default routes ("ports" in pulseaudio terminology)
+  -- Selects appropriate profile for devices
+  load_script("policy-device-profile.lua", {
+    persistent = device_defaults.persistent_profiles
+  })
+
+  -- Selects appropriate device routes ("ports" in pulseaudio terminology)
   -- and enables saving and restoring them together with
   -- their properties (per-route/port volume levels, channel maps, etc)
-  load_script("default-routes.lua", device_defaults.properties)
+  load_script("policy-device-routes.lua", device_defaults.properties)
 
   if device_defaults.properties["use-persistent-storage"] then
     -- Enables functionality to save and restore default device profiles

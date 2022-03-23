@@ -168,8 +168,8 @@ wp_spa_json_new (const gchar *data, size_t size)
  * \returns a new WpSpaJson that references the data in \a json_str. \a json_str
  *   is not copied, so it needs to stay alive.
  */
-WP_API
-WpSpaJson * wp_spa_json_new_from_string (const gchar *json_str)
+WpSpaJson *
+wp_spa_json_new_from_string (const gchar *json_str)
 {
   WpSpaJson *self = g_slice_new0 (WpSpaJson);
   g_ref_count_init (&self->ref);
@@ -251,7 +251,8 @@ wp_spa_json_get_size (const WpSpaJson *self)
  * \param other a spa json object
  * \returns (transfer full): The newly copied spa json
  */
-WpSpaJson *wp_spa_json_copy (WpSpaJson *other)
+WpSpaJson *
+wp_spa_json_copy (WpSpaJson *other)
 {
   g_return_val_if_fail (other, NULL);
   g_return_val_if_fail (other->json, NULL);
@@ -363,33 +364,33 @@ wp_spa_json_new_string (const gchar *value)
       wp_spa_json_builder_new_formatted ("\"%s\"", value));
 }
 
-static void
-wp_spa_json_builder_add_value (WpSpaJsonBuilder *self, const gchar *fmt,
-    va_list args)
-{
-  switch (*fmt) {
-    case 'n':
-      wp_spa_json_builder_add_null (self);
-      break;
-    case 'b':
-      wp_spa_json_builder_add_boolean (self, va_arg(args, gboolean));
-      break;
-    case 'i':
-      wp_spa_json_builder_add_int (self, va_arg(args, gint));
-      break;
-    case 'f':
-      wp_spa_json_builder_add_float (self, (float)va_arg(args, double));
-      break;
-    case 's':
-      wp_spa_json_builder_add_string (self, va_arg(args, const gchar *));
-      break;
-    case 'J':
-      wp_spa_json_builder_add_json (self, va_arg(args, WpSpaJson *));
-      break;
-    default:
-      return;
-  }
-}
+/* Args is not a pointer in some architectures, so this needs to be a macro to
+ * avoid args being copied */
+#define wp_spa_json_builder_add_value(self,fmt,args)                           \
+do {                                                                           \
+  switch (*fmt) {                                                              \
+    case 'n':                                                                  \
+      wp_spa_json_builder_add_null (self);                                     \
+      break;                                                                   \
+    case 'b':                                                                  \
+      wp_spa_json_builder_add_boolean (self, va_arg(args, gboolean));          \
+      break;                                                                   \
+    case 'i':                                                                  \
+      wp_spa_json_builder_add_int (self, va_arg(args, gint));                  \
+      break;                                                                   \
+    case 'f':                                                                  \
+      wp_spa_json_builder_add_float (self, (float)va_arg(args, double));       \
+      break;                                                                   \
+    case 's':                                                                  \
+      wp_spa_json_builder_add_string (self, va_arg(args, const gchar *));      \
+      break;                                                                   \
+    case 'J':                                                                  \
+      wp_spa_json_builder_add_json (self, va_arg(args, WpSpaJson *));          \
+      break;                                                                   \
+    default:                                                                   \
+      break;                                                                   \
+  }								               \
+} while(false)
 
 /*!
  * \brief Creates a spa json of type array
@@ -623,17 +624,9 @@ wp_spa_json_parse_float (WpSpaJson *self, float *value)
 static gchar *
 wp_spa_json_parse_string_internal (const gchar *data, int len)
 {
-  size_t size = WP_SPA_JSON_STRING_INIT_SIZE;
-  gchar *res = NULL;
-
-  if (spa_json_is_string (data, len)) {
-    res = g_new0 (gchar, size);
-    while (spa_json_parse_stringn (data, len, res, size) < 0) {
-      size *= 2;
-      res = g_realloc (res, size);
-    }
-  }
-
+  gchar *res = g_new0 (gchar, len+1);
+  if (res)
+    spa_json_parse_string (data, len, res);
   return res;
 }
 
@@ -724,48 +717,46 @@ wp_spa_json_parse_object_valist (WpSpaJson *self, va_list args)
   return res;
 }
 
-static gboolean
-wp_spa_json_parse_value (const gchar *data, int len, const gchar *fmt,
-    va_list args)
-{
-  switch (*fmt) {
-    case 'n':
-      if (!spa_json_is_null (data, len))
-        return FALSE;
-      break;
-    case 'b':
-      if (!wp_spa_json_parse_boolean_internal (data, len,
-          va_arg(args, gboolean *)))
-        return FALSE;
-      break;
-    case 'i':
-      if (spa_json_parse_int (data, len, va_arg(args, gint *)) < 0)
-        return FALSE;
-      break;
-    case 'f':
-      if (spa_json_parse_float (data, len,
-          (float *)va_arg(args, double *)) < 0)
-        return FALSE;
-      break;
-    case 's': {
-      gchar *str = wp_spa_json_parse_string_internal (data, len);
-      if (!str)
-        return FALSE;
-      *va_arg(args, gchar **) = str;
-      break;
-    }
-    case 'J': {
-      WpSpaJson *j = wp_spa_json_new (data, len);
-      if (!j)
-        return FALSE;
-      *va_arg(args, WpSpaJson **) = j;
-      break;
-    }
-    default:
-      return FALSE;
-  }
-  return TRUE;
-}
+/* Args is not a pointer in some architectures, so this needs to be a macro to
+ * avoid args being copied */
+#define wp_spa_json_parse_value(data,len,fmt,args)                             \
+do {                                                                           \
+  switch (*fmt) {                                                              \
+    case 'n':                                                                  \
+      if (!spa_json_is_null (data, len))                                       \
+        return FALSE;                                                          \
+      break;                                                                   \
+    case 'b':                                                                  \
+      if (!wp_spa_json_parse_boolean_internal (data, len,                      \
+          va_arg(args, gboolean *)))                                           \
+        return FALSE;                                                          \
+      break;                                                                   \
+    case 'i':                                                                  \
+      if (spa_json_parse_int (data, len, va_arg(args, gint *)) < 0)            \
+        return FALSE;                                                          \
+      break;                                                                   \
+    case 'f':                                                                  \
+      if (spa_json_parse_float (data, len, va_arg(args, float *)) < 0)         \
+        return FALSE;                                                          \
+      break;                                                                   \
+    case 's': {                                                                \
+      gchar *str = wp_spa_json_parse_string_internal (data, len);              \
+      if (!str)                                                                \
+        return FALSE;                                                          \
+      *va_arg(args, gchar **) = str;                                           \
+      break;                                                                   \
+    }                                                                          \
+    case 'J': {                                                                \
+      WpSpaJson *j = wp_spa_json_new (data, len);                              \
+      if (!j)                                                                  \
+        return FALSE;                                                          \
+      *va_arg(args, WpSpaJson **) = j;                                         \
+      break;                                                                   \
+    }                                                                          \
+    default:                                                                   \
+      return FALSE;                                                            \
+  }                                                                            \
+} while(false)
 
 /*!
  * \brief Parses the object property values of a spa json object
@@ -827,8 +818,7 @@ wp_spa_json_object_get_valist (WpSpaJson *self, va_list args)
     value = g_value_get_boxed (&item);
 
     if (g_strcmp0 (key_str, lookup_key) == 0) {
-      if (!wp_spa_json_parse_value (value->data, value->size, lookup_fmt, args))
-        return FALSE;
+      wp_spa_json_parse_value (value->data, value->size, lookup_fmt, args);
       lookup_key = va_arg(args, const gchar *);
       if (!lookup_key)
         return TRUE;
@@ -1366,9 +1356,12 @@ gboolean
 wp_spa_json_parser_get_value (WpSpaJsonParser *self, const gchar *fmt,
     va_list args)
 {
-  return wp_spa_json_parser_advance (self) &&
-      wp_spa_json_parse_value (self->curr.cur,
-          self->curr.end - self->curr.cur, fmt, args);
+  if (wp_spa_json_parser_advance (self)) {
+    wp_spa_json_parse_value (self->curr.cur, self->curr.end - self->curr.cur,
+        fmt, args);
+    return TRUE;
+  }
+  return FALSE;
 }
 
 /*!
@@ -1419,9 +1412,13 @@ wp_spa_json_parser_get_valist (WpSpaJsonParser *self, va_list args)
     if (!format)
       return TRUE;
 
-    /* parse value */
-    if (!wp_spa_json_parser_get_value (self, format, args))
+    /* advance */
+    if (!wp_spa_json_parser_advance (self))
       return FALSE;
+
+    /* parse value */
+    wp_spa_json_parse_value (self->curr.cur, self->curr.end - self->curr.cur,
+        format, args);
   } while (TRUE);
 
   return FALSE;

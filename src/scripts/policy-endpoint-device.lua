@@ -199,6 +199,7 @@ linkables_om = ObjectManager {
     -- only handle device si-audio-adapter items
     Constraint { "item.factory.name", "=", "si-audio-adapter", type = "pw-global" },
     Constraint { "item.node.type", "=", "device", type = "pw-global" },
+    Constraint { "active-features", "!", 0, type = "gobject" },
   }
 }
 links_om = ObjectManager {
@@ -217,6 +218,10 @@ if config.follow then
 end
 
 linkables_om:connect("objects-changed", function (om)
+  scheduleRescan ()
+end)
+
+endpoints_om:connect("object-added", function (om)
   scheduleRescan ()
 end)
 

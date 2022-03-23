@@ -15,6 +15,8 @@ config.follow = config.follow or false
 local self = {}
 self.scanning = false
 self.pending_rescan = false
+self.events_skipped = false
+self.pending_error_timer = nil
 
 function rescan()
   for si in linkables_om:iterate() do
@@ -264,32 +266,62 @@ end
 -- that is currently being handled
 function findDefinedTarget (properties)
   local metadata = config.move and metadata_om:lookup()
-  local target_id = metadata
-      and metadata:find(properties["node.id"], "target.node")
-      or properties["node.target"]
   local target_direction = getTargetDirection(properties)
+  local target_key
+  local target_value
+  local node_defined = false
 
-  if target_id and tonumber(target_id) then
-    local si_target = linkables_om:lookup {
-      Constraint { "node.id", "=", target_id },
-    }
-    if si_target and canLink (properties, si_target) then
-      return si_target
-    end
+  if properties["target.object"] ~= nil then
+    target_value = properties["target.object"]
+    target_key = "object.serial"
+    node_defined = true
+  elseif properties["node.target"] ~= nil then
+    target_value = properties["node.target"]
+    target_key = "node.id"
+    node_defined = true
   end
 
-  if target_id then
-    for si_target in linkables_om:iterate() do
-      local target_props = si_target.properties
-      if (target_props["node.name"] == target_id or
-          target_props["object.path"] == target_id) and
-          target_props["item.node.direction"] == target_direction and
-          canLink (properties, si_target) then
-        return si_target
+  if metadata then
+    local id = metadata:find(properties["node.id"], "target.object")
+    if id ~= nil then
+      target_value = id
+      target_key = "object.serial"
+      node_defined = false
+    else
+      id = metadata:find(properties["node.id"], "target.node")
+      if id ~= nil then
+        target_value = id
+        target_key = "node.id"
+        node_defined = false
       end
     end
   end
-  return nil
+
+  if target_value == "-1" then
+    return nil, false, node_defined
+  end
+
+  if target_value and tonumber(target_value) then
+    local si_target = linkables_om:lookup {
+      Constraint { target_key, "=", target_value },
+    }
+    if si_target and canLink (properties, si_target) then
+      return si_target, true, node_defined
+    end
+  end
+
+  if target_value then
+    for si_target in linkables_om:iterate() do
+      local target_props = si_target.properties
+      if (target_props["node.name"] == target_value or
+          target_props["object.path"] == target_value) and
+          target_props["item.node.direction"] == target_direction and
+          canLink (properties, si_target) then
+        return si_target, true, node_defined
+      end
+    end
+  end
+  return nil, (target_value ~= nil), node_defined
 end
 
 function parseParam(param, id)
@@ -508,10 +540,11 @@ function lookupLink (si_id, si_target_id)
   return link
 end
 
-function checkLinkable(si)
+function checkLinkable(si, handle_nonstreams)
   -- only handle stream session items
   local si_props = si.properties
-  if not si_props or si_props["item.node.type"] ~= "stream" then
+  if not si_props or (si_props["item.node.type"] ~= "stream"
+        and not handle_nonstreams)  then
     return false
   end
 
@@ -526,7 +559,75 @@ end
 
 si_flags = {}
 
+function checkPending ()
+  local pending_linkables = pending_linkables_om:get_n_objects ()
+
+  -- We cannot process linkables if some of them are pending activation,
+  -- because linkables do not appear in the same order as nodes,
+  -- and we cannot resolve target node references until all linkables
+  -- have appeared.
+
+  if self.pending_error_timer then
+    self.pending_error_timer:destroy ()
+    self.pending_error_timer = nil
+  end
+
+  if pending_linkables ~= 0 then
+    -- Wait for linkables to get it sync
+    Log.debug(string.format("pending %d linkable not ready",
+        pending_linkables))
+    self.events_skipped = true
+
+    -- To make bugs in activation easier to debug, emit an error message
+    -- if they occur. policy-node should never be suspended for 20sec.
+    self.pending_error_timer = Core.timeout_add(20000, function()
+        self.pending_error_timer = nil
+        if pending_linkables ~= 0 then
+          Log.message(string.format("%d pending linkable(s) not activated in 20sec. "
+              .. "This should never happen.", pending_linkables))
+        end
+    end)
+
+    return true
+  elseif self.events_skipped then
+    Log.debug("pending linkables ready")
+    self.events_skipped = false
+    scheduleRescan ()
+    return true
+  end
+
+  return false
+end
+
+function checkFollowDefault (si, si_target, has_node_defined_target)
+  -- If it got linked to the default target that is defined by node
+  -- props but not metadata, start ignoring the node prop from now on.
+  -- This is what Pulseaudio does.
+  if not has_node_defined_target then
+    return
+  end
+
+  local si_props = si.properties
+  local target_props = si_target.properties
+  local reconnect = not parseBool(si_props["node.dont-reconnect"])
+
+  if config.follow and default_nodes ~= nil and reconnect then
+    local def_id = getDefaultNode(si_props, getTargetDirection(si_props))
+
+    if target_props["node.id"] == tostring(def_id) then
+      local metadata = metadata_om:lookup()
+      -- Set target.node, for backward compatibility
+      metadata:set(tonumber(si_props["node.id"]), "target.node", "Spa:Id", "-1")
+      Log.info (si, "... set metadata to follow default")
+    end
+  end
+end
+
 function handleLinkable (si)
+  if checkPending () then
+    return
+  end
+
   local valid, si_props = checkLinkable(si)
   if not valid then
     return
@@ -553,7 +654,8 @@ function handleLinkable (si)
   local si_must_passthrough = parseBool(si_props["item.node.encoded-only"])
 
   -- find defined target
-  local si_target = findDefinedTarget(si_props)
+  local si_target, has_defined_target, has_node_defined_target
+      = findDefinedTarget(si_props)
   local can_passthrough = si_target and canPassthrough(si, si_target)
 
   if si_target and si_must_passthrough and not can_passthrough then
@@ -563,7 +665,7 @@ function handleLinkable (si)
   -- if the client has seen a target that we haven't yet prepared, schedule
   -- a rescan one more time and hope for the best
   local si_id = si.id
-  if si_props["node.target"] and si_props["node.target"] ~= "-1"
+  if has_defined_target
       and not si_target
       and not si_flags[si_id].was_handled
       and not si_flags[si_id].done_waiting then
@@ -574,7 +676,7 @@ function handleLinkable (si)
   end
 
   -- find fallback target
-  if not si_target then
+  if not si_target and (reconnect or not has_defined_target) then
     si_target, can_passthrough = findUndefinedTarget(si)
   end
 
@@ -582,10 +684,12 @@ function handleLinkable (si)
   if si_flags[si_id].peer_id then
     if si_target and si_flags[si_id].peer_id == si_target.id then
       Log.debug (si, "... already linked to proper target")
+      -- Check this also here, in case in default targets changed
+      checkFollowDefault (si, si_target, has_node_defined_target)
       return
     end
+    local link = lookupLink (si_id, si_flags[si_id].peer_id)
     if reconnect then
-      local link = lookupLink (si_id, si_flags[si_id].peer_id)
       if link ~= nil then
         -- remove old link if active, otherwise schedule rescan
         if ((link:get_active_features() & Feature.SessionItem.ACTIVE) ~= 0) then
@@ -597,6 +701,11 @@ function handleLinkable (si)
           Log.info (si, "... scheduled rescan")
           return
         end
+      end
+    else
+      if link ~= nil then
+        Log.info (si, "... dont-reconnect, not moving")
+        return
       end
     end
   end
@@ -650,11 +759,13 @@ function handleLinkable (si)
   else
     createLink (si, si_target, can_passthrough, exclusive)
     si_flags[si.id].was_handled = true
+
+    checkFollowDefault (si, si_target, has_node_defined_target)
   end
 end
 
 function unhandleLinkable (si)
-  local valid, si_props = checkLinkable(si)
+  local valid, si_props = checkLinkable(si, true)
   if not valid then
     return
   end
@@ -671,7 +782,7 @@ function unhandleLinkable (si)
           si_flags[in_id] and si_flags[in_id].peer_id == out_id then
         si_flags[in_id].peer_id = nil
       elseif in_id == si.id and
-          si_flags[out_id] and si_flags[in_id].peer_id == in_id then
+          si_flags[out_id] and si_flags[out_id].peer_id == in_id then
         si_flags[out_id].peer_id = nil
       end
       silink:remove ()
@@ -697,12 +808,21 @@ clients_om = ObjectManager { Interest { type = "client" } }
 
 devices_om = ObjectManager { Interest { type = "device" } }
 
-
 linkables_om = ObjectManager {
   Interest {
     type = "SiLinkable",
     -- only handle si-audio-adapter and si-node
     Constraint { "item.factory.name", "c", "si-audio-adapter", "si-node" },
+    Constraint { "active-features", "!", 0, type = "gobject" },
+  }
+}
+
+pending_linkables_om = ObjectManager {
+  Interest {
+    type = "SiLinkable",
+    -- only handle si-audio-adapter and si-node
+    Constraint { "item.factory.name", "c", "si-audio-adapter", "si-node" },
+    Constraint { "active-features", "=", 0, type = "gobject" },
   }
 }
 
@@ -714,38 +834,9 @@ links_om = ObjectManager {
   }
 }
 
-function cleanupTargetNodeMetadata()
-  local metadata = metadata_om:lookup()
-  if metadata and default_nodes ~= nil then
-    local to_remove = {}
-    for s, k, t, v in metadata:iterate(Id.ANY) do
-      if k == "target.node" then
-        if v == "-1" then
-          -- target.node == -1 is useless, it means the default node
-          table.insert(to_remove, s)
-        else
-          -- if the target.node value is the same as the default node
-          -- that would be selected for this stream, remove it
-          local si = linkables_om:lookup { Constraint { "node.id", "=", s } }
-          local properties = si.properties
-          local def_id = getDefaultNode(properties, getTargetDirection(properties))
-          if tostring(def_id) == v then
-            table.insert(to_remove, s)
-          end
-        end
-      end
-    end
-
-    for _, s in ipairs(to_remove) do
-      metadata:set(s, "target.node", nil, nil)
-    end
-  end
-end
-
 -- listen for default node changes if config.follow is enabled
 if config.follow and default_nodes ~= nil then
   default_nodes:connect("changed", function ()
-    cleanupTargetNodeMetadata()
     scheduleRescan ()
   end)
 end
@@ -754,7 +845,7 @@ end
 if config.move then
   metadata_om:connect("object-added", function (om, metadata)
     metadata:connect("changed", function (m, subject, key, t, value)
-      if key == "target.node" then
+      if key == "target.node" or key == "target.object" then
         scheduleRescan ()
       end
     end)
@@ -786,5 +877,6 @@ metadata_om:activate()
 endpoints_om:activate()
 clients_om:activate()
 linkables_om:activate()
+pending_linkables_om:activate()
 links_om:activate()
 devices_om:activate()
