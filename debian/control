@@ -9,7 +9,7 @@ Build-Depends: debhelper-compat (= 13),
                libgirepository1.0-dev,
                libglib2.0-dev (>= 2.62),
                liblua5.3-dev,
-               libpipewire-0.3-dev (>= 0.3.45),
+               libpipewire-0.3-dev (>= 0.3.48),
                libspa-0.2-dev,
                libsystemd-dev,
                meson (>= 0.56.0),
@@ -18,7 +18,7 @@ Build-Depends: debhelper-compat (= 13),
                systemd,
 # Only used for automated tests
                dbus <!nocheck>,
-               pipewire (>= 0.3.45) <!nocheck>,
+               pipewire (>= 0.3.48) <!nocheck>,
 Standards-Version: 4.6.0
 Homepage: https://gitlab.freedesktop.org/pipewire/wireplumber
 Vcs-Browser: https://salsa.debian.org/utopia-team/wireplumber
@@ -58,7 +58,7 @@ Architecture: linux-any
 Depends: ${shlibs:Depends},
          ${misc:Depends},
          libwireplumber-0.4-0 (= ${binary:Version}),
-         pipewire (>= 0.3.45),
+         pipewire (>= 0.3.48),
 Recommends: pipewire-pulse
 Section: video
 Description: modular session / policy manager for PipeWire
