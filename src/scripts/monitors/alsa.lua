@@ -134,10 +134,14 @@ function createNode(parent, id, type, factory, properties)
   end
 
   -- and a nick
-  local nick = properties["node.nick"]
+  local nick = nonempty(properties["node.nick"])
+      or nonempty(properties["api.alsa.pcm.name"])
+      or nonempty(properties["alsa.name"])
+      or nonempty(profile_desc)
       or dev_props["device.nick"]
-      or dev_props["api.alsa.card.name"]
-      or dev_props["alsa.card_name"]
+  if nick == "USB Audio" then
+    nick = dev_props["device.nick"]
+  end
   -- also sanitize nick, replace ':' with ' '
   properties["node.nick"] = nick:gsub("(:)", " ")
 
@@ -230,7 +234,8 @@ function prepareDevice(parent, id, type, factory, properties)
   -- ensure the device has a nick
   properties["device.nick"] =
       properties["device.nick"] or
-      properties["api.alsa.card.name"]
+      properties["api.alsa.card.name"] or
+      properties["alsa.card_name"]
 
   -- set the icon name
   if not properties["device.icon-name"] then

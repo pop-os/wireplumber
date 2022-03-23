@@ -10,8 +10,8 @@ variables:
   # change to build against a different tag or branch of pipewire
   PIPEWIRE_HEAD: 'master'
 
-# ci-templates as of Mar 19th 2021
-.templates_sha: &templates_sha 290b79e0e78eab67a83766f4e9691be554fc4afd
+# ci-templates as of Jan 27th 2022
+.templates_sha: &templates_sha 0c312d9c7255f46e741d43bcd1930f09cd12efe7
 
 include:
   - project: 'freedesktop/ci-templates'
@@ -20,12 +20,15 @@ include:
   - project: 'freedesktop/ci-templates'
     ref: *templates_sha
     file: '/templates/ubuntu.yml'
+  - project: 'freedesktop/ci-templates'
+    ref: *templates_sha
+    file: '/templates/alpine.yml'
 
 .fedora:
   variables:
     # Update this tag when you want to trigger a rebuild
-    FDO_DISTRIBUTION_TAG: '2021-10-26.0'
-    FDO_DISTRIBUTION_VERSION: '34'
+    FDO_DISTRIBUTION_TAG: '2022-02-16.0'
+    FDO_DISTRIBUTION_VERSION: '35'
     # findutils: used by the .build script below
     # dbus-devel: required by pipewire
     # dbus-daemon: required by GDBus unit tests
@@ -74,6 +77,27 @@ include:
     FDO_DISTRIBUTION_EXEC: >-
       pip3 install meson
 
+.alpine:
+  variables:
+    # Update this tag when you want to trigger a rebuild
+    FDO_DISTRIBUTION_TAG: '2022-03-08.1'
+    FDO_DISTRIBUTION_VERSION: '3.15'
+    FDO_DISTRIBUTION_PACKAGES: >-
+      dbus
+      dbus-dev
+      doxygen
+      elogind-dev
+      findutils
+      g++
+      gcc
+      git
+      glib-dev
+      gobject-introspection-dev
+      lua5.4-dev
+      meson
+      py3-lxml
+      samurai
+
 .coverity:
   variables:
     FDO_REPO_SUFFIX: 'coverity'
@@ -83,7 +107,7 @@ include:
     FDO_DISTRIBUTION_EXEC: >-
       mkdir -p /opt ;
       cd /opt ;
-      curl -o /tmp/cov-analysis-linux64.tgz https://scan.coverity.com/download/linux64
+      curl -o /tmp/cov-analysis-linux64.tgz https://scan.coverity.com/download/cxx/linux64
       --form project=$COVERITY_SCAN_PROJECT_NAME --form token=$COVERITY_SCAN_TOKEN ;
       tar xf /tmp/cov-analysis-linux64.tgz ;
       mv cov-analysis-linux64-* coverity ;
@@ -154,6 +178,14 @@ container_ubuntu:
   variables:
     GIT_STRATEGY: none
 
+container_alpine:
+  extends:
+    - .alpine
+    - .fdo.container-build@alpine
+  stage: container
+  variables:
+    GIT_STRATEGY: none
+
 container_coverity:
   extends:
     - .fedora
@@ -202,6 +234,16 @@ build_on_ubuntu_no_gir:
   stage: build
   variables:
     BUILD_OPTIONS: -Dintrospection=disabled -Ddoc=disabled -Dsystem-lua=true
+
+build_on_alpine:
+  extends:
+    - .alpine
+    - .not_coverity
+    - .fdo.distribution-image@alpine
+    - .build
+  stage: build
+  variables:
+    BUILD_OPTIONS: -Dintrospection=enabled -Ddoc=disabled -Dsystem-lua=true -Delogind=disabled
 
 build_with_coverity:
   extends:
