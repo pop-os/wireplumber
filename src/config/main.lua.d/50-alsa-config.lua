@@ -154,4 +154,33 @@ alsa_monitor.rules = {
       --["session.suspend-timeout-seconds"] = 5,  -- 0 disables suspend
     },
   },
+  {
+    -- Devices known to require a headroom.
+    matches = {
+      {
+        {
+          "node.name",
+          "matches",
+          "alsa_output.usb-0b0e_Jabra_SPEAK_410_USB_501AA523CBCAx010900-00.analog-stereo"
+        },
+      },
+    },
+    apply_properties = {
+      ["api.alsa.headroom"] = 1024,
+    },
+  },
+  {
+    matches = {
+      {
+        {
+          "node.name",
+          "matches",
+          "alsa_output.usb-Schiit_Audio_Schiit_Hel-00.analog-stereo"
+        },
+      },
+    },
+    apply_properties = {
+      ["api.alsa.headroom"] = 2048,
+    },
+  },
 }
