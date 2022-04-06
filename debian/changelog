@@ -1,3 +1,9 @@
+wireplumber (0.4.9-1pop1) jammy; urgency=medium
+
+  * Backport to Pop
+
+ -- Michael Aaron Murphy <mmstick@pm.me>  Wed, 06 Apr 2022 23:38:01 +0200
+
 wireplumber (0.4.9-1) unstable; urgency=medium
 
   * Team upload.
