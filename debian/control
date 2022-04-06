@@ -27,7 +27,7 @@ Vcs-Git: https://salsa.debian.org/utopia-team/wireplumber.git
 Rules-Requires-Root: no
 
 Package: libwireplumber-0.4-0
-Architecture: linux-any
+Architecture: i386 amd64 arm64
 Multi-Arch: same
 Depends: ${misc:Depends},
          ${shlibs:Depends},
@@ -41,7 +41,7 @@ Description: Shared libraries for WirePlumber
 
 Package: libwireplumber-0.4-dev
 Section: libdevel
-Architecture: linux-any
+Architecture: i386 amd64 arm64
 Multi-Arch: same
 Depends: ${misc:Depends},
          libglib2.0-dev,
@@ -57,7 +57,7 @@ Description: Development files for WirePlumber
  This package contains the development files.
 
 Package: wireplumber
-Architecture: linux-any
+Architecture: i386 amd64 arm64
 Depends: ${shlibs:Depends},
          ${misc:Depends},
          libwireplumber-0.4-0 (= ${binary:Version}),
@@ -77,7 +77,7 @@ Description: modular session / policy manager for PipeWire
 
 Package: gir1.2-wp-0.4
 Section: introspection
-Architecture: linux-any
+Architecture: i386 amd64 arm64
 Multi-Arch: same
 Depends: ${misc:Depends},
          ${gir:Depends},
