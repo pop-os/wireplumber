@@ -122,26 +122,22 @@ shared_library(
   dependencies : [wp_dep, pipewire_dep],
 )
 
-m_lua_scripting_resources = gnome.compile_resources(
-    'm-lua-scripting-resources',
-    'module-lua-scripting/gresource.xml',
-    source_dir: 'module-lua-scripting',
-    c_name: '_m_lua_scripting_resources')
-
+subdir('module-lua-scripting')
 shared_library(
   'wireplumber-module-lua-scripting',
   [
-    'module-lua-scripting.c',
-    'module-lua-scripting/pod.c',
-    'module-lua-scripting/json.c',
-    'module-lua-scripting/api.c',
-    'module-lua-scripting/config.c',
+    'module-lua-scripting/module.c',
+    'module-lua-scripting/script.c',
+    'module-lua-scripting/api/pod.c',
+    'module-lua-scripting/api/json.c',
+    'module-lua-scripting/api/api.c',
+    'module-lua-scripting/api/config.c',
      m_lua_scripting_resources,
   ],
   c_args : [common_c_args, '-DG_LOG_DOMAIN="m-lua-scripting"'],
   install : true,
   install_dir : wireplumber_module_dir,
-  dependencies : [wp_dep, pipewire_dep, wplua_dep],
+  dependencies : [wp_dep, pipewire_dep, wplua_dep, libintl_dep],
 )
 
 shared_library(

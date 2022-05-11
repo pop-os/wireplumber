@@ -1,7 +1,7 @@
 project('wireplumber', ['c'],
-  version : '0.4.9',
+  version : '0.4.10',
   license : 'MIT',
-  meson_version : '>= 0.56.0',
+  meson_version : '>= 0.59.0',
   default_options : [
     'warning_level=1',
     'buildtype=debugoptimized',
@@ -17,6 +17,7 @@ wireplumber_bin_dir = get_option('prefix') / get_option('bindir')
 wireplumber_module_dir = get_option('prefix') / get_option('libdir') / 'wireplumber-' + wireplumber_api_version
 wireplumber_data_dir = get_option('prefix') / get_option('datadir') / 'wireplumber'
 wireplumber_config_dir = get_option('prefix') / get_option('sysconfdir') / 'wireplumber'
+wireplumber_locale_dir = get_option('prefix') / get_option('localedir')
 
 cc = meson.get_compiler('c')
 
@@ -24,6 +25,11 @@ glib_req_version = '>= 2.62'
 add_project_arguments([
     '-DGLIB_VERSION_MIN_REQUIRED=GLIB_VERSION_2_62',
     '-DGLIB_VERSION_MAX_ALLOWED=GLIB_VERSION_2_62',
+  ], language: 'c'
+)
+
+add_project_arguments([
+    '-DGETTEXT_PACKAGE="@0@"'.format(meson.project_name()),
   ], language: 'c'
 )
 
@@ -36,6 +42,7 @@ spa_dep = dependency('libspa-0.2', version: '>= 0.2')
 pipewire_dep = dependency('libpipewire-0.3', version: '>= 0.3.48')
 mathlib = cc.find_library('m')
 threads_dep = dependency('threads')
+libintl_dep = dependency('intl')
 
 system_lua = get_option('system-lua')
 if system_lua
@@ -116,6 +123,7 @@ subdir('lib')
 subdir('docs')
 subdir('modules')
 subdir('src')
+subdir('po')
 
 if get_option('tests')
   subdir('tests')
