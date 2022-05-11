@@ -1,3 +1,4 @@
 usr/bin
 usr/lib/systemd
 usr/share/wireplumber
+usr/share/locale
