@@ -1,4 +1,4 @@
-wireplumber (0.4.10-1) UNRELEASED; urgency=medium
+wireplumber (0.4.10-1) unstable; urgency=medium
 
   * Team upload.
   * New upstream version
@@ -7,7 +7,7 @@ wireplumber (0.4.10-1) UNRELEASED; urgency=medium
   * Bump meson version requirement to 0.59
   * Update copyright file
 
- -- Dylan Aïssi <daissi@debian.org>  Wed, 11 May 2022 12:01:49 +0200
+ -- Dylan Aïssi <daissi@debian.org>  Wed, 11 May 2022 14:01:51 +0200
 
 wireplumber (0.4.9-1) unstable; urgency=medium
 
