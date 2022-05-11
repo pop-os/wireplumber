@@ -9,7 +9,7 @@
 #include <wp/wp.h>
 #include <glib-unix.h>
 #include <pipewire/pipewire.h>
-#include <spa/utils/json.h>
+#include <locale.h>
 
 #define WP_DOMAIN_DAEMON (wp_domain_daemon_quark ())
 static G_DEFINE_QUARK (wireplumber-daemon, wp_domain_daemon);
@@ -48,6 +48,7 @@ enum {
   STEP_CHECK_MEDIA_SESSION,
   STEP_ACTIVATE_PLUGINS,
   STEP_ACTIVATE_SCRIPTS,
+  STEP_CLEANUP,
 };
 
 G_DECLARE_FINAL_TYPE (WpInitTransition, wp_init_transition,
@@ -67,7 +68,7 @@ wp_init_transition_get_next_step (WpTransition * transition, guint step)
   case STEP_LOAD_COMPONENTS:    return STEP_CONNECT;
   case STEP_CONNECT:            return STEP_CHECK_MEDIA_SESSION;
   case STEP_CHECK_MEDIA_SESSION:return STEP_ACTIVATE_PLUGINS;
-  case STEP_ACTIVATE_SCRIPTS:   return WP_TRANSITION_STEP_NONE;
+  case STEP_CLEANUP:            return WP_TRANSITION_STEP_NONE;
 
   case STEP_ACTIVATE_PLUGINS: {
     WpInitTransition *self = WP_INIT_TRANSITION (transition);
@@ -75,6 +76,14 @@ wp_init_transition_get_next_step (WpTransition * transition, guint step)
       return STEP_ACTIVATE_SCRIPTS;
     else
       return STEP_ACTIVATE_PLUGINS;
+  }
+
+  case STEP_ACTIVATE_SCRIPTS: {
+    WpInitTransition *self = WP_INIT_TRANSITION (transition);
+    if (self->pending_plugins == 0)
+      return STEP_CLEANUP;
+    else
+      return STEP_ACTIVATE_SCRIPTS;
   }
 
   default:
@@ -129,38 +138,31 @@ do_load_components(void *data, const char *location, const char *section,
   struct data *d = data;
   WpTransition *transition = d->transition;
   WpCore *core = wp_transition_get_source_object (transition);
-  struct spa_json it[3];
-  char key[512];
+  g_autoptr (WpSpaJson) json = NULL;
+  g_autoptr (WpIterator) it = NULL;
+  g_auto (GValue) item = G_VALUE_INIT;
   GError *error = NULL;
 
-  spa_json_init(&it[0], str, len);
+  json = wp_spa_json_new_from_stringn (str, len);
 
-  if (spa_json_enter_array(&it[0], &it[1]) < 0) {
+  if (!wp_spa_json_is_array (json)) {
     wp_transition_return_error (transition, g_error_new (
         WP_DOMAIN_DAEMON, WP_EXIT_CONFIG,
         "wireplumber.components is not a JSON array"));
     return -EINVAL;
   }
 
-  while (spa_json_enter_object(&it[1], &it[2]) > 0) {
-    char *name = NULL, *type = NULL;
+  it = wp_spa_json_new_iterator (json);
+  for (; wp_iterator_next (it, &item); g_value_unset (&item)) {
+    WpSpaJson *o = g_value_get_boxed (&item);
+    g_autofree gchar *name = NULL;
+    g_autofree gchar *type = NULL;
 
-    while (spa_json_get_string(&it[2], key, sizeof(key)) > 0) {
-      const char *val;
-      int len;
-
-      if ((len = spa_json_next(&it[2], &val)) <= 0)
-        break;
-
-      if (strcmp(key, "name") == 0) {
-        name = (char*)val;
-        spa_json_parse_stringn(val, len, name, len+1);
-      } else if (strcmp(key, "type") == 0) {
-        type = (char*)val;
-        spa_json_parse_stringn(val, len, type, len+1);
-      }
-    }
-    if (name == NULL || type == NULL) {
+    if (!wp_spa_json_is_object (o) ||
+        !wp_spa_json_object_get (o,
+            "name", "s", &name,
+            "type", "s", &type,
+            NULL)) {
       wp_transition_return_error (transition, g_error_new (
           WP_DOMAIN_DAEMON, WP_EXIT_CONFIG,
           "component must have both a 'name' and a 'type'"));
@@ -287,6 +289,17 @@ wp_init_transition_execute_step (WpTransition * transition, guint step)
             "script engine '%s' is not loaded", engine));
         return;
       }
+
+      self->pending_plugins = 1;
+
+      self->om = wp_object_manager_new ();
+      wp_object_manager_add_interest (self->om, WP_TYPE_PLUGIN,
+          WP_CONSTRAINT_TYPE_G_PROPERTY, "name", "#s", "script:*",
+          NULL);
+      g_signal_connect_object (self->om, "object-added",
+          G_CALLBACK (on_plugin_added), self, 0);
+      wp_core_install_object_manager (core, self->om);
+
       wp_object_activate (WP_OBJECT (plugin), WP_PLUGIN_FEATURE_ENABLED, NULL,
           (GAsyncReadyCallback) on_plugin_activated, self);
     } else {
@@ -295,6 +308,7 @@ wp_init_transition_execute_step (WpTransition * transition, guint step)
     break;
   }
 
+  case STEP_CLEANUP:
   case WP_TRANSITION_STEP_ERROR:
     g_clear_object (&self->om);
     break;
@@ -402,6 +416,8 @@ main (gint argc, gchar **argv)
   g_autoptr (WpProperties) properties = NULL;
   g_autofree gchar *config_file_path = NULL;
 
+  setlocale (LC_ALL, "");
+  setlocale (LC_NUMERIC, "C");
   wp_init (WP_INIT_ALL);
 
   context = g_option_context_new ("- PipeWire Session/Policy Manager");

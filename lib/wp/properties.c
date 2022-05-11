@@ -929,6 +929,22 @@ wp_properties_iterator_item_get_value (const GValue * item)
 }
 
 /*!
+ * \brief Gets the number of properties contained in this object
+ * \ingroup wpproperties
+ * \param self a properties object
+ * \returns the number of properties contained in this object
+ * \since 0.4.10
+ */
+guint
+wp_properties_get_count (WpProperties * self)
+{
+  const struct spa_dict *dict = wp_properties_peek_dict(self);
+  g_return_val_if_fail (dict != NULL, 0);
+
+  return dict->n_items;
+}
+
+/*!
  * \brief Sorts the keys in alphabetical order
  * \ingroup wpproperties
  * \param self a properties object

@@ -1,10 +1,16 @@
 default_policy = {}
-
+default_policy.enabled = true
+default_policy.properties = {}
 default_policy.endpoints = {}
 
 default_policy.policy = {
   ["move"] = true,   -- moves session items when metadata target.node changes
   ["follow"] = true, -- moves session items to the default device when it has changed
+
+  -- Whether to forward the ports format of filter stream nodes to their
+  -- associated filter device nodes. This is needed for application to stream
+  -- surround audio if echo-cancel is enabled.
+  ["filter.forward-format"] = false,
 
   -- Set to 'true' to disable channel splitting & merging on nodes and enable
   -- passthrough of audio in the same format as the format of the device.
@@ -28,10 +34,14 @@ bluetooth_policy.policy = {
   -- Application names correspond to application.name in stream properties.
   -- Applications which do not set media.role but which should be considered
   -- for role based profile switching can be specified here.
-  ["media-role.applications"] = { "Firefox", "Chromium input", "Google Chrome input", "Brave input", "Microsoft Edge input", "Vivaldi input", "ZOOM VoiceEngine", "Telegram Desktop" },
+  ["media-role.applications"] = { "Firefox", "Chromium input", "Google Chrome input", "Brave input", "Microsoft Edge input", "Vivaldi input", "ZOOM VoiceEngine", "Telegram Desktop", "telegram-desktop", "linphone", "Mumble" },
 }
 
 function default_policy.enable()
+  if not default_policy.enabled then
+    return
+  end
+
   -- Session item factories, building blocks for the session management graph
   -- Do not disable these unless you really know what you are doing
   load_module("si-node")

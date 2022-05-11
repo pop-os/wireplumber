@@ -8,6 +8,7 @@
 
 #include <wp/wp.h>
 #include <stdio.h>
+#include <locale.h>
 #include <spa/utils/defs.h>
 #include <pipewire/keys.h>
 #include <pipewire/extensions/session-manager/keys.h>
@@ -33,30 +34,32 @@ struct _WpCtl
 static struct {
   union {
     struct {
-      guint32 id;
+      guint64 id;
       gboolean show_referenced;
       gboolean show_associated;
     } inspect;
     struct {
-      guint32 id;
+      guint64 id;
     } set_default;
     struct {
-      guint32 id;
+      guint64 id;
       gfloat volume;
+      gboolean is_pid;
     } set_volume;
 
     struct {
-      guint32 id;
+      guint64 id;
       guint mute;
+      gboolean is_pid;
     } set_mute;
 
     struct {
-      guint32 id;
+      guint64 id;
       gint index;
     } set_profile;
 
     struct {
-      guint32 id;
+      guint64 id;
     } clear_default;
   };
 } cmdline;
@@ -77,6 +80,101 @@ static void
 async_quit (WpCore *core, GAsyncResult *res, WpCtl * self)
 {
   g_main_loop_quit (self->loop);
+}
+
+#define DEFAULT_AUDIO_SINK_ID ((guint64)1 << 32)
+#define DEFAULT_AUDIO_SOURCE_ID ((guint64)1 << 33)
+#define DEFAULT_VIDEO_SOURCE_ID ((guint64)1 << 34)
+
+static gboolean
+parse_id (gboolean allow_def_audio, gboolean allow_def_video, gchar *arg, guint64 *result_id, GError **error)
+{
+  if (allow_def_audio && (g_strcmp0(arg, "@DEFAULT_SINK@") == 0 ||
+      g_strcmp0(arg, "@DEFAULT_AUDIO_SINK@") == 0)) {
+    *result_id = DEFAULT_AUDIO_SINK_ID;
+  } else if (allow_def_audio && (g_strcmp0(arg, "@DEFAULT_SOURCE@") == 0 ||
+      g_strcmp0(arg, "@DEFAULT_AUDIO_SOURCE@") == 0)) {
+    *result_id = DEFAULT_AUDIO_SOURCE_ID;
+  } else if (allow_def_video && g_strcmp0(arg, "@DEFAULT_VIDEO_SOURCE@") == 0) {
+    *result_id = DEFAULT_VIDEO_SOURCE_ID;
+  } else {
+    long id = strtol (arg, NULL, 10);
+    if (id <= 0 || id >= G_MAXUINT32) {
+      g_set_error (error, wpctl_error_domain_quark(), 0,
+          "'%s' is not a valid number", arg);
+      return FALSE;
+    }
+    *result_id = id;
+  }
+
+  return TRUE;
+}
+
+static gboolean
+translate_id (WpPlugin *def_nodes_api, guint64 id, guint32 *res, GError **error)
+{
+  gchar *media_class = NULL;
+
+  if (id == DEFAULT_AUDIO_SINK_ID) {
+    media_class = "Audio/Sink";
+  } else if (id == DEFAULT_AUDIO_SOURCE_ID) {
+    media_class = "Audio/Source";
+  } else if (id == DEFAULT_VIDEO_SOURCE_ID) {
+    media_class = "Video/Source";
+  } else {
+    /* SPA_ID_INVALID is a special case used by some parse_positional() to
+       indicate that no specific ID was given. It needs to be checked because
+       currently SPA_ID_INVALID == G_MAXUINT32. */
+    if ((id <= 0 || id >= G_MAXUINT32) && id != SPA_ID_INVALID) {
+      g_set_error (error, wpctl_error_domain_quark(), 0,
+          "'%ld' is not a valid ID", id);
+      return FALSE;
+    }
+
+    *res = (guint32)id;
+    return TRUE;
+  }
+
+  if (!def_nodes_api) {
+    g_set_error (error, wpctl_error_domain_quark(), 0,
+        "Default nodes API is not loaded\n");
+    return FALSE;
+  }
+
+  g_signal_emit_by_name (def_nodes_api, "get-default-node", media_class, res);
+
+  if (*res <= 0 || *res >= G_MAXUINT32) {
+    g_set_error (error, wpctl_error_domain_quark(), 0,
+        "'%d' is not a valid ID (returned by default-nodes-api)", *res);
+    return FALSE;
+  }
+
+  return TRUE;
+}
+
+static gboolean
+run_nodes_by_pid (WpObjectManager *om, guint32 pid,
+    WpIteratorFoldFunc func, gpointer data)
+{
+  gboolean res = TRUE;
+  g_autoptr (WpIterator) client_it = NULL;
+  g_auto (GValue) client_val = G_VALUE_INIT;
+  client_it = wp_object_manager_new_filtered_iterator (om,
+      WP_TYPE_CLIENT, WP_CONSTRAINT_TYPE_PW_PROPERTY,
+      PW_KEY_APP_PROCESS_ID, "=u", pid, NULL);
+  for (; wp_iterator_next (client_it, &client_val); g_value_unset (&client_val)) {
+    WpPipewireObject *client = g_value_get_object (&client_val);
+    guint32 client_id = wp_proxy_get_bound_id (WP_PROXY (client));
+    g_autoptr (WpIterator) node_it = NULL;
+    g_auto (GValue) node_val = G_VALUE_INIT;
+    node_it = wp_object_manager_new_filtered_iterator (om,
+        WP_TYPE_NODE, WP_CONSTRAINT_TYPE_PW_PROPERTY,
+        PW_KEY_CLIENT_ID, "=u", client_id, NULL);
+    if (!wp_iterator_fold (node_it, func, NULL, data))
+      res = FALSE;
+  }
+
+  return res;
 }
 
 /* status */
@@ -383,15 +481,7 @@ inspect_parse_positional (gint argc, gchar ** argv, GError **error)
     return FALSE;
   }
 
-  long id = strtol (argv[2], NULL, 10);
-  if (id <= 0 || id >= G_MAXUINT32) {
-    g_set_error (error, wpctl_error_domain_quark(), 0,
-        "'%s' is not a valid number", argv[2]);
-    return FALSE;
-  }
-
-  cmdline.inspect.id = id;
-  return TRUE;
+  return parse_id (true, true, argv[2], &cmdline.inspect.id, error);
 }
 
 static gboolean
@@ -561,12 +651,20 @@ static void
 inspect_run (WpCtl * self)
 {
   g_autoptr (WpProxy) proxy = NULL;
-  guint32 id = cmdline.inspect.id;
+  g_autoptr (WpPlugin) def_nodes_api = wp_plugin_find (self->core, "default-nodes-api");
+  g_autoptr (GError) error = NULL;
+  guint32 id;
+
+
+  if (!translate_id (def_nodes_api, cmdline.inspect.id, &id, &error)) {
+    fprintf(stderr, "Translate ID error: %s\n\n", error->message);
+    goto out_err;
+  }
 
   proxy = wp_object_manager_lookup (self->om, WP_TYPE_GLOBAL_PROXY,
       WP_CONSTRAINT_TYPE_G_PROPERTY, "bound-id", "=u", id, NULL);
   if (!proxy) {
-    printf ("Object '%d' not found\n", id);
+    fprintf (stderr, "Object '%d' not found\n", id);
     goto out_err;
   }
 
@@ -590,15 +688,7 @@ set_default_parse_positional (gint argc, gchar ** argv, GError **error)
     return FALSE;
   }
 
-  long id = strtol (argv[2], NULL, 10);
-  if (id <= 0 || id >= G_MAXUINT32) {
-    g_set_error (error, wpctl_error_domain_quark(), 0,
-        "'%s' is not a valid number", argv[2]);
-    return FALSE;
-  }
-
-  cmdline.set_default.id = id;
-  return TRUE;
+  return parse_id (false, false, argv[2], &cmdline.set_default.id, error);
 }
 
 static gboolean
@@ -620,18 +710,24 @@ set_default_run (WpCtl * self)
 {
   g_autoptr (WpPlugin) def_nodes_api = NULL;
   g_autoptr (WpProxy) proxy = NULL;
-  guint32 id = cmdline.set_default.id;
+  guint32 id;
+  g_autoptr (GError) error = NULL;
   const gchar *media_class;
 
   def_nodes_api = wp_plugin_find (self->core, "default-nodes-api");
   if (!def_nodes_api) {
-    printf ("Default nodes API not loaded\n");
+    fprintf (stderr, "Default nodes API not loaded\n");
+    goto out;
+  }
+
+  if (!translate_id (def_nodes_api, cmdline.set_default.id, &id, &error)) {
+    fprintf(stderr, "Translate ID error: %s\n\n", error->message);
     goto out;
   }
 
   proxy = wp_object_manager_lookup (self->om, WP_TYPE_NODE, NULL);
   if (!proxy) {
-    printf ("Node '%d' not found\n", id);
+    fprintf (stderr, "Node '%d' not found\n", id);
     goto out;
   }
 
@@ -643,14 +739,14 @@ set_default_run (WpCtl * self)
       const gchar *name = wp_pipewire_object_get_property (
           WP_PIPEWIRE_OBJECT (proxy), PW_KEY_NODE_NAME);
       if (!name) {
-        printf ("node %u does not have a valid node.name\n", id);
+        fprintf (stderr, "node %u does not have a valid node.name\n", id);
         goto out;
       }
 
       g_signal_emit_by_name (def_nodes_api, "set-default-configured-node-name",
           DEFAULT_NODE_MEDIA_CLASSES[i], name, &res);
       if (!res) {
-        printf ("failed to set default node %u (media.class = %s)\n", id,
+        fprintf (stderr, "failed to set default node %u (media.class = %s)\n", id,
             media_class);
         goto out;
       }
@@ -660,7 +756,7 @@ set_default_run (WpCtl * self)
     }
   }
 
-  printf ("%u is not a device node (media.class = %s)\n", id, media_class);
+  fprintf (stderr, "%u is not a device node (media.class = %s)\n", id, media_class);
 
 out:
   self->exit_code = 3;
@@ -678,70 +774,89 @@ set_volume_parse_positional (gint argc, gchar ** argv, GError **error)
     return FALSE;
   }
 
-  long id = strtol (argv[2], NULL, 10);
-  float volume = strtof (argv[3], NULL);
-  if (id <= 0 || id >= G_MAXUINT32) {
-    g_set_error (error, wpctl_error_domain_quark(), 0,
-        "'%s' is not a valid number", argv[2]);
-    return FALSE;
-  }
-
-  cmdline.set_volume.id = id;
-  cmdline.set_volume.volume = volume;
-  return TRUE;
+  cmdline.set_volume.volume = strtof (argv[3], NULL);
+  return parse_id (!cmdline.set_volume.is_pid, false, argv[2],
+      &cmdline.set_volume.id, error);
 }
 
 static gboolean
 set_volume_prepare (WpCtl * self, GError ** error)
 {
-  wp_object_manager_add_interest (self->om, WP_TYPE_ENDPOINT,
-      WP_CONSTRAINT_TYPE_PW_GLOBAL_PROPERTY,
-      "object.id", "=u", cmdline.set_volume.id,
-      NULL);
-  wp_object_manager_add_interest (self->om, WP_TYPE_NODE,
-      WP_CONSTRAINT_TYPE_PW_GLOBAL_PROPERTY,
-      "object.id", "=u", cmdline.set_volume.id,
-      NULL);
+  wp_object_manager_add_interest (self->om, WP_TYPE_ENDPOINT, NULL);
+  wp_object_manager_add_interest (self->om, WP_TYPE_NODE, NULL);
+  wp_object_manager_add_interest (self->om, WP_TYPE_CLIENT, NULL);
   wp_object_manager_request_object_features (self->om, WP_TYPE_GLOBAL_PROXY,
       WP_PIPEWIRE_OBJECT_FEATURES_MINIMAL);
   return TRUE;
 }
 
-static void
-set_volume_run (WpCtl * self)
+static gboolean
+do_set_volume (WpCtl * self, WpPipewireObject *proxy)
 {
-  g_autoptr (WpPipewireObject) proxy = NULL;
   g_autoptr (WpPlugin) mixer_api = wp_plugin_find (self->core, "mixer-api");
   g_auto (GVariantBuilder) b = G_VARIANT_BUILDER_INIT (G_VARIANT_TYPE_VARDICT);
+  g_autoptr (GError) error = NULL;
   GVariant *variant = NULL;
   gboolean res = FALSE;
-  guint32 node_id = cmdline.set_volume.id;
-
-  proxy = wp_object_manager_lookup (self->om, WP_TYPE_GLOBAL_PROXY, NULL);
-  if (!proxy) {
-    printf ("Object '%d' not found\n", cmdline.set_volume.id);
-    goto out;
-  }
+  guint32 id = wp_proxy_get_bound_id (WP_PROXY (proxy));
 
   if (WP_IS_ENDPOINT (proxy)) {
     const gchar *str = wp_pipewire_object_get_property (proxy, "node.id");
     if (!str) {
-      printf ("Endpoint '%d' does not have an associated node\n",
-          cmdline.set_volume.id);
-      goto out;
+      fprintf (stderr, "Endpoint '%d' does not have an associated node\n", id);
+      return FALSE;
     }
-    node_id = atoi (str);
+    id = atoi (str);
   }
 
   g_variant_builder_add (&b, "{sv}", "volume",
       g_variant_new_double (cmdline.set_volume.volume));
   variant = g_variant_builder_end (&b);
 
-  g_signal_emit_by_name (mixer_api, "set-volume", node_id, variant, &res);
+  g_signal_emit_by_name (mixer_api, "set-volume", id, variant, &res);
   if (!res) {
-    printf ("Object '%d' (node %d) does not support volume\n",
-        cmdline.set_volume.id, node_id);
+    fprintf (stderr, "Node %d does not support volume\n", id);
+    return FALSE;
+  }
+
+  return TRUE;
+}
+
+static gboolean
+do_set_volume_cb (const GValue *node_val, GValue *ret, gpointer data)
+{
+  WpCtl * self = data;
+  WpPipewireObject *node = g_value_get_object (node_val);
+  return do_set_volume (self, node);
+}
+
+static void
+set_volume_run (WpCtl * self)
+{
+  g_autoptr (WpPipewireObject) proxy = NULL;
+  g_autoptr (WpPlugin) def_nodes_api = wp_plugin_find (self->core, "default-nodes-api");
+  g_autoptr (GError) error = NULL;
+  guint32 id;
+
+  if (!translate_id (def_nodes_api, cmdline.set_volume.id, &id, &error)) {
+    fprintf(stderr, "Translate ID error: %s\n\n", error->message);
     goto out;
+  }
+
+  if (cmdline.set_volume.is_pid) {
+    if (!run_nodes_by_pid (self->om, id, do_set_volume_cb, self)) {
+      fprintf (stderr, "Could not set volume in all nodes with PID '%d'\n", id);
+      goto out;
+    }
+  } else {
+    proxy = wp_object_manager_lookup (self->om, WP_TYPE_GLOBAL_PROXY,
+        WP_CONSTRAINT_TYPE_PW_GLOBAL_PROPERTY, "object.id", "=u", id, NULL);
+    if (!proxy) {
+      fprintf (stderr, "Object '%d' not found\n", id);
+      goto out;
+    }
+    if (!do_set_volume (self, proxy))
+      goto out;
   }
 
   wp_core_sync (self->core, NULL, (GAsyncReadyCallback) async_quit, self);
@@ -763,14 +878,6 @@ set_mute_parse_positional (gint argc, gchar ** argv, GError **error)
     return FALSE;
   }
 
-  long id = strtol (argv[2], NULL, 10);
-  if (id <= 0 || id >= G_MAXUINT32) {
-    g_set_error (error, wpctl_error_domain_quark(), 0,
-        "'%s' is not a valid number", argv[2]);
-    return FALSE;
-  }
-  cmdline.set_mute.id = id;
-
   if (!g_strcmp0 (argv[3], "1"))
     cmdline.set_mute.mute = 1;
   else if (!g_strcmp0 (argv[3], "0"))
@@ -783,57 +890,45 @@ set_mute_parse_positional (gint argc, gchar ** argv, GError **error)
     return FALSE;
   }
 
-  return TRUE;
+  return parse_id (!cmdline.set_mute.is_pid, false, argv[2],
+      &cmdline.set_mute.id, error);
 }
 
 static gboolean
 set_mute_prepare (WpCtl * self, GError ** error)
 {
-  wp_object_manager_add_interest (self->om, WP_TYPE_ENDPOINT,
-      WP_CONSTRAINT_TYPE_PW_GLOBAL_PROPERTY,
-      "object.id", "=u", cmdline.set_mute.id,
-      NULL);
-  wp_object_manager_add_interest (self->om, WP_TYPE_NODE,
-      WP_CONSTRAINT_TYPE_PW_GLOBAL_PROPERTY,
-      "object.id", "=u", cmdline.set_mute.id,
-      NULL);
+  wp_object_manager_add_interest (self->om, WP_TYPE_ENDPOINT, NULL);
+  wp_object_manager_add_interest (self->om, WP_TYPE_NODE, NULL);
+  wp_object_manager_add_interest (self->om, WP_TYPE_CLIENT, NULL);
   wp_object_manager_request_object_features (self->om, WP_TYPE_GLOBAL_PROXY,
       WP_PIPEWIRE_OBJECT_FEATURES_MINIMAL);
   return TRUE;
 }
 
-static void
-set_mute_run (WpCtl * self)
+static gboolean
+do_set_mute (WpCtl * self, WpPipewireObject *proxy)
 {
-  g_autoptr (WpPipewireObject) proxy = NULL;
   g_autoptr (WpPlugin) mixer_api = wp_plugin_find (self->core, "mixer-api");
   g_auto (GVariantBuilder) b = G_VARIANT_BUILDER_INIT (G_VARIANT_TYPE_VARDICT);
+  g_autoptr (GError) error = NULL;
   GVariant *variant = NULL;
   gboolean res = FALSE;
   gboolean mute = FALSE;
-  guint32 node_id = cmdline.set_mute.id;
-
-  proxy = wp_object_manager_lookup (self->om, WP_TYPE_GLOBAL_PROXY, NULL);
-  if (!proxy) {
-    printf ("Object '%d' not found\n", cmdline.set_mute.id);
-    goto out;
-  }
+  guint32 id = wp_proxy_get_bound_id (WP_PROXY (proxy));
 
   if (WP_IS_ENDPOINT (proxy)) {
     const gchar *str = wp_pipewire_object_get_property (proxy, "node.id");
     if (!str) {
-      printf ("Endpoint '%d' does not have an associated node\n",
-          cmdline.set_mute.id);
-      goto out;
+      fprintf (stderr, "Endpoint '%d' does not have an associated node\n", id);
+      return FALSE;
     }
-    node_id = atoi (str);
+    id = atoi (str);
   }
 
-  g_signal_emit_by_name (mixer_api, "get-volume", node_id, &variant);
+  g_signal_emit_by_name (mixer_api, "get-volume", id, &variant);
   if (!variant) {
-    printf ("Object '%d' (node %d) does not support mute\n",
-        cmdline.set_mute.id, node_id);
-    goto out;
+    fprintf (stderr, "Node %d does not support mute\n", id);
+    return FALSE;
   }
 
   g_variant_lookup (variant, "mute", "b", &mute);
@@ -847,7 +942,47 @@ set_mute_run (WpCtl * self)
   g_variant_builder_add (&b, "{sv}", "mute", g_variant_new_boolean (mute));
   variant = g_variant_builder_end (&b);
 
-  g_signal_emit_by_name (mixer_api, "set-volume", node_id, variant, &res);
+  g_signal_emit_by_name (mixer_api, "set-volume", id, variant, &res);
+
+  return TRUE;
+}
+
+static gboolean
+do_set_mute_cb (const GValue *node_val, GValue *ret, gpointer data)
+{
+  WpCtl * self = data;
+  WpPipewireObject *node = g_value_get_object (node_val);
+  return do_set_mute (self, node);
+}
+
+static void
+set_mute_run (WpCtl * self)
+{
+  g_autoptr (WpPipewireObject) proxy = NULL;
+  g_autoptr (WpPlugin) def_nodes_api = wp_plugin_find (self->core, "default-nodes-api");
+  g_autoptr (GError) error = NULL;
+  guint32 id;
+
+  if (!translate_id (def_nodes_api, cmdline.set_mute.id, &id, &error)) {
+    fprintf(stderr, "Translate ID error: %s\n\n", error->message);
+    goto out;
+  }
+
+  if (cmdline.set_mute.is_pid) {
+    if (!run_nodes_by_pid (self->om, id, do_set_mute_cb, self)) {
+      fprintf (stderr, "Could not set mute in all nodes with PID '%d'\n", id);
+      goto out;
+    }
+  } else {
+    proxy = wp_object_manager_lookup (self->om, WP_TYPE_GLOBAL_PROXY,
+        WP_CONSTRAINT_TYPE_PW_GLOBAL_PROPERTY, "object.id", "=u", id, NULL);
+    if (!proxy) {
+      fprintf (stderr, "Object '%d' not found\n", id);
+      goto out;
+    }
+    if (!do_set_mute (self, proxy))
+        goto out;
+  }
 
   wp_core_sync (self->core, NULL, (GAsyncReadyCallback) async_quit, self);
   return;
@@ -868,26 +1003,14 @@ set_profile_parse_positional (gint argc, gchar ** argv, GError **error)
     return FALSE;
   }
 
-  long id = strtol (argv[2], NULL, 10);
-  int index = atoi (argv[3]);
-  if (id < 0 || id >= G_MAXUINT32) {
-    g_set_error (error, wpctl_error_domain_quark(), 0,
-        "'%s' is not a valid index", argv[2]);
-    return FALSE;
-  }
-
-  cmdline.set_profile.id = id;
-  cmdline.set_profile.index = index;
-  return TRUE;
+  cmdline.set_profile.index = atoi (argv[3]);
+  return parse_id (true, true, argv[2], &cmdline.set_profile.id, error);
 }
 
 static gboolean
 set_profile_prepare (WpCtl * self, GError ** error)
 {
-  wp_object_manager_add_interest (self->om, WP_TYPE_GLOBAL_PROXY,
-      WP_CONSTRAINT_TYPE_PW_GLOBAL_PROPERTY,
-      "object.id", "=u", cmdline.set_profile.id,
-      NULL);
+  wp_object_manager_add_interest (self->om, WP_TYPE_GLOBAL_PROXY, NULL);
   wp_object_manager_request_object_features (self->om, WP_TYPE_GLOBAL_PROXY,
       WP_PIPEWIRE_OBJECT_FEATURES_MINIMAL);
   return TRUE;
@@ -896,11 +1019,20 @@ set_profile_prepare (WpCtl * self, GError ** error)
 static void
 set_profile_run (WpCtl * self)
 {
+  g_autoptr (WpPlugin) def_nodes_api = wp_plugin_find (self->core, "default-nodes-api");
   g_autoptr (WpPipewireObject) proxy = NULL;
+  g_autoptr (GError) error = NULL;
+  guint32 node_id;
 
-  proxy = wp_object_manager_lookup (self->om, WP_TYPE_GLOBAL_PROXY, NULL);
+  if (!translate_id (def_nodes_api, cmdline.set_profile.id, &node_id, &error)) {
+    fprintf(stderr, "Translate ID error: %s\n\n", error->message);
+    goto out;
+  }
+
+  proxy = wp_object_manager_lookup (self->om, WP_TYPE_GLOBAL_PROXY,
+      WP_CONSTRAINT_TYPE_PW_GLOBAL_PROPERTY, "object.id", "=u", node_id, NULL);
   if (!proxy) {
-    printf ("Object '%d' not found\n", cmdline.set_profile.id);
+    fprintf (stderr, "Object '%d' not found\n", node_id);
     goto out;
   }
   wp_pipewire_object_set_param (proxy, "Profile", 0,
@@ -921,20 +1053,12 @@ out:
 static gboolean
 clear_default_parse_positional (gint argc, gchar ** argv, GError **error)
 {
-  cmdline.clear_default.id = SPA_ID_INVALID;
-
   if (argc >= 3) {
-    long id = strtol (argv[2], NULL, 10);
-    if (id < 0 || id >= G_MAXUINT32) {
-      g_set_error (error, wpctl_error_domain_quark(), 0,
-          "'%s' is not a valid number", argv[2]);
-      return FALSE;
-    }
-
-    cmdline.clear_default.id = id;
+    return parse_id (true, true, argv[2], &cmdline.clear_default.id, error);
+  } else {
+    cmdline.clear_default.id = SPA_ID_INVALID;
+    return TRUE;
   }
-
-  return TRUE;
 }
 
 static gboolean
@@ -947,12 +1071,18 @@ static void
 clear_default_run (WpCtl * self)
 {
   g_autoptr (WpPlugin) def_nodes_api = NULL;
-  guint32 id = cmdline.clear_default.id;
+  g_autoptr (GError) error = NULL;
+  guint32 id;
   gboolean res = FALSE;
 
   def_nodes_api = wp_plugin_find (self->core, "default-nodes-api");
   if (!def_nodes_api) {
-    printf ("Default nodes API not loaded\n");
+    fprintf (stderr, "Default nodes API not loaded\n");
+    goto out;
+  }
+
+  if (!translate_id (def_nodes_api, cmdline.clear_default.id, &id, &error)) {
+    fprintf(stderr, "Translate ID error: %s\n\n", error->message);
     goto out;
   }
 
@@ -962,7 +1092,7 @@ clear_default_run (WpCtl * self)
       g_signal_emit_by_name (def_nodes_api, "set-default-configured-node-name",
           DEFAULT_NODE_MEDIA_CLASSES[i], NULL, &res);
       if (!res) {
-        printf ("failed to clear default configured node (%s)\n",
+        fprintf (stderr, "failed to clear default configured node (%s)\n",
             DEFAULT_NODE_MEDIA_CLASSES[i]);
         goto out;
       }
@@ -972,12 +1102,12 @@ clear_default_run (WpCtl * self)
       g_signal_emit_by_name (def_nodes_api, "set-default-configured-node-name",
           DEFAULT_NODE_MEDIA_CLASSES[id], NULL, &res);
       if (!res) {
-        printf ("failed to clear default configured node (%s)\n",
+        fprintf (stderr, "failed to clear default configured node (%s)\n",
             DEFAULT_NODE_MEDIA_CLASSES[id]);
         goto out;
       }
     } else {
-      printf ("Id %d is not a valid default node Id\n", id);
+      fprintf (stderr, "Id %d is not a valid default node Id\n", id);
       goto out;
     }
   }
@@ -1053,7 +1183,12 @@ static const struct subcommand {
     .positional_args = "ID VOL",
     .summary = "Sets the volume of ID to VOL (floating point, 1.0 is 100%%)",
     .description = NULL,
-    .entries = { { NULL } },
+    .entries = {
+      { "pid", 'p', G_OPTION_FLAG_NONE, G_OPTION_ARG_NONE,
+        &cmdline.set_volume.is_pid,
+        "Selects all nodes associated to the given PID number", NULL },
+      { NULL }
+    },
     .parse_positional = set_volume_parse_positional,
     .prepare = set_volume_prepare,
     .run = set_volume_run,
@@ -1063,7 +1198,12 @@ static const struct subcommand {
     .positional_args = "ID 1|0|toggle",
     .summary = "Changes the mute state of ID",
     .description = NULL,
-    .entries = { { NULL } },
+    .entries = {
+      { "pid", 'p', G_OPTION_FLAG_NONE, G_OPTION_ARG_NONE,
+        &cmdline.set_mute.is_pid,
+        "Selects all nodes associated to the given PID number", NULL },
+      { NULL }
+    },
     .parse_positional = set_mute_parse_positional,
     .prepare = set_mute_prepare,
     .run = set_mute_run,
@@ -1114,6 +1254,8 @@ main (gint argc, gchar **argv)
   g_autoptr (GError) error = NULL;
   g_autofree gchar *summary = NULL;
 
+  setlocale (LC_ALL, "");
+  setlocale (LC_NUMERIC, "C");
   wp_init (WP_INIT_ALL);
 
   ctl.context = g_option_context_new (

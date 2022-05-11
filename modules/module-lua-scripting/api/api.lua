@@ -192,6 +192,7 @@ SANDBOX_EXPORT = {
   Features = Features,
   Feature = Feature,
   GLib = GLib,
+  I18n = I18n,
   Log = WpLog,
   Core = WpCore,
   Plugin = WpPlugin,

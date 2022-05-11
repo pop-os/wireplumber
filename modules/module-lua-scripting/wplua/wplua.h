@@ -44,14 +44,15 @@ typedef enum {
 } WpLuaError;
 
 typedef enum {
-  WP_LUA_SANDBOX_MINIMAL_STD,
-  WP_LUA_SANDBOX_ISOLATE_ENV,
+  WP_LUA_SANDBOX_ISOLATE_ENV = 1,
 } WpLuaSandboxFlags;
 
 lua_State * wplua_new (void);
-void wplua_free (lua_State * L);
+lua_State * wplua_ref (lua_State *L);
+void wplua_unref (lua_State * L);
 
 void wplua_enable_sandbox (lua_State * L, WpLuaSandboxFlags flags);
+int wplua_push_sandbox (lua_State * L);
 
 void wplua_register_type_methods (lua_State * L, GType type,
     lua_CFunction constructor, const luaL_Reg * methods);
@@ -87,13 +88,13 @@ WpProperties * wplua_table_to_properties (lua_State *L, int idx);
 void wplua_properties_to_table (lua_State *L, WpProperties *p);
 
 gboolean wplua_load_buffer (lua_State * L, const gchar *buf, gsize size,
-     int nargs, int nres, GError **error);
-gboolean wplua_load_uri (lua_State * L, const gchar *uri, int nargs, int nres,
     GError **error);
-gboolean wplua_load_path (lua_State * L, const gchar *path, int nargs, int nres,
-    GError **error);
+gboolean wplua_load_uri (lua_State * L, const gchar *uri, GError **error);
+gboolean wplua_load_path (lua_State * L, const gchar *path, GError **error);
 
-G_DEFINE_AUTOPTR_CLEANUP_FUNC(lua_State, wplua_free)
+gboolean wplua_pcall (lua_State * L, int nargs, int nres, GError **error);
+
+G_DEFINE_AUTOPTR_CLEANUP_FUNC(lua_State, wplua_unref)
 
 G_END_DECLS
 
