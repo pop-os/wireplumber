@@ -4,10 +4,10 @@ Upstream-Contact: George Kiagiadakis <george.kiagiadakis@collabora.com>
 Source: https://gitlab.freedesktop.org/pipewire/wireplumber/
 
 Files: *
-Copyright: 2019-2021 Collabora Ltd.
+Copyright: 2019-2022 Collabora Ltd.
 License: MIT
 
-Files: lib/wplua/sandbox.lua
+Files: modules/module-lua-scripting/wplua/sandbox.lua
 Copyright: 2013 Enrique García Cota,
            2020 Collabora Ltd.
 License: MIT
