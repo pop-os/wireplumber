@@ -3,6 +3,7 @@ wireplumber (0.4.10-1) UNRELEASED; urgency=medium
   * Team upload.
   * New upstream version
   * Install new i18n files
+  * Update symbols file
 
  -- Dylan Aïssi <daissi@debian.org>  Wed, 11 May 2022 12:01:49 +0200
 
