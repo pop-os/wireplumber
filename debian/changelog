@@ -7,7 +7,7 @@ wireplumber (0.4.10-2) UNRELEASED; urgency=medium
   * debian/tests:
     - add a basic build autopkgtest for the library
   * debian/control:
-    - libwireplumber-0.4-dev depends on libglib2.0-dev and libglib2.0-dev,
+    - libwireplumber-0.4-dev depends on libglib2.0-dev and libpipewire-0.3-dev,
       those are required by the .pc
       (Closes: #1011340)
 
