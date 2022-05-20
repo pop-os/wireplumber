@@ -20,7 +20,7 @@ alsa_monitor.properties = {
 
 alsa_monitor.rules = {
   -- An array of matches/actions to evaluate.
-  -- 
+  --
   -- If you want to disable some devices or nodes, you can apply properties per device as the following example.
   -- The name can be found by running pw-cli ls Device, or pw-cli dump Device
   --{
@@ -112,6 +112,17 @@ alsa_monitor.rules = {
       --["api.alsa.disable-mmap"]  = false,
       --["api.alsa.disable-batch"] = false,
       --["session.suspend-timeout-seconds"] = 5,  -- 0 disables suspend
+    },
+  },
+  {
+    -- Devices known to require a headroom.
+    matches = {
+      {
+        { "node.name", "matches", "alsa_output.usb-0b0e_Jabra_SPEAK_410_USB_501AA523CBCAx010900-00.analog-stereo" }
+      },
+    },
+    apply_properties = {
+      ["api.alsa.headroom"] = 1024,
     },
   },
 }
