@@ -62,6 +62,8 @@ Depends: ${shlibs:Depends},
          libwireplumber-0.4-0 (= ${binary:Version}),
          pipewire (>= 0.3.48),
 Recommends: pipewire-pulse
+Conflicts: pipewire-media-session
+Replaces: pipewire-media-session
 Section: video
 Description: modular session / policy manager for PipeWire
  WirePlumber is a modular session / policy manager for PipeWire and a
