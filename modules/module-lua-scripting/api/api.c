@@ -165,6 +165,15 @@ core_get_info (lua_State *L)
 }
 
 static int
+core_get_vm_type (lua_State *L)
+{
+  WpCore * core = get_wp_core (L);
+  g_autofree gchar *vm = wp_core_get_vm_type (core);
+  lua_pushstring (L, vm);
+  return 1;
+}
+
+static int
 core_idle_add (lua_State *L)
 {
   GSource *source = NULL;
@@ -259,6 +268,7 @@ core_require_api (lua_State *L)
 
 static const luaL_Reg core_funcs[] = {
   { "get_info", core_get_info },
+  { "get_vm_type", core_get_vm_type },
   { "idle_add", core_idle_add },
   { "timeout_add", core_timeout_add },
   { "sync", core_sync },
@@ -911,6 +921,14 @@ spa_device_new (lua_State *L)
 }
 
 static int
+spa_device_iterate_managed_objects (lua_State *L)
+{
+  WpSpaDevice *device = wplua_checkobject (L, 1, WP_TYPE_SPA_DEVICE);
+  WpIterator *it = wp_spa_device_new_managed_object_iterator (device);
+  return push_wpiterator (L, it);
+}
+
+static int
 spa_device_get_managed_object (lua_State *L)
 {
   WpSpaDevice *device = wplua_checkobject (L, 1, WP_TYPE_SPA_DEVICE);
@@ -934,6 +952,7 @@ spa_device_store_managed_object (lua_State *L)
 }
 
 static const luaL_Reg spa_device_methods[] = {
+  { "iterate_managed_objects", spa_device_iterate_managed_objects },
   { "get_managed_object", spa_device_get_managed_object },
   { "store_managed_object", spa_device_store_managed_object },
   { NULL, NULL }

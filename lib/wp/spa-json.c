@@ -260,6 +260,20 @@ wp_spa_json_get_size (const WpSpaJson *self)
 }
 
 /*!
+ * \brief Returns a newly allocated json string with length matching the size
+ *
+ * \ingroup wpspajson
+ * \param self a spa json object
+ * \returns (transfer full): the json string with length matching the size
+ * \since 0.4.11
+ */
+gchar *
+wp_spa_json_to_string (const WpSpaJson *self)
+{
+  return g_strndup (self->data, self->size);
+}
+
+/*!
  * \brief Copies a spa json object
  *
  * \ingroup wpspajson
@@ -375,8 +389,11 @@ wp_spa_json_new_float (float value)
 WpSpaJson *
 wp_spa_json_new_string (const gchar *value)
 {
+  size_t size = (strlen (value) * 4) + 2;
+  gchar dst[size];
+  spa_json_encode_string (dst, sizeof(dst), value);
   return wp_spa_json_new_from_builder (
-      wp_spa_json_builder_new_formatted ("\"%s\"", value));
+      wp_spa_json_builder_new_formatted ("%s", dst));
 }
 
 /* Args is not a pointer in some architectures, so this needs to be a macro to
@@ -953,6 +970,14 @@ builder_add_formatted (WpSpaJsonBuilder *self, const gchar *fmt, ...)
   self->size += s;
 }
 
+static void
+builder_add_json (WpSpaJsonBuilder *self, WpSpaJson *json)
+{
+  g_return_if_fail (self->max_size - self->size >= json->size + 1);
+  snprintf (self->data + self->size, json->size + 1, "%s", json->data);
+  self->size += json->size;
+}
+
 /*!
  * \brief Adds a property into the builder
  *
@@ -1053,14 +1078,14 @@ wp_spa_json_builder_add_string (WpSpaJsonBuilder *self, const gchar *value)
  *
  * \ingroup wpspajson
  * \param self the spa json builder object
- * \param json the json value
+ * \param json (transfer none): the json value
  */
 void
 wp_spa_json_builder_add_json (WpSpaJsonBuilder *self, WpSpaJson *json)
 {
   ensure_separator (self, FALSE);
   ensure_allocated_max_size (self, json->size);
-  builder_add_formatted (self, "%s", json->data);
+  builder_add_json (self, json);
 }
 
 /*!
