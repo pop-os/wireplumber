@@ -1,6 +1,7 @@
 wireplumber (0.4.11-1) UNRELEASED; urgency=medium
 
   * New upstream version
+  * Update symbols file
   * Remove wireplumber.service when the package is removed,
     not only when it is purged to avoid conflict with pipewire-media-session.
     (Closes: #997818)
