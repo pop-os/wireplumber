@@ -14,6 +14,29 @@
 G_BEGIN_DECLS
 
 /*!
+ * \brief The state of the link
+ * \ingroup wplink
+ */
+typedef enum {
+  WP_LINK_STATE_ERROR = -2,     /*!< the link is in error */
+  WP_LINK_STATE_UNLINKED = -1,  /*!< the link is unlinked */
+  WP_LINK_STATE_INIT = 0,       /*!< the link is initialized */
+  WP_LINK_STATE_NEGOTIATING = 1,  /*!< the link is negotiating formats */
+  WP_LINK_STATE_ALLOCATING = 2, /*!< the link is allocating buffers */
+  WP_LINK_STATE_PAUSED = 3,     /*!< the link is paused */
+  WP_LINK_STATE_ACTIVE = 4,     /*!< the link is active */
+} WpLinkState;
+
+/*!
+ * \brief An extension of WpProxyFeatures
+ * \ingroup wplink
+ */
+typedef enum { /*< flags >*/
+  /*! waits until the state of the link is >= PAUSED */
+  WP_LINK_FEATURE_ESTABLISHED = (WP_PROXY_FEATURE_CUSTOM_START << 0),
+} WpLinkFeatures;
+
+/*!
  * \brief The WpLink GType
  * \ingroup wplink
  */
@@ -29,6 +52,9 @@ WP_API
 void wp_link_get_linked_object_ids (WpLink * self,
     guint32 * output_node, guint32 * output_port,
     guint32 * input_node, guint32 * input_port);
+
+WP_API
+WpLinkState wp_link_get_state (WpLink * self, const gchar ** error);
 
 G_END_DECLS
 

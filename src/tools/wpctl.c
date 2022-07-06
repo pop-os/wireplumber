@@ -45,7 +45,12 @@ static struct {
       guint64 id;
       gfloat volume;
       gboolean is_pid;
+      gchar type;
     } set_volume;
+
+    struct {
+      guint64 id;
+    } get_volume;
 
     struct {
       guint64 id;
@@ -166,7 +171,6 @@ run_nodes_by_pid (WpObjectManager *om, guint32 pid,
     WpPipewireObject *client = g_value_get_object (&client_val);
     guint32 client_id = wp_proxy_get_bound_id (WP_PROXY (client));
     g_autoptr (WpIterator) node_it = NULL;
-    g_auto (GValue) node_val = G_VALUE_INIT;
     node_it = wp_object_manager_new_filtered_iterator (om,
         WP_TYPE_NODE, WP_CONSTRAINT_TYPE_PW_PROPERTY,
         PW_KEY_CLIENT_ID, "=u", client_id, NULL);
@@ -316,7 +320,11 @@ print_stream_node (const GValue *item, gpointer data)
           NULL);
       name = wp_pipewire_object_get_property (peer, PW_KEY_PORT_ALIAS);
 
-      printf (" %c %s\n", (dir == WP_DIRECTION_OUTPUT) ? '>' : '<', name);
+      g_autoptr (GEnumClass) klass = g_type_class_ref (WP_TYPE_LINK_STATE);
+      GEnumValue *state = g_enum_get_value (klass, wp_link_get_state (link, NULL));
+
+      printf (" %c %s\t[%s]\n", (dir == WP_DIRECTION_OUTPUT) ? '>' : '<', name,
+          state->value_nick);
     } else {
       printf ("\n");
     }
@@ -471,6 +479,78 @@ status_run (WpCtl * self)
   g_main_loop_quit (self->loop);
 }
 
+/* get-volume  */
+
+static gboolean
+get_volume_parse_positional (gint argc, gchar ** argv, GError **error)
+{
+  if (argc < 3) {
+    g_set_error (error, wpctl_error_domain_quark(), 0,
+        "ID is required");
+    return FALSE;
+  } else {
+    return parse_id (true, false, argv[2], &cmdline.get_volume.id, error);
+  }
+}
+
+static gboolean
+get_volume_prepare (WpCtl * self, GError ** error)
+{
+  wp_object_manager_add_interest (self->om, WP_TYPE_NODE, NULL);
+  wp_object_manager_request_object_features (self->om, WP_TYPE_GLOBAL_PROXY,
+      WP_PIPEWIRE_OBJECT_FEATURES_MINIMAL);
+  return TRUE;
+}
+
+static void
+do_print_volume (WpCtl * self, WpPipewireObject *proxy)
+{
+  g_autoptr (WpPlugin) mixer_api = wp_plugin_find (self->core, "mixer-api");
+  GVariant *variant = NULL;
+  gboolean mute = FALSE;
+  gdouble volume = 1.0;
+  guint32 id = wp_proxy_get_bound_id (WP_PROXY (proxy));
+
+  g_signal_emit_by_name (mixer_api, "get-volume", id, &variant);
+  if (!variant) {
+    fprintf (stderr, "Node %d does not support volume\n", id);
+    return;
+  }
+  g_variant_lookup (variant, "volume", "d", &volume);
+  g_variant_lookup (variant, "mute", "b", &mute);
+  g_clear_pointer (&variant, g_variant_unref);
+
+  printf ("Volume: %.2f%s", volume, mute ? " [MUTED]\n" : "\n");
+}
+
+static void
+get_volume_run (WpCtl * self)
+{
+  g_autoptr (WpPlugin) def_nodes_api = NULL;
+  g_autoptr (GError) error = NULL;
+  g_autoptr (WpPipewireObject) proxy = NULL;
+  guint32 id;
+
+  def_nodes_api = wp_plugin_find (self->core, "default-nodes-api");
+
+  if (!translate_id (def_nodes_api, cmdline.get_volume.id, &id, &error)) {
+    fprintf(stderr, "Translate ID error: %s\n\n", error->message);
+    goto out;
+  }
+
+  proxy = wp_object_manager_lookup (self->om, WP_TYPE_GLOBAL_PROXY,
+    WP_CONSTRAINT_TYPE_G_PROPERTY, "bound-id", "=u", id, NULL);
+  if (!proxy) {
+    fprintf (stderr, "Node '%d' not found\n", id);
+    goto out;
+  }
+
+  do_print_volume (self, proxy);
+
+out:
+  g_main_loop_quit (self->loop);
+}
+
 /* inspect */
 
 static gboolean
@@ -564,7 +644,9 @@ static void
 inspect_print_object (WpCtl * self, WpProxy * proxy, guint nest_level)
 {
   g_autoptr (WpProperties) properties =
-      wp_pipewire_object_get_properties (WP_PIPEWIRE_OBJECT (proxy));
+      WP_IS_PIPEWIRE_OBJECT (proxy) ?
+      wp_pipewire_object_get_properties (WP_PIPEWIRE_OBJECT (proxy)) :
+      wp_properties_new_empty ();
   g_autoptr (WpProperties) global_p =
       wp_global_proxy_get_global_properties (WP_GLOBAL_PROXY (proxy));
   g_autoptr (GArray) array =
@@ -768,13 +850,42 @@ out:
 static gboolean
 set_volume_parse_positional (gint argc, gchar ** argv, GError **error)
 {
+  g_autoptr (GRegex) regex = NULL;
+  g_autoptr (GMatchInfo) info = NULL;
+
   if (argc < 4) {
-    g_set_error (error, wpctl_error_domain_quark(), 0,
-        "ID and VOL are required");
+    g_set_error_literal (error, wpctl_error_domain_quark(), 0,
+        "ID and VOL[%][-/+] are required");
     return FALSE;
   }
 
-  cmdline.set_volume.volume = strtof (argv[3], NULL);
+  regex = g_regex_new ("^(\\d*\\.?\\d*)(%?)([-+]?)$", 0, 0, NULL);
+
+  if (g_regex_match(regex, argv[3], 0, &info)) {
+    gchar *str = g_match_info_fetch (info, 1);
+    cmdline.set_volume.volume = strtof (str, NULL);
+    cmdline.set_volume.type = 'a';
+    g_free (str);
+
+    str = g_match_info_fetch (info, 2);
+    if (g_strcmp0 (str, "%") == 0)
+      cmdline.set_volume.volume /= 100;
+    g_free (str);
+
+    str = g_match_info_fetch (info, 3);
+    if (g_strcmp0 (str, "-") == 0) {
+      cmdline.set_volume.volume = -(cmdline.set_volume.volume);
+      cmdline.set_volume.type = 's';
+    } else if (g_strcmp0 (str, "+") == 0) {
+      cmdline.set_volume.type = 's';
+    }
+    g_free (str);
+  } else {
+    g_set_error (error, wpctl_error_domain_quark(), 0,
+        "Invalid volume argument. See wpctl set-volume --help");
+    return FALSE;
+  }
+
   return parse_id (!cmdline.set_volume.is_pid, false, argv[2],
       &cmdline.set_volume.id, error);
 }
@@ -795,9 +906,9 @@ do_set_volume (WpCtl * self, WpPipewireObject *proxy)
 {
   g_autoptr (WpPlugin) mixer_api = wp_plugin_find (self->core, "mixer-api");
   g_auto (GVariantBuilder) b = G_VARIANT_BUILDER_INIT (G_VARIANT_TYPE_VARDICT);
-  g_autoptr (GError) error = NULL;
   GVariant *variant = NULL;
   gboolean res = FALSE;
+  gdouble curr_volume = 1.0;
   guint32 id = wp_proxy_get_bound_id (WP_PROXY (proxy));
 
   if (WP_IS_ENDPOINT (proxy)) {
@@ -807,6 +918,22 @@ do_set_volume (WpCtl * self, WpPipewireObject *proxy)
       return FALSE;
     }
     id = atoi (str);
+  }
+
+  if (cmdline.set_volume.type == 's') {
+    g_signal_emit_by_name (mixer_api, "get-volume", id, &variant);
+      if (!variant) {
+      fprintf (stderr, "Node %d does not support volume\n", id);
+      g_clear_pointer (&variant, g_variant_unref);
+      return FALSE;
+    }
+    g_variant_lookup (variant, "volume", "d", &curr_volume);
+    g_clear_pointer (&variant, g_variant_unref);
+
+    cmdline.set_volume.volume = (cmdline.set_volume.volume + curr_volume);
+  }
+  if (cmdline.set_volume.volume < 0) {
+    cmdline.set_volume.volume = 0.0;
   }
 
   g_variant_builder_add (&b, "{sv}", "volume",
@@ -910,7 +1037,6 @@ do_set_mute (WpCtl * self, WpPipewireObject *proxy)
 {
   g_autoptr (WpPlugin) mixer_api = wp_plugin_find (self->core, "mixer-api");
   g_auto (GVariantBuilder) b = G_VARIANT_BUILDER_INIT (G_VARIANT_TYPE_VARDICT);
-  g_autoptr (GError) error = NULL;
   GVariant *variant = NULL;
   gboolean res = FALSE;
   gboolean mute = FALSE;
@@ -1151,6 +1277,16 @@ static const struct subcommand {
     .run = status_run,
   },
   {
+    .name = "get-volume",
+    .positional_args = "ID",
+    .summary = "Displays volume information about the specified node in PipeWire",
+    .description = NULL,
+    .entries = { { NULL } },
+    .parse_positional = get_volume_parse_positional,
+    .prepare = get_volume_prepare,
+    .run = get_volume_run,
+  },
+  {
     .name = "inspect",
     .positional_args = "ID",
     .summary = "Displays information about the specified object",
@@ -1180,8 +1316,12 @@ static const struct subcommand {
   },
   {
     .name = "set-volume",
-    .positional_args = "ID VOL",
-    .summary = "Sets the volume of ID to VOL (floating point, 1.0 is 100%%)",
+    .positional_args = "ID VOL[%][-/+]",
+    .summary =
+        "Sets the volume of ID from specified argument. (floating point, 1.0 is 100%)\n"
+        "  VOL%[-/+] - Step up/down volume by specified percent (Example: 0.5%+)\n"
+        "  VOL[-/+] - Step up/down volume by specified value (Example: 0.5+)\n"
+        "  VOL - Set volume as the specified value (Example: 0.5)",
     .description = NULL,
     .entries = {
       { "pid", 'p', G_OPTION_FLAG_NONE, G_OPTION_ARG_NONE,
