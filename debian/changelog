@@ -3,9 +3,6 @@ wireplumber (0.4.11-1) UNRELEASED; urgency=medium
   * New upstream version
   * Update symbols file
   * Bump minimum pipewire to 0.3.52
-  * Remove wireplumber.service when the package is removed,
-    not only when it is purged to avoid conflict with pipewire-media-session.
-    (Closes: #997818)
   * Add an upstream patch fixing issue with VMs
 
  -- Dylan Aïssi <daissi@debian.org>  Wed, 08 Jun 2022 23:07:28 +0200
