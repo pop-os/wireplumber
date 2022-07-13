@@ -143,4 +143,28 @@ alsa_monitor.rules = {
       ["api.alsa.headroom"] = 2048,
     },
   },
+  -- Matches Digital (S/PDIF) output devices
+  {
+    matches = {
+      {
+        {
+          "node.name",
+          "matches",
+          "alsa_output.*"
+        },
+        {
+          "node.description",
+          "matches",
+          "*Digital*"
+        }
+      },
+    },
+    -- Stops them from suspending on idle.
+    -- This fixes an issue where the first few seconds of audio
+    -- playback are missed while the output device (receiver,
+    -- soundbar, etc.) is starting up again.
+    apply_properties = {
+      ["session.suspend-timeout-seconds"] = 0,
+    },
+  },
 }
