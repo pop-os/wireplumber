@@ -1,3 +1,12 @@
+wireplumber (0.4.11-3) UNRELEASED; urgency=medium
+
+  * Cherry-pick upstream recommended patches:
+      - 37c839b9: policy-node: fix potential rescan loop (Closes: #1016104)
+      - 370b6929: m-si-link: don't wait for establish before activation + cleanup links
+     (Closes: #1017397)
+
+ -- Dylan Aïssi <daissi@debian.org>  Mon, 05 Sep 2022 10:37:58 +0200
+
 wireplumber (0.4.11-2) unstable; urgency=medium
 
   * Cherry-pick upstream recommended patches:
