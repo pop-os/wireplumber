@@ -1,0 +1,28 @@
+Description: Remove some privacy breaches in documentation
+Author: Dylan Aïssi <daissi@debian.org>
+Forwarded: not-needed
+
+--- a/README.rst
++++ b/README.rst
+@@ -1,21 +1,6 @@
+ WirePlumber
+ ===========
+ 
+-.. image:: https://gitlab.freedesktop.org/pipewire/wireplumber/badges/master/pipeline.svg
+-   :alt: Pipeline status
+-
+-.. image:: https://scan.coverity.com/projects/21488/badge.svg
+-   :alt: Coverity Scan Build Status
+-
+-.. image:: https://img.shields.io/tokei/lines/gitlab.freedesktop.org/pipewire/wireplumber
+-   :alt: Lines of code
+-
+-.. image:: https://img.shields.io/badge/license-MIT-green
+-   :alt: License
+-
+-.. image:: https://img.shields.io/badge/dynamic/json?color=informational&label=tag&query=%24%5B0%5D.name&url=https%3A%2F%2Fgitlab.freedesktop.org%2Fapi%2Fv4%2Fprojects%2F2941%2Frepository%2Ftags
+-   :alt: Tag
+-
+ WirePlumber is a modular session / policy manager for
+ `PipeWire <https://pipewire.org>`_ and a GObject-based high-level library
+ that wraps PipeWire's API, providing convenience for writing the daemon's
