@@ -1,8 +1,8 @@
-wireplumber (0.4.11-2~bpo11+1) UNRELEASED; urgency=medium
+wireplumber (0.4.11-2~bpo11+1) bullseye-backports; urgency=medium
 
   * Rebuild for bullseye-backports.
 
- -- Dylan Aïssi <daissi@debian.org>  Thu, 08 Sep 2022 11:56:48 +0200
+ -- Dylan Aïssi <daissi@debian.org>  Thu, 08 Sep 2022 12:13:52 +0200
 
 wireplumber (0.4.11-2) unstable; urgency=medium
 
