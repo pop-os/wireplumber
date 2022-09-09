@@ -1,6 +1,11 @@
 wireplumber (0.4.11-4) UNRELEASED; urgency=medium
 
   * Build a new package wireplumber-doc (Closes: #1019285)
+  * Add patch removing service alias. This alias is only used to prevent
+    wireplumber and pipewire-media-session from being enabled at the same time.
+    This is already handled at the package level with a conflict between both,
+    thus we can safetly remove alias and avoid the issue with systemd.
+    (Closes: #997818)
 
  -- Dylan Aïssi <daissi@debian.org>  Wed, 07 Sep 2022 12:08:36 +0200
 
