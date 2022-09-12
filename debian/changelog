@@ -1,4 +1,4 @@
-wireplumber (0.4.11-4) UNRELEASED; urgency=medium
+wireplumber (0.4.11-4) unstable; urgency=medium
 
   * Build a new package wireplumber-doc (Closes: #1019285)
   * Add patch removing service alias. This alias is only used to prevent
@@ -7,7 +7,7 @@ wireplumber (0.4.11-4) UNRELEASED; urgency=medium
     thus we can safetly remove alias and avoid the issue with systemd.
     (Closes: #997818)
 
- -- Dylan Aïssi <daissi@debian.org>  Wed, 07 Sep 2022 12:08:36 +0200
+ -- Dylan Aïssi <daissi@debian.org>  Mon, 12 Sep 2022 09:30:40 +0200
 
 wireplumber (0.4.11-3) unstable; urgency=medium
 
