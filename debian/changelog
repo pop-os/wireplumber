@@ -1,9 +1,14 @@
 wireplumber (0.4.11-5) UNRELEASED; urgency=medium
 
+  [ Debian Janitor ]
   * Remove constraints unnecessary since buster (oldstable):
     + Build-Depends: Drop versioned constraint on doxygen and pkg-config.
 
- -- Debian Janitor <janitor@jelmer.uk>  Tue, 13 Sep 2022 04:47:08 -0000
+  [ Dylan Aïssi ]
+  * Clarify relation between wireplumber and libspa-0.2-bluetooth
+     in wireplumber.README.Debian (Closes: #997862)
+
+ -- Dylan Aïssi <daissi@debian.org>  Tue, 13 Sep 2022 14:18:56 +0200
 
 wireplumber (0.4.11-4) unstable; urgency=medium
 
