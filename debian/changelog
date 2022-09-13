@@ -1,3 +1,10 @@
+wireplumber (0.4.11-5) UNRELEASED; urgency=medium
+
+  * Remove constraints unnecessary since buster (oldstable):
+    + Build-Depends: Drop versioned constraint on doxygen and pkg-config.
+
+ -- Debian Janitor <janitor@jelmer.uk>  Tue, 13 Sep 2022 04:47:08 -0000
+
 wireplumber (0.4.11-4) unstable; urgency=medium
 
   * Build a new package wireplumber-doc (Closes: #1019285)
