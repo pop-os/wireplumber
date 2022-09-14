@@ -1,4 +1,4 @@
-wireplumber (0.4.11-5) UNRELEASED; urgency=medium
+wireplumber (0.4.11-5) unstable; urgency=medium
 
   [ Debian Janitor ]
   * Remove constraints unnecessary since buster (oldstable):
@@ -8,7 +8,7 @@ wireplumber (0.4.11-5) UNRELEASED; urgency=medium
   * Clarify relation between wireplumber and libspa-0.2-bluetooth
      in wireplumber.README.Debian (Closes: #997862)
 
- -- Dylan Aïssi <daissi@debian.org>  Tue, 13 Sep 2022 14:18:56 +0200
+ -- Dylan Aïssi <daissi@debian.org>  Wed, 14 Sep 2022 16:20:52 +0200
 
 wireplumber (0.4.11-4) unstable; urgency=medium
 
