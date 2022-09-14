@@ -1,3 +1,7 @@
+Remove-service-alias.patch
+Remove-privacy-breach-documentation.patch
 # Recommended patch for WirePlumber 0.4.11
 fix_variable_name.patch
 eb406bdb2cbbcd49c55c71285f8f2eddb624d24b.patch
+37c839b9308cd3d6580bf01077db8cb29ec2aa2f.patch
+370b692933634675213110048fcda6dff52eb52b.patch

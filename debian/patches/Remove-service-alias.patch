@@ -1,0 +1,23 @@
+Description: Remove service alias that are only used to prevent
+ wireplumber and pipewire-media-session from being enabled at the same time.
+ This is already handled at the package level with a conflict between both,
+ thus we can safetly remove alias and avoid the issue with systemd.
+Bug: https://github.com/systemd/systemd/issues/23694
+Bug-Debian: https://bugs.debian.org/997818
+Author: Dylan Aïssi <daissi@debian.org>
+Forwarded: not-needed
+
+--- a/src/systemd/system/wireplumber.service.in
++++ b/src/systemd/system/wireplumber.service.in
+@@ -21,4 +21,3 @@
+ 
+ [Install]
+ WantedBy=pipewire.service
+-Alias=pipewire-session-manager.service
+--- a/src/systemd/user/wireplumber.service.in
++++ b/src/systemd/user/wireplumber.service.in
+@@ -19,4 +19,3 @@
+ 
+ [Install]
+ WantedBy=pipewire.service
+-Alias=pipewire-session-manager.service

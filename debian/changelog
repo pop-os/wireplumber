@@ -1,3 +1,23 @@
+wireplumber (0.4.11-4) unstable; urgency=medium
+
+  * Build a new package wireplumber-doc (Closes: #1019285)
+  * Add patch removing service alias. This alias is only used to prevent
+    wireplumber and pipewire-media-session from being enabled at the same time.
+    This is already handled at the package level with a conflict between both,
+    thus we can safetly remove alias and avoid the issue with systemd.
+    (Closes: #997818)
+
+ -- Dylan Aïssi <daissi@debian.org>  Mon, 12 Sep 2022 09:30:40 +0200
+
+wireplumber (0.4.11-3) unstable; urgency=medium
+
+  * Cherry-pick upstream recommended patches:
+      - 37c839b9: policy-node: fix potential rescan loop
+      - 370b6929: m-si-link: don't wait for establish before activation + cleanup links
+     (Closes: #1017397)
+
+ -- Dylan Aïssi <daissi@debian.org>  Mon, 05 Sep 2022 11:16:08 +0200
+
 wireplumber (0.4.11-2~bpo11+1) bullseye-backports; urgency=medium
 
   * Rebuild for bullseye-backports.
