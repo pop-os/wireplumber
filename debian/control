@@ -5,7 +5,7 @@ Maintainer: Utopia Maintenance Team <pkg-utopia-maintainers@alioth-lists.debian.
 Uploaders: Sjoerd Simons <sjoerd@debian.org>,
            Dylan Aïssi <daissi@debian.org>
 Build-Depends: debhelper-compat (= 13),
-               doxygen (>= 1.8.0),
+               doxygen,
                gobject-introspection,
                libgirepository1.0-dev,
                libglib2.0-dev (>= 2.62),
@@ -14,7 +14,7 @@ Build-Depends: debhelper-compat (= 13),
                libspa-0.2-dev,
                libsystemd-dev,
                meson (>= 0.59.0),
-               pkg-config (>= 0.22),
+               pkg-config,
                python3-lxml,
                systemd,
 # Only used for automated tests
