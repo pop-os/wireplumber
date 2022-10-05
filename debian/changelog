@@ -2,6 +2,11 @@ wireplumber (0.4.12-1) UNRELEASED; urgency=medium
 
   [ Dylan Aïssi ]
   * New upstream version
+  * Drop patches included in upstream release:
+      - fix_variable_name.patch
+      - eb406bdb: dbus: fix crash when trying to reconnect
+      - 37c839b9: policy-node: fix potential rescan loop
+      - 370b6929: m-si-link: don't wait for establish before activation
 
   [ Debian Janitor ]
   * Set upstream metadata fields: Bug-Database, Bug-Submit, Repository,
