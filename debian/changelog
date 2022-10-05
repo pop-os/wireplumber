@@ -1,4 +1,4 @@
-wireplumber (0.4.12-1) UNRELEASED; urgency=medium
+wireplumber (0.4.12-1) unstable; urgency=medium
 
   [ Dylan Aïssi ]
   * New upstream version
@@ -13,7 +13,7 @@ wireplumber (0.4.12-1) UNRELEASED; urgency=medium
   * Set upstream metadata fields: Bug-Database, Bug-Submit, Repository,
     Repository-Browse.
 
- -- Dylan Aïssi <daissi@debian.org>  Wed, 05 Oct 2022 08:39:14 +0200
+ -- Dylan Aïssi <daissi@debian.org>  Wed, 05 Oct 2022 09:16:57 +0200
 
 wireplumber (0.4.11-5) unstable; urgency=medium
 
