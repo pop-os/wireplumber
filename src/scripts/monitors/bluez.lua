@@ -62,7 +62,7 @@ function createNode(parent, id, type, factory, properties)
       ((factory:find("sink") and "bluez_output") or
        (factory:find("source") and "bluez_input" or factory)) .. "." ..
       (properties["api.bluez5.address"] or dev_props["device.name"]) .. "." ..
-      (properties["api.bluez5.profile"] or "unknown")
+      tostring(id)
   -- sanitize name
   properties["node.name"] = name:gsub("([^%w_%-%.])", "_")
 
@@ -75,7 +75,8 @@ function createNode(parent, id, type, factory, properties)
 
   -- autoconnect if it's a stream
   if properties["api.bluez5.profile"] == "headset-audio-gateway" or
-     factory:find("a2dp.source") then
+     properties["api.bluez5.profile"] == "bap-sink" or
+     factory:find("a2dp.source") or factory:find("media.source") then
     properties["node.autoconnect"] = true
   end
 

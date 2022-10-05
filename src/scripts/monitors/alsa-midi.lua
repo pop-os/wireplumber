@@ -21,8 +21,11 @@ fm_plugin = nil
 function CreateMidiNode ()
   -- Midi properties
   local props = {}
+  if type(config.properties["alsa.midi.node-properties"]) == "table" then
+     props = config.properties["alsa.midi.node-properties"]
+  end
   props["factory.name"] = "api.alsa.seq.bridge"
-  props["node.name"] = "Midi-Bridge"
+  props["node.name"] = props["node.name"] or "Midi-Bridge"
 
   -- create the midi node
   local node = Node("spa-node-factory", props)

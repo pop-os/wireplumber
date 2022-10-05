@@ -49,7 +49,7 @@ function nonempty(str)
   return str ~= "" and str or nil
 end
 
-function createNode(parent, id, type, factory, properties)
+function createNode(parent, id, obj_type, factory, properties)
   local dev_props = parent.properties
 
   -- set the device id and spa factory name; REQUIRED, do not change
@@ -199,7 +199,7 @@ function createDevice(parent, id, factory, properties)
   end
 end
 
-function prepareDevice(parent, id, type, factory, properties)
+function prepareDevice(parent, id, obj_type, factory, properties)
   -- ensure the device has an appropriate name
   local name = "alsa_card." ..
     (properties["device.name"] or
@@ -385,7 +385,7 @@ end
 -- if the reserve-device plugin is enabled, at the point of script execution
 -- it is expected to be connected. if it is not, assume the d-bus connection
 -- has failed and continue without it
-if rd_plugin and rd_plugin["state"] ~= "connected" then
+if rd_plugin and rd_plugin:call("get-dbus")["state"] ~= "connected" then
   Log.message("reserve-device plugin is not connected to D-Bus, "
               .. "disabling device reservation")
   rd_plugin = nil
