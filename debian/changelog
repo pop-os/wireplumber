@@ -7,6 +7,7 @@ wireplumber (0.4.12-1) UNRELEASED; urgency=medium
       - eb406bdb: dbus: fix crash when trying to reconnect
       - 37c839b9: policy-node: fix potential rescan loop
       - 370b6929: m-si-link: don't wait for establish before activation
+  * Update symbols file
 
   [ Debian Janitor ]
   * Set upstream metadata fields: Bug-Database, Bug-Submit, Repository,
