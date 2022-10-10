@@ -1,3 +1,20 @@
+wireplumber (0.4.12-1) unstable; urgency=medium
+
+  [ Dylan Aïssi ]
+  * New upstream version
+  * Drop patches included in upstream release:
+      - fix_variable_name.patch
+      - eb406bdb: dbus: fix crash when trying to reconnect
+      - 37c839b9: policy-node: fix potential rescan loop
+      - 370b6929: m-si-link: don't wait for establish before activation
+  * Update symbols file
+
+  [ Debian Janitor ]
+  * Set upstream metadata fields: Bug-Database, Bug-Submit, Repository,
+    Repository-Browse.
+
+ -- Dylan Aïssi <daissi@debian.org>  Wed, 05 Oct 2022 09:16:57 +0200
+
 wireplumber (0.4.11-5~bpo11+1) bullseye-backports; urgency=medium
 
   * Rebuild for bullseye-backports.

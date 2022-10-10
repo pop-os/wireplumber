@@ -1,29 +1,22 @@
-# Hungarian translation for PipeWire.
-# Copyright (C) 2012, 2016. Free Software Foundation, Inc.
-# This file is distributed under the same license as the PipeWire package.
-#
-# KAMI <kami911 at gmail dot com>, 2012.
-# Gabor Kelemen <kelemeng at ubuntu dot com>, 2016.
-# Balázs Úr <ur.balazs at fsf dot hu>, 2016, 2022.
+# Georgian translation for pipewire.
+# Copyright © 2008-2022 Free Software Foundation, Inc.
+# This file is distributed under the same license as the pipewire package.
+# Temuri Doghonadze <temuri.doghonadze@gmail.com>, 2022.
 msgid ""
 msgstr ""
-"Project-Id-Version: PipeWire master\n"
-"Report-Msgid-Bugs-To: https://gitlab.freedesktop.org/pipewire/wireplumber/-/is"
-"sues\n"
-"POT-Creation-Date: 2022-07-08 03:32+0000\n"
-"PO-Revision-Date: 2022-09-21 07:31+0200\n"
-"Last-Translator: Balázs Úr <ur.balazs at fsf dot hu>\n"
-"Language-Team: Hungarian <https://translate.fedoraproject.org/projects/pipewir"
-"e/pipewire/hu/>\n"
-"Language: hu\n"
+"Project-Id-Version: pipewire\n"
+"Report-Msgid-Bugs-To: https://gitlab.freedesktop.org/pipewire/wireplumber/-/"
+"issues\n"
+"POT-Creation-Date: 2022-06-15 15:30+0000\n"
+"PO-Revision-Date: 2022-07-25 13:53+0200\n"
+"Last-Translator: Temuri Doghonadze <temuri.doghonadze@gmail.com>\n"
+"Language-Team: Georgian <(nothing)>\n"
+"Language: ka\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Lokalize 19.12.3\n"
-"X-Poedit-Language: Hungarian\n"
-"X-Poedit-Country: HUNGARY\n"
-"X-Poedit-SourceCharset: utf-8\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 3.1.1\n"
 
 #. WirePlumber
 #.
@@ -49,19 +42,18 @@ msgstr ""
 #. ensure the node has a description
 #. also sanitize description, replace ':' with ' '
 #. add api.alsa.card.* properties for rule matching purposes
-#. apply VM overrides
 #. apply properties from config.rules
 #. create the node
 #. ensure the device has an appropriate name
 #. deduplicate devices with the same name
 #. ensure the device has a description
-#: src/scripts/monitors/alsa.lua:228
+#: src/scripts/monitors/alsa.lua:220
 msgid "Built-in Audio"
-msgstr "Belső hangforrás"
+msgstr "ჩაშენებული აუდიო"
 
-#: src/scripts/monitors/alsa.lua:230
+#: src/scripts/monitors/alsa.lua:222
 msgid "Modem"
-msgstr "Modem"
+msgstr "მოდემი"
 
 #. ensure the device has a nick
 #. set the icon name
@@ -105,8 +97,8 @@ msgstr "Modem"
 #. set the node description
 #: src/scripts/monitors/libcamera.lua:88
 msgid "Built-in Front Camera"
-msgstr "Beépített elülső kamera"
+msgstr "ჩაშენებული წინა კამერა"
 
 #: src/scripts/monitors/libcamera.lua:90
 msgid "Built-in Back Camera"
-msgstr "Beépített hátsó kamera"
+msgstr "ჩაშენებული უკანა კამერა"
