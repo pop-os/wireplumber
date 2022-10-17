@@ -1,3 +1,9 @@
+wireplumber (0.4.12-1pop1) jammy; urgency=medium
+
+  * Backport for Pop 
+
+ -- Michael Aaron Murphy <mmstick@pm.me>  Mon, 17 Oct 2022 18:08:50 +0200
+
 wireplumber (0.4.12-1~bpo11+1) bullseye-backports; urgency=medium
 
   * Rebuild for bullseye-backports.
