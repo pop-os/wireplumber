@@ -14,9 +14,16 @@ endif
 
 override_dh_auto_configure:
 	dh_auto_configure -- \
-		-Dsystem-lua=true \
 		-Dintrospection=enabled \
 		-Ddoc=$(DOC) \
+		-Dmodules=true \
+		-Ddaemon=true \
+		-Dtools=true \
+		-Dsystem-lua=true \
+		-Dsystemd=enabled \
+		-Dsystemd-user-service=true \
+		-Dtests=true \
+		-Ddbus-tests=true \
 		$(NULL)
 
 override_dh_installchangelogs:

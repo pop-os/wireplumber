@@ -1,6 +1,7 @@
 wireplumber (0.4.13-1) UNRELEASED; urgency=medium
 
   * New upstream version
+  * Set build options in debian/rules, to be sure they are correct
 
  -- Dylan Aïssi <daissi@debian.org>  Wed, 14 Dec 2022 09:28:56 +0100
 
