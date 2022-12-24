@@ -1,6 +1,7 @@
 wireplumber (0.4.13-2) UNRELEASED; urgency=medium
 
   * Install NEWS.rst only in the main wireplumber package (Closes: #1026099)
+  * Standards-Version: 4.6.2 (no changes needed)
 
  -- Dylan Aïssi <daissi@debian.org>  Sat, 24 Dec 2022 13:11:58 +0100
 

@@ -24,7 +24,7 @@ Build-Depends: debhelper-compat (= 13),
                python3-breathe <!nodoc>,
                python3-sphinx <!nodoc>,
                python3-sphinx-rtd-theme <!nodoc>,
-Standards-Version: 4.6.1
+Standards-Version: 4.6.2
 Homepage: https://gitlab.freedesktop.org/pipewire/wireplumber
 Vcs-Browser: https://salsa.debian.org/utopia-team/wireplumber
 Vcs-Git: https://salsa.debian.org/utopia-team/wireplumber.git
