@@ -1,3 +1,9 @@
+wireplumber (0.4.13-1pop0) jammy; urgency=medium
+
+  * New upstream release
+
+ -- Michael Murphy <michael@mmurphy.dev>  Fri, 30 Dec 2022 01:22:41 +0100
+
 wireplumber (0.4.13-1) unstable; urgency=medium
 
   * New upstream version
