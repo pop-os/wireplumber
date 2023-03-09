@@ -82,7 +82,9 @@ function createNode(parent, id, obj_type, factory, properties)
 
     priority = priority - (tonumber(dev) * 16) - tonumber(subdev)
 
-    if profile:find("^analog%-") then
+    if profile:find("^pro%-") then
+      priority = priority + 500
+    elseif profile:find("^analog%-") then
       priority = priority + 9
     elseif profile:find("^iec958%-") then
       priority = priority + 8
@@ -228,8 +230,11 @@ function prepareDevice(parent, id, obj_type, factory, properties)
     local d = nil
     local f = properties["device.form-factor"]
     local c = properties["device.class"]
+    local n = properties["api.alsa.card.name"]
 
-    if f == "internal" then
+    if n == "Loopback" then
+      d = I18n.gettext("Loopback")
+    elseif f == "internal" then
       d = I18n.gettext("Built-in Audio")
     elseif c == "modem" then
       d = I18n.gettext("Modem")
