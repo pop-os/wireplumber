@@ -65,6 +65,7 @@ Package: wireplumber
 Architecture: linux-any
 Depends: ${shlibs:Depends},
          ${misc:Depends},
+         dbus-user-session,
          libwireplumber-0.4-0 (= ${binary:Version}),
          pipewire (>= 0.3.52),
 Recommends: pipewire-pulse
