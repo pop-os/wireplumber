@@ -70,6 +70,7 @@ Depends: ${shlibs:Depends},
          pipewire (>= 0.3.52),
 Recommends: pipewire-pulse
 Suggests: libspa-0.2-bluetooth,
+          pipewire-libcamera,
           wireplumber-doc
 Conflicts: pipewire-media-session
 Replaces: pipewire-media-session
