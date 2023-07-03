@@ -1,3 +1,10 @@
+wireplumber (0.4.14-3) unstable; urgency=medium
+
+  * Wireplumber depends on dbus-user-session (Closes: #1037513)
+  * Wireplumber suggests libspa-0.2-libcamera (Closes: #1037941)
+
+ -- Dylan Aïssi <daissi@debian.org>  Mon, 03 Jul 2023 10:18:13 +0200
+
 wireplumber (0.4.14-2) unstable; urgency=medium
 
   * Upload to unstable
