@@ -26,12 +26,14 @@ alsa_monitor.properties = {
     ["node.name"] = "Midi-Bridge",
     -- Removes longname/number from MIDI port names
     --["api.alsa.disable-longname"] = true,
+    ["priority.session"] = 100,
+    ["priority.driver"] = 1,
   },
 
   -- These properties override node defaults when running in a virtual machine.
   -- The rules below still override those.
   ["vm.node.defaults"] = {
-    ["api.alsa.period-size"] = 256,
+    ["api.alsa.period-size"] = 1024,
     ["api.alsa.headroom"] = 8192,
   },
 }
