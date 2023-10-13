@@ -2,6 +2,7 @@ wireplumber (0.4.15-0) UNRELEASED; urgency=medium
 
   [ Dylan Aïssi ]
   * New upstream version
+  * Install zsh completions file
 
   [ Lena Voytek ]
   * d/control: Upgrade lua build dependency to 5.4
