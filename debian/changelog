@@ -1,4 +1,4 @@
-wireplumber (0.4.15-0) UNRELEASED; urgency=medium
+wireplumber (0.4.15-1) unstable; urgency=medium
 
   [ Dylan Aïssi ]
   * New upstream version
@@ -8,7 +8,7 @@ wireplumber (0.4.15-0) UNRELEASED; urgency=medium
   [ Lena Voytek ]
   * d/control: Upgrade lua build dependency to 5.4
 
- -- Dylan Aïssi <daissi@debian.org>  Fri, 13 Oct 2023 11:40:13 +0200
+ -- Dylan Aïssi <daissi@debian.org>  Fri, 13 Oct 2023 12:06:12 +0200
 
 wireplumber (0.4.14-4) unstable; urgency=medium
 
