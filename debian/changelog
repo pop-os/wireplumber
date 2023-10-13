@@ -1,3 +1,13 @@
+wireplumber (0.4.15-0) UNRELEASED; urgency=medium
+
+  [ Dylan Aïssi ]
+  * New upstream version
+
+  [ Lena Voytek ]
+  * d/control: Upgrade lua build dependency to 5.4
+
+ -- Dylan Aïssi <daissi@debian.org>  Fri, 13 Oct 2023 11:40:13 +0200
+
 wireplumber (0.4.14-4) unstable; urgency=medium
 
   * Wireplumber depends on 'default-dbus-session-bus | dbus-session-bus'
