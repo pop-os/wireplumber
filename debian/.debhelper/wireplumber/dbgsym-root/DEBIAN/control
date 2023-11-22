@@ -1,0 +1,13 @@
+Package: wireplumber-dbgsym
+Package-Type: ddeb
+Source: wireplumber
+Version: 0.4.16
+Auto-Built-Package: debug-symbols
+Architecture: amd64
+Maintainer: Utopia Maintenance Team <pkg-utopia-maintainers@alioth-lists.debian.net>
+Installed-Size: 118
+Depends: wireplumber (= 0.4.16)
+Section: debug
+Priority: optional
+Description: debug symbols for wireplumber
+Build-Ids: 56e42e72432f9a73a33e10db7bfbde24ef43603d 7c089db513a2b9fb968acbacc0e3dc8fbc406819 a01a92de6c627f90e1f9aebf555a166ff499c8ad

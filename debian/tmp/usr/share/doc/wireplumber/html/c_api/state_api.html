@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>State Storage &mdash; WirePlumber 0.4.16 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Lua API Documentation" href="../lua_api.html" />
+    <link rel="prev" title="Session Items Factory" href="si_factory_api.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> WirePlumber
+          </a>
+              <div class="version">
+                0.4.16
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">The WirePlumber Daemon</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installing-wireplumber.html">Installing WirePlumber</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../running-wireplumber-daemon.html">Running the WirePlumber daemon</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../daemon-logging.html">Debug Logging</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">The WirePlumber Library</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../c_api.html">C API Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="wp_api.html">Library Initialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core_api.html">Core</a></li>
+<li class="toctree-l2"><a class="reference internal" href="object_api.html">WpObject</a></li>
+<li class="toctree-l2"><a class="reference internal" href="obj_manager_api.html">Object Manager</a></li>
+<li class="toctree-l2"><a class="reference internal" href="obj_interest_api.html">Object Interest</a></li>
+<li class="toctree-l2"><a class="reference internal" href="iterator_api.html">Iterator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="transitions_api.html">Transitions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wperror_api.html">Error Codes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="log_api.html">Debug Logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="proxy_api.html">PipeWire Proxy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipewire_object_api.html">PipeWire Object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="global_proxy_api.html">PipeWire Global Object Proxy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="node_api.html">PipeWire Node</a></li>
+<li class="toctree-l2"><a class="reference internal" href="port_api.html">PipeWire Port</a></li>
+<li class="toctree-l2"><a class="reference internal" href="link_api.html">PipeWire Link</a></li>
+<li class="toctree-l2"><a class="reference internal" href="device_api.html">PipeWire Device</a></li>
+<li class="toctree-l2"><a class="reference internal" href="client_api.html">PipeWire Client</a></li>
+<li class="toctree-l2"><a class="reference internal" href="metadata_api.html">PipeWire Metadata</a></li>
+<li class="toctree-l2"><a class="reference internal" href="endpoint_api.html">PipeWire Endpoint</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spa_device_api.html">Spa Device</a></li>
+<li class="toctree-l2"><a class="reference internal" href="impl_node_api.html">Local Nodes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="impl_module_api.html">Local Modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="properties_api.html">Properties Dictionary</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spa_type_api.html">Spa Type Information</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spa_json_api.html">Spa Json</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spa_pod_api.html">Spa Pod (Plain Old Data)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plugin_api.html">Plugins</a></li>
+<li class="toctree-l2"><a class="reference internal" href="component_loader_api.html">Component Loader</a></li>
+<li class="toctree-l2"><a class="reference internal" href="session_item_api.html">Session Items</a></li>
+<li class="toctree-l2"><a class="reference internal" href="si_interfaces_api.html">Session Items Interfaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="si_factory_api.html">Session Items Factory</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">State Storage</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../lua_api.html">Lua API Documentation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Resources</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing to WirePlumber</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../testing.html">Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../community.html">Community Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Releases</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">WirePlumber</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../c_api.html">C API Documentation</a> &raquo;</li>
+      <li>State Storage</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/c_api/state_api.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="si_factory_api.html" class="btn btn-neutral float-left" title="Session Items Factory" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../lua_api.html" class="btn btn-neutral float-right" title="Lua API Documentation" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+  </div>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="state-storage">
+<span id="state-api"></span><h1>State Storage<a class="headerlink" href="#state-storage" title="Permalink to this headline"></a></h1>
+<div align="center" class="align-center"><div class="graphviz"><object data="../_images/graphviz-74961443eec27ee984b9eb16232173dfa0af24bb.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph inheritance {
+    rankdir=LR;
+    GObject -&gt; WpState;
+ }</p></object></div>
+</div>
+<dl class="c struct">
+<dt class="sig sig-object c" id="c.WpState">
+<span class="target" id="structWpState"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">WpState</span></span></span><a class="headerlink" href="#c.WpState" title="Permalink to this definition"></a><br /></dt>
+<dd><p>The WpState class saves and loads properties from a file</p>
+<p><strong>GObject</strong> <strong>Properties</strong> <dl>
+<dt class="sig sig-object cpp">
+<span class="pre">name</span></dt>
+<dd><p></p>
+<p>The file name where the state will be stored.</p>
+<p><table class="colwidths-auto docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">gchar</span> <span class="pre">*</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">G_PARAM_READWRITE</span> <span class="pre">|</span> <span class="pre">G_PARAM_CONSTRUCT_ONLY</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</p>
+</dd></dl>
+
+</p>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_state_new">
+<span class="target" id="group__wpstate_1ga4d414e86721bc342fd038a3c10d494cb"></span><a class="reference internal" href="#c.WpState" title="WpState"><span class="n"><span class="pre">WpState</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_state_new</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">gchar</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">name</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_state_new" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Constructs a new state object. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> – the state name </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full): the new WpState </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_state_get_name">
+<span class="target" id="group__wpstate_1ga39d52c2b8e1453d2cee235759ff64675"></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">gchar</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_state_get_name</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpState" title="WpState"><span class="n"><span class="pre">WpState</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_state_get_name" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Gets the name of a state object. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the state </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the name of this state </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_state_get_location">
+<span class="target" id="group__wpstate_1gaee81a20b284365fc992b308e19d978e5"></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">gchar</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_state_get_location</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpState" title="WpState"><span class="n"><span class="pre">WpState</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_state_get_location" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Gets the location of a state object. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the state </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the location of this state </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_state_clear">
+<span class="target" id="group__wpstate_1gade589bd70738a4b400923a33242fba19"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_state_clear</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpState" title="WpState"><span class="n"><span class="pre">WpState</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_state_clear" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Clears the state removing its file. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the state </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_state_save">
+<span class="target" id="group__wpstate_1ga05d4b1bad2912946ad3b1d31c5f942f0"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_state_save</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpState" title="WpState"><span class="n"><span class="pre">WpState</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <a class="reference internal" href="properties_api.html#c.WpProperties" title="WpProperties"><span class="n"><span class="pre">WpProperties</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">props</span></span>, <span class="n"><span class="pre">GError</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">error</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_state_save" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Saves new properties in the state, overwriting all previous data. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the state </p></li>
+<li><p><strong>props</strong> – (transfer none): the properties to save </p></li>
+<li><p><strong>error</strong> – (out)(optional): return location for a GError, or NULL </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if the properties could be saved, FALSE otherwise </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_state_load">
+<span class="target" id="group__wpstate_1ga4f7af518e8ff5cac79f75239ba080304"></span><a class="reference internal" href="properties_api.html#c.WpProperties" title="WpProperties"><span class="n"><span class="pre">WpProperties</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_state_load</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpState" title="WpState"><span class="n"><span class="pre">WpState</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_state_load" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Loads the state data from the file system. </p>
+<p>This function will never fail. If it cannot load the state, for any reason, it will simply return an empty WpProperties, behaving as if there was no previous state stored.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the state </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full): a new WpProperties containing the state data </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.WP_TYPE_STATE">
+<span class="target" id="group__wpstate_1ga0660dec94746d0bb1011d16e8be9098e"></span><span class="sig-name descname"><span class="n"><span class="pre">WP_TYPE_STATE</span></span></span> <span class="pre">(wp_state_get_type</span> <span class="pre">())</span><a class="headerlink" href="#c.WP_TYPE_STATE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>The WpState GType. </p>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="si_factory_api.html" class="btn btn-neutral float-left" title="Session Items Factory" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../lua_api.html" class="btn btn-neutral float-right" title="Lua API Documentation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Collabora.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

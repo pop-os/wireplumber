@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Object Interest &mdash; WirePlumber 0.4.16 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Iterator" href="iterator_api.html" />
+    <link rel="prev" title="Object Manager" href="obj_manager_api.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> WirePlumber
+          </a>
+              <div class="version">
+                0.4.16
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">The WirePlumber Daemon</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installing-wireplumber.html">Installing WirePlumber</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../running-wireplumber-daemon.html">Running the WirePlumber daemon</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../daemon-logging.html">Debug Logging</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">The WirePlumber Library</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../c_api.html">C API Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="wp_api.html">Library Initialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core_api.html">Core</a></li>
+<li class="toctree-l2"><a class="reference internal" href="object_api.html">WpObject</a></li>
+<li class="toctree-l2"><a class="reference internal" href="obj_manager_api.html">Object Manager</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Object Interest</a></li>
+<li class="toctree-l2"><a class="reference internal" href="iterator_api.html">Iterator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="transitions_api.html">Transitions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wperror_api.html">Error Codes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="log_api.html">Debug Logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="proxy_api.html">PipeWire Proxy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipewire_object_api.html">PipeWire Object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="global_proxy_api.html">PipeWire Global Object Proxy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="node_api.html">PipeWire Node</a></li>
+<li class="toctree-l2"><a class="reference internal" href="port_api.html">PipeWire Port</a></li>
+<li class="toctree-l2"><a class="reference internal" href="link_api.html">PipeWire Link</a></li>
+<li class="toctree-l2"><a class="reference internal" href="device_api.html">PipeWire Device</a></li>
+<li class="toctree-l2"><a class="reference internal" href="client_api.html">PipeWire Client</a></li>
+<li class="toctree-l2"><a class="reference internal" href="metadata_api.html">PipeWire Metadata</a></li>
+<li class="toctree-l2"><a class="reference internal" href="endpoint_api.html">PipeWire Endpoint</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spa_device_api.html">Spa Device</a></li>
+<li class="toctree-l2"><a class="reference internal" href="impl_node_api.html">Local Nodes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="impl_module_api.html">Local Modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="properties_api.html">Properties Dictionary</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spa_type_api.html">Spa Type Information</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spa_json_api.html">Spa Json</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spa_pod_api.html">Spa Pod (Plain Old Data)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plugin_api.html">Plugins</a></li>
+<li class="toctree-l2"><a class="reference internal" href="component_loader_api.html">Component Loader</a></li>
+<li class="toctree-l2"><a class="reference internal" href="session_item_api.html">Session Items</a></li>
+<li class="toctree-l2"><a class="reference internal" href="si_interfaces_api.html">Session Items Interfaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="si_factory_api.html">Session Items Factory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="state_api.html">State Storage</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../lua_api.html">Lua API Documentation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Resources</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing to WirePlumber</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../testing.html">Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../community.html">Community Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Releases</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">WirePlumber</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../c_api.html">C API Documentation</a> &raquo;</li>
+      <li>Object Interest</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/c_api/obj_interest_api.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="obj_manager_api.html" class="btn btn-neutral float-left" title="Object Manager" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="iterator_api.html" class="btn btn-neutral float-right" title="Iterator" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+  </div>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="object-interest">
+<span id="obj-interest-api"></span><h1>Object Interest<a class="headerlink" href="#object-interest" title="Permalink to this headline"></a></h1>
+<div align="center" class="align-center"><div class="graphviz"><object data="../_images/graphviz-5435684509ebf670c3b0fe64c8b8634656ecbc30.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph inheritance {
+    rankdir=LR;
+    GBoxed -&gt; WpObjectInterest;
+ }</p></object></div>
+</div>
+<dl class="c struct">
+<dt class="sig sig-object c" id="c.WpObjectInterest">
+<span class="target" id="structWpObjectInterest"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">WpObjectInterest</span></span></span><a class="headerlink" href="#c.WpObjectInterest" title="Permalink to this definition"></a><br /></dt>
+<dd><p>An object interest is a helper that is used in WpObjectManager to declare interest in certain kinds of objects.</p>
+<p>An interest is defined by a GType and a set of constraints on the object’s properties. An object “matches” the interest if it is of the specified GType (either the same type or a descendant of it) and all the constraints are satisfied. </p>
+</dd></dl>
+
+<dl class="c enum">
+<dt class="sig sig-object c" id="c.WpConstraintType">
+<span class="target" id="group__wpobjectinterest_1gaa5578b19eafa5f0586814d133b4ca342"></span><span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">WpConstraintType</span></span></span><a class="headerlink" href="#c.WpConstraintType" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Constraint types for <a class="reference internal" href="#group__wpobjectinterest_1ga89bf95c43248c935a2ef18b9649a7ef1"><span class="std std-ref">wp_object_interest_add_constraint()</span></a> </p>
+<p><em>Values:</em></p>
+<dl class="c enumerator">
+<dt class="sig sig-object c" id="c.WpConstraintType.WP_CONSTRAINT_TYPE_NONE">
+<span class="target" id="group__wpobjectinterest_1ggaa5578b19eafa5f0586814d133b4ca342a07c35ec4f3393237f72b4e3991a5dd75"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">WP_CONSTRAINT_TYPE_NONE</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">0</span></span><a class="headerlink" href="#c.WpConstraintType.WP_CONSTRAINT_TYPE_NONE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>invalid constraint type </p>
+</dd></dl>
+
+<dl class="c enumerator">
+<dt class="sig sig-object c" id="c.WpConstraintType.WP_CONSTRAINT_TYPE_PW_GLOBAL_PROPERTY">
+<span class="target" id="group__wpobjectinterest_1ggaa5578b19eafa5f0586814d133b4ca342a4dfb6c316593b3a4267e7fdb4ae3a395"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">WP_CONSTRAINT_TYPE_PW_GLOBAL_PROPERTY</span></span></span><a class="headerlink" href="#c.WpConstraintType.WP_CONSTRAINT_TYPE_PW_GLOBAL_PROPERTY" title="Permalink to this definition"></a><br /></dt>
+<dd><p>constraint applies to a PipeWire global property of the object (the ones returned by <a class="reference internal" href="global_proxy_api.html#group__wpglobalproxy_1gad1695e95642c1f2630df18d71594f631"><span class="std std-ref">wp_global_proxy_get_global_properties()</span></a>) </p>
+</dd></dl>
+
+<dl class="c enumerator">
+<dt class="sig sig-object c" id="c.WpConstraintType.WP_CONSTRAINT_TYPE_PW_PROPERTY">
+<span class="target" id="group__wpobjectinterest_1ggaa5578b19eafa5f0586814d133b4ca342a1970c5c77bbd2acff71bf1d4bf8ffb5d"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">WP_CONSTRAINT_TYPE_PW_PROPERTY</span></span></span><a class="headerlink" href="#c.WpConstraintType.WP_CONSTRAINT_TYPE_PW_PROPERTY" title="Permalink to this definition"></a><br /></dt>
+<dd><p>constraint applies to a PipeWire property of the object (the ones returned by <a class="reference internal" href="pipewire_object_api.html#group__wppipewireobject_1ga4d0be338968a214116c26e3d33b31151"><span class="std std-ref">wp_pipewire_object_get_properties()</span></a>) </p>
+</dd></dl>
+
+<dl class="c enumerator">
+<dt class="sig sig-object c" id="c.WpConstraintType.WP_CONSTRAINT_TYPE_G_PROPERTY">
+<span class="target" id="group__wpobjectinterest_1ggaa5578b19eafa5f0586814d133b4ca342ac20e15ca67e579b2fad9d49879b702e3"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">WP_CONSTRAINT_TYPE_G_PROPERTY</span></span></span><a class="headerlink" href="#c.WpConstraintType.WP_CONSTRAINT_TYPE_G_PROPERTY" title="Permalink to this definition"></a><br /></dt>
+<dd><p>constraint applies to a GObject property of the object </p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="c enum">
+<dt class="sig sig-object c" id="c.WpConstraintVerb">
+<span class="target" id="group__wpobjectinterest_1gabbcf534a0bb33dc8846590e429a9c40e"></span><span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">WpConstraintVerb</span></span></span><a class="headerlink" href="#c.WpConstraintVerb" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Verbs to use with <a class="reference internal" href="#group__wpobjectinterest_1ga89bf95c43248c935a2ef18b9649a7ef1"><span class="std std-ref">wp_object_interest_add_constraint()</span></a> </p>
+<p><em>Values:</em></p>
+<dl class="c enumerator">
+<dt class="sig sig-object c" id="c.WpConstraintVerb.WP_CONSTRAINT_VERB_EQUALS">
+<span class="target" id="group__wpobjectinterest_1ggabbcf534a0bb33dc8846590e429a9c40ea5fb4c6abb2c644f0fbfc7d0f4d6512f6"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">WP_CONSTRAINT_VERB_EQUALS</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="sc"><span class="pre">'='</span></span><a class="headerlink" href="#c.WpConstraintVerb.WP_CONSTRAINT_VERB_EQUALS" title="Permalink to this definition"></a><br /></dt>
+<dd><p>the subject’s value must equal the constraint’s value </p>
+</dd></dl>
+
+<dl class="c enumerator">
+<dt class="sig sig-object c" id="c.WpConstraintVerb.WP_CONSTRAINT_VERB_NOT_EQUALS">
+<span class="target" id="group__wpobjectinterest_1ggabbcf534a0bb33dc8846590e429a9c40eac209b8bbd3a5ef6d8f5b00c209e7f0f8"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">WP_CONSTRAINT_VERB_NOT_EQUALS</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="sc"><span class="pre">'!'</span></span><a class="headerlink" href="#c.WpConstraintVerb.WP_CONSTRAINT_VERB_NOT_EQUALS" title="Permalink to this definition"></a><br /></dt>
+<dd><p>the subject’s value must be different from the constraint’s value </p>
+</dd></dl>
+
+<dl class="c enumerator">
+<dt class="sig sig-object c" id="c.WpConstraintVerb.WP_CONSTRAINT_VERB_IN_LIST">
+<span class="target" id="group__wpobjectinterest_1ggabbcf534a0bb33dc8846590e429a9c40ea668a1884b7c0552f5f45a008d2e0abc9"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">WP_CONSTRAINT_VERB_IN_LIST</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="sc"><span class="pre">'c'</span></span><a class="headerlink" href="#c.WpConstraintVerb.WP_CONSTRAINT_VERB_IN_LIST" title="Permalink to this definition"></a><br /></dt>
+<dd><p>the subject’s value must equal at least one of the values in the list given as the constraint’s value </p>
+</dd></dl>
+
+<dl class="c enumerator">
+<dt class="sig sig-object c" id="c.WpConstraintVerb.WP_CONSTRAINT_VERB_IN_RANGE">
+<span class="target" id="group__wpobjectinterest_1ggabbcf534a0bb33dc8846590e429a9c40eac83d3b118d0c229f3ab0ee85654c257d"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">WP_CONSTRAINT_VERB_IN_RANGE</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="sc"><span class="pre">'~'</span></span><a class="headerlink" href="#c.WpConstraintVerb.WP_CONSTRAINT_VERB_IN_RANGE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>the subject’s value must be a number in the range defined by the constraint’s value </p>
+</dd></dl>
+
+<dl class="c enumerator">
+<dt class="sig sig-object c" id="c.WpConstraintVerb.WP_CONSTRAINT_VERB_MATCHES">
+<span class="target" id="group__wpobjectinterest_1ggabbcf534a0bb33dc8846590e429a9c40ea6ab59d35b48b554c5854ed7f1b306d7f"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">WP_CONSTRAINT_VERB_MATCHES</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="sc"><span class="pre">'#'</span></span><a class="headerlink" href="#c.WpConstraintVerb.WP_CONSTRAINT_VERB_MATCHES" title="Permalink to this definition"></a><br /></dt>
+<dd><p>the subject’s value must match the pattern specified in the constraint’s value </p>
+</dd></dl>
+
+<dl class="c enumerator">
+<dt class="sig sig-object c" id="c.WpConstraintVerb.WP_CONSTRAINT_VERB_IS_PRESENT">
+<span class="target" id="group__wpobjectinterest_1ggabbcf534a0bb33dc8846590e429a9c40eaf7e05b8f2b575b7772c5b5788964c45e"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">WP_CONSTRAINT_VERB_IS_PRESENT</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="sc"><span class="pre">'+'</span></span><a class="headerlink" href="#c.WpConstraintVerb.WP_CONSTRAINT_VERB_IS_PRESENT" title="Permalink to this definition"></a><br /></dt>
+<dd><p>the subject property must exist </p>
+</dd></dl>
+
+<dl class="c enumerator">
+<dt class="sig sig-object c" id="c.WpConstraintVerb.WP_CONSTRAINT_VERB_IS_ABSENT">
+<span class="target" id="group__wpobjectinterest_1ggabbcf534a0bb33dc8846590e429a9c40eac2bdb94647d67801f0b79b661c1f10fb"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">WP_CONSTRAINT_VERB_IS_ABSENT</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="sc"><span class="pre">'-'</span></span><a class="headerlink" href="#c.WpConstraintVerb.WP_CONSTRAINT_VERB_IS_ABSENT" title="Permalink to this definition"></a><br /></dt>
+<dd><p>the subject property must not exist </p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="c enum">
+<dt class="sig sig-object c" id="c.WpInterestMatch">
+<span class="target" id="group__wpobjectinterest_1ga0384e86deda8cae7d3aafdcd00d2d319"></span><span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">WpInterestMatch</span></span></span><a class="headerlink" href="#c.WpInterestMatch" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Flags that indicate which constraints have been matched in <a class="reference internal" href="#group__wpobjectinterest_1gacfc3500fca112b992c39a9b3bdebee56"><span class="std std-ref">wp_object_interest_matches_full()</span></a> </p>
+<p><em>Values:</em></p>
+<dl class="c enumerator">
+<dt class="sig sig-object c" id="c.WpInterestMatch.WP_INTEREST_MATCH_NONE">
+<span class="target" id="group__wpobjectinterest_1gga0384e86deda8cae7d3aafdcd00d2d319a6d18cabfe29e717e56615429b2b1d883"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">WP_INTEREST_MATCH_NONE</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">0</span></span><a class="headerlink" href="#c.WpInterestMatch.WP_INTEREST_MATCH_NONE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c enumerator">
+<dt class="sig sig-object c" id="c.WpInterestMatch.WP_INTEREST_MATCH_GTYPE">
+<span class="target" id="group__wpobjectinterest_1gga0384e86deda8cae7d3aafdcd00d2d319a29f074e7106ddf71b946521d6e0d5dc9"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">WP_INTEREST_MATCH_GTYPE</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="p"><span class="pre">(</span></span><span class="m"><span class="pre">1</span></span><span class="w"> </span><span class="o"><span class="pre">&lt;&lt;</span></span><span class="w"> </span><span class="m"><span class="pre">0</span></span><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#c.WpInterestMatch.WP_INTEREST_MATCH_GTYPE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c enumerator">
+<dt class="sig sig-object c" id="c.WpInterestMatch.WP_INTEREST_MATCH_PW_GLOBAL_PROPERTIES">
+<span class="target" id="group__wpobjectinterest_1gga0384e86deda8cae7d3aafdcd00d2d319a44ec191896df6d195cc56972056e4030"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">WP_INTEREST_MATCH_PW_GLOBAL_PROPERTIES</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="p"><span class="pre">(</span></span><span class="m"><span class="pre">1</span></span><span class="w"> </span><span class="o"><span class="pre">&lt;&lt;</span></span><span class="w"> </span><span class="m"><span class="pre">1</span></span><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#c.WpInterestMatch.WP_INTEREST_MATCH_PW_GLOBAL_PROPERTIES" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c enumerator">
+<dt class="sig sig-object c" id="c.WpInterestMatch.WP_INTEREST_MATCH_PW_PROPERTIES">
+<span class="target" id="group__wpobjectinterest_1gga0384e86deda8cae7d3aafdcd00d2d319a34f894a73219c47a6058201cab5514d9"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">WP_INTEREST_MATCH_PW_PROPERTIES</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="p"><span class="pre">(</span></span><span class="m"><span class="pre">1</span></span><span class="w"> </span><span class="o"><span class="pre">&lt;&lt;</span></span><span class="w"> </span><span class="m"><span class="pre">2</span></span><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#c.WpInterestMatch.WP_INTEREST_MATCH_PW_PROPERTIES" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c enumerator">
+<dt class="sig sig-object c" id="c.WpInterestMatch.WP_INTEREST_MATCH_G_PROPERTIES">
+<span class="target" id="group__wpobjectinterest_1gga0384e86deda8cae7d3aafdcd00d2d319a738be9a99580dada2eaa89443a4e4fa9"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">WP_INTEREST_MATCH_G_PROPERTIES</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="p"><span class="pre">(</span></span><span class="m"><span class="pre">1</span></span><span class="w"> </span><span class="o"><span class="pre">&lt;&lt;</span></span><span class="w"> </span><span class="m"><span class="pre">3</span></span><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#c.WpInterestMatch.WP_INTEREST_MATCH_G_PROPERTIES" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="c enum">
+<dt class="sig sig-object c" id="c.WpInterestMatchFlags">
+<span class="target" id="group__wpobjectinterest_1ga297e3c52b2e50fc89b0c71afb44b520d"></span><span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">WpInterestMatchFlags</span></span></span><a class="headerlink" href="#c.WpInterestMatchFlags" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Flags to alter the behaviour of <a class="reference internal" href="#group__wpobjectinterest_1gacfc3500fca112b992c39a9b3bdebee56"><span class="std std-ref">wp_object_interest_matches_full()</span></a> </p>
+<p><em>Values:</em></p>
+<dl class="c enumerator">
+<dt class="sig sig-object c" id="c.WpInterestMatchFlags.WP_INTEREST_MATCH_FLAGS_NONE">
+<span class="target" id="group__wpobjectinterest_1gga297e3c52b2e50fc89b0c71afb44b520daf4318811a112b6cee5d02f399079a040"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">WP_INTEREST_MATCH_FLAGS_NONE</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">0</span></span><a class="headerlink" href="#c.WpInterestMatchFlags.WP_INTEREST_MATCH_FLAGS_NONE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c enumerator">
+<dt class="sig sig-object c" id="c.WpInterestMatchFlags.WP_INTEREST_MATCH_FLAGS_CHECK_ALL">
+<span class="target" id="group__wpobjectinterest_1gga297e3c52b2e50fc89b0c71afb44b520daa093833c06c5d2222c484dc47cfa68a4"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">WP_INTEREST_MATCH_FLAGS_CHECK_ALL</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="p"><span class="pre">(</span></span><span class="m"><span class="pre">1</span></span><span class="w"> </span><span class="o"><span class="pre">&lt;&lt;</span></span><span class="w"> </span><span class="m"><span class="pre">0</span></span><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#c.WpInterestMatchFlags.WP_INTEREST_MATCH_FLAGS_CHECK_ALL" title="Permalink to this definition"></a><br /></dt>
+<dd><p>check all the constraints instead of returning after the first mis-match </p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_object_interest_new">
+<span class="target" id="group__wpobjectinterest_1gad0b9f3fb4f61390b76b994910b6462bd"></span><a class="reference internal" href="#c.WpObjectInterest" title="WpObjectInterest"><span class="n"><span class="pre">WpObjectInterest</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_object_interest_new</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">GType</span></span><span class="w"> </span><span class="n"><span class="pre">gtype</span></span>, <span class="p"><span class="pre">...</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_object_interest_new" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Creates a new interest that declares interest in objects of the specified <em>gtype</em>, with the constraints specified in the variable arguments. </p>
+<p>The variable arguments should be a list of constraints terminated with NULL, where each constraint consists of the following arguments:<ul class="simple">
+<li><p>a <code class="docutils literal notranslate"><span class="pre">WpConstraintType</span></code>: the constraint type</p></li>
+<li><p>a <code class="docutils literal notranslate"><span class="pre">const</span> <span class="pre">gchar</span> <span class="pre">*</span></code>: the subject name</p></li>
+<li><p>a <code class="docutils literal notranslate"><span class="pre">const</span> <span class="pre">gchar</span> <span class="pre">*</span></code>: the format string</p></li>
+<li><p>0 or more arguments according to the format string</p></li>
+</ul>
+</p>
+<p>The format string is interpreted as follows:<ul class="simple">
+<li><p>the first character is the constraint verb:<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">=</span></code>: WP_CONSTRAINT_VERB_EQUALS</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">!</span></code>: WP_CONSTRAINT_VERB_NOT_EQUALS</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">c</span></code>: WP_CONSTRAINT_VERB_IN_LIST</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">~</span></code>: WP_CONSTRAINT_VERB_IN_RANGE</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">#</span></code>: WP_CONSTRAINT_VERB_MATCHES</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">+</span></code>: WP_CONSTRAINT_VERB_IS_PRESENT</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-</span></code>: WP_CONSTRAINT_VERB_IS_ABSENT</p></li>
+</ul>
+</p></li>
+<li><p>the rest of the characters are interpreted as a GVariant format string, as it would be used in g_variant_new()</p></li>
+</ul>
+</p>
+<p>The rest of this function’s arguments up to the start of the next constraint depend on the GVariant format part of the format string and are used to construct a GVariant for the constraint’s value argument.</p>
+<p>For further reading on the constraint’s arguments, see <a class="reference internal" href="#group__wpobjectinterest_1ga89bf95c43248c935a2ef18b9649a7ef1"><span class="std std-ref">wp_object_interest_add_constraint()</span></a></p>
+<p>For example, this interest matches objects that are descendands of WpProxy with a “bound-id” between 0 and 100 (inclusive), with a pipewire property called “format.dsp” that contains the string “audio” somewhere in the value and with a pipewire property “port.name” being present (with any value): <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">interest</span> <span class="o">=</span> <span class="n">wp_object_interest_new</span> <span class="p">(</span><span class="n">WP_TYPE_PROXY</span><span class="p">,</span>
+    <span class="n">WP_CONSTRAINT_TYPE_G_PROPERTY</span><span class="p">,</span> <span class="s2">&quot;bound-id&quot;</span><span class="p">,</span> <span class="s2">&quot;~(uu)&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span>
+    <span class="n">WP_CONSTRAINT_TYPE_PW_PROPERTY</span><span class="p">,</span> <span class="s2">&quot;format.dsp&quot;</span><span class="p">,</span> <span class="s2">&quot;#s&quot;</span><span class="p">,</span> <span class="s2">&quot;*audio*&quot;</span><span class="p">,</span>
+    <span class="n">WP_CONSTRAINT_TYPE_PW_PROPERTY</span><span class="p">,</span> <span class="s2">&quot;port.name&quot;</span><span class="p">,</span> <span class="s2">&quot;+&quot;</span><span class="p">,</span>
+    <span class="n">NULL</span><span class="p">);</span>
+</pre></div>
+</div>
+</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>gtype</strong> – the type of the object to declare interest in </p></li>
+<li><p><strong>...</strong> – a set of constraints, terminated with NULL </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full): the new object interest </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_object_interest_new_valist">
+<span class="target" id="group__wpobjectinterest_1ga8a0623aedb06524bbc8c344995c6ff8c"></span><a class="reference internal" href="#c.WpObjectInterest" title="WpObjectInterest"><span class="n"><span class="pre">WpObjectInterest</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_object_interest_new_valist</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">GType</span></span><span class="w"> </span><span class="n"><span class="pre">gtype</span></span>, <span class="n"><span class="pre">va_list</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_object_interest_new_valist" title="Permalink to this definition"></a><br /></dt>
+<dd><p>va_list version of <a class="reference internal" href="#group__wpobjectinterest_1gad0b9f3fb4f61390b76b994910b6462bd"><span class="std std-ref">wp_object_interest_new()</span></a> </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>gtype</strong> – the type of the object to declare interest in </p></li>
+<li><p><strong>args</strong> – pointer to va_list containing the constraints </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full): the new object interest </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_object_interest_new_type">
+<span class="target" id="group__wpobjectinterest_1ga28082cc64a424110a01af7b5a3a268b0"></span><a class="reference internal" href="#c.WpObjectInterest" title="WpObjectInterest"><span class="n"><span class="pre">WpObjectInterest</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_object_interest_new_type</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">GType</span></span><span class="w"> </span><span class="n"><span class="pre">gtype</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_object_interest_new_type" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Creates a new interest that declares interest in objects of the specified <em>gtype</em>, without any property constraints. </p>
+<p>To add property constraints, you can call <a class="reference internal" href="#group__wpobjectinterest_1ga89bf95c43248c935a2ef18b9649a7ef1"><span class="std std-ref">wp_object_interest_add_constraint()</span></a> afterwards.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>gtype</strong> – the type of the object to declare interest in </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full): the new object interest </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_object_interest_add_constraint">
+<span class="target" id="group__wpobjectinterest_1ga89bf95c43248c935a2ef18b9649a7ef1"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_object_interest_add_constraint</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpObjectInterest" title="WpObjectInterest"><span class="n"><span class="pre">WpObjectInterest</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <a class="reference internal" href="#c.WpConstraintType" title="WpConstraintType"><span class="n"><span class="pre">WpConstraintType</span></span></a><span class="w"> </span><span class="n"><span class="pre">type</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">gchar</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">subject</span></span>, <a class="reference internal" href="#c.WpConstraintVerb" title="WpConstraintVerb"><span class="n"><span class="pre">WpConstraintVerb</span></span></a><span class="w"> </span><span class="n"><span class="pre">verb</span></span>, <span class="n"><span class="pre">GVariant</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_object_interest_add_constraint" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Adds a constraint to this interest. Constraints consist of a <em>type</em>, a <em>subject</em>, a <em>verb</em> and, depending on the <em>verb</em>, a <em>value</em>. </p>
+<p><p>Constraints are almost like a spoken language sentence that declare a condition that must be true in order to consider that an object can match this interest. For instance, a constraint can be “pipewire property</p>
+<p>’object.id’ equals 10”. This would be translated to:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">wp_object_interest_add_constraint</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span>
+   <span class="n">WP_CONSTRAINT_TYPE_PW_PROPERTY</span><span class="p">,</span> <span class="s2">&quot;object.id&quot;</span><span class="p">,</span>
+   <span class="n">WP_CONSTRAINT_VERB_EQUALS</span><span class="p">,</span> <span class="n">g_variant_new_int</span> <span class="p">(</span><span class="mi">10</span><span class="p">));</span>
+</pre></div>
+</div>
+</p>
+<p>Some verbs require a <em>value</em> and some others do not. For those that do, the <em>value</em> must be of a specific type:<ul class="simple">
+<li><p>WP_CONSTRAINT_VERB_EQUALS: <em>value</em> can be a string, a (u)int32, a (u)int64, a double or a boolean. The <em>subject</em> value must equal this value for the constraint to be satisfied</p></li>
+<li><p>WP_CONSTRAINT_VERB_IN_LIST: <em>value</em> must be a tuple that contains any number of items of the same type; the items can be string, (u)int32, (u)int64 or double. These items make a list that the <em>subject’s</em> value will be checked against. If any of the items equals the <em>subject</em> value, the constraint is satisfied</p></li>
+<li><p>WP_CONSTRAINT_VERB_IN_RANGE: <em>value</em> must be a tuple that contains exactly 2 numbers of the same type ((u)int32, (u)int64 or double), meaning the minimum and maximum (inclusive) of the range. If the <em>subject</em> value is a number within this range, the constraint is satisfied</p></li>
+<li><p>WP_CONSTRAINT_VERB_MATCHES: <em>value</em> must be a string that defines a pattern usable with GPatternSpec If the <em>subject</em> value matches this pattern, the constraint is satisfied</p></li>
+</ul>
+</p>
+<p>In case the type of the <em>subject</em> value is not the same type as the one requested by the type of the <em>value</em>, the <em>subject</em> value is converted. For GObject properties, this conversion is done using g_value_transform(), so limitations of this function apply. In the case of PipeWire properties, which are <em>always</em> strings, conversion is done as follows:<ul class="simple">
+<li><p>to boolean: <code class="docutils literal notranslate"><span class="pre">&quot;true&quot;</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;1&quot;</span></code> means TRUE, <code class="docutils literal notranslate"><span class="pre">&quot;false&quot;</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;0&quot;</span></code> means FALSE</p></li>
+<li><p>to int / uint / int64 / uint64: One of the <code class="docutils literal notranslate"><span class="pre">strtol()</span></code> family of functions is used to convert, using base 10</p></li>
+<li><p>to double: <code class="docutils literal notranslate"><span class="pre">strtod()</span></code> is used</p></li>
+</ul>
+</p>
+<p>This method does not fail if invalid arguments are given. However, <a class="reference internal" href="#group__wpobjectinterest_1gaa89901ebcf1f87f720a58b85b1980f26"><span class="std std-ref">wp_object_interest_validate()</span></a> should be called after adding all the constraints on an interest in order to catch errors.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the object interest </p></li>
+<li><p><strong>type</strong> – the constraint type </p></li>
+<li><p><strong>subject</strong> – the subject that the constraint applies to </p></li>
+<li><p><strong>verb</strong> – the operation that is performed to check the constraint </p></li>
+<li><p><strong>value</strong> – (transfer floating)(nullable): the value to check for </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_object_interest_ref">
+<span class="target" id="group__wpobjectinterest_1ga68091ae6ccb256c4e5be13d2078d230e"></span><a class="reference internal" href="#c.WpObjectInterest" title="WpObjectInterest"><span class="n"><span class="pre">WpObjectInterest</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_object_interest_ref</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpObjectInterest" title="WpObjectInterest"><span class="n"><span class="pre">WpObjectInterest</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_object_interest_ref" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Increases the reference count of an object interest. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the object interest to ref </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full): <em>self</em> with an additional reference count on it </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_object_interest_unref">
+<span class="target" id="group__wpobjectinterest_1gab8eb9e877bcf7535c32cd8854124ac33"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_object_interest_unref</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpObjectInterest" title="WpObjectInterest"><span class="n"><span class="pre">WpObjectInterest</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_object_interest_unref" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Decreases the reference count on <em>self</em> and frees it when the ref count reaches zero. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – (transfer full): the object interest to unref </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_object_interest_validate">
+<span class="target" id="group__wpobjectinterest_1gaa89901ebcf1f87f720a58b85b1980f26"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_object_interest_validate</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpObjectInterest" title="WpObjectInterest"><span class="n"><span class="pre">WpObjectInterest</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="n"><span class="pre">GError</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">error</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_object_interest_validate" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Validates the interest, ensuring that the interest GType is a valid object and that all the constraints have been expressed properly. </p>
+<p><div class="remark admonition">
+<p class="admonition-title">Remark</p>
+<p>This is called internally when <em>self</em> is first used to find a match, so it is not necessary to call it explicitly</p>
+</div>
+</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the object interest to validate </p></li>
+<li><p><strong>error</strong> – (out) (optional): the error, in case validation failed </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if the interest is valid and can be used in a match, FALSE otherwise </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_object_interest_matches">
+<span class="target" id="group__wpobjectinterest_1ga98aca792cc3a88f12a27e430b8cae15d"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_object_interest_matches</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpObjectInterest" title="WpObjectInterest"><span class="n"><span class="pre">WpObjectInterest</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="n"><span class="pre">gpointer</span></span><span class="w"> </span><span class="n"><span class="pre">object</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_object_interest_matches" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Checks if the specified <em>object</em> matches the type and all the constraints that are described in <em>self</em>. </p>
+<p>If <em>self</em> is configured to match GObject subclasses, this is equivalent to <code class="docutils literal notranslate"><span class="pre">wp_object_interest_matches_full</span> <span class="pre">(self,</span> <span class="pre">G_OBJECT_TYPE</span> <span class="pre">(object),</span> <span class="pre">object,</span> <span class="pre">NULL,</span> <span class="pre">NULL)</span></code> and if it is configured to match WpProperties, this is equivalent to <code class="docutils literal notranslate"><span class="pre">wp_object_interest_matches_full</span> <span class="pre">(self,</span> <span class="pre">self-&gt;gtype,</span> <span class="pre">NULL,</span> <span class="pre">(WpProperties</span> <span class="pre">*)</span> <span class="pre">object,</span> <span class="pre">NULL);</span></code></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the object interest </p></li>
+<li><p><strong>object</strong> – the target object to check for a match </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if the object matches, FALSE otherwise </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_object_interest_matches_full">
+<span class="target" id="group__wpobjectinterest_1gacfc3500fca112b992c39a9b3bdebee56"></span><a class="reference internal" href="#c.WpInterestMatch" title="WpInterestMatch"><span class="n"><span class="pre">WpInterestMatch</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_object_interest_matches_full</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpObjectInterest" title="WpObjectInterest"><span class="n"><span class="pre">WpObjectInterest</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <a class="reference internal" href="#c.WpInterestMatchFlags" title="WpInterestMatchFlags"><span class="n"><span class="pre">WpInterestMatchFlags</span></span></a><span class="w"> </span><span class="n"><span class="pre">flags</span></span>, <span class="n"><span class="pre">GType</span></span><span class="w"> </span><span class="n"><span class="pre">object_type</span></span>, <span class="n"><span class="pre">gpointer</span></span><span class="w"> </span><span class="n"><span class="pre">object</span></span>, <a class="reference internal" href="properties_api.html#c.WpProperties" title="WpProperties"><span class="n"><span class="pre">WpProperties</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">pw_props</span></span>, <a class="reference internal" href="properties_api.html#c.WpProperties" title="WpProperties"><span class="n"><span class="pre">WpProperties</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">pw_global_props</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_object_interest_matches_full" title="Permalink to this definition"></a><br /></dt>
+<dd><p>A low-level version of <a class="reference internal" href="#group__wpobjectinterest_1ga98aca792cc3a88f12a27e430b8cae15d"><span class="std std-ref">wp_object_interest_matches()</span></a>. </p>
+<p>In this version, the object’s type is directly given in <em>object_type</em> and is not inferred from the <em>object</em>. <em>object</em> is only used to check for constraints against GObject properties.</p>
+<p><em>pw_props</em> and <em>pw_global_props</em> are used to check constraints against PipeWire object properties and global properties, respectively.</p>
+<p><em>object</em>, <em>pw_props</em> and <em>pw_global_props</em> may be NULL, but in case there are any constraints that require them, the match will fail. As a special case, if <em>object</em> is not NULL and is a subclass of WpProxy, then <em>pw_props</em> and <em>pw_global_props</em>, if required, will be internally retrieved from <em>object</em> by calling <a class="reference internal" href="pipewire_object_api.html#group__wppipewireobject_1ga4d0be338968a214116c26e3d33b31151"><span class="std std-ref">wp_pipewire_object_get_properties()</span></a> and <a class="reference internal" href="global_proxy_api.html#group__wpglobalproxy_1gad1695e95642c1f2630df18d71594f631"><span class="std std-ref">wp_global_proxy_get_global_properties()</span></a> respectively.</p>
+<p>When <em>flags</em> contains WP_INTEREST_MATCH_FLAGS_CHECK_ALL, all the constraints are checked and the returned value contains accurate information about which types of constraints have failed to match, if any. When this flag is not present, this function returns after the first failure has been encountered. This means that the returned flags set will contain all but one flag, which will indicate the kind of constraint that failed (more could have failed, but they are not checked…)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the object interest </p></li>
+<li><p><strong>flags</strong> – flags to alter the behavior of this function </p></li>
+<li><p><strong>object_type</strong> – the type to be checked against the interest’s type </p></li>
+<li><p><strong>object</strong> – (type GObject)(transfer none)(nullable): the object to be used for checking constraints of type WP_CONSTRAINT_TYPE_G_PROPERTY </p></li>
+<li><p><strong>pw_props</strong> – (transfer none)(nullable): the properties to be used for checking constraints of type WP_CONSTRAINT_TYPE_PW_PROPERTY </p></li>
+<li><p><strong>pw_global_props</strong> – (transfer none)(nullable): the properties to be used for checking constraints of type WP_CONSTRAINT_TYPE_PW_GLOBAL_PROPERTY </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>flags that indicate which components of the interest match. WP_INTEREST_MATCH_ALL indicates a fully successful match; any other combination indicates a failure on the component(s) that do not appear on the flag set </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.WP_INTEREST_MATCH_ALL">
+<span class="target" id="group__wpobjectinterest_1ga9c7d934f5e94177085b0f288634685c3"></span><span class="sig-name descname"><span class="n"><span class="pre">WP_INTEREST_MATCH_ALL</span></span></span> <p><span class="pre">(WP_INTEREST_MATCH_GTYPE</span> <span class="pre">|</span> <span class="pre">\</span></p>
+<p><span class="pre">WP_INTEREST_MATCH_PW_GLOBAL_PROPERTIES</span> <span class="pre">|</span> <span class="pre">\</span></p>
+<p><span class="pre">WP_INTEREST_MATCH_PW_PROPERTIES</span> <span class="pre">|</span> <span class="pre">\</span></p>
+<p><span class="pre">WP_INTEREST_MATCH_G_PROPERTIES)</span></p>
+<a class="headerlink" href="#c.WP_INTEREST_MATCH_ALL" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Special WpInterestMatch value that indicates that all constraints have been matched. </p>
+</dd></dl>
+
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.WP_TYPE_OBJECT_INTEREST">
+<span class="target" id="group__wpobjectinterest_1ga43dd3c7245e73e7d84eba1e4c51aa524"></span><span class="sig-name descname"><span class="n"><span class="pre">WP_TYPE_OBJECT_INTEREST</span></span></span> <span class="pre">(wp_object_interest_get_type</span> <span class="pre">())</span><a class="headerlink" href="#c.WP_TYPE_OBJECT_INTEREST" title="Permalink to this definition"></a><br /></dt>
+<dd><p>The WpObjectInterest GType. </p>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="obj_manager_api.html" class="btn btn-neutral float-left" title="Object Manager" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="iterator_api.html" class="btn btn-neutral float-right" title="Iterator" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Collabora.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Running the WirePlumber daemon &mdash; WirePlumber 0.4.16 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Configuration" href="configuration.html" />
+    <link rel="prev" title="Installing WirePlumber" href="installing-wireplumber.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> WirePlumber
+          </a>
+              <div class="version">
+                0.4.16
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">The WirePlumber Daemon</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installing-wireplumber.html">Installing WirePlumber</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Running the WirePlumber daemon</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#systemd">Systemd</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#run-from-the-pipewire-source-tree">Run from the PipeWire source tree</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#run-independently-or-without-installing">Run independently or without installing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#replacing-pipewire-media-session">Replacing pipewire-media-session</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id1">systemd</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pipewire-conf">pipewire.conf</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="daemon-logging.html">Debug Logging</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">The WirePlumber Library</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="c_api.html">C API Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lua_api.html">Lua API Documentation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Resources</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing to WirePlumber</a></li>
+<li class="toctree-l1"><a class="reference internal" href="testing.html">Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="community.html">Community Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="releases.html">Releases</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">WirePlumber</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Running the WirePlumber daemon</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/running-wireplumber-daemon.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="installing-wireplumber.html" class="btn btn-neutral float-left" title="Installing WirePlumber" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="configuration.html" class="btn btn-neutral float-right" title="Configuration" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+  </div>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <blockquote>
+<div></div></blockquote>
+<section id="running-the-wireplumber-daemon">
+<span id="running-wireplumber-daemon"></span><h1>Running the WirePlumber daemon<a class="headerlink" href="#running-the-wireplumber-daemon" title="Permalink to this headline"></a></h1>
+<section id="systemd">
+<h2>Systemd<a class="headerlink" href="#systemd" title="Permalink to this headline"></a></h2>
+<p>WirePlumber comes with a systemd unit, <code class="docutils literal notranslate"><span class="pre">wireplumber.service</span></code>, which should
+be enabled on your user session:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>systemctl --user --now <span class="nb">enable</span> wireplumber
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>On non-systemd systems, you just need to ensure that wireplumber is started
+after pipewire.</p>
+</div>
+</section>
+<section id="run-from-the-pipewire-source-tree">
+<h2>Run from the PipeWire source tree<a class="headerlink" href="#run-from-the-pipewire-source-tree" title="Permalink to this headline"></a></h2>
+<p>PipeWire’s build system comes with an option to build WirePlumber together
+with PipeWire and allows executing them together without installing either of
+them.</p>
+<p>To make this work, configure PipeWire with the
+<code class="docutils literal notranslate"><span class="pre">-Dsession-managers=&quot;[</span> <span class="pre">'wireplumber'</span> <span class="pre">]&quot;</span></code> option on the meson command line.</p>
+<p>When compiling PipeWire, the build system will now also clone and compile
+WirePlumber as a subproject.</p>
+<p>To execute the whole stack without installing, simply execute <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">run</span></code>
+after compiling.</p>
+<p>Synopsis:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>meson -Dsession-managers<span class="o">=</span><span class="s2">&quot;[ &#39;wireplumber&#39; ]&quot;</span> build
+<span class="gp">$ </span>ninja -C build
+<span class="gp">$ </span>make run
+</pre></div>
+</div>
+</section>
+<section id="run-independently-or-without-installing">
+<h2>Run independently or without installing<a class="headerlink" href="#run-independently-or-without-installing" title="Permalink to this headline"></a></h2>
+<p>If you wish to debug WirePlumber, it may be useful to run it separately from
+PipeWire or run it directly from the source tree without installing.
+To do so:</p>
+<blockquote>
+<div><ol class="arabic">
+<li><p>Ensure that neither <em>WirePlumber</em> nor <em>pipewire-media-session</em>
+are running or started together with PipeWire</p>
+<ul class="simple">
+<li><p>If any of those is started by systemd,</p>
+<ul>
+<li><p>Stop the relevant systemd service, <code class="docutils literal notranslate"><span class="pre">wireplumber.service</span></code>
+or <code class="docutils literal notranslate"><span class="pre">pipewire-media-session.service</span></code></p></li>
+<li><p>Disable that service as well if you intend to restart PipeWire
+(so that the session manager is not restarted with it)</p></li>
+</ul>
+</li>
+<li><p>If any of those is started from pipewire.conf,</p>
+<ul>
+<li><p>Kill it, in order to stop it temporarily: <code class="docutils literal notranslate"><span class="pre">killall</span> <span class="pre">wireplumber</span></code>
+or <code class="docutils literal notranslate"><span class="pre">killall</span> <span class="pre">pipewire-media-session</span></code></p></li>
+<li><p>Comment out with <code class="docutils literal notranslate"><span class="pre">#</span></code> the relevant <code class="docutils literal notranslate"><span class="pre">{</span> <span class="pre">path</span> <span class="pre">=</span> <span class="pre">&quot;...&quot;</span>&#160; <span class="pre">args</span> <span class="pre">=</span> <span class="pre">&quot;&quot;</span> <span class="pre">}</span></code>
+line from the <code class="docutils literal notranslate"><span class="pre">context.exec</span></code> section in <code class="docutils literal notranslate"><span class="pre">pipewire.conf</span></code>,
+if you intend to restart PipeWire</p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Ensure that PipeWire is running</p></li>
+<li><p>Without stopping PipeWire, run WirePlumber.</p>
+<ul>
+<li><p>if it is installed, execute <code class="docutils literal notranslate"><span class="pre">wireplumber</span></code></p></li>
+<li><p>if it is <strong>not</strong> installed, execute <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">run</span></code> in the source tree,
+or use the <code class="docutils literal notranslate"><span class="pre">wp-uninstalled.sh</span></code> script:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>./wp-uninstalled.sh wireplumber
+</pre></div>
+</div>
+</li>
+</ul>
+</li>
+</ol>
+</div></blockquote>
+</section>
+<section id="replacing-pipewire-media-session">
+<h2>Replacing pipewire-media-session<a class="headerlink" href="#replacing-pipewire-media-session" title="Permalink to this headline"></a></h2>
+<p>Older versions of PipeWire used to be distributed with an example session
+manager (pipewire-media-session) that you needed to disable and replace with
+WirePlumber.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>These instructions are only relevant to older versions of PipeWire</p>
+</div>
+<section id="id1">
+<h3>systemd<a class="headerlink" href="#id1" title="Permalink to this headline"></a></h3>
+<p>In most cases, <code class="docutils literal notranslate"><span class="pre">pipewire-media-session</span></code> is started by a systemd service unit,
+<code class="docutils literal notranslate"><span class="pre">pipewire-media-session.service</span></code>.</p>
+<p>To switch to WirePlumber, you will first need to disable that service:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>systemctl --user --now disable pipewire-media-session
+</pre></div>
+</div>
+<p>… and then, enable and use <code class="docutils literal notranslate"><span class="pre">wireplumber.service</span></code> in its place:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>systemctl --user --now <span class="nb">enable</span> wireplumber
+</pre></div>
+</div>
+</section>
+<section id="pipewire-conf">
+<h3>pipewire.conf<a class="headerlink" href="#pipewire-conf" title="Permalink to this headline"></a></h3>
+<p>On some systems, <code class="docutils literal notranslate"><span class="pre">pipewire-media-session</span></code> is not started by systemd, but it
+is started by pipewire itself via a configuration option in <code class="docutils literal notranslate"><span class="pre">pipewire.conf</span></code></p>
+<p>To switch to wireplumber, you will need to edit
+<strong>/etc/pipewire/pipewire.conf</strong> in an existing installation or
+<strong>src/daemon/pipewire.conf.in</strong> in the PipeWire git tree
+and change the appropriate line in the <code class="docutils literal notranslate"><span class="pre">exec</span></code> section:</p>
+<div class="highlight-diff notranslate"><div class="highlight"><pre><span></span><span class="gd">--- /etc/pipewire/pipewire.conf.bak</span><span class="w"></span>
+<span class="gi">+++ /etc/pipewire/pipewire.conf</span><span class="w"></span>
+<span class="gu">@@ -204,7 +204,7 @@ context.exec = [</span><span class="w"></span>
+<span class="w"> </span>    # but it is better to start it as a systemd service.<span class="w"></span>
+<span class="w"> </span>    # Run the session manager with -h for options.<span class="w"></span>
+<span class="w"> </span>    #<span class="w"></span>
+<span class="gd">-    #{ path = &quot;/usr/bin/pipewire-media-session&quot;  args = &quot;&quot; }</span><span class="w"></span>
+<span class="gi">+    { path = &quot;wireplumber&quot;  args = &quot;&quot; }</span><span class="w"></span>
+<span class="w"> </span>    #<span class="w"></span>
+<span class="w"> </span>    # You can optionally start the pulseaudio-server here as well<span class="w"></span>
+<span class="w"> </span>    # but it is better to start it as a systemd service.<span class="w"></span>
+</pre></div>
+</div>
+<div class="highlight-diff notranslate"><div class="highlight"><pre><span></span><span class="gh">diff --git a/src/daemon/pipewire.conf.in b/src/daemon/pipewire.conf.in</span><span class="w"></span>
+<span class="gh">index bbafa134..16ef687b 100644</span><span class="w"></span>
+<span class="gd">--- a/src/daemon/pipewire.conf.in</span><span class="w"></span>
+<span class="gi">+++ b/src/daemon/pipewire.conf.in</span><span class="w"></span>
+<span class="gu">@@ -220,7 +220,7 @@ context.exec = [</span><span class="w"></span>
+<span class="w"> </span>    # but it is better to start it as a systemd service.<span class="w"></span>
+<span class="w"> </span>    # Run the session manager with -h for options.<span class="w"></span>
+<span class="w"> </span>    #<span class="w"></span>
+<span class="gd">-    @comment@{ path = &quot;@media_session_path@&quot;  args = &quot;&quot; }</span><span class="w"></span>
+<span class="gi">+    { path = &quot;wireplumber&quot;  args = &quot;&quot; }</span><span class="w"></span>
+<span class="w"> </span>    #<span class="w"></span>
+<span class="w"> </span>    # You can optionally start the pulseaudio-server here as well<span class="w"></span>
+<span class="w"> </span>    # but it is better to start it as a systemd service.<span class="w"></span>
+</pre></div>
+</div>
+<p>This setup assumes that WirePlumber is <em>installed</em> on the target system.</p>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="installing-wireplumber.html" class="btn btn-neutral float-left" title="Installing WirePlumber" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="configuration.html" class="btn btn-neutral float-right" title="Configuration" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Collabora.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

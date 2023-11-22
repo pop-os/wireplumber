@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PipeWire Object &mdash; WirePlumber 0.4.16 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="PipeWire Global Object Proxy" href="global_proxy_api.html" />
+    <link rel="prev" title="PipeWire Proxy" href="proxy_api.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> WirePlumber
+          </a>
+              <div class="version">
+                0.4.16
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">The WirePlumber Daemon</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installing-wireplumber.html">Installing WirePlumber</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../running-wireplumber-daemon.html">Running the WirePlumber daemon</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../daemon-logging.html">Debug Logging</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">The WirePlumber Library</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../c_api.html">C API Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="wp_api.html">Library Initialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core_api.html">Core</a></li>
+<li class="toctree-l2"><a class="reference internal" href="object_api.html">WpObject</a></li>
+<li class="toctree-l2"><a class="reference internal" href="obj_manager_api.html">Object Manager</a></li>
+<li class="toctree-l2"><a class="reference internal" href="obj_interest_api.html">Object Interest</a></li>
+<li class="toctree-l2"><a class="reference internal" href="iterator_api.html">Iterator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="transitions_api.html">Transitions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wperror_api.html">Error Codes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="log_api.html">Debug Logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="proxy_api.html">PipeWire Proxy</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">PipeWire Object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="global_proxy_api.html">PipeWire Global Object Proxy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="node_api.html">PipeWire Node</a></li>
+<li class="toctree-l2"><a class="reference internal" href="port_api.html">PipeWire Port</a></li>
+<li class="toctree-l2"><a class="reference internal" href="link_api.html">PipeWire Link</a></li>
+<li class="toctree-l2"><a class="reference internal" href="device_api.html">PipeWire Device</a></li>
+<li class="toctree-l2"><a class="reference internal" href="client_api.html">PipeWire Client</a></li>
+<li class="toctree-l2"><a class="reference internal" href="metadata_api.html">PipeWire Metadata</a></li>
+<li class="toctree-l2"><a class="reference internal" href="endpoint_api.html">PipeWire Endpoint</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spa_device_api.html">Spa Device</a></li>
+<li class="toctree-l2"><a class="reference internal" href="impl_node_api.html">Local Nodes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="impl_module_api.html">Local Modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="properties_api.html">Properties Dictionary</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spa_type_api.html">Spa Type Information</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spa_json_api.html">Spa Json</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spa_pod_api.html">Spa Pod (Plain Old Data)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plugin_api.html">Plugins</a></li>
+<li class="toctree-l2"><a class="reference internal" href="component_loader_api.html">Component Loader</a></li>
+<li class="toctree-l2"><a class="reference internal" href="session_item_api.html">Session Items</a></li>
+<li class="toctree-l2"><a class="reference internal" href="si_interfaces_api.html">Session Items Interfaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="si_factory_api.html">Session Items Factory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="state_api.html">State Storage</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../lua_api.html">Lua API Documentation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Resources</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing to WirePlumber</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../testing.html">Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../community.html">Community Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Releases</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">WirePlumber</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../c_api.html">C API Documentation</a> &raquo;</li>
+      <li>PipeWire Object</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/c_api/pipewire_object_api.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="proxy_api.html" class="btn btn-neutral float-left" title="PipeWire Proxy" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="global_proxy_api.html" class="btn btn-neutral float-right" title="PipeWire Global Object Proxy" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+  </div>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="pipewire-object">
+<span id="pipewire-object-api"></span><h1>PipeWire Object<a class="headerlink" href="#pipewire-object" title="Permalink to this headline"></a></h1>
+<div align="center" class="align-center"><div class="graphviz"><object data="../_images/graphviz-def21f7b34ba19c72157a54e3d4ec9b03f7a65bf.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph inheritance {
+    rankdir=LR;
+    GInterface -&gt; WpPipewireObject;
+ }</p></object></div>
+</div>
+<dl class="c struct">
+<dt class="sig sig-object c" id="c.WpPipewireObject">
+<span class="target" id="structWpPipewireObject"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">WpPipewireObject</span></span></span><a class="headerlink" href="#c.WpPipewireObject" title="Permalink to this definition"></a><br /></dt>
+<dd><p>An interface for standard PipeWire objects.</p>
+<p>The common characteristic of all objects that implement this interface is the presence of an “info” structure that contains additional properties for this object (in the form of a spa_dict / pw_properties) and optionally also some parameters that can be enumerated and set on the object.</p>
+<p><strong>GObject</strong> <strong>Properties</strong> </p>
+<p><dl>
+<dt class="sig sig-object cpp">
+<span class="pre">properties</span></dt>
+<dd><p></p>
+<p>The properties of the pipewire object</p>
+<p><table class="colwidths-auto docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">WpProperties</span> <span class="pre">*</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">G_PARAM_READABLE</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</p>
+</dd></dl>
+
+</p>
+<p><dl>
+<dt class="sig sig-object cpp">
+<span class="pre">param-info</span></dt>
+<dd><p></p>
+<p>The param info of the object</p>
+<p><table class="colwidths-auto docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">GVariant</span> <span class="pre">*</span> <span class="pre">(a{ss})</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">G_PARAM_READABLE</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</p>
+</dd></dl>
+
+</p>
+<p><dl>
+<dt class="sig sig-object cpp">
+<span class="pre">native-info</span></dt>
+<dd><p></p>
+<p>The native info structure</p>
+<p><table class="colwidths-auto docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">gpointer</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">G_PARAM_READABLE</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</p>
+</dd></dl>
+
+</p>
+<p><strong>GObject</strong> <strong>Signals</strong> </p>
+<p><dl class="simple">
+<dt><strong>params-changed</strong></dt><dd><p><p><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">params_changed_callback</span> <span class="p">(</span><span class="n">WpPipewireObject</span> <span class="o">*</span> <span class="bp">self</span><span class="p">,</span>
+                         <span class="n">const</span> <span class="n">gchar</span> <span class="o">*</span><span class="nb">id</span><span class="p">,</span>
+                         <span class="n">gpointer</span> <span class="n">user_data</span><span class="p">)</span>
+</pre></div>
+</div>
+</p>
+<p>Emitted when the params for id have changed. On proxies that cache params from a remote object, this is emitted after the cached values have changed.</p>
+<p>You can expect this to be emitted only when the relevant WP_PIPEWIRE_OBJECT_FEATURE_PARAM_* has been activated.</p>
+<p>Parameters:<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">id</span></code> - the parameter id as a string (ex “Props”, “EnumRoute”)</p></li>
+</ul>
+</p>
+<p>Flags: G_SIGNAL_RUN_FIRST </p>
+</p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="c struct">
+<dt class="sig sig-object c" id="c._WpPipewireObjectInterface">
+<span class="target" id="struct__WpPipewireObjectInterface"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">_WpPipewireObjectInterface</span></span></span><a class="headerlink" href="#c._WpPipewireObjectInterface" title="Permalink to this definition"></a><br /></dt>
+<dd><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
+<dl class="c var">
+<dt class="sig sig-object c" id="c._WpPipewireObjectInterface.parent_iface">
+<span class="target" id="struct__WpPipewireObjectInterface_1a220724aa377e3e47e940f1d9566836c2"></span><span class="n"><span class="pre">GTypeInterface</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">parent_iface</span></span></span><a class="headerlink" href="#c._WpPipewireObjectInterface.parent_iface" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c._WpPipewireObjectInterface.get_native_info">
+<span class="target" id="struct__WpPipewireObjectInterface_1ac4ff9756cece22c12cf1a3c2dafcc39e"></span><span class="n"><span class="pre">gconstpointer</span></span><span class="w"> </span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">get_native_info</span></span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">(</span></span><a class="reference internal" href="#c.WpPipewireObject" title="WpPipewireObject"><span class="n"><span class="pre">WpPipewireObject</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#c._WpPipewireObjectInterface.get_native_info" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c._WpPipewireObjectInterface.get_properties">
+<span class="target" id="struct__WpPipewireObjectInterface_1ae9c89f7ff5e4d1c55470d405ef70055c"></span><a class="reference internal" href="properties_api.html#c.WpProperties" title="WpProperties"><span class="n"><span class="pre">WpProperties</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">get_properties</span></span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">(</span></span><a class="reference internal" href="#c.WpPipewireObject" title="WpPipewireObject"><span class="n"><span class="pre">WpPipewireObject</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#c._WpPipewireObjectInterface.get_properties" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c._WpPipewireObjectInterface.get_param_info">
+<span class="target" id="struct__WpPipewireObjectInterface_1af4e69a0b92b7d093d485d6475584a84e"></span><span class="n"><span class="pre">GVariant</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">get_param_info</span></span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">(</span></span><a class="reference internal" href="#c.WpPipewireObject" title="WpPipewireObject"><span class="n"><span class="pre">WpPipewireObject</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#c._WpPipewireObjectInterface.get_param_info" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c._WpPipewireObjectInterface.enum_params">
+<span class="target" id="struct__WpPipewireObjectInterface_1a1c6cb3c874221494c4b267c1b7235614"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">enum_params</span></span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">(</span></span><a class="reference internal" href="#c.WpPipewireObject" title="WpPipewireObject"><span class="n"><span class="pre">WpPipewireObject</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">gchar</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">id</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="spa_pod_api.html#c.WpSpaPod" title="WpSpaPod"><span class="n"><span class="pre">WpSpaPod</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">filter</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">GCancellable</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">cancellable</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">GAsyncReadyCallback</span></span><span class="w"> </span><span class="n"><span class="pre">callback</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">gpointer</span></span><span class="w"> </span><span class="n"><span class="pre">user_data</span></span><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#c._WpPipewireObjectInterface.enum_params" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c._WpPipewireObjectInterface.enum_params_finish">
+<span class="target" id="struct__WpPipewireObjectInterface_1ac74683b03e1466527b177cd91178ea47"></span><a class="reference internal" href="iterator_api.html#c.WpIterator" title="WpIterator"><span class="n"><span class="pre">WpIterator</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">enum_params_finish</span></span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">(</span></span><a class="reference internal" href="#c.WpPipewireObject" title="WpPipewireObject"><span class="n"><span class="pre">WpPipewireObject</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">GAsyncResult</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">res</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">GError</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">error</span></span><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#c._WpPipewireObjectInterface.enum_params_finish" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c._WpPipewireObjectInterface.enum_params_sync">
+<span class="target" id="struct__WpPipewireObjectInterface_1a0af32e178ab9ab83128c227c0f6c5d9d"></span><a class="reference internal" href="iterator_api.html#c.WpIterator" title="WpIterator"><span class="n"><span class="pre">WpIterator</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">enum_params_sync</span></span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">(</span></span><a class="reference internal" href="#c.WpPipewireObject" title="WpPipewireObject"><span class="n"><span class="pre">WpPipewireObject</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">gchar</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">id</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="spa_pod_api.html#c.WpSpaPod" title="WpSpaPod"><span class="n"><span class="pre">WpSpaPod</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">filter</span></span><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#c._WpPipewireObjectInterface.enum_params_sync" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c._WpPipewireObjectInterface.set_param">
+<span class="target" id="struct__WpPipewireObjectInterface_1af76333e49da7db64f83d826f35681afe"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">set_param</span></span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">(</span></span><a class="reference internal" href="#c.WpPipewireObject" title="WpPipewireObject"><span class="n"><span class="pre">WpPipewireObject</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">gchar</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">id</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">guint32</span></span><span class="w"> </span><span class="n"><span class="pre">flags</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="spa_pod_api.html#c.WpSpaPod" title="WpSpaPod"><span class="n"><span class="pre">WpSpaPod</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">param</span></span><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#c._WpPipewireObjectInterface.set_param" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_pipewire_object_get_native_info">
+<span class="target" id="group__wppipewireobject_1ga18a527a56076071ad958ec673cb5d2c4"></span><span class="n"><span class="pre">gconstpointer</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_pipewire_object_get_native_info</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpPipewireObject" title="WpPipewireObject"><span class="n"><span class="pre">WpPipewireObject</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_pipewire_object_get_native_info" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Retrieves the native infor structure of this object (pw_node_info, pw_port_info, etc…) </p>
+<p><div class="remark admonition">
+<p class="admonition-title">Remark</p>
+<p>Requires WP_PIPEWIRE_OBJECT_FEATURE_INFO</p>
+</div>
+</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the pipewire object </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(nullable): the native pipewire info structure of this object </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_pipewire_object_get_properties">
+<span class="target" id="group__wppipewireobject_1ga4d0be338968a214116c26e3d33b31151"></span><a class="reference internal" href="properties_api.html#c.WpProperties" title="WpProperties"><span class="n"><span class="pre">WpProperties</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_pipewire_object_get_properties</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpPipewireObject" title="WpPipewireObject"><span class="n"><span class="pre">WpPipewireObject</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_pipewire_object_get_properties" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Retrieves the PipeWire properties of this object. </p>
+<p><div class="remark admonition">
+<p class="admonition-title">Remark</p>
+<p>Requires WP_PIPEWIRE_OBJECT_FEATURE_INFO</p>
+</div>
+</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the pipewire object </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full): the pipewire properties of this object; normally these are the properties that are part of the info structure </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_pipewire_object_new_properties_iterator">
+<span class="target" id="group__wppipewireobject_1ga3844f2e6441913b479e39b81ed13270c"></span><a class="reference internal" href="iterator_api.html#c.WpIterator" title="WpIterator"><span class="n"><span class="pre">WpIterator</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_pipewire_object_new_properties_iterator</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpPipewireObject" title="WpPipewireObject"><span class="n"><span class="pre">WpPipewireObject</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_pipewire_object_new_properties_iterator" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Iterates over the object’s PipeWire properties. </p>
+<p><div class="remark admonition">
+<p class="admonition-title">Remark</p>
+<p>Requires WP_PIPEWIRE_OBJECT_FEATURE_INFO</p>
+</div>
+</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the pipewire object </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full): an iterator that iterates over the pipewire properties of this object. Use <a class="reference internal" href="properties_api.html#group__wpproperties_1ga16d1f8fb5db2d504e672d9a3561493c0"><span class="std std-ref">wp_properties_iterator_item_get_key()</span></a> and <a class="reference internal" href="properties_api.html#group__wpproperties_1ga543fe228b31c685d43ceaaa110e4f50e"><span class="std std-ref">wp_properties_iterator_item_get_value()</span></a> to parse the items returned by this iterator. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_pipewire_object_get_property">
+<span class="target" id="group__wppipewireobject_1ga01e18b883cb94a0dad4da15591fff958"></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">gchar</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_pipewire_object_get_property</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpPipewireObject" title="WpPipewireObject"><span class="n"><span class="pre">WpPipewireObject</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">gchar</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">key</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_pipewire_object_get_property" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Returns the value of a single pipewire property. </p>
+<p>This is the same as getting the whole properties structure with <a class="reference internal" href="#group__wppipewireobject_1ga4d0be338968a214116c26e3d33b31151"><span class="std std-ref">wp_pipewire_object_get_properties()</span></a> and accessing a single property with <a class="reference internal" href="properties_api.html#group__wpproperties_1ga89dc57fc3b96b12249e43cb11b0d3f7b"><span class="std std-ref">wp_properties_get()</span></a>, but saves one call and having to clean up the WpProperties reference count afterwards.</p>
+<p>The value is owned by the proxy, but it is guaranteed to stay alive until execution returns back to the event loop.</p>
+<p><div class="remark admonition">
+<p class="admonition-title">Remark</p>
+<p>Requires WP_PIPEWIRE_OBJECT_FEATURE_INFO</p>
+</div>
+</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the pipewire object </p></li>
+<li><p><strong>key</strong> – the property name </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer none) (nullable): the value of the pipewire property <em>key</em> or NULL if the property doesn’t exist </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_pipewire_object_get_param_info">
+<span class="target" id="group__wppipewireobject_1gafd118461ff827916ae2da8edc2ad3124"></span><span class="n"><span class="pre">GVariant</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_pipewire_object_get_param_info</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpPipewireObject" title="WpPipewireObject"><span class="n"><span class="pre">WpPipewireObject</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_pipewire_object_get_param_info" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Returns the available parameters of this pipewire object. </p>
+<p>The return value is a GVariant of type <code class="docutils literal notranslate"><span class="pre">a{ss}</span></code>, where the key of each map entry is a spa param type id (the same ids that you can pass in <a class="reference internal" href="#group__wppipewireobject_1gaeb713bea43efd16bd7ef7a81bf3fda36"><span class="std std-ref">wp_pipewire_object_enum_params()</span></a>) and the value is a string that can contain the following letters, each of them representing a flag:<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">r</span></code>: the param is readable (<code class="docutils literal notranslate"><span class="pre">SPA_PARAM_INFO_READ</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">w</span></code>: the param is writable (<code class="docutils literal notranslate"><span class="pre">SPA_PARAM_INFO_WRITE</span></code>)</p></li>
+</ul>
+</p>
+<p>For params that are readable, you can query them with <a class="reference internal" href="#group__wppipewireobject_1gaeb713bea43efd16bd7ef7a81bf3fda36"><span class="std std-ref">wp_pipewire_object_enum_params()</span></a></p>
+<p>Params that are writable can be set with <a class="reference internal" href="#group__wppipewireobject_1ga5845e47517d112ced5e5233895fff7e8"><span class="std std-ref">wp_pipewire_object_set_param()</span></a></p>
+<p><div class="remark admonition">
+<p class="admonition-title">Remark</p>
+<p>Requires WP_PIPEWIRE_OBJECT_FEATURE_INFO</p>
+</div>
+</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the pipewire object </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full) (nullable): a variant of type <code class="docutils literal notranslate"><span class="pre">a{ss}</span></code> or NULL if the object does not support params at all </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_pipewire_object_enum_params">
+<span class="target" id="group__wppipewireobject_1gaeb713bea43efd16bd7ef7a81bf3fda36"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_pipewire_object_enum_params</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpPipewireObject" title="WpPipewireObject"><span class="n"><span class="pre">WpPipewireObject</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">gchar</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">id</span></span>, <a class="reference internal" href="spa_pod_api.html#c.WpSpaPod" title="WpSpaPod"><span class="n"><span class="pre">WpSpaPod</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">filter</span></span>, <span class="n"><span class="pre">GCancellable</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">cancellable</span></span>, <span class="n"><span class="pre">GAsyncReadyCallback</span></span><span class="w"> </span><span class="n"><span class="pre">callback</span></span>, <span class="n"><span class="pre">gpointer</span></span><span class="w"> </span><span class="n"><span class="pre">user_data</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_pipewire_object_enum_params" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Enumerate object parameters. </p>
+<p>This will asynchronously return the result, or an error, by calling the given <em>callback</em>. The result is going to be a WpIterator containing WpSpaPod objects, which can be retrieved with <a class="reference internal" href="#group__wppipewireobject_1gae51b0850b95e1ebcbb6c3f0b786868ba"><span class="std std-ref">wp_pipewire_object_enum_params_finish()</span></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the pipewire object </p></li>
+<li><p><strong>id</strong> – (nullable): the parameter id to enumerate or NULL for all parameters </p></li>
+<li><p><strong>filter</strong> – (nullable): a param filter or NULL </p></li>
+<li><p><strong>cancellable</strong> – (nullable): a cancellable for the async operation </p></li>
+<li><p><strong>callback</strong> – (scope async): a callback to call with the result </p></li>
+<li><p><strong>user_data</strong> – (closure): data to pass to <em>callback</em> </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_pipewire_object_enum_params_finish">
+<span class="target" id="group__wppipewireobject_1gae51b0850b95e1ebcbb6c3f0b786868ba"></span><a class="reference internal" href="iterator_api.html#c.WpIterator" title="WpIterator"><span class="n"><span class="pre">WpIterator</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_pipewire_object_enum_params_finish</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpPipewireObject" title="WpPipewireObject"><span class="n"><span class="pre">WpPipewireObject</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="n"><span class="pre">GAsyncResult</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">res</span></span>, <span class="n"><span class="pre">GError</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">error</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_pipewire_object_enum_params_finish" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Finishes an asynchronous parameter enumeration operation. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the pipewire object </p></li>
+<li><p><strong>res</strong> – the async result </p></li>
+<li><p><strong>error</strong> – (out) (optional): the reported error of the operation, if any </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full) (nullable): an iterator to iterate over the collected params, or NULL if the operation resulted in error; the items in the iterator are WpSpaPod </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_pipewire_object_enum_params_sync">
+<span class="target" id="group__wppipewireobject_1ga82b3ba8db22d7fbc1f4f42e59099a1d7"></span><a class="reference internal" href="iterator_api.html#c.WpIterator" title="WpIterator"><span class="n"><span class="pre">WpIterator</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_pipewire_object_enum_params_sync</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpPipewireObject" title="WpPipewireObject"><span class="n"><span class="pre">WpPipewireObject</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">gchar</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">id</span></span>, <a class="reference internal" href="spa_pod_api.html#c.WpSpaPod" title="WpSpaPod"><span class="n"><span class="pre">WpSpaPod</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">filter</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_pipewire_object_enum_params_sync" title="Permalink to this definition"></a><br /></dt>
+<dd><p>This method can be used to retrieve object parameters in a synchronous way (in contrast with <a class="reference internal" href="#group__wppipewireobject_1gaeb713bea43efd16bd7ef7a81bf3fda36"><span class="std std-ref">wp_pipewire_object_enum_params()</span></a>, which is async). </p>
+<p>The <code class="docutils literal notranslate"><span class="pre">WP_PIPEWIRE_OBJECT_FEATURE_PARAM_&lt;something&gt;</span></code> feature that corresponds to the specified <em>id</em> must have been activated earlier. These features enable monitoring and caching of params underneath, so that they are always available for retrieval with this method.</p>
+<p>Note, however, that cached params may be out-of-date if they have changed very recently on the remote object and the caching mechanism hasn’t been able to update them yet, so if you really need up-to-date information you should only rely on <a class="reference internal" href="#group__wppipewireobject_1gaeb713bea43efd16bd7ef7a81bf3fda36"><span class="std std-ref">wp_pipewire_object_enum_params()</span></a> instead.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the pipewire object </p></li>
+<li><p><strong>id</strong> – the parameter id to enumerate </p></li>
+<li><p><strong>filter</strong> – (nullable): a param filter or NULL </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full) (nullable): an iterator to iterate over cached parameters, or NULL if parameters for this <em>id</em> are not cached; the items in the iterator are WpSpaPod </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_pipewire_object_set_param">
+<span class="target" id="group__wppipewireobject_1ga5845e47517d112ced5e5233895fff7e8"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_pipewire_object_set_param</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpPipewireObject" title="WpPipewireObject"><span class="n"><span class="pre">WpPipewireObject</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">gchar</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">id</span></span>, <span class="n"><span class="pre">guint32</span></span><span class="w"> </span><span class="n"><span class="pre">flags</span></span>, <a class="reference internal" href="spa_pod_api.html#c.WpSpaPod" title="WpSpaPod"><span class="n"><span class="pre">WpSpaPod</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">param</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_pipewire_object_set_param" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Sets a parameter on the object. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the pipewire object </p></li>
+<li><p><strong>id</strong> – the parameter id to set </p></li>
+<li><p><strong>flags</strong> – optional flags or 0 </p></li>
+<li><p><strong>param</strong> – (transfer full): the parameter to set </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE on success, FALSE if setting the param failed </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.WP_TYPE_PIPEWIRE_OBJECT">
+<span class="target" id="group__wppipewireobject_1ga9f8feecae189ecc391a4c39a24949a16"></span><span class="sig-name descname"><span class="n"><span class="pre">WP_TYPE_PIPEWIRE_OBJECT</span></span></span> <span class="pre">(wp_pipewire_object_get_type</span> <span class="pre">())</span><a class="headerlink" href="#c.WP_TYPE_PIPEWIRE_OBJECT" title="Permalink to this definition"></a><br /></dt>
+<dd><p>The WpPipewireObject GType. </p>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="proxy_api.html" class="btn btn-neutral float-left" title="PipeWire Proxy" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="global_proxy_api.html" class="btn btn-neutral float-right" title="PipeWire Global Object Proxy" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Collabora.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,4 @@
+debian/tmp/usr/include/wireplumber-0.4
+debian/tmp/usr/lib/x86_64-linux-gnu/libwireplumber-0.4.so
+debian/tmp/usr/lib/x86_64-linux-gnu/pkgconfig/wireplumber-0.4.pc
+debian/tmp/usr/share/gir-1.0/Wp-0.4.gir

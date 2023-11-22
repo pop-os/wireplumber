@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PipeWire Client &mdash; WirePlumber 0.4.16 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="PipeWire Metadata" href="metadata_api.html" />
+    <link rel="prev" title="PipeWire Device" href="device_api.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> WirePlumber
+          </a>
+              <div class="version">
+                0.4.16
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">The WirePlumber Daemon</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installing-wireplumber.html">Installing WirePlumber</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../running-wireplumber-daemon.html">Running the WirePlumber daemon</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../daemon-logging.html">Debug Logging</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">The WirePlumber Library</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../c_api.html">C API Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="wp_api.html">Library Initialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core_api.html">Core</a></li>
+<li class="toctree-l2"><a class="reference internal" href="object_api.html">WpObject</a></li>
+<li class="toctree-l2"><a class="reference internal" href="obj_manager_api.html">Object Manager</a></li>
+<li class="toctree-l2"><a class="reference internal" href="obj_interest_api.html">Object Interest</a></li>
+<li class="toctree-l2"><a class="reference internal" href="iterator_api.html">Iterator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="transitions_api.html">Transitions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wperror_api.html">Error Codes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="log_api.html">Debug Logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="proxy_api.html">PipeWire Proxy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipewire_object_api.html">PipeWire Object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="global_proxy_api.html">PipeWire Global Object Proxy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="node_api.html">PipeWire Node</a></li>
+<li class="toctree-l2"><a class="reference internal" href="port_api.html">PipeWire Port</a></li>
+<li class="toctree-l2"><a class="reference internal" href="link_api.html">PipeWire Link</a></li>
+<li class="toctree-l2"><a class="reference internal" href="device_api.html">PipeWire Device</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">PipeWire Client</a></li>
+<li class="toctree-l2"><a class="reference internal" href="metadata_api.html">PipeWire Metadata</a></li>
+<li class="toctree-l2"><a class="reference internal" href="endpoint_api.html">PipeWire Endpoint</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spa_device_api.html">Spa Device</a></li>
+<li class="toctree-l2"><a class="reference internal" href="impl_node_api.html">Local Nodes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="impl_module_api.html">Local Modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="properties_api.html">Properties Dictionary</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spa_type_api.html">Spa Type Information</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spa_json_api.html">Spa Json</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spa_pod_api.html">Spa Pod (Plain Old Data)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plugin_api.html">Plugins</a></li>
+<li class="toctree-l2"><a class="reference internal" href="component_loader_api.html">Component Loader</a></li>
+<li class="toctree-l2"><a class="reference internal" href="session_item_api.html">Session Items</a></li>
+<li class="toctree-l2"><a class="reference internal" href="si_interfaces_api.html">Session Items Interfaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="si_factory_api.html">Session Items Factory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="state_api.html">State Storage</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../lua_api.html">Lua API Documentation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Resources</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing to WirePlumber</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../testing.html">Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../community.html">Community Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Releases</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">WirePlumber</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../c_api.html">C API Documentation</a> &raquo;</li>
+      <li>PipeWire Client</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/c_api/client_api.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="device_api.html" class="btn btn-neutral float-left" title="PipeWire Device" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="metadata_api.html" class="btn btn-neutral float-right" title="PipeWire Metadata" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+  </div>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="pipewire-client">
+<span id="client-api"></span><h1>PipeWire Client<a class="headerlink" href="#pipewire-client" title="Permalink to this headline"></a></h1>
+<div align="center" class="align-center"><div class="graphviz"><object data="../_images/graphviz-2b59be37d4c9b7a9636907d6cdec1ca9a6c364c7.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph inheritance {
+    rankdir=LR;
+    GObject -&gt; WpObject;
+    WpObject -&gt; WpProxy;
+    WpProxy -&gt; WpGlobalProxy;
+    WpGlobalProxy -&gt; WpClient;
+    GInterface -&gt; WpPipewireObject;
+    WpPipewireObject -&gt; WpClient;
+ }</p></object></div>
+</div>
+<dl class="c struct">
+<dt class="sig sig-object c" id="c.WpClient">
+<span class="target" id="structWpClient"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">WpClient</span></span></span><a class="headerlink" href="#c.WpClient" title="Permalink to this definition"></a><br /></dt>
+<dd><p>The WpClient class allows accessing the properties and methods of a PipeWire client object (<code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">pw_client</span></code>). A WpClient is constructed internally when a new client connects to PipeWire and it is made available through the WpObjectManager API. </p>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_client_send_error">
+<span class="target" id="group__wpclient_1gad5740b1fd957f9b2f6e68fb8da4c0393"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_client_send_error</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpClient" title="WpClient"><span class="n"><span class="pre">WpClient</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="n"><span class="pre">guint32</span></span><span class="w"> </span><span class="n"><span class="pre">id</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">res</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">gchar</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">message</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_client_send_error" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Send an error to the client. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the client </p></li>
+<li><p><strong>id</strong> – the global id to report the error on </p></li>
+<li><p><strong>res</strong> – an errno style error code </p></li>
+<li><p><strong>message</strong> – the error message string </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_client_update_permissions">
+<span class="target" id="group__wpclient_1gaff5a406cf70d4f3893e935eb1031a68d"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_client_update_permissions</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpClient" title="WpClient"><span class="n"><span class="pre">WpClient</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="n"><span class="pre">guint</span></span><span class="w"> </span><span class="n"><span class="pre">n_perm</span></span>, <span class="p"><span class="pre">...</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_client_update_permissions" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Update client’s permissions on a list of objects. </p>
+<p>An object id of <code class="docutils literal notranslate"><span class="pre">-1</span></code> can be used to set the default object permissions for this client</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the client </p></li>
+<li><p><strong>n_perm</strong> – the number of permissions specified in the variable arguments </p></li>
+<li><p><strong>...</strong> – <em>n_perm</em> pairs of guint32 numbers; the first number is the object id and the second is the permissions that this client should have on this object </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_client_update_permissions_array">
+<span class="target" id="group__wpclient_1gaf445eff6d88571d142e4bba5c05a5335"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_client_update_permissions_array</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpClient" title="WpClient"><span class="n"><span class="pre">WpClient</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="n"><span class="pre">guint</span></span><span class="w"> </span><span class="n"><span class="pre">n_perm</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">pw_permission</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">permissions</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_client_update_permissions_array" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Update client’s permissions on a list of objects. </p>
+<p>An object id of <code class="docutils literal notranslate"><span class="pre">-1</span></code> can be used to set the default object permissions for this client</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the client </p></li>
+<li><p><strong>n_perm</strong> – the number of permissions specified in the <em>permissions</em> array </p></li>
+<li><p><strong>permissions</strong> – (array length=n_perm) (element-type pw_permission): an array of permissions per object id </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.WP_TYPE_CLIENT">
+<span class="target" id="group__wpclient_1gae27a8fdc347d70eb1a483047257a0223"></span><span class="sig-name descname"><span class="n"><span class="pre">WP_TYPE_CLIENT</span></span></span> <span class="pre">(wp_client_get_type</span> <span class="pre">())</span><a class="headerlink" href="#c.WP_TYPE_CLIENT" title="Permalink to this definition"></a><br /></dt>
+<dd><p>The WpClient GType. </p>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="device_api.html" class="btn btn-neutral float-left" title="PipeWire Device" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="metadata_api.html" class="btn btn-neutral float-right" title="PipeWire Metadata" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Collabora.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

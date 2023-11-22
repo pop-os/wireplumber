@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Object Manager &mdash; WirePlumber 0.4.16 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Object Interest" href="lua_object_interest_api.html" />
+    <link rel="prev" title="WpObject" href="lua_object_api.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> WirePlumber
+          </a>
+              <div class="version">
+                0.4.16
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">The WirePlumber Daemon</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installing-wireplumber.html">Installing WirePlumber</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../running-wireplumber-daemon.html">Running the WirePlumber daemon</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../daemon-logging.html">Debug Logging</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">The WirePlumber Library</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../c_api.html">C API Documentation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../lua_api.html">Lua API Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="lua_introduction.html">Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lua_gobject.html">GObject Integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lua_core_api.html">Core</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lua_log_api.html">Debug Logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lua_object_api.html">WpObject</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Object Manager</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#constructors">Constructors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#methods">Methods</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="lua_object_interest_api.html">Object Interest</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lua_proxies_api.html">PipeWire Proxies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lua_session_item_api.html">Session Item</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lua_spa_device_api.html">Spa Device</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lua_spa_pod.html">Spa Pod</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lua_local_module_api.html">Local Modules</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Resources</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing to WirePlumber</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../testing.html">Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../community.html">Community Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Releases</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">WirePlumber</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../lua_api.html">Lua API Documentation</a> &raquo;</li>
+      <li>Object Manager</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/lua_api/lua_object_manager_api.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="lua_object_api.html" class="btn btn-neutral float-left" title="WpObject" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="lua_object_interest_api.html" class="btn btn-neutral float-right" title="Object Interest" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+  </div>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <blockquote>
+<div></div></blockquote>
+<section id="object-manager">
+<span id="lua-object-manager-api"></span><h1>Object Manager<a class="headerlink" href="#object-manager" title="Permalink to this headline"></a></h1>
+<p>The ObjectManager (binding for <a class="reference internal" href="../c_api/obj_manager_api.html#c.WpObjectManager" title="WpObjectManager"><code class="xref c c-struct docutils literal notranslate"><span class="pre">WpObjectManager</span></code></a>) provides a way to
+collect a set of objects and be notified when objects that fulfill a certain
+set of criteria are created or destroyed.</p>
+<p>To start an object manager, you first need to declare interest in a certain
+kind of object specifying a set of <a class="reference internal" href="lua_object_interest_api.html#lua-object-interest-api"><span class="std std-ref">Interests</span></a>
+in the constructor and then you need to activate it by calling
+<a class="reference internal" href="#ObjectManager.activate" title="ObjectManager.activate"><code class="xref py py-func docutils literal notranslate"><span class="pre">ObjectManager.activate()</span></code></a></p>
+<p>Upon activating an ObjectManager, any pre-existing objects that match the
+specified interests will immediately become available to get through
+<a class="reference internal" href="#ObjectManager.iterate" title="ObjectManager.iterate"><code class="xref py py-func docutils literal notranslate"><span class="pre">ObjectManager.iterate()</span></code></a> and the <a class="reference internal" href="../c_api/obj_manager_api.html#c.WpObjectManager" title="WpObjectManager"><code class="xref c c-struct docutils literal notranslate"><span class="pre">WpObjectManager</span></code></a> “object-added”
+signal will be emitted for all of them.</p>
+<section id="constructors">
+<h2>Constructors<a class="headerlink" href="#constructors" title="Permalink to this headline"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="ObjectManager">
+<span class="sig-name descname"><span class="pre">ObjectManager</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">interest_list</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ObjectManager" title="Permalink to this definition"></a></dt>
+<dd><p>Constructs a new object manager.</p>
+<p>Combines <a class="reference internal" href="../c_api/obj_manager_api.html#c.wp_object_manager_new" title="wp_object_manager_new"><code class="xref c c-func docutils literal notranslate"><span class="pre">wp_object_manager_new()</span></code></a> and
+<a class="reference internal" href="../c_api/obj_manager_api.html#c.wp_object_manager_add_interest_full" title="wp_object_manager_add_interest_full"><code class="xref c c-func docutils literal notranslate"><span class="pre">wp_object_manager_add_interest_full()</span></code></a></p>
+<p>The argument needs to be a table that contains one or more
+<a class="reference internal" href="lua_object_interest_api.html#lua-object-interest-api"><span class="std std-ref">Interest</span></a> objects. The object manager
+will then contain all objects that match any one of the supplied interests.</p>
+<p>Example:</p>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="n">streams_om</span> <span class="o">=</span> <span class="n">ObjectManager</span> <span class="p">{</span>
+  <span class="c1">-- match stream nodes</span>
+  <span class="n">Interest</span> <span class="p">{</span>
+    <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;node&quot;</span><span class="p">,</span>
+    <span class="n">Constraint</span> <span class="p">{</span> <span class="s2">&quot;media.class&quot;</span><span class="p">,</span> <span class="s2">&quot;matches&quot;</span><span class="p">,</span> <span class="s2">&quot;Stream/*&quot;</span><span class="p">,</span> <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;pw-global&quot;</span> <span class="p">},</span>
+  <span class="p">},</span>
+  <span class="c1">-- and device nodes that are not associated with any routes</span>
+  <span class="n">Interest</span> <span class="p">{</span>
+    <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;node&quot;</span><span class="p">,</span>
+    <span class="n">Constraint</span> <span class="p">{</span> <span class="s2">&quot;media.class&quot;</span><span class="p">,</span> <span class="s2">&quot;matches&quot;</span><span class="p">,</span> <span class="s2">&quot;Audio/*&quot;</span><span class="p">,</span> <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;pw-global&quot;</span> <span class="p">},</span>
+    <span class="n">Constraint</span> <span class="p">{</span> <span class="s2">&quot;device.routes&quot;</span><span class="p">,</span> <span class="s2">&quot;equals&quot;</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span> <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;pw&quot;</span> <span class="p">},</span>
+  <span class="p">},</span>
+  <span class="n">Interest</span> <span class="p">{</span>
+    <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;node&quot;</span><span class="p">,</span>
+    <span class="n">Constraint</span> <span class="p">{</span> <span class="s2">&quot;media.class&quot;</span><span class="p">,</span> <span class="s2">&quot;matches&quot;</span><span class="p">,</span> <span class="s2">&quot;Audio/*&quot;</span><span class="p">,</span> <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;pw-global&quot;</span> <span class="p">},</span>
+    <span class="n">Constraint</span> <span class="p">{</span> <span class="s2">&quot;device.routes&quot;</span><span class="p">,</span> <span class="s2">&quot;is-absent&quot;</span><span class="p">,</span> <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;pw&quot;</span> <span class="p">},</span>
+  <span class="p">},</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>The above example will create an ObjectManager that matches all nodes with
+a “media.class” global property that starts with the string “Stream/”
+and additionally all those whose “media.class” starts with “Audio/” and
+they have either a “device.routes” property that equals zero or they
+don’t have a “device.routes” property at all.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>interest_list</strong> (<em>table</em>) – a list of <a class="reference internal" href="lua_object_interest_api.html#lua-object-interest-api"><span class="std std-ref">interests</span></a>
+to objects</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a new object manager</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ObjectManager (<a class="reference internal" href="../c_api/obj_manager_api.html#c.WpObjectManager" title="WpObjectManager"><code class="xref c c-struct docutils literal notranslate"><span class="pre">WpObjectManager</span></code></a>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="methods">
+<h2>Methods<a class="headerlink" href="#methods" title="Permalink to this headline"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="ObjectManager.activate">
+<span class="sig-prename descclassname"><span class="pre">ObjectManager.</span></span><span class="sig-name descname"><span class="pre">activate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ObjectManager.activate" title="Permalink to this definition"></a></dt>
+<dd><p>Activates the object manager.
+Binds <a class="reference internal" href="../c_api/obj_manager_api.html#c.wp_core_install_object_manager" title="wp_core_install_object_manager"><code class="xref c c-func docutils literal notranslate"><span class="pre">wp_core_install_object_manager()</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>self</strong> – the object manager</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ObjectManager.get_n_objects">
+<span class="sig-prename descclassname"><span class="pre">ObjectManager.</span></span><span class="sig-name descname"><span class="pre">get_n_objects</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ObjectManager.get_n_objects" title="Permalink to this definition"></a></dt>
+<dd><blockquote>
+<div><p>Binds <a class="reference internal" href="../c_api/obj_manager_api.html#c.wp_object_manager_get_n_objects" title="wp_object_manager_get_n_objects"><code class="xref c c-func docutils literal notranslate"><span class="pre">wp_object_manager_get_n_objects()</span></code></a></p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>self</strong> – the object manager</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the number of objects managed by the object manager</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>integer</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ObjectManager.iterate">
+<span class="sig-prename descclassname"><span class="pre">ObjectManager.</span></span><span class="sig-name descname"><span class="pre">iterate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interest</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ObjectManager.iterate" title="Permalink to this definition"></a></dt>
+<dd><p>Binds <a class="reference internal" href="../c_api/obj_manager_api.html#c.wp_object_manager_new_filtered_iterator_full" title="wp_object_manager_new_filtered_iterator_full"><code class="xref c c-func docutils literal notranslate"><span class="pre">wp_object_manager_new_filtered_iterator_full()</span></code></a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the object manager</p></li>
+<li><p><strong>interest</strong> (<a class="reference internal" href="lua_object_interest_api.html#lua-object-interest-api"><span class="std std-ref">Interest</span></a> or nil or none) – an interest to filter objects</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>all the managed objects that match the interest</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Iterator; the iteration items are of type <a class="reference internal" href="lua_gobject.html#lua-gobject"><span class="std std-ref">GObject</span></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ObjectManager.lookup">
+<span class="sig-prename descclassname"><span class="pre">ObjectManager.</span></span><span class="sig-name descname"><span class="pre">lookup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interest</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ObjectManager.lookup" title="Permalink to this definition"></a></dt>
+<dd><p>Binds <a class="reference internal" href="../c_api/obj_manager_api.html#c.wp_object_manager_lookup" title="wp_object_manager_lookup"><code class="xref c c-func docutils literal notranslate"><span class="pre">wp_object_manager_lookup()</span></code></a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the object manager</p></li>
+<li><p><strong>interest</strong> (<a class="reference internal" href="lua_object_interest_api.html#lua-object-interest-api"><span class="std std-ref">Interest</span></a> or nil or none) – the interest to use for the lookup</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the first managed object that matches the interest</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="lua_gobject.html#lua-gobject"><span class="std std-ref">GObject</span></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="lua_object_api.html" class="btn btn-neutral float-left" title="WpObject" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="lua_object_interest_api.html" class="btn btn-neutral float-right" title="Object Interest" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Collabora.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

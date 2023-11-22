@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Testing &mdash; WirePlumber 0.4.16 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Community Resources" href="community.html" />
+    <link rel="prev" title="Contributing to WirePlumber" href="contributing.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> WirePlumber
+          </a>
+              <div class="version">
+                0.4.16
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">The WirePlumber Daemon</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="installing-wireplumber.html">Installing WirePlumber</a></li>
+<li class="toctree-l1"><a class="reference internal" href="running-wireplumber-daemon.html">Running the WirePlumber daemon</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="daemon-logging.html">Debug Logging</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">The WirePlumber Library</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="c_api.html">C API Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lua_api.html">Lua API Documentation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Resources</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing to WirePlumber</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Testing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#automated-unit-tests">Automated unit tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#wireplumber-examples">WirePlumber examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#native-api-clients">Native API clients</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#pw-cat">pw-cat</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#video-play">video-play</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#pulseaudio-compat-api-clients">PulseAudio compat API clients</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#pacat">pacat</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pavucontrol">pavucontrol</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#alsa-compat-api-clients">ALSA compat API clients</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#aplay-arecord">aplay / arecord</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#jack-compat-api-clients">JACK compat API clients</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#qjackctl">qjackctl</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#jack-simple-client">jack_simple_client</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#device-reservation">Device Reservation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#with-pulseaudio">with PulseAudio</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#with-jack">with JACK</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="community.html">Community Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="releases.html">Releases</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">WirePlumber</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Testing</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/testing.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="contributing.html" class="btn btn-neutral float-left" title="Contributing to WirePlumber" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="community.html" class="btn btn-neutral float-right" title="Community Resources" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+  </div>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <blockquote>
+<div></div></blockquote>
+<section id="testing">
+<span id="id1"></span><h1>Testing<a class="headerlink" href="#testing" title="Permalink to this headline"></a></h1>
+<section id="automated-unit-tests">
+<h2>Automated unit tests<a class="headerlink" href="#automated-unit-tests" title="Permalink to this headline"></a></h2>
+<p>WirePlumber has automated tests that you can easily run with:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>meson <span class="nb">test</span> -C build
+</pre></div>
+</div>
+<p>This will automatically compile all test dependencies, so you can be sure
+that this always tests your latest changes.</p>
+<p>If you wish to run a specific test instead of all of them, you can run:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>meson <span class="nb">test</span> -C build test-name
+</pre></div>
+</div>
+<p>When debugging a single test, you can additionally enable verbose test output
+by appending <code class="docutils literal notranslate"><span class="pre">-v</span></code> and you can also run the test in gdb by appending <code class="docutils literal notranslate"><span class="pre">--gdb</span></code>.</p>
+<p>For more information on how to use <code class="docutils literal notranslate"><span class="pre">meson</span> <span class="pre">test</span></code>, please refer to
+<a class="reference external" href="https://mesonbuild.com/Unit-tests.html">meson’s manual</a></p>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>When submitting changes for review, always ensure that all tests pass</p>
+</div>
+<p>Please note that many WirePlumber tests require specific SPA test plugins
+to be available in your PipeWire installation. More specifically, PipeWire
+needs to be configured with the following options enabled:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">-Dvideotestsrc=true -Daudiotestsrc=true -Dtest=true</span>
+</pre></div>
+</div>
+<p>If these SPA plugins are not found in the system, some tests will fail.
+This is expected.</p>
+</section>
+<section id="wireplumber-examples">
+<h2>WirePlumber examples<a class="headerlink" href="#wireplumber-examples" title="Permalink to this headline"></a></h2>
+<p>WirePlumber ships examples in <code class="docutils literal notranslate"><span class="pre">test/examples</span></code>.
+Execute them from the top-level directory with <code class="docutils literal notranslate"><span class="pre">wp-uninstalled.sh</span></code>:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>./wp-uninstalled.sh ./build/tests/examples/audiotestsrc-play
+</pre></div>
+</div>
+<p>Assuming there is no other process actively using <code class="docutils literal notranslate"><span class="pre">hw:0,0</span></code> from alsa,
+the above example should play a test tone on <code class="docutils literal notranslate"><span class="pre">hw:0,0</span></code> without errors.</p>
+</section>
+<section id="native-api-clients">
+<h2>Native API clients<a class="headerlink" href="#native-api-clients" title="Permalink to this headline"></a></h2>
+<section id="pw-cat">
+<h3>pw-cat<a class="headerlink" href="#pw-cat" title="Permalink to this headline"></a></h3>
+<p>Using the default endpoint:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>wpctl status  <span class="c1"># verify the default endpoints</span>
+<span class="gp">$ </span>pw-record test.wav
+<span class="gp">$ </span>pw-play test.wav
+</pre></div>
+</div>
+<p>Using a non-default endpoint:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>pw-record --list-targets  <span class="c1"># find the node id</span>
+<span class="gp">$ </span>pw-record --target &lt;node_id&gt; test.wav
+<span class="gp">$ </span>pw-play --list-targets  <span class="c1"># find the node id</span>
+<span class="gp">$ </span>pw-play --target &lt;node_id&gt; test.wav
+</pre></div>
+</div>
+<p>or</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>wpctl status  <span class="c1"># find the capture &amp; playback endpoint ids</span>
+<span class="gp">$ </span>pw-record --target &lt;endpoint_id&gt; test.wav
+<span class="gp">$ </span>pw-play --target &lt;endpoint_id&gt; test.wav
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>node ids and endpoint ids can be used interchangeably when specifying
+targets in all use cases</p>
+</div>
+</section>
+<section id="video-play">
+<h3>video-play<a class="headerlink" href="#video-play" title="Permalink to this headline"></a></h3>
+<p>Using the default endpoint:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nb">cd</span> path/to/pipewire-source-dir
+<span class="gp">$ </span>./build/src/examples/video-play
+</pre></div>
+</div>
+<p>Using a non-default endpoint:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>wpctl status  <span class="c1"># find the endpoint id from the list</span>
+<span class="gp">$ </span><span class="nb">cd</span> path/to/pipewire-source-dir
+<span class="gp">$ </span>./build/src/examples/video-play &lt;endpoint_id&gt;
+</pre></div>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>enable videotestsrc in wireplumber’s configuration to have more video
+sources available</p>
+</div>
+</section>
+</section>
+<section id="pulseaudio-compat-api-clients">
+<h2>PulseAudio compat API clients<a class="headerlink" href="#pulseaudio-compat-api-clients" title="Permalink to this headline"></a></h2>
+<section id="pacat">
+<h3>pacat<a class="headerlink" href="#pacat" title="Permalink to this headline"></a></h3>
+<p>Using the default endpoint:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>wpctl status  <span class="c1"># verify the default endpoints</span>
+<span class="gp">$ </span>parecord test.wav
+<span class="gp">$ </span>paplay test.wav
+</pre></div>
+</div>
+</section>
+<section id="pavucontrol">
+<h3>pavucontrol<a class="headerlink" href="#pavucontrol" title="Permalink to this headline"></a></h3>
+<p>Use the command:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>pavucontrol
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Volume level meters should work</p></li>
+<li><p>Changing the volume should work</p></li>
+</ul>
+</section>
+</section>
+<section id="alsa-compat-api-clients">
+<h2>ALSA compat API clients<a class="headerlink" href="#alsa-compat-api-clients" title="Permalink to this headline"></a></h2>
+<section id="aplay-arecord">
+<h3>aplay / arecord<a class="headerlink" href="#aplay-arecord" title="Permalink to this headline"></a></h3>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>unless you have installed PipeWire in the default system prefix
+(<code class="docutils literal notranslate"><span class="pre">/usr</span></code>), the ALSA compat API will not work, unless you copy
+<code class="docutils literal notranslate"><span class="pre">libasound_module_pcm_pipewire.so</span></code> in the alsa plugins directory
+(usually <code class="docutils literal notranslate"><span class="pre">/usr/&lt;libdir&gt;/alsa-lib/</span></code>) and that you add the contents of
+<code class="docutils literal notranslate"><span class="pre">pipewire-alsa/conf/50-pipewire.conf</span></code> in your <code class="docutils literal notranslate"><span class="pre">~/.asoundrc</span></code>
+(or anywhere else, system-wide, where libasound can read it)</p>
+</div>
+<p>Using the default endpoint:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>wpctl status  <span class="c1"># verify the default endpoints</span>
+<span class="gp">$ </span>arecord -D pipewire -f S16_LE -r <span class="m">48000</span> test.wav
+<span class="gp">$ </span>aplay -D pipewire test.wav
+</pre></div>
+</div>
+<p>Using a non-default endpoint:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>wpctl status  <span class="c1"># find the capture &amp; playback endpoint ids</span>
+<span class="gp">$ </span><span class="nv">PIPEWIRE_NODE</span><span class="o">=</span>&lt;endpoint_id&gt; arecord -D pipewire -f S16_LE -r <span class="m">48000</span> test.wav
+<span class="gp">$ </span><span class="nv">PIPEWIRE_NODE</span><span class="o">=</span>&lt;endpoint_id&gt; aplay -D pipewire test.wav
+</pre></div>
+</div>
+<p>or</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>wpctl status  <span class="c1"># find the capture &amp; playback endpoint ids</span>
+<span class="gp">$ </span>arecord -D pipewire:NODE<span class="o">=</span>&lt;endpoint_id&gt; -f S16_LE -r <span class="m">48000</span> test.wav
+<span class="gp">$ </span>aplay -D pipewire:NODE<span class="o">=</span>&lt;endpoint_id&gt; test.wav
+</pre></div>
+</div>
+</section>
+</section>
+<section id="jack-compat-api-clients">
+<h2>JACK compat API clients<a class="headerlink" href="#jack-compat-api-clients" title="Permalink to this headline"></a></h2>
+<section id="qjackctl">
+<h3>qjackctl<a class="headerlink" href="#qjackctl" title="Permalink to this headline"></a></h3>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>pw-jack qjackctl
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>This should correctly connect.</p></li>
+<li><p>The “Graph” window should show the PipeWire graph.</p></li>
+</ul>
+</section>
+<section id="jack-simple-client">
+<h3>jack_simple_client<a class="headerlink" href="#jack-simple-client" title="Permalink to this headline"></a></h3>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>wpctl status  <span class="c1"># find the target endpoint id</span>
+<span class="gp">$ </span>wpctl inspect &lt;endpoint_id&gt;  <span class="c1"># find the node.id</span>
+<span class="gp">$ </span><span class="nv">PIPEWIRE_NODE</span><span class="o">=</span>&lt;node_id&gt; pw-jack jack_simple_client
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The JACK layer is not controlled by the session manager, it creates its own
+links; which is why it is required to specify a node id (endpoint id will not
+work)</p>
+</div>
+</section>
+</section>
+<section id="device-reservation">
+<h2>Device Reservation<a class="headerlink" href="#device-reservation" title="Permalink to this headline"></a></h2>
+<section id="with-pulseaudio">
+<h3>with PulseAudio<a class="headerlink" href="#with-pulseaudio" title="Permalink to this headline"></a></h3>
+<ol class="arabic simple">
+<li><p>With PulseAudio running, start a pulseaudio client.</p></li>
+</ol>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>gst-launch-1.0 audiotestsrc ! pulsesink
+</pre></div>
+</div>
+<ol class="arabic simple" start="2">
+<li><p>Start PipeWire &amp; WirePlumber</p>
+<ul class="simple">
+<li><p>The device in use by PA will not be available in PW</p></li>
+</ul>
+</li>
+<li><p>Stop the PA client</p>
+<ul class="simple">
+<li><p>A few seconds later, WirePlumber should assume control of the device</p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">wpctl</span> <span class="pre">status</span></code> should be able to confirm that the device is available</p></li>
+<li><p>Start a PA client again</p>
+<ul class="simple">
+<li><p>It should not be able to play; it will just freeze</p></li>
+</ul>
+</li>
+<li><p>Stop WirePlumber</p>
+<ul class="simple">
+<li><p>The PA client should immediately start playing</p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="with-jack">
+<h3>with JACK<a class="headerlink" href="#with-jack" title="Permalink to this headline"></a></h3>
+<ol class="arabic simple">
+<li><p>Start PipeWire &amp; WirePlumber</p>
+<ul class="simple">
+<li><p>All devices should be available</p></li>
+</ul>
+</li>
+<li><p>Start <code class="docutils literal notranslate"><span class="pre">jackdbus</span></code></p>
+<ol class="arabic simple">
+<li><p>through <code class="docutils literal notranslate"><span class="pre">qjackctl</span></code>:</p>
+<ul class="simple">
+<li><p>Enable <em>Setup</em> -&gt; <em>Misc</em> -&gt; <em>Enable JACK D-Bus interface</em></p></li>
+<li><p>Click <em>Start</em> on the main window</p></li>
+</ul>
+</li>
+<li><p>or manually:</p>
+<ul class="simple">
+<li><p>Run <code class="docutils literal notranslate"><span class="pre">jackdbus</span> <span class="pre">auto</span></code></p></li>
+<li><p>Run <code class="docutils literal notranslate"><span class="pre">qdbus</span> <span class="pre">org.jackaudio.service</span> <span class="pre">/org/jackaudio/Controller</span> <span class="pre">org.jackaudio.JackControl.StartServer</span></code></p></li>
+</ul>
+</li>
+</ol>
+</li>
+<li><p>Wait a few seconds and run <code class="docutils literal notranslate"><span class="pre">wpctl</span> <span class="pre">status</span></code> to inspect</p>
+<ul class="simple">
+<li><p>The devices taken by JACK should no longer be available</p></li>
+<li><p>There should be two <em>JACK System</em> endpoints (sink &amp; source)</p></li>
+</ul>
+</li>
+<li><p>Run an audio client on PipeWire (ex <code class="docutils literal notranslate"><span class="pre">pw-play</span> <span class="pre">test.wav</span></code>)</p>
+<ul class="simple">
+<li><p>Notice how audio now goes through JACK</p></li>
+</ul>
+</li>
+<li><p>Stop JACK</p>
+<ul class="simple">
+<li><p>through <code class="docutils literal notranslate"><span class="pre">qjackctl</span></code>, click <em>Stop</em></p></li>
+<li><p>or manually: <code class="docutils literal notranslate"><span class="pre">qdbus</span> <span class="pre">org.jackaudio.service</span> <span class="pre">/org/jackaudio/Controller</span> <span class="pre">org.jackaudio.JackControl.StopServer</span></code></p></li>
+</ul>
+</li>
+<li><p>Wait a few seconds and run <code class="docutils literal notranslate"><span class="pre">wpctl</span> <span class="pre">status</span></code> to inspect</p>
+<ul class="simple">
+<li><p>The devices that were release by JACK should again be available</p></li>
+<li><p>There should be no <em>JACK System</em> endpoint</p></li>
+</ul>
+</li>
+</ol>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>You may also start WirePlumber <em>after</em> starting JACK. It should immediately
+go to the state described in step 3</p>
+</div>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="contributing.html" class="btn btn-neutral float-left" title="Contributing to WirePlumber" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="community.html" class="btn btn-neutral float-right" title="Community Resources" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Collabora.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

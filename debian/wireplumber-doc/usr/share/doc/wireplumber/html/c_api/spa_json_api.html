@@ -1,0 +1,1243 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Spa Json &mdash; WirePlumber 0.4.16 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Spa Pod (Plain Old Data)" href="spa_pod_api.html" />
+    <link rel="prev" title="Spa Type Information" href="spa_type_api.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> WirePlumber
+          </a>
+              <div class="version">
+                0.4.16
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">The WirePlumber Daemon</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installing-wireplumber.html">Installing WirePlumber</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../running-wireplumber-daemon.html">Running the WirePlumber daemon</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../daemon-logging.html">Debug Logging</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">The WirePlumber Library</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../c_api.html">C API Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="wp_api.html">Library Initialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core_api.html">Core</a></li>
+<li class="toctree-l2"><a class="reference internal" href="object_api.html">WpObject</a></li>
+<li class="toctree-l2"><a class="reference internal" href="obj_manager_api.html">Object Manager</a></li>
+<li class="toctree-l2"><a class="reference internal" href="obj_interest_api.html">Object Interest</a></li>
+<li class="toctree-l2"><a class="reference internal" href="iterator_api.html">Iterator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="transitions_api.html">Transitions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wperror_api.html">Error Codes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="log_api.html">Debug Logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="proxy_api.html">PipeWire Proxy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipewire_object_api.html">PipeWire Object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="global_proxy_api.html">PipeWire Global Object Proxy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="node_api.html">PipeWire Node</a></li>
+<li class="toctree-l2"><a class="reference internal" href="port_api.html">PipeWire Port</a></li>
+<li class="toctree-l2"><a class="reference internal" href="link_api.html">PipeWire Link</a></li>
+<li class="toctree-l2"><a class="reference internal" href="device_api.html">PipeWire Device</a></li>
+<li class="toctree-l2"><a class="reference internal" href="client_api.html">PipeWire Client</a></li>
+<li class="toctree-l2"><a class="reference internal" href="metadata_api.html">PipeWire Metadata</a></li>
+<li class="toctree-l2"><a class="reference internal" href="endpoint_api.html">PipeWire Endpoint</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spa_device_api.html">Spa Device</a></li>
+<li class="toctree-l2"><a class="reference internal" href="impl_node_api.html">Local Nodes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="impl_module_api.html">Local Modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="properties_api.html">Properties Dictionary</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spa_type_api.html">Spa Type Information</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Spa Json</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spa_pod_api.html">Spa Pod (Plain Old Data)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plugin_api.html">Plugins</a></li>
+<li class="toctree-l2"><a class="reference internal" href="component_loader_api.html">Component Loader</a></li>
+<li class="toctree-l2"><a class="reference internal" href="session_item_api.html">Session Items</a></li>
+<li class="toctree-l2"><a class="reference internal" href="si_interfaces_api.html">Session Items Interfaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="si_factory_api.html">Session Items Factory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="state_api.html">State Storage</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../lua_api.html">Lua API Documentation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Resources</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing to WirePlumber</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../testing.html">Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../community.html">Community Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Releases</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">WirePlumber</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../c_api.html">C API Documentation</a> &raquo;</li>
+      <li>Spa Json</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/c_api/spa_json_api.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="spa_type_api.html" class="btn btn-neutral float-left" title="Spa Type Information" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="spa_pod_api.html" class="btn btn-neutral float-right" title="Spa Pod (Plain Old Data)" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+  </div>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="spa-json">
+<span id="spa-json-api"></span><h1>Spa Json<a class="headerlink" href="#spa-json" title="Permalink to this headline"></a></h1>
+<div align="center" class="align-center"><div class="graphviz"><object data="../_images/graphviz-37d5a015457d7ff4ecc327eeaa3d4e37e259d724.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph inheritance {
+    rankdir=LR;
+    GBoxed -&gt; WpSpaJson;
+    GBoxed -&gt; WpSpaJsonBuilder;
+    GBoxed -&gt; WpSpaJsonParser;
+ }</p></object></div>
+</div>
+<dl class="c struct">
+<dt class="sig sig-object c" id="c.WpSpaJson">
+<span class="target" id="structWpSpaJson"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">WpSpaJson</span></span></span><a class="headerlink" href="#c.WpSpaJson" title="Permalink to this definition"></a><br /></dt>
+<dd><p><dl class="simple">
+<dt><strong>Since</strong></dt><dd><p>0.4.8 </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="c struct">
+<dt class="sig sig-object c" id="c.WpSpaJsonBuilder">
+<span class="target" id="structWpSpaJsonBuilder"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">WpSpaJsonBuilder</span></span></span><a class="headerlink" href="#c.WpSpaJsonBuilder" title="Permalink to this definition"></a><br /></dt>
+<dd><p><dl class="simple">
+<dt><strong>Since</strong></dt><dd><p>0.4.8 </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="c struct">
+<dt class="sig sig-object c" id="c.WpSpaJsonParser">
+<span class="target" id="structWpSpaJsonParser"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">WpSpaJsonParser</span></span></span><a class="headerlink" href="#c.WpSpaJsonParser" title="Permalink to this definition"></a><br /></dt>
+<dd><p><dl class="simple">
+<dt><strong>Since</strong></dt><dd><p>0.4.8 </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_json_ref">
+<span class="target" id="group__wpspajson_1ga2c8a94b50d694eb2983a5bf920d2ccbb"></span><a class="reference internal" href="#c.WpSpaJson" title="WpSpaJson"><span class="n"><span class="pre">WpSpaJson</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_json_ref</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaJson" title="WpSpaJson"><span class="n"><span class="pre">WpSpaJson</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_json_ref" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Increases the reference count of a spa json object. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – a spa json object </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full): <em>self</em> with an additional reference count on it </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_json_unref">
+<span class="target" id="group__wpspajson_1gaa3dc577788af4cc2a123c2641fbbbacc"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_json_unref</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaJson" title="WpSpaJson"><span class="n"><span class="pre">WpSpaJson</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_json_unref" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Decreases the reference count on <em>self</em> and frees it when the ref count reaches zero. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – (transfer full): a spa json object </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_json_new_from_string">
+<span class="target" id="group__wpspajson_1ga8355f4ae73006e33348ba509209f4656"></span><a class="reference internal" href="#c.WpSpaJson" title="WpSpaJson"><span class="n"><span class="pre">WpSpaJson</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_json_new_from_string</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">gchar</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">json_str</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_json_new_from_string" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Constructs a new WpSpaJson from a JSON string. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>json_str</strong> – a JSON string </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a new WpSpaJson that references the data in <em>json_str</em>. <em>json_str</em> is not copied, so it needs to stay alive. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_json_new_from_stringn">
+<span class="target" id="group__wpspajson_1ga70a54c55ed05c63aa6b5b712f5486f0e"></span><a class="reference internal" href="#c.WpSpaJson" title="WpSpaJson"><span class="n"><span class="pre">WpSpaJson</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_json_new_from_stringn</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">gchar</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">json_str</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n"><span class="pre">len</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_json_new_from_stringn" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Constructs a new WpSpaJson from a JSON string with specific length. </p>
+<p><dl class="simple">
+<dt><strong>Since</strong></dt><dd><p>0.4.10 </p>
+</dd>
+</dl>
+</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>json_str</strong> – a JSON string </p></li>
+<li><p><strong>len</strong> – the specific length of the string </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a new WpSpaJson that references the data in <em>json_str</em>. <em>json_str</em> is not copied, so it needs to stay alive.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_json_new_wrap">
+<span class="target" id="group__wpspajson_1ga1168d42389b303c9b3ef0e1afef310c7"></span><a class="reference internal" href="#c.WpSpaJson" title="WpSpaJson"><span class="n"><span class="pre">WpSpaJson</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_json_new_wrap</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">spa_json</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">json</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_json_new_wrap" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Constructs a new WpSpaJson that wraps the given <code class="docutils literal notranslate"><span class="pre">spa_json</span></code>. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>json</strong> – a spa_json </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a new WpSpaJson that references the data in <em>json</em>. <em>json</em> is not copied, so it needs to stay alive. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_json_get_spa_json">
+<span class="target" id="group__wpspajson_1gaf49b86966722b6d9943067202a537d03"></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">spa_json</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_json_get_spa_json</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#c.WpSpaJson" title="WpSpaJson"><span class="n"><span class="pre">WpSpaJson</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_json_get_spa_json" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Converts a WpSpaJson pointer to a <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">spa_json</span></code> one, for use with native pipewire &amp; spa functions. The returned pointer is owned by WpSpaJson and may not be modified or freed. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – a spa json object </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a const pointer to the underlying spa_json structure </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_json_get_data">
+<span class="target" id="group__wpspajson_1ga89ac2fff9cc3d3ed5540e776a8b16152"></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">gchar</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_json_get_data</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#c.WpSpaJson" title="WpSpaJson"><span class="n"><span class="pre">WpSpaJson</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_json_get_data" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Returns the json data. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – a spa json object </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a const pointer to the json data </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_json_get_size">
+<span class="target" id="group__wpspajson_1gae2266f6cd8fe307ccd60deaaeb9a173e"></span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_json_get_size</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#c.WpSpaJson" title="WpSpaJson"><span class="n"><span class="pre">WpSpaJson</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_json_get_size" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Returns the json data size. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – a spa json object </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the json data size </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_json_to_string">
+<span class="target" id="group__wpspajson_1ga00389375fbda2ae00800993d7cb637dd"></span><span class="n"><span class="pre">gchar</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_json_to_string</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#c.WpSpaJson" title="WpSpaJson"><span class="n"><span class="pre">WpSpaJson</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_json_to_string" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Returns a newly allocated json string with length matching the size. </p>
+<p><dl class="simple">
+<dt><strong>Since</strong></dt><dd><p>0.4.11 </p>
+</dd>
+</dl>
+</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – a spa json object </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full): the json string with length matching the size </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_json_copy">
+<span class="target" id="group__wpspajson_1gaf48f256844341741253b3e749a709a16"></span><a class="reference internal" href="#c.WpSpaJson" title="WpSpaJson"><span class="n"><span class="pre">WpSpaJson</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_json_copy</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaJson" title="WpSpaJson"><span class="n"><span class="pre">WpSpaJson</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">other</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_json_copy" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Copies a spa json object. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>other</strong> – a spa json object </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full): The newly copied spa json </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_json_is_unique_owner">
+<span class="target" id="group__wpspajson_1ga12ffc3ea915f0079f62e0840fc1c5608"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_json_is_unique_owner</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaJson" title="WpSpaJson"><span class="n"><span class="pre">WpSpaJson</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_json_is_unique_owner" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Checks if the json is the unique owner of its data or not. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – a spa json object </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if the json owns the data, FALSE otherwise. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_json_ensure_unique_owner">
+<span class="target" id="group__wpspajson_1ga1d31effec3622327e131a3aeeac9134c"></span><a class="reference internal" href="#c.WpSpaJson" title="WpSpaJson"><span class="n"><span class="pre">WpSpaJson</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_json_ensure_unique_owner</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaJson" title="WpSpaJson"><span class="n"><span class="pre">WpSpaJson</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_json_ensure_unique_owner" title="Permalink to this definition"></a><br /></dt>
+<dd><p>If <em>self</em> is not uniquely owned already, then it is unrefed and a copy of it is returned instead. You should always consider <em>self</em> as unsafe to use after this call and you should use the returned object instead. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – (transfer full): a spa json object </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full): the uniquely owned spa json object which may or may not be the same as <em>self</em>. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_json_new_null">
+<span class="target" id="group__wpspajson_1ga36801a4af099ae320ff2c51b8f371ad7"></span><a class="reference internal" href="#c.WpSpaJson" title="WpSpaJson"><span class="n"><span class="pre">WpSpaJson</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_json_new_null</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_json_new_null" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Creates a spa json of type NULL. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>(transfer full): The new spa json </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_json_new_boolean">
+<span class="target" id="group__wpspajson_1ga6f4307ceb6f65c0de1620ca7c16a5093"></span><a class="reference internal" href="#c.WpSpaJson" title="WpSpaJson"><span class="n"><span class="pre">WpSpaJson</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_json_new_boolean</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="n"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_json_new_boolean" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Creates a spa json of type boolean. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>value</strong> – the boolean value </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full): The new spa json </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_json_new_int">
+<span class="target" id="group__wpspajson_1gaab793d965256ee5db3255c2c68bc4d21"></span><a class="reference internal" href="#c.WpSpaJson" title="WpSpaJson"><span class="n"><span class="pre">WpSpaJson</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_json_new_int</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">gint</span></span><span class="w"> </span><span class="n"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_json_new_int" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Creates a spa json of type int. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>value</strong> – the int value </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full): The new spa json </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_json_new_float">
+<span class="target" id="group__wpspajson_1gaaeb0cff850f18d771e977c927d2aaaef"></span><a class="reference internal" href="#c.WpSpaJson" title="WpSpaJson"><span class="n"><span class="pre">WpSpaJson</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_json_new_float</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">float</span></span><span class="w"> </span><span class="n"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_json_new_float" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Creates a spa json of type float. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>value</strong> – the float value </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full): The new spa json </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_json_new_string">
+<span class="target" id="group__wpspajson_1ga52d8204a79d13c63f0509565e05b9252"></span><a class="reference internal" href="#c.WpSpaJson" title="WpSpaJson"><span class="n"><span class="pre">WpSpaJson</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_json_new_string</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">gchar</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_json_new_string" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Creates a spa json of type string. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>value</strong> – the string value </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full): The new spa json </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_json_new_array">
+<span class="target" id="group__wpspajson_1gaab9608717f0052351fc9212c6f25d221"></span><a class="reference internal" href="#c.WpSpaJson" title="WpSpaJson"><span class="n"><span class="pre">WpSpaJson</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_json_new_array</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">gchar</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">format</span></span>, <span class="p"><span class="pre">...</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_json_new_array" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Creates a spa json of type array. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>format</strong> – (nullable): the first value format (“n”, “b”, “i”, “f”, “s” or “J”) </p></li>
+<li><p><strong>...</strong> – a list of array types and values, followed by NULL </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full): The new spa json </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_json_new_array_valist">
+<span class="target" id="group__wpspajson_1ga733b22573a784a2dc00840237bede22f"></span><a class="reference internal" href="#c.WpSpaJson" title="WpSpaJson"><span class="n"><span class="pre">WpSpaJson</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_json_new_array_valist</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">gchar</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">format</span></span>, <span class="n"><span class="pre">va_list</span></span><span class="w"> </span><span class="n"><span class="pre">args</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_json_new_array_valist" title="Permalink to this definition"></a><br /></dt>
+<dd><p>This is the <code class="docutils literal notranslate"><span class="pre">va_list</span></code> version of <a class="reference internal" href="#group__wpspajson_1gaab9608717f0052351fc9212c6f25d221"><span class="std std-ref">wp_spa_json_new_array()</span></a> </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>format</strong> – (nullable): the first value format (“n”, “b”, “i”, “f”, “s” or “J”) </p></li>
+<li><p><strong>args</strong> – the variable arguments passed to <a class="reference internal" href="#group__wpspajson_1gaab9608717f0052351fc9212c6f25d221"><span class="std std-ref">wp_spa_json_new_array()</span></a> </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full): The new spa json </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_json_new_object">
+<span class="target" id="group__wpspajson_1ga0be834f28b97a9866afb89e5fd404885"></span><a class="reference internal" href="#c.WpSpaJson" title="WpSpaJson"><span class="n"><span class="pre">WpSpaJson</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_json_new_object</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">gchar</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">key</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">gchar</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">format</span></span>, <span class="p"><span class="pre">...</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_json_new_object" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Creates a spa json of type object. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key</strong> – (nullable): the first object property key </p></li>
+<li><p><strong>format</strong> – (nullable): the first property format (“n”, “b”, “i”, “f”, “s” or “J”) </p></li>
+<li><p><strong>...</strong> – a list of object properties and values, followed by NULL </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full): The new spa json </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_json_new_object_valist">
+<span class="target" id="group__wpspajson_1gacceb69fa870be5dec572474439078752"></span><a class="reference internal" href="#c.WpSpaJson" title="WpSpaJson"><span class="n"><span class="pre">WpSpaJson</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_json_new_object_valist</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">gchar</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">key</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">gchar</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">format</span></span>, <span class="n"><span class="pre">va_list</span></span><span class="w"> </span><span class="n"><span class="pre">args</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_json_new_object_valist" title="Permalink to this definition"></a><br /></dt>
+<dd><p>This is the <code class="docutils literal notranslate"><span class="pre">va_list</span></code> version of <a class="reference internal" href="#group__wpspajson_1ga0be834f28b97a9866afb89e5fd404885"><span class="std std-ref">wp_spa_json_new_object()</span></a> </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key</strong> – (nullable): the first object property key </p></li>
+<li><p><strong>format</strong> – (nullable): the first property format (“n”, “b”, “i”, “f”, “s” or “J”) </p></li>
+<li><p><strong>args</strong> – the variable arguments passed to <a class="reference internal" href="#group__wpspajson_1ga0be834f28b97a9866afb89e5fd404885"><span class="std std-ref">wp_spa_json_new_object()</span></a> </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full): The new spa json </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_json_is_null">
+<span class="target" id="group__wpspajson_1gae518af808495ab924169f442d37995e3"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_json_is_null</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaJson" title="WpSpaJson"><span class="n"><span class="pre">WpSpaJson</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_json_is_null" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Checks wether the spa json is of type null or not. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa json object </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if it is of type null, FALSE otherwise </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_json_is_boolean">
+<span class="target" id="group__wpspajson_1gaf693c2fee5868248a7211e43d198080d"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_json_is_boolean</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaJson" title="WpSpaJson"><span class="n"><span class="pre">WpSpaJson</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_json_is_boolean" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Checks wether the spa json is of type boolean or not. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa json object </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if it is of type boolean, FALSE otherwise </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_json_is_int">
+<span class="target" id="group__wpspajson_1gac87ded21a86a6d7ca140c15eeb5865fa"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_json_is_int</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaJson" title="WpSpaJson"><span class="n"><span class="pre">WpSpaJson</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_json_is_int" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Checks wether the spa json is of type int or not. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa json object </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if it is of type int, FALSE otherwise </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_json_is_float">
+<span class="target" id="group__wpspajson_1ga0ff1fbd7bf789b27c641ca2eb5cac91f"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_json_is_float</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaJson" title="WpSpaJson"><span class="n"><span class="pre">WpSpaJson</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_json_is_float" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Checks wether the spa json is of type float or not. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa json object </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if it is of type float, FALSE otherwise </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_json_is_string">
+<span class="target" id="group__wpspajson_1ga398ee5c037f09c8935d1d728fd4c56f6"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_json_is_string</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaJson" title="WpSpaJson"><span class="n"><span class="pre">WpSpaJson</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_json_is_string" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Checks wether the spa json is of type string or not. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa json object </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if it is of type string, FALSE otherwise </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_json_is_array">
+<span class="target" id="group__wpspajson_1ga4aab1be74ef8ce7930b57e1760fe982c"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_json_is_array</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaJson" title="WpSpaJson"><span class="n"><span class="pre">WpSpaJson</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_json_is_array" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Checks wether the spa json is of type array or not. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa json object </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if it is of type array, FALSE otherwise </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_json_is_object">
+<span class="target" id="group__wpspajson_1gab851696fbc2659b32f380a38c3d42a84"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_json_is_object</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaJson" title="WpSpaJson"><span class="n"><span class="pre">WpSpaJson</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_json_is_object" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Checks wether the spa json is of type object or not. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa json object </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if it is of type object, FALSE otherwise </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_json_parse_boolean">
+<span class="target" id="group__wpspajson_1gad0bc16590072a7b20923434eac285fc1"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_json_parse_boolean</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaJson" title="WpSpaJson"><span class="n"><span class="pre">WpSpaJson</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_json_parse_boolean" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Parses the boolean value of a spa json object. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa json object </p></li>
+<li><p><strong>value</strong> – (out): the boolean value </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if the value was obtained, FALSE otherwise </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_json_parse_int">
+<span class="target" id="group__wpspajson_1ga6175219c8bba8533b08310e52a2aa02d"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_json_parse_int</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaJson" title="WpSpaJson"><span class="n"><span class="pre">WpSpaJson</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="n"><span class="pre">gint</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_json_parse_int" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Parses the int value of a spa json object. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa json object </p></li>
+<li><p><strong>value</strong> – (out): the int value </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if the value was obtained, FALSE otherwise </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_json_parse_float">
+<span class="target" id="group__wpspajson_1ga4ba37b79e0af4499ea25523fbe8f3438"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_json_parse_float</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaJson" title="WpSpaJson"><span class="n"><span class="pre">WpSpaJson</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="kt"><span class="pre">float</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_json_parse_float" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Parses the float value of a spa json object. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa json object </p></li>
+<li><p><strong>value</strong> – (out): the float value </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if the value was obtained, FALSE otherwise </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_json_parse_string">
+<span class="target" id="group__wpspajson_1ga852d2e331fd496c8253a35909cadb308"></span><span class="n"><span class="pre">gchar</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_json_parse_string</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaJson" title="WpSpaJson"><span class="n"><span class="pre">WpSpaJson</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_json_parse_string" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Parses the string value of a spa json object. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa json object </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full): The newly allocated parsed string </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_json_parse_array">
+<span class="target" id="group__wpspajson_1gacfbca5521d6a830b2bc1369a093793ce"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_json_parse_array</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaJson" title="WpSpaJson"><span class="n"><span class="pre">WpSpaJson</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="p"><span class="pre">...</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_json_parse_array" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Parses the array types and values of a spa json object. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa json object </p></li>
+<li><p><strong>...</strong> – (out): the list of array types and values, followed by NULL </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if the types and values were obtained, FALSE otherwise </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_json_parse_array_valist">
+<span class="target" id="group__wpspajson_1ga3574ba6a45d7806cc393aed6cdb30a71"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_json_parse_array_valist</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaJson" title="WpSpaJson"><span class="n"><span class="pre">WpSpaJson</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="n"><span class="pre">va_list</span></span><span class="w"> </span><span class="n"><span class="pre">args</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_json_parse_array_valist" title="Permalink to this definition"></a><br /></dt>
+<dd><p>This is the <code class="docutils literal notranslate"><span class="pre">va_list</span></code> version of <a class="reference internal" href="#group__wpspajson_1gacfbca5521d6a830b2bc1369a093793ce"><span class="std std-ref">wp_spa_json_parse_array()</span></a> </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa json object </p></li>
+<li><p><strong>args</strong> – (out): the variable arguments passed to <a class="reference internal" href="#group__wpspajson_1gacfbca5521d6a830b2bc1369a093793ce"><span class="std std-ref">wp_spa_json_parse_array()</span></a> </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if the types and values were obtained, FALSE otherwise </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_json_parse_object">
+<span class="target" id="group__wpspajson_1ga5f82310093e3047a2f5c78096bc43ca1"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_json_parse_object</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaJson" title="WpSpaJson"><span class="n"><span class="pre">WpSpaJson</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="p"><span class="pre">...</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_json_parse_object" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Parses the object properties and values of a spa json object. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa json object </p></li>
+<li><p><strong>...</strong> – (out): the list of object properties and values, followed by NULL </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if the properties and values were obtained, FALSE otherwise </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_json_parse_object_valist">
+<span class="target" id="group__wpspajson_1gaec6172cc418fdea9c58ac94b5296a8b6"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_json_parse_object_valist</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaJson" title="WpSpaJson"><span class="n"><span class="pre">WpSpaJson</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="n"><span class="pre">va_list</span></span><span class="w"> </span><span class="n"><span class="pre">args</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_json_parse_object_valist" title="Permalink to this definition"></a><br /></dt>
+<dd><p>This is the <code class="docutils literal notranslate"><span class="pre">va_list</span></code> version of <a class="reference internal" href="#group__wpspajson_1ga5f82310093e3047a2f5c78096bc43ca1"><span class="std std-ref">wp_spa_json_parse_object()</span></a> </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa json object </p></li>
+<li><p><strong>args</strong> – (out): the variable arguments passed to <a class="reference internal" href="#group__wpspajson_1ga5f82310093e3047a2f5c78096bc43ca1"><span class="std std-ref">wp_spa_json_parse_object()</span></a> </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if the properties and values were obtained, FALSE otherwise </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_json_object_get">
+<span class="target" id="group__wpspajson_1ga5b81a23af3d085b3f66244fc5d1f3228"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_json_object_get</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaJson" title="WpSpaJson"><span class="n"><span class="pre">WpSpaJson</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="p"><span class="pre">...</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_json_object_get" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Parses the object property values of a spa json object. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa json object </p></li>
+<li><p><strong>...</strong> – the list of property names, formats and values, followed by NULL </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if the properties and values were obtained, FALSE otherwise </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_json_object_get_valist">
+<span class="target" id="group__wpspajson_1ga209da9751b982d91d978d272a72079e5"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_json_object_get_valist</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaJson" title="WpSpaJson"><span class="n"><span class="pre">WpSpaJson</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="n"><span class="pre">va_list</span></span><span class="w"> </span><span class="n"><span class="pre">args</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_json_object_get_valist" title="Permalink to this definition"></a><br /></dt>
+<dd><p>This is the <code class="docutils literal notranslate"><span class="pre">va_list</span></code> version of <a class="reference internal" href="#group__wpspajson_1ga5b81a23af3d085b3f66244fc5d1f3228"><span class="std std-ref">wp_spa_json_object_get()</span></a> </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa json object </p></li>
+<li><p><strong>args</strong> – the variable arguments passed to <a class="reference internal" href="#group__wpspajson_1ga5b81a23af3d085b3f66244fc5d1f3228"><span class="std std-ref">wp_spa_json_object_get()</span></a> </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if the properties and values were obtained, FALSE otherwise </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_json_builder_ref">
+<span class="target" id="group__wpspajson_1ga4ef8560ffba0f563d683dc3c55055f4b"></span><a class="reference internal" href="#c.WpSpaJsonBuilder" title="WpSpaJsonBuilder"><span class="n"><span class="pre">WpSpaJsonBuilder</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_json_builder_ref</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaJsonBuilder" title="WpSpaJsonBuilder"><span class="n"><span class="pre">WpSpaJsonBuilder</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_json_builder_ref" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Increases the reference count of a spa json builder. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – a spa json builder object </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full): <em>self</em> with an additional reference count on it </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_json_builder_unref">
+<span class="target" id="group__wpspajson_1ga775175f4b003651f755528cb5e92cf2a"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_json_builder_unref</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaJsonBuilder" title="WpSpaJsonBuilder"><span class="n"><span class="pre">WpSpaJsonBuilder</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_json_builder_unref" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Decreases the reference count on <em>self</em> and frees it when the ref count reaches zero. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – (transfer full): a spa json builder object </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_json_builder_new_array">
+<span class="target" id="group__wpspajson_1gad7a256f37bdef27bcc5605ddcf18e37e"></span><a class="reference internal" href="#c.WpSpaJsonBuilder" title="WpSpaJsonBuilder"><span class="n"><span class="pre">WpSpaJsonBuilder</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_json_builder_new_array</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_json_builder_new_array" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Creates a spa json builder of type array. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>(transfer full): the new spa json builder </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_json_builder_new_object">
+<span class="target" id="group__wpspajson_1gaeab7f49b0e3de8b4ab1eba0b0ec25a31"></span><a class="reference internal" href="#c.WpSpaJsonBuilder" title="WpSpaJsonBuilder"><span class="n"><span class="pre">WpSpaJsonBuilder</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_json_builder_new_object</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_json_builder_new_object" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Creates a spa json builder of type object. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>(transfer full): the new spa json builder </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_json_builder_add_property">
+<span class="target" id="group__wpspajson_1ga8c71bbb2a78e95806ffdad81380d71c4"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_json_builder_add_property</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaJsonBuilder" title="WpSpaJsonBuilder"><span class="n"><span class="pre">WpSpaJsonBuilder</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">gchar</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">key</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_json_builder_add_property" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Adds a property into the builder. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa json builder object </p></li>
+<li><p><strong>key</strong> – the name of the property </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_json_builder_add_null">
+<span class="target" id="group__wpspajson_1gafa63956a63bccd104ce9ce877b6c2600"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_json_builder_add_null</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaJsonBuilder" title="WpSpaJsonBuilder"><span class="n"><span class="pre">WpSpaJsonBuilder</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_json_builder_add_null" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Adds a null value into the builder. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa json builder object </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_json_builder_add_boolean">
+<span class="target" id="group__wpspajson_1ga70e34d6c963481fa544cbba568349b8b"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_json_builder_add_boolean</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaJsonBuilder" title="WpSpaJsonBuilder"><span class="n"><span class="pre">WpSpaJsonBuilder</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="n"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_json_builder_add_boolean" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Adds a boolean value into the builder. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa json builder object </p></li>
+<li><p><strong>value</strong> – the boolean value </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_json_builder_add_int">
+<span class="target" id="group__wpspajson_1gadd4da06f23c9524980cacc958088a875"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_json_builder_add_int</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaJsonBuilder" title="WpSpaJsonBuilder"><span class="n"><span class="pre">WpSpaJsonBuilder</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="n"><span class="pre">gint</span></span><span class="w"> </span><span class="n"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_json_builder_add_int" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Adds a int value into the builder. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa json builder object </p></li>
+<li><p><strong>value</strong> – the int value </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_json_builder_add_float">
+<span class="target" id="group__wpspajson_1ga7675da24d24935145892e2adf9414786"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_json_builder_add_float</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaJsonBuilder" title="WpSpaJsonBuilder"><span class="n"><span class="pre">WpSpaJsonBuilder</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="kt"><span class="pre">float</span></span><span class="w"> </span><span class="n"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_json_builder_add_float" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Adds a float value into the builder. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa json builder object </p></li>
+<li><p><strong>value</strong> – the float value </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_json_builder_add_string">
+<span class="target" id="group__wpspajson_1ga34b64f2f72cea8ab6cdc32523300f2e4"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_json_builder_add_string</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaJsonBuilder" title="WpSpaJsonBuilder"><span class="n"><span class="pre">WpSpaJsonBuilder</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">gchar</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_json_builder_add_string" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Adds a string value into the builder. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa json builder object </p></li>
+<li><p><strong>value</strong> – the string value </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_json_builder_add_json">
+<span class="target" id="group__wpspajson_1ga2181ccc2c06bb6cdd0960e1e0e322529"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_json_builder_add_json</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaJsonBuilder" title="WpSpaJsonBuilder"><span class="n"><span class="pre">WpSpaJsonBuilder</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <a class="reference internal" href="#c.WpSpaJson" title="WpSpaJson"><span class="n"><span class="pre">WpSpaJson</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">json</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_json_builder_add_json" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Adds a json value into the builder. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa json builder object </p></li>
+<li><p><strong>json</strong> – (transfer none): the json value </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_json_builder_add">
+<span class="target" id="group__wpspajson_1ga14d4a1141cb639d4ef68c5295d29a979"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_json_builder_add</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaJsonBuilder" title="WpSpaJsonBuilder"><span class="n"><span class="pre">WpSpaJsonBuilder</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="p"><span class="pre">...</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_json_builder_add" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Adds values into the builder. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa json builder object </p></li>
+<li><p><strong>...</strong> – the json values </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_json_builder_add_valist">
+<span class="target" id="group__wpspajson_1ga8165bb0f491455fdfdd5adb43e28ee09"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_json_builder_add_valist</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaJsonBuilder" title="WpSpaJsonBuilder"><span class="n"><span class="pre">WpSpaJsonBuilder</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="n"><span class="pre">va_list</span></span><span class="w"> </span><span class="n"><span class="pre">args</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_json_builder_add_valist" title="Permalink to this definition"></a><br /></dt>
+<dd><p>This is the <code class="docutils literal notranslate"><span class="pre">va_list</span></code> version of <a class="reference internal" href="#group__wpspajson_1ga14d4a1141cb639d4ef68c5295d29a979"><span class="std std-ref">wp_spa_json_builder_add()</span></a> </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa json builder object </p></li>
+<li><p><strong>args</strong> – the variable arguments passed to <a class="reference internal" href="#group__wpspajson_1ga14d4a1141cb639d4ef68c5295d29a979"><span class="std std-ref">wp_spa_json_builder_add()</span></a> </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_json_builder_end">
+<span class="target" id="group__wpspajson_1gad66e0d651632f4064b3599618f843bcf"></span><a class="reference internal" href="#c.WpSpaJson" title="WpSpaJson"><span class="n"><span class="pre">WpSpaJson</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_json_builder_end</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaJsonBuilder" title="WpSpaJsonBuilder"><span class="n"><span class="pre">WpSpaJsonBuilder</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_json_builder_end" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Ends the builder process and returns the constructed spa json object. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa json builder object </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full): the constructed spa json object </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_json_parser_ref">
+<span class="target" id="group__wpspajson_1gab8768ceabb87f9cb7dfa2f1b2333a7c1"></span><a class="reference internal" href="#c.WpSpaJsonParser" title="WpSpaJsonParser"><span class="n"><span class="pre">WpSpaJsonParser</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_json_parser_ref</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaJsonParser" title="WpSpaJsonParser"><span class="n"><span class="pre">WpSpaJsonParser</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_json_parser_ref" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Increases the reference count of a spa json parser. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – a spa json parser object </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full): <em>self</em> with an additional reference count on it </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_json_parser_unref">
+<span class="target" id="group__wpspajson_1ga74b722b50024e9bd394fcf152a7644ae"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_json_parser_unref</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaJsonParser" title="WpSpaJsonParser"><span class="n"><span class="pre">WpSpaJsonParser</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_json_parser_unref" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Decreases the reference count on <em>self</em> and frees it when the ref count reaches zero. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – (transfer full): a spa json parser object </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_json_parser_new_array">
+<span class="target" id="group__wpspajson_1ga096191badedef099ee47586a208a945d"></span><a class="reference internal" href="#c.WpSpaJsonParser" title="WpSpaJsonParser"><span class="n"><span class="pre">WpSpaJsonParser</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_json_parser_new_array</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaJson" title="WpSpaJson"><span class="n"><span class="pre">WpSpaJson</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">json</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_json_parser_new_array" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Creates a spa json array parser. The <em>json</em> object must be valid for the entire life-cycle of the returned parser. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>json</strong> – the spa json array to parse </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full): The new spa json parser </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_json_parser_new_object">
+<span class="target" id="group__wpspajson_1ga3267ef5d8f71b8203004214f054a4b97"></span><a class="reference internal" href="#c.WpSpaJsonParser" title="WpSpaJsonParser"><span class="n"><span class="pre">WpSpaJsonParser</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_json_parser_new_object</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaJson" title="WpSpaJson"><span class="n"><span class="pre">WpSpaJson</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">json</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_json_parser_new_object" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Creates a spa json object parser. The <em>json</em> object must be valid for the entire life-cycle of the returned parser. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>json</strong> – the spa json object to parse </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full): The new spa json parser </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_json_parser_get_null">
+<span class="target" id="group__wpspajson_1ga96142e92b185580e905c3ced2cc55417"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_json_parser_get_null</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaJsonParser" title="WpSpaJsonParser"><span class="n"><span class="pre">WpSpaJsonParser</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_json_parser_get_null" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Gets the null value from a spa json parser. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa json parser object </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if the null value is present, FALSE otherwise </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_json_parser_get_boolean">
+<span class="target" id="group__wpspajson_1gae5a8b8505f2d48d734fe8ce4cc17a770"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_json_parser_get_boolean</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaJsonParser" title="WpSpaJsonParser"><span class="n"><span class="pre">WpSpaJsonParser</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_json_parser_get_boolean" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Gets the boolean value from a spa json parser. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa json parser object </p></li>
+<li><p><strong>value</strong> – (out): the boolean value </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if the value was obtained, FALSE otherwise </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_json_parser_get_int">
+<span class="target" id="group__wpspajson_1ga91cf74b0c7fb702e24a3a4e7dbd41dc0"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_json_parser_get_int</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaJsonParser" title="WpSpaJsonParser"><span class="n"><span class="pre">WpSpaJsonParser</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="n"><span class="pre">gint</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_json_parser_get_int" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Gets the int value from a spa json parser object. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa json parser object </p></li>
+<li><p><strong>value</strong> – (out): the int value </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if the value was obtained, FALSE otherwise </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_json_parser_get_float">
+<span class="target" id="group__wpspajson_1ga711f812487aaf39314a88c836c8a8db2"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_json_parser_get_float</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaJsonParser" title="WpSpaJsonParser"><span class="n"><span class="pre">WpSpaJsonParser</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="kt"><span class="pre">float</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_json_parser_get_float" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Gets the float value from a spa json parser object. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa json parser object </p></li>
+<li><p><strong>value</strong> – (out): the float value </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if the value was obtained, FALSE otherwise </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_json_parser_get_string">
+<span class="target" id="group__wpspajson_1ga0282d72d954418efd4928b63b3b8a9e0"></span><span class="n"><span class="pre">gchar</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_json_parser_get_string</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaJsonParser" title="WpSpaJsonParser"><span class="n"><span class="pre">WpSpaJsonParser</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_json_parser_get_string" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Gets the string value from a spa json parser object. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa json parser object </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full): The newly allocated parsed string </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_json_parser_get_json">
+<span class="target" id="group__wpspajson_1ga22efce0a21df170e1e54b848147ad4ec"></span><a class="reference internal" href="#c.WpSpaJson" title="WpSpaJson"><span class="n"><span class="pre">WpSpaJson</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_json_parser_get_json</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaJsonParser" title="WpSpaJsonParser"><span class="n"><span class="pre">WpSpaJsonParser</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_json_parser_get_json" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Gets the spa json value from a spa json parser object. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa json parser object </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full): The spa json value or NULL if it could not be obtained </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_json_parser_get">
+<span class="target" id="group__wpspajson_1ga90b6d28f3df835c2e08db25a7a657024"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_json_parser_get</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaJsonParser" title="WpSpaJsonParser"><span class="n"><span class="pre">WpSpaJsonParser</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="p"><span class="pre">...</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_json_parser_get" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Gets the values from a spa json parser object. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa json parser object </p></li>
+<li><p><strong>...</strong> – (out): a list of values to get, followed by NULL </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if the value was obtained, FALSE otherwise </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_json_parser_get_valist">
+<span class="target" id="group__wpspajson_1ga4a8488e46069ae2dafdd9bbd9582c151"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_json_parser_get_valist</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaJsonParser" title="WpSpaJsonParser"><span class="n"><span class="pre">WpSpaJsonParser</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="n"><span class="pre">va_list</span></span><span class="w"> </span><span class="n"><span class="pre">args</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_json_parser_get_valist" title="Permalink to this definition"></a><br /></dt>
+<dd><p>This is the <code class="docutils literal notranslate"><span class="pre">va_list</span></code> version of <a class="reference internal" href="#group__wpspajson_1ga90b6d28f3df835c2e08db25a7a657024"><span class="std std-ref">wp_spa_json_parser_get()</span></a> </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa json parser object </p></li>
+<li><p><strong>args</strong> – the variable arguments passed to <a class="reference internal" href="#group__wpspajson_1ga90b6d28f3df835c2e08db25a7a657024"><span class="std std-ref">wp_spa_json_parser_get()</span></a> </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if the value was obtained, FALSE otherwise </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_json_new_iterator">
+<span class="target" id="group__wpspajson_1gae928069f7aa44fd631a2b2d5f7559966"></span><a class="reference internal" href="iterator_api.html#c.WpIterator" title="WpIterator"><span class="n"><span class="pre">WpIterator</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_json_new_iterator</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaJson" title="WpSpaJson"><span class="n"><span class="pre">WpSpaJson</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_json_new_iterator" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Creates a new iterator for a spa json object. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa json object </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full): the new spa json iterator </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.WP_TYPE_SPA_JSON">
+<span class="target" id="group__wpspajson_1ga8e57fe2726f12458b723ddfc5db380b5"></span><span class="sig-name descname"><span class="n"><span class="pre">WP_TYPE_SPA_JSON</span></span></span> <span class="pre">(wp_spa_json_get_type</span> <span class="pre">())</span><a class="headerlink" href="#c.WP_TYPE_SPA_JSON" title="Permalink to this definition"></a><br /></dt>
+<dd><p>The WpSpaJson GType. </p>
+</dd></dl>
+
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.WP_TYPE_SPA_JSON_BUILDER">
+<span class="target" id="group__wpspajson_1ga1cbb6d8d1e00325659b3be2bf9d7be22"></span><span class="sig-name descname"><span class="n"><span class="pre">WP_TYPE_SPA_JSON_BUILDER</span></span></span> <span class="pre">(wp_spa_json_builder_get_type</span> <span class="pre">())</span><a class="headerlink" href="#c.WP_TYPE_SPA_JSON_BUILDER" title="Permalink to this definition"></a><br /></dt>
+<dd><p>The WpSpaJsonBuilder GType. </p>
+</dd></dl>
+
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.WP_TYPE_SPA_JSON_PARSER">
+<span class="target" id="group__wpspajson_1gad5b2d6329b34bd79c057260d2fd98873"></span><span class="sig-name descname"><span class="n"><span class="pre">WP_TYPE_SPA_JSON_PARSER</span></span></span> <span class="pre">(wp_spa_json_parser_get_type</span> <span class="pre">())</span><a class="headerlink" href="#c.WP_TYPE_SPA_JSON_PARSER" title="Permalink to this definition"></a><br /></dt>
+<dd><p>The WpSpaJsonParser GType. </p>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="spa_type_api.html" class="btn btn-neutral float-left" title="Spa Type Information" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="spa_pod_api.html" class="btn btn-neutral float-right" title="Spa Pod (Plain Old Data)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Collabora.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

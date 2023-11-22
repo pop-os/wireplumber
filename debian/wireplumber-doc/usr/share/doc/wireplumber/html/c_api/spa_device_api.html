@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Spa Device &mdash; WirePlumber 0.4.16 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Local Nodes" href="impl_node_api.html" />
+    <link rel="prev" title="PipeWire Endpoint" href="endpoint_api.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> WirePlumber
+          </a>
+              <div class="version">
+                0.4.16
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">The WirePlumber Daemon</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installing-wireplumber.html">Installing WirePlumber</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../running-wireplumber-daemon.html">Running the WirePlumber daemon</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../daemon-logging.html">Debug Logging</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">The WirePlumber Library</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../c_api.html">C API Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="wp_api.html">Library Initialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core_api.html">Core</a></li>
+<li class="toctree-l2"><a class="reference internal" href="object_api.html">WpObject</a></li>
+<li class="toctree-l2"><a class="reference internal" href="obj_manager_api.html">Object Manager</a></li>
+<li class="toctree-l2"><a class="reference internal" href="obj_interest_api.html">Object Interest</a></li>
+<li class="toctree-l2"><a class="reference internal" href="iterator_api.html">Iterator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="transitions_api.html">Transitions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wperror_api.html">Error Codes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="log_api.html">Debug Logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="proxy_api.html">PipeWire Proxy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipewire_object_api.html">PipeWire Object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="global_proxy_api.html">PipeWire Global Object Proxy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="node_api.html">PipeWire Node</a></li>
+<li class="toctree-l2"><a class="reference internal" href="port_api.html">PipeWire Port</a></li>
+<li class="toctree-l2"><a class="reference internal" href="link_api.html">PipeWire Link</a></li>
+<li class="toctree-l2"><a class="reference internal" href="device_api.html">PipeWire Device</a></li>
+<li class="toctree-l2"><a class="reference internal" href="client_api.html">PipeWire Client</a></li>
+<li class="toctree-l2"><a class="reference internal" href="metadata_api.html">PipeWire Metadata</a></li>
+<li class="toctree-l2"><a class="reference internal" href="endpoint_api.html">PipeWire Endpoint</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Spa Device</a></li>
+<li class="toctree-l2"><a class="reference internal" href="impl_node_api.html">Local Nodes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="impl_module_api.html">Local Modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="properties_api.html">Properties Dictionary</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spa_type_api.html">Spa Type Information</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spa_json_api.html">Spa Json</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spa_pod_api.html">Spa Pod (Plain Old Data)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plugin_api.html">Plugins</a></li>
+<li class="toctree-l2"><a class="reference internal" href="component_loader_api.html">Component Loader</a></li>
+<li class="toctree-l2"><a class="reference internal" href="session_item_api.html">Session Items</a></li>
+<li class="toctree-l2"><a class="reference internal" href="si_interfaces_api.html">Session Items Interfaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="si_factory_api.html">Session Items Factory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="state_api.html">State Storage</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../lua_api.html">Lua API Documentation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Resources</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing to WirePlumber</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../testing.html">Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../community.html">Community Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Releases</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">WirePlumber</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../c_api.html">C API Documentation</a> &raquo;</li>
+      <li>Spa Device</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/c_api/spa_device_api.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="endpoint_api.html" class="btn btn-neutral float-left" title="PipeWire Endpoint" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="impl_node_api.html" class="btn btn-neutral float-right" title="Local Nodes" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+  </div>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="spa-device">
+<span id="spa-device-api"></span><h1>Spa Device<a class="headerlink" href="#spa-device" title="Permalink to this headline"></a></h1>
+<div align="center" class="align-center"><div class="graphviz"><object data="../_images/graphviz-ff99a5013d8a1618db4f8db327c391b660c681d4.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph inheritance {
+    rankdir=LR;
+    GObject -&gt; WpObject;
+    WpObject -&gt; WpProxy;
+    WpProxy -&gt; WpSpaDevice;
+ }</p></object></div>
+</div>
+<dl class="c struct">
+<dt class="sig sig-object c" id="c.WpSpaDevice">
+<span class="target" id="structWpSpaDevice"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">WpSpaDevice</span></span></span><a class="headerlink" href="#c.WpSpaDevice" title="Permalink to this definition"></a><br /></dt>
+<dd><p>A WpSpaDevice allows running a <code class="docutils literal notranslate"><span class="pre">spa_device</span></code> object locally, loading the implementation from a SPA factory. This is useful to run device monitors inside the session manager and have control over creating the actual nodes that the <code class="docutils literal notranslate"><span class="pre">spa_device</span></code> requests to create.</p>
+<p>To enable the spa device, call <a class="reference internal" href="object_api.html#group__wpobject_1ga0a2bbc62e3a198cee10c74f97d52fe39"><span class="std std-ref">wp_object_activate()</span></a> requesting WP_SPA_DEVICE_FEATURE_ENABLED.</p>
+<p>For actual devices (not device monitors) it also possible and desirable to export the device to PipeWire, which can be done by requesting WP_PROXY_FEATURE_BOUND from <a class="reference internal" href="object_api.html#group__wpobject_1ga0a2bbc62e3a198cee10c74f97d52fe39"><span class="std std-ref">wp_object_activate()</span></a>. When exporting, the export should be done before enabling the device, by requesting both features at the same time.</p>
+<p><strong>GObject</strong> <strong>Properties</strong> </p>
+<p><dl>
+<dt class="sig sig-object cpp">
+<span class="pre">properties</span></dt>
+<dd><p></p>
+<p>Properties of the spa device</p>
+<p><table class="colwidths-auto docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">WpProperties</span> <span class="pre">*</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">G_PARAM_READWRITE</span> <span class="pre">|</span> <span class="pre">G_PARAM_CONSTRUCT_ONLY</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</p>
+</dd></dl>
+
+</p>
+<p><dl>
+<dt class="sig sig-object cpp">
+<span class="pre">spa-device-handle</span></dt>
+<dd><p></p>
+<p>The spa device handle</p>
+<p><table class="colwidths-auto docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">gpointer</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">G_PARAM_READWRITE</span> <span class="pre">|</span> <span class="pre">G_PARAM_CONSTRUCT_ONLY</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</p>
+</dd></dl>
+
+</p>
+<p><strong>GObject</strong> <strong>Signals</strong> </p>
+<p><dl class="simple">
+<dt><strong>create-object</strong></dt><dd><p><p><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">void</span>
+<span class="n">create_object_callback</span> <span class="p">(</span><span class="n">WpSpaDevice</span> <span class="o">*</span> <span class="bp">self</span><span class="p">,</span>
+                        <span class="n">guint</span> <span class="nb">id</span><span class="p">,</span>
+                        <span class="n">gchar</span> <span class="o">*</span> <span class="nb">type</span><span class="p">,</span>
+                        <span class="n">gchar</span> <span class="o">*</span> <span class="n">factory</span><span class="p">,</span>
+                        <span class="n">WpProperties</span> <span class="o">*</span> <span class="n">properties</span><span class="p">,</span>
+                        <span class="n">gpointer</span> <span class="n">user_data</span><span class="p">)</span>
+</pre></div>
+</div>
+</p>
+<p>This signal is emitted when the device is creating a managed object The handler is expected to actually construct the object using the requested SPA factory and with the given properties. The handler should then store the object with wp_spa_device_store_managed_object. The WpSpaDevice will later unref the reference stored by this function when the managed object is to be destroyed.</p>
+<p>Parameters:<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">id</span></code> - the id of the managed object</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">type</span></code> - the SPA type that the managed object should have</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">factory</span></code> - the name of the SPA factory to use to construct the managed object</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">properties</span></code> - additional properties that the managed object should have</p></li>
+</ul>
+</p>
+<p>Flags: G_SIGNAL_RUN_FIRST </p>
+</p>
+</dd>
+</dl>
+</p>
+<p><dl class="simple">
+<dt><strong>object-removed</strong></dt><dd><p><p><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">void</span>
+<span class="n">object_removed_callback</span> <span class="p">(</span><span class="n">WpSpaDevice</span> <span class="o">*</span> <span class="bp">self</span><span class="p">,</span>
+                         <span class="n">guint</span> <span class="nb">id</span><span class="p">,</span>
+                         <span class="n">gpointer</span> <span class="n">user_data</span><span class="p">)</span>
+</pre></div>
+</div>
+</p>
+<p>This signal is emitted when the device has deleted a managed object. The handler may optionally release additional resources associated with this object.</p>
+<p>It is not necessary to call <a class="reference internal" href="#group__wpspadevice_1gad9b15fcaa95549a48486946d5a18b0c3"><span class="std std-ref">wp_spa_device_store_managed_object()</span></a> to remove the managed object, as this is done internally after this signal is fired.</p>
+<p>Parameters:<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">id</span></code> - the id of the managed object</p></li>
+</ul>
+</p>
+<p>Flags: G_SIGNAL_RUN_FIRST </p>
+</p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="c enum">
+<dt class="sig sig-object c" id="c.WpSpaDeviceFeatures">
+<span class="target" id="group__wpspadevice_1ga7b940ce9b2394deab5b051b68340a68d"></span><span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">WpSpaDeviceFeatures</span></span></span><a class="headerlink" href="#c.WpSpaDeviceFeatures" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Flags to be used as WpObjectFeatures for WpSpaDevice. </p>
+<p><em>Values:</em></p>
+<dl class="c enumerator">
+<dt class="sig sig-object c" id="c.WpSpaDeviceFeatures.WP_SPA_DEVICE_FEATURE_ENABLED">
+<span class="target" id="group__wpspadevice_1gga7b940ce9b2394deab5b051b68340a68dac653ee50f3c3ea6a54175f6439b1aa20"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">WP_SPA_DEVICE_FEATURE_ENABLED</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="p"><span class="pre">(</span></span><a class="reference internal" href="proxy_api.html#c.WpProxyFeatures.WP_PROXY_FEATURE_CUSTOM_START" title="WP_PROXY_FEATURE_CUSTOM_START"><span class="n"><span class="pre">WP_PROXY_FEATURE_CUSTOM_START</span></span></a><span class="w"> </span><span class="o"><span class="pre">&lt;&lt;</span></span><span class="w"> </span><span class="m"><span class="pre">0</span></span><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#c.WpSpaDeviceFeatures.WP_SPA_DEVICE_FEATURE_ENABLED" title="Permalink to this definition"></a><br /></dt>
+<dd><p>enables a spa device </p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_device_new_wrap">
+<span class="target" id="group__wpspadevice_1ga8d71e8984b5c41f846b8902f733f3778"></span><a class="reference internal" href="#c.WpSpaDevice" title="WpSpaDevice"><span class="n"><span class="pre">WpSpaDevice</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_device_new_wrap</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="core_api.html#c.WpCore" title="WpCore"><span class="n"><span class="pre">WpCore</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">core</span></span>, <span class="n"><span class="pre">gpointer</span></span><span class="w"> </span><span class="n"><span class="pre">spa_device_handle</span></span>, <a class="reference internal" href="properties_api.html#c.WpProperties" title="WpProperties"><span class="n"><span class="pre">WpProperties</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">properties</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_device_new_wrap" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Constructs an SPA Device object from an existing device handle. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>core</strong> – the wireplumber core </p></li>
+<li><p><strong>spa_device_handle</strong> – the spa device handle </p></li>
+<li><p><strong>properties</strong> – (nullable) (transfer full): additional properties of the device </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full): A new WpSpaDevice </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_device_new_from_spa_factory">
+<span class="target" id="group__wpspadevice_1gab9f6aec5ff3173a16ca862c3fa0fae8d"></span><a class="reference internal" href="#c.WpSpaDevice" title="WpSpaDevice"><span class="n"><span class="pre">WpSpaDevice</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_device_new_from_spa_factory</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="core_api.html#c.WpCore" title="WpCore"><span class="n"><span class="pre">WpCore</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">core</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">gchar</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">factory_name</span></span>, <a class="reference internal" href="properties_api.html#c.WpProperties" title="WpProperties"><span class="n"><span class="pre">WpProperties</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">properties</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_device_new_from_spa_factory" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Constructs a <code class="docutils literal notranslate"><span class="pre">SPA_TYPE_INTERFACE_Device</span></code> by loading the given SPA <em>factory_name</em>. </p>
+<p>To export this device to the PipeWire server, you need to call <a class="reference internal" href="object_api.html#group__wpobject_1ga0a2bbc62e3a198cee10c74f97d52fe39"><span class="std std-ref">wp_object_activate()</span></a> requesting WP_PROXY_FEATURE_BOUND and wait for the operation to complete.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>core</strong> – the wireplumber core </p></li>
+<li><p><strong>factory_name</strong> – the name of the SPA factory </p></li>
+<li><p><strong>properties</strong> – (nullable) (transfer full): properties to be passed to device constructor </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(nullable) (transfer full): A new WpSpaDevice wrapping the device that was constructed by the factory, or NULL if the factory does not exist or was unable to construct the device </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_device_get_properties">
+<span class="target" id="group__wpspadevice_1ga438c377d3356227d3eddb510f2b9f71e"></span><a class="reference internal" href="properties_api.html#c.WpProperties" title="WpProperties"><span class="n"><span class="pre">WpProperties</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_device_get_properties</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaDevice" title="WpSpaDevice"><span class="n"><span class="pre">WpSpaDevice</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_device_get_properties" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Gets the properties of this device. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa device </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full): the device properties </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_device_new_managed_object_iterator">
+<span class="target" id="group__wpspadevice_1ga280c69bc1f8bf1a197eca43e73a0f4d8"></span><a class="reference internal" href="iterator_api.html#c.WpIterator" title="WpIterator"><span class="n"><span class="pre">WpIterator</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_device_new_managed_object_iterator</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaDevice" title="WpSpaDevice"><span class="n"><span class="pre">WpSpaDevice</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_device_new_managed_object_iterator" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Iterates through all the objects managed by this device. </p>
+<p><dl class="simple">
+<dt><strong>Since</strong></dt><dd><p>0.4.11 </p>
+</dd>
+</dl>
+</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa device </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full): a WpIterator that iterates over all the objects managed by this device </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_device_get_managed_object">
+<span class="target" id="group__wpspadevice_1ga134fbfd322ba318e58d08d8c95fe5b8d"></span><span class="n"><span class="pre">GObject</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_device_get_managed_object</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaDevice" title="WpSpaDevice"><span class="n"><span class="pre">WpSpaDevice</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="n"><span class="pre">guint</span></span><span class="w"> </span><span class="n"><span class="pre">id</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_device_get_managed_object" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Gets one of the objects managed by this device. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa device </p></li>
+<li><p><strong>id</strong> – the (device-internal) id of the object to get </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full): the managed object associated with <em>id</em> </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_device_store_managed_object">
+<span class="target" id="group__wpspadevice_1gad9b15fcaa95549a48486946d5a18b0c3"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_device_store_managed_object</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaDevice" title="WpSpaDevice"><span class="n"><span class="pre">WpSpaDevice</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="n"><span class="pre">guint</span></span><span class="w"> </span><span class="n"><span class="pre">id</span></span>, <span class="n"><span class="pre">GObject</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">object</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_device_store_managed_object" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Stores or removes a managed object into/from a device. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa device </p></li>
+<li><p><strong>id</strong> – the (device-internal) id of the object </p></li>
+<li><p><strong>object</strong> – (transfer full) (nullable): the object to store or NULL to remove the managed object associated with <em>id</em> </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.WP_TYPE_SPA_DEVICE">
+<span class="target" id="group__wpspadevice_1gabcd435837a699c47d14fe9fc75ac0cd1"></span><span class="sig-name descname"><span class="n"><span class="pre">WP_TYPE_SPA_DEVICE</span></span></span> <span class="pre">(wp_spa_device_get_type</span> <span class="pre">())</span><a class="headerlink" href="#c.WP_TYPE_SPA_DEVICE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>The WpSpaDevice GType. </p>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="endpoint_api.html" class="btn btn-neutral float-left" title="PipeWire Endpoint" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="impl_node_api.html" class="btn btn-neutral float-right" title="Local Nodes" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Collabora.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

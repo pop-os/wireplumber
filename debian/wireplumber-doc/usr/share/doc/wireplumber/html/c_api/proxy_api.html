@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PipeWire Proxy &mdash; WirePlumber 0.4.16 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="PipeWire Object" href="pipewire_object_api.html" />
+    <link rel="prev" title="Debug Logging" href="log_api.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> WirePlumber
+          </a>
+              <div class="version">
+                0.4.16
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">The WirePlumber Daemon</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installing-wireplumber.html">Installing WirePlumber</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../running-wireplumber-daemon.html">Running the WirePlumber daemon</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../daemon-logging.html">Debug Logging</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">The WirePlumber Library</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../c_api.html">C API Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="wp_api.html">Library Initialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core_api.html">Core</a></li>
+<li class="toctree-l2"><a class="reference internal" href="object_api.html">WpObject</a></li>
+<li class="toctree-l2"><a class="reference internal" href="obj_manager_api.html">Object Manager</a></li>
+<li class="toctree-l2"><a class="reference internal" href="obj_interest_api.html">Object Interest</a></li>
+<li class="toctree-l2"><a class="reference internal" href="iterator_api.html">Iterator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="transitions_api.html">Transitions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wperror_api.html">Error Codes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="log_api.html">Debug Logging</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">PipeWire Proxy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipewire_object_api.html">PipeWire Object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="global_proxy_api.html">PipeWire Global Object Proxy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="node_api.html">PipeWire Node</a></li>
+<li class="toctree-l2"><a class="reference internal" href="port_api.html">PipeWire Port</a></li>
+<li class="toctree-l2"><a class="reference internal" href="link_api.html">PipeWire Link</a></li>
+<li class="toctree-l2"><a class="reference internal" href="device_api.html">PipeWire Device</a></li>
+<li class="toctree-l2"><a class="reference internal" href="client_api.html">PipeWire Client</a></li>
+<li class="toctree-l2"><a class="reference internal" href="metadata_api.html">PipeWire Metadata</a></li>
+<li class="toctree-l2"><a class="reference internal" href="endpoint_api.html">PipeWire Endpoint</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spa_device_api.html">Spa Device</a></li>
+<li class="toctree-l2"><a class="reference internal" href="impl_node_api.html">Local Nodes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="impl_module_api.html">Local Modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="properties_api.html">Properties Dictionary</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spa_type_api.html">Spa Type Information</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spa_json_api.html">Spa Json</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spa_pod_api.html">Spa Pod (Plain Old Data)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plugin_api.html">Plugins</a></li>
+<li class="toctree-l2"><a class="reference internal" href="component_loader_api.html">Component Loader</a></li>
+<li class="toctree-l2"><a class="reference internal" href="session_item_api.html">Session Items</a></li>
+<li class="toctree-l2"><a class="reference internal" href="si_interfaces_api.html">Session Items Interfaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="si_factory_api.html">Session Items Factory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="state_api.html">State Storage</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../lua_api.html">Lua API Documentation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Resources</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing to WirePlumber</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../testing.html">Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../community.html">Community Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Releases</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">WirePlumber</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../c_api.html">C API Documentation</a> &raquo;</li>
+      <li>PipeWire Proxy</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/c_api/proxy_api.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="log_api.html" class="btn btn-neutral float-left" title="Debug Logging" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pipewire_object_api.html" class="btn btn-neutral float-right" title="PipeWire Object" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+  </div>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="pipewire-proxy">
+<span id="proxy-api"></span><h1>PipeWire Proxy<a class="headerlink" href="#pipewire-proxy" title="Permalink to this headline"></a></h1>
+<div align="center" class="align-center"><div class="graphviz"><object data="../_images/graphviz-d436f6a59cccc6c575c208f95b29569faf69edce.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph inheritance {
+    rankdir=LR;
+    GObject -&gt; WpObject;
+    WpObject -&gt; WpProxy;
+ }</p></object></div>
+</div>
+<dl class="c struct">
+<dt class="sig sig-object c" id="c.WpProxy">
+<span class="target" id="structWpProxy"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">WpProxy</span></span></span><a class="headerlink" href="#c.WpProxy" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Base class for all objects that expose PipeWire objects using <code class="docutils literal notranslate"><span class="pre">pw_proxy</span></code> underneath.</p>
+<p>This base class cannot be instantiated. It provides handling of pw_proxy’s events and exposes common functionality.</p>
+<p><strong>GObject</strong> <strong>Properties</strong> </p>
+<p><dl>
+<dt class="sig sig-object cpp">
+<span class="pre">bound-id</span></dt>
+<dd><p></p>
+<p>The id that this object has on the registry</p>
+<p><table class="colwidths-auto docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">guint</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">G_PARAM_READABLE</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</p>
+</dd></dl>
+
+</p>
+<p><dl>
+<dt class="sig sig-object cpp">
+<span class="pre">pw-proxy</span></dt>
+<dd><p></p>
+<p>The <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">pw_proxy</span> <span class="pre">*</span></code></p>
+<p><table class="colwidths-auto docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">gpointer</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">G_PARAM_READABLE</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</p>
+</dd></dl>
+
+</p>
+<p><strong>GObject</strong> <strong>Signals</strong> </p>
+<p><dl class="simple">
+<dt><strong>bound</strong></dt><dd><p><p><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">void</span>
+<span class="n">bound_callback</span> <span class="p">(</span><span class="n">WpProxy</span> <span class="o">*</span> <span class="bp">self</span><span class="p">,</span>
+                <span class="n">guint</span> <span class="nb">id</span><span class="p">,</span>
+                <span class="n">gpointer</span> <span class="n">user_data</span><span class="p">)</span>
+</pre></div>
+</div>
+ Parameters:<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">id</span></code> - the bound id of the proxy</p></li>
+</ul>
+</p>
+<p>Flags: G_SIGNAL_RUN_FIRST </p>
+</p>
+</dd>
+</dl>
+</p>
+<p><dl class="simple">
+<dt><strong>pw-proxy-created</strong></dt><dd><p><p><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">void</span>
+<span class="n">pw_proxy_created_callback</span> <span class="p">(</span><span class="n">WpProxy</span> <span class="o">*</span> <span class="bp">self</span><span class="p">,</span>
+                           <span class="n">gpointer</span> <span class="nb">object</span><span class="p">,</span>
+                           <span class="n">gpointer</span> <span class="n">user_data</span><span class="p">)</span>
+</pre></div>
+</div>
+ Parameters:<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">object</span></code> - pointer to the pw_proxy that was just created</p></li>
+</ul>
+</p>
+<p>Flags: G_SIGNAL_RUN_FIRST </p>
+</p>
+</dd>
+</dl>
+</p>
+<p><dl class="simple">
+<dt><strong>pw-proxy-destroyed</strong></dt><dd><p><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">void</span>
+<span class="n">pw_proxy_destroyed_callback</span> <span class="p">(</span><span class="n">WpProxy</span> <span class="o">*</span> <span class="bp">self</span><span class="p">,</span>
+                             <span class="n">gpointer</span> <span class="n">user_data</span><span class="p">)</span>
+</pre></div>
+</div>
+ Flags: G_SIGNAL_RUN_FIRST </p>
+</dd>
+</dl>
+</p>
+<p><dl class="simple">
+<dt><strong>error</strong></dt><dd><p><p><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">void</span>
+<span class="n">error_callback</span> <span class="p">(</span><span class="n">WpProxy</span> <span class="o">*</span> <span class="bp">self</span><span class="p">,</span>
+                <span class="n">gint</span> <span class="n">seq</span><span class="p">,</span> <span class="n">gint</span> <span class="n">res</span><span class="p">,</span> <span class="n">const</span> <span class="n">gchar</span> <span class="o">*</span><span class="n">message</span><span class="p">,</span>
+                <span class="n">gpointer</span> <span class="n">user_data</span><span class="p">)</span>
+</pre></div>
+</div>
+ Emitted when an error occurs on the remote object. The parameters are exactly the same as on the underlying pw_proxy error callback.</p>
+<p>Parameters:<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">seq</span></code> - the sequence number of the operation that caused the error</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">res</span></code> - the error code</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">message</span></code> - a description of the error</p></li>
+</ul>
+</p>
+<p>Flags: G_SIGNAL_RUN_FIRST </p>
+</p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="c struct">
+<dt class="sig sig-object c" id="c._WpProxyClass">
+<span class="target" id="struct__WpProxyClass"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">_WpProxyClass</span></span></span><a class="headerlink" href="#c._WpProxyClass" title="Permalink to this definition"></a><br /></dt>
+<dd><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
+<dl class="c var">
+<dt class="sig sig-object c" id="c._WpProxyClass.parent_class">
+<span class="target" id="struct__WpProxyClass_1abcb6f4dbb530130611be22cfc802ccc2"></span><span class="n"><span class="pre">WpObjectClass</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">parent_class</span></span></span><a class="headerlink" href="#c._WpProxyClass.parent_class" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c._WpProxyClass.pw_iface_type">
+<span class="target" id="struct__WpProxyClass_1a2036f4b0d3be932e67e393c0979f8b0c"></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">gchar</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">pw_iface_type</span></span></span><a class="headerlink" href="#c._WpProxyClass.pw_iface_type" title="Permalink to this definition"></a><br /></dt>
+<dd><p>the PipeWire type of the interface that is being proxied by this class (ex. <code class="docutils literal notranslate"><span class="pre">PW_TYPE_INTERFACE_Node</span></code> for WpNode </p>
+</dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c._WpProxyClass.pw_iface_version">
+<span class="target" id="struct__WpProxyClass_1ae53245d2297c722032ea7169715de49d"></span><span class="n"><span class="pre">guint32</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">pw_iface_version</span></span></span><a class="headerlink" href="#c._WpProxyClass.pw_iface_version" title="Permalink to this definition"></a><br /></dt>
+<dd><p>the PipeWire version of the interface that is being proxied by this class </p>
+</dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c._WpProxyClass.pw_proxy_created">
+<span class="target" id="struct__WpProxyClass_1a43c2b78cf7180894b0c3434e78f304d0"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">pw_proxy_created</span></span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">(</span></span><a class="reference internal" href="#c.WpProxy" title="WpProxy"><span class="n"><span class="pre">WpProxy</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">pw_proxy</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">proxy</span></span><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#c._WpProxyClass.pw_proxy_created" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c._WpProxyClass.pw_proxy_destroyed">
+<span class="target" id="struct__WpProxyClass_1afebe5df8bc0b0f074eb616a5bd49e04b"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">pw_proxy_destroyed</span></span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">(</span></span><a class="reference internal" href="#c.WpProxy" title="WpProxy"><span class="n"><span class="pre">WpProxy</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#c._WpProxyClass.pw_proxy_destroyed" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c._WpProxyClass.bound">
+<span class="target" id="struct__WpProxyClass_1a190bced8ecf2a2b40d57e9d494fb1ca7"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">bound</span></span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">(</span></span><a class="reference internal" href="#c.WpProxy" title="WpProxy"><span class="n"><span class="pre">WpProxy</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">guint32</span></span><span class="w"> </span><span class="n"><span class="pre">id</span></span><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#c._WpProxyClass.bound" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c._WpProxyClass.error">
+<span class="target" id="struct__WpProxyClass_1a71044c5653976750e8b87ba62c6cac3e"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">error</span></span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">(</span></span><a class="reference internal" href="#c.WpProxy" title="WpProxy"><span class="n"><span class="pre">WpProxy</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">seq</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">res</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#c._WpProxyClass.error" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="c enum">
+<dt class="sig sig-object c" id="c.WpProxyFeatures">
+<span class="target" id="group__wpproxy_1gaa3ded57b0f41be8da8d5c51518728812"></span><span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">WpProxyFeatures</span></span></span><a class="headerlink" href="#c.WpProxyFeatures" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Flags to be used as WpObjectFeatures for WpProxy subclasses. </p>
+<p><em>Values:</em></p>
+<dl class="c enumerator">
+<dt class="sig sig-object c" id="c.WpProxyFeatures.WP_PROXY_FEATURE_BOUND">
+<span class="target" id="group__wpproxy_1ggaa3ded57b0f41be8da8d5c51518728812a9b655b3d2918befe2920c9e5b7bd4a21"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">WP_PROXY_FEATURE_BOUND</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="p"><span class="pre">(</span></span><span class="m"><span class="pre">1</span></span><span class="w"> </span><span class="o"><span class="pre">&lt;&lt;</span></span><span class="w"> </span><span class="m"><span class="pre">0</span></span><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#c.WpProxyFeatures.WP_PROXY_FEATURE_BOUND" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c enumerator">
+<dt class="sig sig-object c" id="c.WpProxyFeatures.WP_PIPEWIRE_OBJECT_FEATURE_INFO">
+<span class="target" id="group__wpproxy_1ggaa3ded57b0f41be8da8d5c51518728812a107d147cbf65d79e3b32426247d4612e"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">WP_PIPEWIRE_OBJECT_FEATURE_INFO</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="p"><span class="pre">(</span></span><span class="m"><span class="pre">1</span></span><span class="w"> </span><span class="o"><span class="pre">&lt;&lt;</span></span><span class="w"> </span><span class="m"><span class="pre">4</span></span><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#c.WpProxyFeatures.WP_PIPEWIRE_OBJECT_FEATURE_INFO" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c enumerator">
+<dt class="sig sig-object c" id="c.WpProxyFeatures.WP_PIPEWIRE_OBJECT_FEATURE_PARAM_PROPS">
+<span class="target" id="group__wpproxy_1ggaa3ded57b0f41be8da8d5c51518728812ab3cabf814d4eae0a056c23ac753d2f7d"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">WP_PIPEWIRE_OBJECT_FEATURE_PARAM_PROPS</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="p"><span class="pre">(</span></span><span class="m"><span class="pre">1</span></span><span class="w"> </span><span class="o"><span class="pre">&lt;&lt;</span></span><span class="w"> </span><span class="m"><span class="pre">5</span></span><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#c.WpProxyFeatures.WP_PIPEWIRE_OBJECT_FEATURE_PARAM_PROPS" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c enumerator">
+<dt class="sig sig-object c" id="c.WpProxyFeatures.WP_PIPEWIRE_OBJECT_FEATURE_PARAM_FORMAT">
+<span class="target" id="group__wpproxy_1ggaa3ded57b0f41be8da8d5c51518728812a8782ef272d791fff0d7e7c7effe0ad4c"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">WP_PIPEWIRE_OBJECT_FEATURE_PARAM_FORMAT</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="p"><span class="pre">(</span></span><span class="m"><span class="pre">1</span></span><span class="w"> </span><span class="o"><span class="pre">&lt;&lt;</span></span><span class="w"> </span><span class="m"><span class="pre">6</span></span><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#c.WpProxyFeatures.WP_PIPEWIRE_OBJECT_FEATURE_PARAM_FORMAT" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c enumerator">
+<dt class="sig sig-object c" id="c.WpProxyFeatures.WP_PIPEWIRE_OBJECT_FEATURE_PARAM_PROFILE">
+<span class="target" id="group__wpproxy_1ggaa3ded57b0f41be8da8d5c51518728812a5de91d857c77e6f4bc6c1e027d707d94"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">WP_PIPEWIRE_OBJECT_FEATURE_PARAM_PROFILE</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="p"><span class="pre">(</span></span><span class="m"><span class="pre">1</span></span><span class="w"> </span><span class="o"><span class="pre">&lt;&lt;</span></span><span class="w"> </span><span class="m"><span class="pre">7</span></span><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#c.WpProxyFeatures.WP_PIPEWIRE_OBJECT_FEATURE_PARAM_PROFILE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c enumerator">
+<dt class="sig sig-object c" id="c.WpProxyFeatures.WP_PIPEWIRE_OBJECT_FEATURE_PARAM_PORT_CONFIG">
+<span class="target" id="group__wpproxy_1ggaa3ded57b0f41be8da8d5c51518728812a502a53c64f19518f2e2e9dda43ad9c73"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">WP_PIPEWIRE_OBJECT_FEATURE_PARAM_PORT_CONFIG</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="p"><span class="pre">(</span></span><span class="m"><span class="pre">1</span></span><span class="w"> </span><span class="o"><span class="pre">&lt;&lt;</span></span><span class="w"> </span><span class="m"><span class="pre">8</span></span><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#c.WpProxyFeatures.WP_PIPEWIRE_OBJECT_FEATURE_PARAM_PORT_CONFIG" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c enumerator">
+<dt class="sig sig-object c" id="c.WpProxyFeatures.WP_PIPEWIRE_OBJECT_FEATURE_PARAM_ROUTE">
+<span class="target" id="group__wpproxy_1ggaa3ded57b0f41be8da8d5c51518728812ade1a3fd9deac33ff5e245d5e25213673"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">WP_PIPEWIRE_OBJECT_FEATURE_PARAM_ROUTE</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="p"><span class="pre">(</span></span><span class="m"><span class="pre">1</span></span><span class="w"> </span><span class="o"><span class="pre">&lt;&lt;</span></span><span class="w"> </span><span class="m"><span class="pre">9</span></span><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#c.WpProxyFeatures.WP_PIPEWIRE_OBJECT_FEATURE_PARAM_ROUTE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c enumerator">
+<dt class="sig sig-object c" id="c.WpProxyFeatures.WP_PROXY_FEATURE_CUSTOM_START">
+<span class="target" id="group__wpproxy_1ggaa3ded57b0f41be8da8d5c51518728812a37a7c45a88fae3bdde4eb1b7814fa1ec"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">WP_PROXY_FEATURE_CUSTOM_START</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="p"><span class="pre">(</span></span><span class="m"><span class="pre">1</span></span><span class="w"> </span><span class="o"><span class="pre">&lt;&lt;</span></span><span class="w"> </span><span class="m"><span class="pre">16</span></span><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#c.WpProxyFeatures.WP_PROXY_FEATURE_CUSTOM_START" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_proxy_get_bound_id">
+<span class="target" id="group__wpproxy_1ga7ef62986e7739b1afc8ca25e418a687e"></span><span class="n"><span class="pre">guint32</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_proxy_get_bound_id</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpProxy" title="WpProxy"><span class="n"><span class="pre">WpProxy</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_proxy_get_bound_id" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Returns the proxy bound id. </p>
+<p>The bound id is the id that this object has on the PipeWire registry (a.k.a. the global id). The object must have the WP_PROXY_FEATURE_BOUND feature before this method can be called.</p>
+<p><div class="remark admonition">
+<p class="admonition-title">Remark</p>
+<p>Requires WP_PROXY_FEATURE_BOUND</p>
+</div>
+</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the proxy </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the bound id of this object </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_proxy_get_interface_type">
+<span class="target" id="group__wpproxy_1ga560a122f234d25bdbcd1bd5fb7f12b12"></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">gchar</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_proxy_get_interface_type</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpProxy" title="WpProxy"><span class="n"><span class="pre">WpProxy</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="n"><span class="pre">guint32</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">version</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_proxy_get_interface_type" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Gets the interface type of the proxied object. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the proxy </p></li>
+<li><p><strong>version</strong> – (out) (optional): the version of the interface </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the PipeWire type of the interface that is being proxied </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_proxy_get_pw_proxy">
+<span class="target" id="group__wpproxy_1gae206abd85403664c8edf138bafa11aaa"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">pw_proxy</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_proxy_get_pw_proxy</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpProxy" title="WpProxy"><span class="n"><span class="pre">WpProxy</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_proxy_get_pw_proxy" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Gets the <code class="docutils literal notranslate"><span class="pre">pw_proxy</span></code> wrapped by this proxy object. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the proxy </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a pointer to the underlying <code class="docutils literal notranslate"><span class="pre">pw_proxy</span></code> object </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_proxy_set_pw_proxy">
+<span class="target" id="group__wpproxy_1ga843a0ca6346c64b698ea0413171c304d"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_proxy_set_pw_proxy</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpProxy" title="WpProxy"><span class="n"><span class="pre">WpProxy</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">pw_proxy</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">proxy</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_proxy_set_pw_proxy" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Private method to be used by subclasses to set the <code class="docutils literal notranslate"><span class="pre">pw_proxy</span></code> pointer when it is available. </p>
+<p>This can be called only if there is no <code class="docutils literal notranslate"><span class="pre">pw_proxy</span></code> already set. Takes ownership of <em>proxy</em>. </p>
+</dd></dl>
+
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.WP_PIPEWIRE_OBJECT_FEATURES_MINIMAL">
+<span class="target" id="group__wpproxy_1ga47868f85fbc56e8f1800abb59253da04"></span><span class="sig-name descname"><span class="n"><span class="pre">WP_PIPEWIRE_OBJECT_FEATURES_MINIMAL</span></span></span> &#160;&#160;&#160; <span class="pre">(WP_PROXY_FEATURE_BOUND</span> <span class="pre">|</span> <span class="pre">WP_PIPEWIRE_OBJECT_FEATURE_INFO)</span><a class="headerlink" href="#c.WP_PIPEWIRE_OBJECT_FEATURES_MINIMAL" title="Permalink to this definition"></a><br /></dt>
+<dd><p>The minimal feature set for proxies implementing WpPipewireObject. This is a subset of <em>WP_PIPEWIRE_OBJECT_FEATURES_ALL</em>. </p>
+</dd></dl>
+
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.WP_PIPEWIRE_OBJECT_FEATURES_ALL">
+<span class="target" id="group__wpproxy_1ga8e747efd7efa10fbd4b7cc701d734993"></span><span class="sig-name descname"><span class="n"><span class="pre">WP_PIPEWIRE_OBJECT_FEATURES_ALL</span></span></span> &#160;&#160;&#160; <span class="pre">(</span><a class="reference internal" href="#group__wpproxy_1ga47868f85fbc56e8f1800abb59253da04"><span class="std std-ref"><span class="pre">WP_PIPEWIRE_OBJECT_FEATURES_MINIMAL</span></span></a><p><span class="pre">|</span> <span class="pre">\</span></p>
+<p><span class="pre">WP_PIPEWIRE_OBJECT_FEATURE_PARAM_PROPS</span> <span class="pre">|</span> <span class="pre">\</span></p>
+<p><span class="pre">WP_PIPEWIRE_OBJECT_FEATURE_PARAM_FORMAT</span> <span class="pre">|</span> <span class="pre">\</span></p>
+<p><span class="pre">WP_PIPEWIRE_OBJECT_FEATURE_PARAM_PROFILE</span> <span class="pre">|</span> <span class="pre">\</span></p>
+<p><span class="pre">WP_PIPEWIRE_OBJECT_FEATURE_PARAM_PORT_CONFIG</span> <span class="pre">|</span> <span class="pre">\</span></p>
+<p><span class="pre">WP_PIPEWIRE_OBJECT_FEATURE_PARAM_ROUTE)</span></p>
+<a class="headerlink" href="#c.WP_PIPEWIRE_OBJECT_FEATURES_ALL" title="Permalink to this definition"></a><br /></dt>
+<dd><p>The complete common feature set for proxies implementing WpPipewireObject. This is a subset of <em>WP_OBJECT_FEATURES_ALL</em>. </p>
+</dd></dl>
+
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.WP_TYPE_PROXY">
+<span class="target" id="group__wpproxy_1gaef20d62ef4c8dc610add8e02a5c4db22"></span><span class="sig-name descname"><span class="n"><span class="pre">WP_TYPE_PROXY</span></span></span> <span class="pre">(wp_proxy_get_type</span> <span class="pre">())</span><a class="headerlink" href="#c.WP_TYPE_PROXY" title="Permalink to this definition"></a><br /></dt>
+<dd><p>The WpProxy GType. </p>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="log_api.html" class="btn btn-neutral float-left" title="Debug Logging" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pipewire_object_api.html" class="btn btn-neutral float-right" title="PipeWire Object" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Collabora.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

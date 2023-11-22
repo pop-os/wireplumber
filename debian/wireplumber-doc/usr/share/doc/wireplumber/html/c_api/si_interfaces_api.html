@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Session Items Interfaces &mdash; WirePlumber 0.4.16 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Session Items Factory" href="si_factory_api.html" />
+    <link rel="prev" title="Session Items" href="session_item_api.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> WirePlumber
+          </a>
+              <div class="version">
+                0.4.16
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">The WirePlumber Daemon</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installing-wireplumber.html">Installing WirePlumber</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../running-wireplumber-daemon.html">Running the WirePlumber daemon</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../daemon-logging.html">Debug Logging</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">The WirePlumber Library</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../c_api.html">C API Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="wp_api.html">Library Initialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core_api.html">Core</a></li>
+<li class="toctree-l2"><a class="reference internal" href="object_api.html">WpObject</a></li>
+<li class="toctree-l2"><a class="reference internal" href="obj_manager_api.html">Object Manager</a></li>
+<li class="toctree-l2"><a class="reference internal" href="obj_interest_api.html">Object Interest</a></li>
+<li class="toctree-l2"><a class="reference internal" href="iterator_api.html">Iterator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="transitions_api.html">Transitions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wperror_api.html">Error Codes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="log_api.html">Debug Logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="proxy_api.html">PipeWire Proxy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipewire_object_api.html">PipeWire Object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="global_proxy_api.html">PipeWire Global Object Proxy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="node_api.html">PipeWire Node</a></li>
+<li class="toctree-l2"><a class="reference internal" href="port_api.html">PipeWire Port</a></li>
+<li class="toctree-l2"><a class="reference internal" href="link_api.html">PipeWire Link</a></li>
+<li class="toctree-l2"><a class="reference internal" href="device_api.html">PipeWire Device</a></li>
+<li class="toctree-l2"><a class="reference internal" href="client_api.html">PipeWire Client</a></li>
+<li class="toctree-l2"><a class="reference internal" href="metadata_api.html">PipeWire Metadata</a></li>
+<li class="toctree-l2"><a class="reference internal" href="endpoint_api.html">PipeWire Endpoint</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spa_device_api.html">Spa Device</a></li>
+<li class="toctree-l2"><a class="reference internal" href="impl_node_api.html">Local Nodes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="impl_module_api.html">Local Modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="properties_api.html">Properties Dictionary</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spa_type_api.html">Spa Type Information</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spa_json_api.html">Spa Json</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spa_pod_api.html">Spa Pod (Plain Old Data)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plugin_api.html">Plugins</a></li>
+<li class="toctree-l2"><a class="reference internal" href="component_loader_api.html">Component Loader</a></li>
+<li class="toctree-l2"><a class="reference internal" href="session_item_api.html">Session Items</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Session Items Interfaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="si_factory_api.html">Session Items Factory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="state_api.html">State Storage</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../lua_api.html">Lua API Documentation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Resources</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing to WirePlumber</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../testing.html">Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../community.html">Community Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Releases</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">WirePlumber</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../c_api.html">C API Documentation</a> &raquo;</li>
+      <li>Session Items Interfaces</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/c_api/si_interfaces_api.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="session_item_api.html" class="btn btn-neutral float-left" title="Session Items" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="si_factory_api.html" class="btn btn-neutral float-right" title="Session Items Factory" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+  </div>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="session-items-interfaces">
+<span id="si-interfaces-api"></span><h1>Session Items Interfaces<a class="headerlink" href="#session-items-interfaces" title="Permalink to this headline"></a></h1>
+<div align="center" class="align-center"><div class="graphviz"><object data="../_images/graphviz-19f2acb4746ce2e169306788ccb48d43e4cdfc01.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph inheritance {
+    rankdir=LR;
+    GInterface -&gt; WpSiEndpoint;
+    GInterface -&gt; WpSiAdapter;
+    GInterface -&gt; WpSiLinkable;
+    GInterface -&gt; WpSiLink;
+    GInterface -&gt; WpSiAcquisition;
+ }</p></object></div>
+</div>
+<dl class="c struct">
+<dt class="sig sig-object c" id="c.WpSiEndpoint">
+<span class="target" id="structWpSiEndpoint"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">WpSiEndpoint</span></span></span><a class="headerlink" href="#c.WpSiEndpoint" title="Permalink to this definition"></a><br /></dt>
+<dd><p>An interface for session items that implement a PipeWire endpoint.</p>
+<p><strong>GObject</strong> <strong>Signals</strong> </p>
+<p><dl class="simple">
+<dt><strong>endpoint-properties-changed</strong></dt><dd><p><p><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">void</span>
+<span class="n">endpoint_properties_changed_callback</span> <span class="p">(</span><span class="n">WpSiEndpoint</span> <span class="o">*</span> <span class="bp">self</span><span class="p">,</span>
+                                      <span class="n">gpointer</span> <span class="n">user_data</span><span class="p">)</span>
+</pre></div>
+</div>
+ Emitted when the endpoint properties change</p>
+<p>Flags: G_SIGNAL_RUN_LAST </p>
+</p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="c struct">
+<dt class="sig sig-object c" id="c._WpSiEndpointInterface">
+<span class="target" id="struct__WpSiEndpointInterface"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">_WpSiEndpointInterface</span></span></span><a class="headerlink" href="#c._WpSiEndpointInterface" title="Permalink to this definition"></a><br /></dt>
+<dd><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
+<dl class="c var">
+<dt class="sig sig-object c" id="c._WpSiEndpointInterface.interface">
+<span class="target" id="struct__WpSiEndpointInterface_1aeebfbf86e6167d44937c6c55802ff7ee"></span><span class="n"><span class="pre">GTypeInterface</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">interface</span></span></span><a class="headerlink" href="#c._WpSiEndpointInterface.interface" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c._WpSiEndpointInterface.get_registration_info">
+<span class="target" id="struct__WpSiEndpointInterface_1a7d58570e7cded2ad57ddf8e1b847d097"></span><span class="n"><span class="pre">GVariant</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">get_registration_info</span></span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">(</span></span><a class="reference internal" href="#c.WpSiEndpoint" title="WpSiEndpoint"><span class="n"><span class="pre">WpSiEndpoint</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#c._WpSiEndpointInterface.get_registration_info" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c._WpSiEndpointInterface.get_properties">
+<span class="target" id="struct__WpSiEndpointInterface_1a47e35135b4b19921bd8c516a2c1ca7c2"></span><a class="reference internal" href="properties_api.html#c.WpProperties" title="WpProperties"><span class="n"><span class="pre">WpProperties</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">get_properties</span></span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">(</span></span><a class="reference internal" href="#c.WpSiEndpoint" title="WpSiEndpoint"><span class="n"><span class="pre">WpSiEndpoint</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#c._WpSiEndpointInterface.get_properties" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="c struct">
+<dt class="sig sig-object c" id="c.WpSiAdapter">
+<span class="target" id="structWpSiAdapter"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">WpSiAdapter</span></span></span><a class="headerlink" href="#c.WpSiAdapter" title="Permalink to this definition"></a><br /></dt>
+<dd><p>An interface for port adapters</p>
+<p><strong>GObject</strong> <strong>Signals</strong> </p>
+<p><dl class="simple">
+<dt><strong>adapter-ports-state-changed</strong></dt><dd><p><p><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">void</span>
+<span class="n">adapter_ports_state_changed_callback</span> <span class="p">(</span><span class="n">WpSiAdapter</span> <span class="o">*</span> <span class="bp">self</span><span class="p">,</span>
+                                      <span class="n">gpointer</span> <span class="n">user_data</span><span class="p">)</span>
+</pre></div>
+</div>
+ Emitted when the ports state changes</p>
+<p>Flags: G_SIGNAL_RUN_LAST </p>
+</p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="c struct">
+<dt class="sig sig-object c" id="c._WpSiAdapterInterface">
+<span class="target" id="struct__WpSiAdapterInterface"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">_WpSiAdapterInterface</span></span></span><a class="headerlink" href="#c._WpSiAdapterInterface" title="Permalink to this definition"></a><br /></dt>
+<dd><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
+<dl class="c var">
+<dt class="sig sig-object c" id="c._WpSiAdapterInterface.interface">
+<span class="target" id="struct__WpSiAdapterInterface_1a826047f380a93dacb1e061ba0a52a1c1"></span><span class="n"><span class="pre">GTypeInterface</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">interface</span></span></span><a class="headerlink" href="#c._WpSiAdapterInterface.interface" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c._WpSiAdapterInterface.get_ports_format">
+<span class="target" id="struct__WpSiAdapterInterface_1a5b29d0c9f32aa3ff8033cd1dacb52bd2"></span><a class="reference internal" href="spa_pod_api.html#c.WpSpaPod" title="WpSpaPod"><span class="n"><span class="pre">WpSpaPod</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">get_ports_format</span></span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">(</span></span><a class="reference internal" href="#c.WpSiAdapter" title="WpSiAdapter"><span class="n"><span class="pre">WpSiAdapter</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">gchar</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">mode</span></span><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#c._WpSiAdapterInterface.get_ports_format" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c._WpSiAdapterInterface.set_ports_format">
+<span class="target" id="struct__WpSiAdapterInterface_1ae51c6cdf2333e75279dfe5fdc2361385"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">set_ports_format</span></span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">(</span></span><a class="reference internal" href="#c.WpSiAdapter" title="WpSiAdapter"><span class="n"><span class="pre">WpSiAdapter</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="spa_pod_api.html#c.WpSpaPod" title="WpSpaPod"><span class="n"><span class="pre">WpSpaPod</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">format</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">gchar</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">mode</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">GAsyncReadyCallback</span></span><span class="w"> </span><span class="n"><span class="pre">callback</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">gpointer</span></span><span class="w"> </span><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#c._WpSiAdapterInterface.set_ports_format" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c._WpSiAdapterInterface.set_ports_format_finish">
+<span class="target" id="struct__WpSiAdapterInterface_1aa7dc1438b8420b4fb54fcc0d2d2e67aa"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">set_ports_format_finish</span></span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">(</span></span><a class="reference internal" href="#c.WpSiAdapter" title="WpSiAdapter"><span class="n"><span class="pre">WpSiAdapter</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">GAsyncResult</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">res</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">GError</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">error</span></span><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#c._WpSiAdapterInterface.set_ports_format_finish" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c._WpSiAdapterInterface.get_ports_state">
+<span class="target" id="struct__WpSiAdapterInterface_1aa27705104f453c744a7d158ef0fd46ea"></span><a class="reference internal" href="#c.WpSiAdapterPortsState" title="WpSiAdapterPortsState"><span class="n"><span class="pre">WpSiAdapterPortsState</span></span></a><span class="w"> </span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">get_ports_state</span></span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">(</span></span><a class="reference internal" href="#c.WpSiAdapter" title="WpSiAdapter"><span class="n"><span class="pre">WpSiAdapter</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#c._WpSiAdapterInterface.get_ports_state" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="c struct">
+<dt class="sig sig-object c" id="c.WpSiLinkable">
+<span class="target" id="structWpSiLinkable"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">WpSiLinkable</span></span></span><a class="headerlink" href="#c.WpSiLinkable" title="Permalink to this definition"></a><br /></dt>
+<dd><p>An interface for retrieving PipeWire port information from a session item. This information is used to create links in the nodes graph.</p>
+<p>This is normally implemented by the same session items that implement WpSiEndpoint. The standard link implementation expects to be able to cast a WpSiEndpoint into a WpSiLinkable. </p>
+</dd></dl>
+
+<dl class="c struct">
+<dt class="sig sig-object c" id="c._WpSiLinkableInterface">
+<span class="target" id="struct__WpSiLinkableInterface"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">_WpSiLinkableInterface</span></span></span><a class="headerlink" href="#c._WpSiLinkableInterface" title="Permalink to this definition"></a><br /></dt>
+<dd><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
+<dl class="c var">
+<dt class="sig sig-object c" id="c._WpSiLinkableInterface.interface">
+<span class="target" id="struct__WpSiLinkableInterface_1aea5cd789a1cc3459821d888ce188b11e"></span><span class="n"><span class="pre">GTypeInterface</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">interface</span></span></span><a class="headerlink" href="#c._WpSiLinkableInterface.interface" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c._WpSiLinkableInterface.get_ports">
+<span class="target" id="struct__WpSiLinkableInterface_1a0c9d1558149215aa55316304a21d3374"></span><span class="n"><span class="pre">GVariant</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">get_ports</span></span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">(</span></span><a class="reference internal" href="#c.WpSiLinkable" title="WpSiLinkable"><span class="n"><span class="pre">WpSiLinkable</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">gchar</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#c._WpSiLinkableInterface.get_ports" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c._WpSiLinkableInterface.get_acquisition">
+<span class="target" id="struct__WpSiLinkableInterface_1a38eef1278f33231b9881f8ab472375c4"></span><a class="reference internal" href="#c.WpSiAcquisition" title="WpSiAcquisition"><span class="n"><span class="pre">WpSiAcquisition</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">get_acquisition</span></span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">(</span></span><a class="reference internal" href="#c.WpSiLinkable" title="WpSiLinkable"><span class="n"><span class="pre">WpSiLinkable</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#c._WpSiLinkableInterface.get_acquisition" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="c struct">
+<dt class="sig sig-object c" id="c.WpSiLink">
+<span class="target" id="structWpSiLink"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">WpSiLink</span></span></span><a class="headerlink" href="#c.WpSiLink" title="Permalink to this definition"></a><br /></dt>
+<dd><p>An interface for session items that provide a PipeWire endpoint link.</p>
+<p><strong>GObject</strong> <strong>Signals</strong> </p>
+<p><dl class="simple">
+<dt><strong>link-properties-changed</strong></dt><dd><p><p><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">void</span>
+<span class="n">link_properties_changed_callback</span> <span class="p">(</span><span class="n">WpSiLink</span> <span class="o">*</span> <span class="bp">self</span><span class="p">,</span>
+                                  <span class="n">gpointer</span> <span class="n">user_data</span><span class="p">)</span>
+</pre></div>
+</div>
+ Emitted when the properties of the link change</p>
+<p>Flags: G_SIGNAL_RUN_LAST </p>
+</p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="c struct">
+<dt class="sig sig-object c" id="c._WpSiLinkInterface">
+<span class="target" id="struct__WpSiLinkInterface"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">_WpSiLinkInterface</span></span></span><a class="headerlink" href="#c._WpSiLinkInterface" title="Permalink to this definition"></a><br /></dt>
+<dd><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
+<dl class="c var">
+<dt class="sig sig-object c" id="c._WpSiLinkInterface.interface">
+<span class="target" id="struct__WpSiLinkInterface_1a7553a1d8074f6dd39e5b8999acff5e6f"></span><span class="n"><span class="pre">GTypeInterface</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">interface</span></span></span><a class="headerlink" href="#c._WpSiLinkInterface.interface" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c._WpSiLinkInterface.get_registration_info">
+<span class="target" id="struct__WpSiLinkInterface_1a1b3babee709b291dc77ef0b04733c9e6"></span><span class="n"><span class="pre">GVariant</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">get_registration_info</span></span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">(</span></span><a class="reference internal" href="#c.WpSiLink" title="WpSiLink"><span class="n"><span class="pre">WpSiLink</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#c._WpSiLinkInterface.get_registration_info" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c._WpSiLinkInterface.get_properties">
+<span class="target" id="struct__WpSiLinkInterface_1ac5e7fe640197e032b91206cd4e26b6c8"></span><a class="reference internal" href="properties_api.html#c.WpProperties" title="WpProperties"><span class="n"><span class="pre">WpProperties</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">get_properties</span></span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">(</span></span><a class="reference internal" href="#c.WpSiLink" title="WpSiLink"><span class="n"><span class="pre">WpSiLink</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#c._WpSiLinkInterface.get_properties" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c._WpSiLinkInterface.get_out_item">
+<span class="target" id="struct__WpSiLinkInterface_1a9970fbaeb0f017bc73f5d65101df25ac"></span><a class="reference internal" href="#c.WpSiLinkable" title="WpSiLinkable"><span class="n"><span class="pre">WpSiLinkable</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">get_out_item</span></span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">(</span></span><a class="reference internal" href="#c.WpSiLink" title="WpSiLink"><span class="n"><span class="pre">WpSiLink</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#c._WpSiLinkInterface.get_out_item" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c._WpSiLinkInterface.get_in_item">
+<span class="target" id="struct__WpSiLinkInterface_1ab66bcb542a9f7193c34436e4fe8d7077"></span><a class="reference internal" href="#c.WpSiLinkable" title="WpSiLinkable"><span class="n"><span class="pre">WpSiLinkable</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">get_in_item</span></span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">(</span></span><a class="reference internal" href="#c.WpSiLink" title="WpSiLink"><span class="n"><span class="pre">WpSiLink</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#c._WpSiLinkInterface.get_in_item" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="c struct">
+<dt class="sig sig-object c" id="c.WpSiAcquisition">
+<span class="target" id="structWpSiAcquisition"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">WpSiAcquisition</span></span></span><a class="headerlink" href="#c.WpSiAcquisition" title="Permalink to this definition"></a><br /></dt>
+<dd><p>This interface provides a way to request an item for linking before doing so. This allows item implementations to apply internal policy rules.</p>
+<p>A WpSiAcquisition is associated directly with a WpSiLinkable via <a class="reference internal" href="#group__wpsiinterfaces_1gab88a346f20dfafee91a1932056a48c11"><span class="std std-ref">wp_si_linkable_get_acquisition()</span></a>. In order to allow switching policies, it is recommended that port info implementations use a separate session item to implement this interface and allow replacing it. </p>
+</dd></dl>
+
+<dl class="c struct">
+<dt class="sig sig-object c" id="c._WpSiAcquisitionInterface">
+<span class="target" id="struct__WpSiAcquisitionInterface"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">_WpSiAcquisitionInterface</span></span></span><a class="headerlink" href="#c._WpSiAcquisitionInterface" title="Permalink to this definition"></a><br /></dt>
+<dd><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
+<dl class="c var">
+<dt class="sig sig-object c" id="c._WpSiAcquisitionInterface.interface">
+<span class="target" id="struct__WpSiAcquisitionInterface_1a9d5952df59ad7b9c28e3c3628d2e899a"></span><span class="n"><span class="pre">GTypeInterface</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">interface</span></span></span><a class="headerlink" href="#c._WpSiAcquisitionInterface.interface" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c._WpSiAcquisitionInterface.acquire">
+<span class="target" id="struct__WpSiAcquisitionInterface_1aaf28786cc203f168d9dec483b57c26b0"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">acquire</span></span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">(</span></span><a class="reference internal" href="#c.WpSiAcquisition" title="WpSiAcquisition"><span class="n"><span class="pre">WpSiAcquisition</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#c.WpSiLink" title="WpSiLink"><span class="n"><span class="pre">WpSiLink</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">acquisitor</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#c.WpSiLinkable" title="WpSiLinkable"><span class="n"><span class="pre">WpSiLinkable</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">item</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">GAsyncReadyCallback</span></span><span class="w"> </span><span class="n"><span class="pre">callback</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">gpointer</span></span><span class="w"> </span><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#c._WpSiAcquisitionInterface.acquire" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c._WpSiAcquisitionInterface.acquire_finish">
+<span class="target" id="struct__WpSiAcquisitionInterface_1a9231e6113561b145a70a60d5cc240d74"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">acquire_finish</span></span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">(</span></span><a class="reference internal" href="#c.WpSiAcquisition" title="WpSiAcquisition"><span class="n"><span class="pre">WpSiAcquisition</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">GAsyncResult</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">res</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">GError</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">error</span></span><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#c._WpSiAcquisitionInterface.acquire_finish" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c._WpSiAcquisitionInterface.release">
+<span class="target" id="struct__WpSiAcquisitionInterface_1afbb366da2cf86765666f3569a8832f1f"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">release</span></span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">(</span></span><a class="reference internal" href="#c.WpSiAcquisition" title="WpSiAcquisition"><span class="n"><span class="pre">WpSiAcquisition</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#c.WpSiLink" title="WpSiLink"><span class="n"><span class="pre">WpSiLink</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">acquisitor</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#c.WpSiLinkable" title="WpSiLinkable"><span class="n"><span class="pre">WpSiLinkable</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">item</span></span><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#c._WpSiAcquisitionInterface.release" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="c enum">
+<dt class="sig sig-object c" id="c.WpSiAdapterPortsState">
+<span class="target" id="group__wpsiinterfaces_1ga5a033ef12534e055ac5cae44caff7c17"></span><span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">WpSiAdapterPortsState</span></span></span><a class="headerlink" href="#c.WpSiAdapterPortsState" title="Permalink to this definition"></a><br /></dt>
+<dd><p>The ports configuration state of the adapter. </p>
+<p><dl class="simple">
+<dt><strong>Since</strong></dt><dd><p>0.4.10 </p>
+</dd>
+</dl>
+</p>
+<p><em>Values:</em></p>
+<dl class="c enumerator">
+<dt class="sig sig-object c" id="c.WpSiAdapterPortsState.WP_SI_ADAPTER_PORTS_STATE_NONE">
+<span class="target" id="group__wpsiinterfaces_1gga5a033ef12534e055ac5cae44caff7c17a311f2c6a81934700cfd212622a14006b"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">WP_SI_ADAPTER_PORTS_STATE_NONE</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">0</span></span><a class="headerlink" href="#c.WpSiAdapterPortsState.WP_SI_ADAPTER_PORTS_STATE_NONE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>the ports have never been configured </p>
+</dd></dl>
+
+<dl class="c enumerator">
+<dt class="sig sig-object c" id="c.WpSiAdapterPortsState.WP_SI_ADAPTER_PORTS_STATE_CONFIGURING">
+<span class="target" id="group__wpsiinterfaces_1gga5a033ef12534e055ac5cae44caff7c17ac61ecb3b5b25f838fbb0221fde40ef15"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">WP_SI_ADAPTER_PORTS_STATE_CONFIGURING</span></span></span><a class="headerlink" href="#c.WpSiAdapterPortsState.WP_SI_ADAPTER_PORTS_STATE_CONFIGURING" title="Permalink to this definition"></a><br /></dt>
+<dd><p>the ports are being configured </p>
+</dd></dl>
+
+<dl class="c enumerator">
+<dt class="sig sig-object c" id="c.WpSiAdapterPortsState.WP_SI_ADAPTER_PORTS_STATE_CONFIGURED">
+<span class="target" id="group__wpsiinterfaces_1gga5a033ef12534e055ac5cae44caff7c17a905d3c411b3516192985472a2e451324"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">WP_SI_ADAPTER_PORTS_STATE_CONFIGURED</span></span></span><a class="headerlink" href="#c.WpSiAdapterPortsState.WP_SI_ADAPTER_PORTS_STATE_CONFIGURED" title="Permalink to this definition"></a><br /></dt>
+<dd><p>the ports are configured </p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_si_endpoint_get_registration_info">
+<span class="target" id="group__wpsiinterfaces_1gaf72e81b21edc21edbcd1652cdfd42bb5"></span><span class="n"><span class="pre">GVariant</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_si_endpoint_get_registration_info</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSiEndpoint" title="WpSiEndpoint"><span class="n"><span class="pre">WpSiEndpoint</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_si_endpoint_get_registration_info" title="Permalink to this definition"></a><br /></dt>
+<dd><p>This should return information that is used for registering the endpoint. </p>
+<p>The return value should be a GVariant tuple of type (ssya{ss}) that contains, in order:<ul class="simple">
+<li><p>s: the endpoint’s name</p></li>
+<li><p>s: the media class</p></li>
+<li><p>y: the direction</p></li>
+<li><p>a{ss}: additional properties to be added to the list of global properties</p></li>
+</ul>
+</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the session item </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full): registration info for the endpoint </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_si_endpoint_get_properties">
+<span class="target" id="group__wpsiinterfaces_1ga47b3e9ea27cf223aadc2fe842f6330d3"></span><a class="reference internal" href="properties_api.html#c.WpProperties" title="WpProperties"><span class="n"><span class="pre">WpProperties</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_si_endpoint_get_properties</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSiEndpoint" title="WpSiEndpoint"><span class="n"><span class="pre">WpSiEndpoint</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_si_endpoint_get_properties" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Gets the properties of the endpoint. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the session item </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full) (nullable): the properties of the endpoint </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_si_adapter_get_ports_state">
+<span class="target" id="group__wpsiinterfaces_1ga7c3a712d1448d85161f7e9878b775beb"></span><a class="reference internal" href="#c.WpSiAdapterPortsState" title="WpSiAdapterPortsState"><span class="n"><span class="pre">WpSiAdapterPortsState</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_si_adapter_get_ports_state</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSiAdapter" title="WpSiAdapter"><span class="n"><span class="pre">WpSiAdapter</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_si_adapter_get_ports_state" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Gets the ports state. </p>
+<p><dl class="simple">
+<dt><strong>Since</strong></dt><dd><p>0.4.10 </p>
+</dd>
+</dl>
+</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the session item </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The state of the ports </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_si_adapter_get_ports_format">
+<span class="target" id="group__wpsiinterfaces_1ga1880861e3d420361267c559bfebcc5b9"></span><a class="reference internal" href="spa_pod_api.html#c.WpSpaPod" title="WpSpaPod"><span class="n"><span class="pre">WpSpaPod</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_si_adapter_get_ports_format</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSiAdapter" title="WpSiAdapter"><span class="n"><span class="pre">WpSiAdapter</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">gchar</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">mode</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_si_adapter_get_ports_format" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Gets the format used to configure the adapter session item’s ports. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the session item </p></li>
+<li><p><strong>mode</strong> – (out) (nullable): the mode </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full): The format used to configure the ports of the adapter session item. Some items automatically choose a format when being activated, others never set a format on activation and the user needs to manually set it externally with <a class="reference internal" href="#group__wpsiinterfaces_1ga6cb15d4ae1f351a7c6147e769f67aa7c"><span class="std std-ref">wp_si_adapter_set_ports_format()</span></a>. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_si_adapter_set_ports_format">
+<span class="target" id="group__wpsiinterfaces_1ga6cb15d4ae1f351a7c6147e769f67aa7c"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_si_adapter_set_ports_format</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSiAdapter" title="WpSiAdapter"><span class="n"><span class="pre">WpSiAdapter</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <a class="reference internal" href="spa_pod_api.html#c.WpSpaPod" title="WpSpaPod"><span class="n"><span class="pre">WpSpaPod</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">format</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">gchar</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">mode</span></span>, <span class="n"><span class="pre">GAsyncReadyCallback</span></span><span class="w"> </span><span class="n"><span class="pre">callback</span></span>, <span class="n"><span class="pre">gpointer</span></span><span class="w"> </span><span class="n"><span class="pre">data</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_si_adapter_set_ports_format" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Sets the format and configures the adapter session item ports using the given format. </p>
+<p>The result of the operation can be checked using the <a class="reference internal" href="#group__wpsiinterfaces_1ga788dc0a755ac6f20a51d31d05dc63672"><span class="std std-ref">wp_si_adapter_set_ports_format_finish()</span></a> API. If format is NULL, the adapter will be configured with the default format. If mode is NULL, the adapter will use “dsp” mode.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the session item </p></li>
+<li><p><strong>format</strong> – (transfer full) (nullable): the format to be set </p></li>
+<li><p><strong>mode</strong> – (nullable): the mode </p></li>
+<li><p><strong>callback</strong> – (scope async): the callback to call when the operation is done </p></li>
+<li><p><strong>data</strong> – (closure): user data for <em>callback</em> </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_si_adapter_set_ports_format_finish">
+<span class="target" id="group__wpsiinterfaces_1ga788dc0a755ac6f20a51d31d05dc63672"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_si_adapter_set_ports_format_finish</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSiAdapter" title="WpSiAdapter"><span class="n"><span class="pre">WpSiAdapter</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="n"><span class="pre">GAsyncResult</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">res</span></span>, <span class="n"><span class="pre">GError</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">error</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_si_adapter_set_ports_format_finish" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Finishes the operation started by wp_si_adapter_set_format(). This is meant to be called in the callback that was passed to that method. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the session item </p></li>
+<li><p><strong>res</strong> – the async result </p></li>
+<li><p><strong>error</strong> – (out) (optional): the operation’s error, if it occurred </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE on success, FALSE if there was an error </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_si_linkable_get_ports">
+<span class="target" id="group__wpsiinterfaces_1ga2d4d8c1843d413851ad291d8e61d2be7"></span><span class="n"><span class="pre">GVariant</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_si_linkable_get_ports</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSiLinkable" title="WpSiLinkable"><span class="n"><span class="pre">WpSiLinkable</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">gchar</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">context</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_si_linkable_get_ports" title="Permalink to this definition"></a><br /></dt>
+<dd><p>This method returns a variant of type “a(uuu)”, where each tuple in the array contains the following information: </p>
+<p><ul class="simple">
+<li><p>u: (guint32) node id</p></li>
+<li><p>u: (guint32) port id (the port must belong on the node specified above)</p></li>
+<li><p>u: (guint32) the audio channel (enum spa_audio_channel) that this port makes available, or 0 for non-audio content</p></li>
+</ul>
+</p>
+<p>The order in which ports appear in this array is important when no channel information is available. The link implementation should link the ports in the order they appear. This is normally a good enough substitute for channel matching.</p>
+<p>The <em>context</em> argument can be used to get different sets of ports from the item. The following well-known contexts are defined:<ul class="simple">
+<li><p>NULL: get the standard ports to be linked</p></li>
+<li><p>”monitor”: get the monitor ports</p></li>
+<li><p>”control”: get the control port</p></li>
+<li><p>”reverse”: get the reverse direction ports, if this item controls a filter node, which would have ports on both directions</p></li>
+</ul>
+</p>
+<p>Contexts other than NULL may only be used internally to ease the implementation of more complex item relationships. For example, a WpSessionItem that is in control of an input (sink) adapter node may implement WpSiLinkable where the NULL context will return the standard input ports and the “monitor” context will return the adapter’s monitor ports. When linking this item to another item, the NULL context will always be used, but the item may internally spawn a secondary WpSessionItem that implements the “monitor” item. That secondary item may implement WpSiLinkable, chaining calls to the WpSiLinkable of the original item using the “monitor” context. This way, the monitor WpSessionItem does not need to share control of the underlying node; it only proxies calls to satisfy the API.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the session item </p></li>
+<li><p><strong>context</strong> – (nullable): an optional context for the ports </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full): a GVariant containing information about the ports of this item </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_si_linkable_get_acquisition">
+<span class="target" id="group__wpsiinterfaces_1gab88a346f20dfafee91a1932056a48c11"></span><a class="reference internal" href="#c.WpSiAcquisition" title="WpSiAcquisition"><span class="n"><span class="pre">WpSiAcquisition</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_si_linkable_get_acquisition</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSiLinkable" title="WpSiLinkable"><span class="n"><span class="pre">WpSiLinkable</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_si_linkable_get_acquisition" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Gets the acquisition interface associated with the item. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the session item</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer none) (nullable): the acquisition interface associated with this item, or NULL if this item does not require acquiring items before linking them </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_si_link_get_registration_info">
+<span class="target" id="group__wpsiinterfaces_1gaaabd9ad7746c57641ee6d79b85b8e4c1"></span><span class="n"><span class="pre">GVariant</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_si_link_get_registration_info</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSiLink" title="WpSiLink"><span class="n"><span class="pre">WpSiLink</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_si_link_get_registration_info" title="Permalink to this definition"></a><br /></dt>
+<dd><p>This should return information that is used for registering the link, as a GVariant of type a{ss} that contains additional properties to be added to the list of global properties. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the session item </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full): registration info for the link </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_si_link_get_properties">
+<span class="target" id="group__wpsiinterfaces_1ga7ab26bf92a88f11bcb7bab1e964d1839"></span><a class="reference internal" href="properties_api.html#c.WpProperties" title="WpProperties"><span class="n"><span class="pre">WpProperties</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_si_link_get_properties</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSiLink" title="WpSiLink"><span class="n"><span class="pre">WpSiLink</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_si_link_get_properties" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Gets the properties of the link. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the session item </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full) (nullable): the properties of the link </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_si_link_get_out_item">
+<span class="target" id="group__wpsiinterfaces_1gafab68df472f4f1871e70cafcdb5cf114"></span><a class="reference internal" href="#c.WpSiLinkable" title="WpSiLinkable"><span class="n"><span class="pre">WpSiLinkable</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_si_link_get_out_item</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSiLink" title="WpSiLink"><span class="n"><span class="pre">WpSiLink</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_si_link_get_out_item" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Gets the output item linked by the link. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the session item </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer none): the output item that is linked by this link </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_si_link_get_in_item">
+<span class="target" id="group__wpsiinterfaces_1ga84559157126b9953f5024ea61a268244"></span><a class="reference internal" href="#c.WpSiLinkable" title="WpSiLinkable"><span class="n"><span class="pre">WpSiLinkable</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_si_link_get_in_item</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSiLink" title="WpSiLink"><span class="n"><span class="pre">WpSiLink</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_si_link_get_in_item" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Gets the input item linked by the link. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the session item </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer none): the input item that is linked by this link </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_si_acquisition_acquire">
+<span class="target" id="group__wpsiinterfaces_1gaf42ab2e1ab266a06bca03b4ff71a89a8"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_si_acquisition_acquire</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSiAcquisition" title="WpSiAcquisition"><span class="n"><span class="pre">WpSiAcquisition</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <a class="reference internal" href="#c.WpSiLink" title="WpSiLink"><span class="n"><span class="pre">WpSiLink</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">acquisitor</span></span>, <a class="reference internal" href="#c.WpSiLinkable" title="WpSiLinkable"><span class="n"><span class="pre">WpSiLinkable</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">item</span></span>, <span class="n"><span class="pre">GAsyncReadyCallback</span></span><span class="w"> </span><span class="n"><span class="pre">callback</span></span>, <span class="n"><span class="pre">gpointer</span></span><span class="w"> </span><span class="n"><span class="pre">data</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_si_acquisition_acquire" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Acquires the <em>item</em> for linking by <em>acquisitor</em>. </p>
+<p>When a link is not allowed by policy, this operation should return an error.</p>
+<p>When a link needs to be delayed for a short amount of time (ex. to apply a fade out effect on another item), this operation should finish with a delay. It is safe to assume that after this operation completes, the item will be linked immediately.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the session item </p></li>
+<li><p><strong>acquisitor</strong> – the link that is trying to acquire a port info item </p></li>
+<li><p><strong>item</strong> – the item that is being acquired </p></li>
+<li><p><strong>callback</strong> – (scope async): the callback to call when the operation is done </p></li>
+<li><p><strong>data</strong> – (closure): user data for <em>callback</em> </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_si_acquisition_acquire_finish">
+<span class="target" id="group__wpsiinterfaces_1ga9a10cbc5a61a58b71b6794e6448f2883"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_si_acquisition_acquire_finish</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSiAcquisition" title="WpSiAcquisition"><span class="n"><span class="pre">WpSiAcquisition</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="n"><span class="pre">GAsyncResult</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">res</span></span>, <span class="n"><span class="pre">GError</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">error</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_si_acquisition_acquire_finish" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Finishes the operation started by <a class="reference internal" href="#group__wpsiinterfaces_1gaf42ab2e1ab266a06bca03b4ff71a89a8"><span class="std std-ref">wp_si_acquisition_acquire()</span></a>. This is meant to be called in the callback that was passed to that method. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the session item </p></li>
+<li><p><strong>res</strong> – the async result </p></li>
+<li><p><strong>error</strong> – (out) (optional): the operation’s error, if it occurred </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE on success, FALSE if there was an error </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_si_acquisition_release">
+<span class="target" id="group__wpsiinterfaces_1gaa5ce175a98632ccff456ebe773f61641"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_si_acquisition_release</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSiAcquisition" title="WpSiAcquisition"><span class="n"><span class="pre">WpSiAcquisition</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <a class="reference internal" href="#c.WpSiLink" title="WpSiLink"><span class="n"><span class="pre">WpSiLink</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">acquisitor</span></span>, <a class="reference internal" href="#c.WpSiLinkable" title="WpSiLinkable"><span class="n"><span class="pre">WpSiLinkable</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">item</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_si_acquisition_release" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Releases the <em>item</em>, which means that it is being unlinked. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the session item </p></li>
+<li><p><strong>acquisitor</strong> – the link that had previously acquired the item </p></li>
+<li><p><strong>item</strong> – the port info that is being released </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.WP_TYPE_SI_ENDPOINT">
+<span class="target" id="group__wpsiinterfaces_1gae646ba7ad93473d9a390e8a523db6965"></span><span class="sig-name descname"><span class="n"><span class="pre">WP_TYPE_SI_ENDPOINT</span></span></span> <span class="pre">(wp_si_endpoint_get_type</span> <span class="pre">())</span><a class="headerlink" href="#c.WP_TYPE_SI_ENDPOINT" title="Permalink to this definition"></a><br /></dt>
+<dd><p>The WpSiEndpoint GType. </p>
+</dd></dl>
+
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.WP_TYPE_SI_ADAPTER">
+<span class="target" id="group__wpsiinterfaces_1ga392d90991d796e9aa6f34837fe028405"></span><span class="sig-name descname"><span class="n"><span class="pre">WP_TYPE_SI_ADAPTER</span></span></span> <span class="pre">(wp_si_adapter_get_type</span> <span class="pre">())</span><a class="headerlink" href="#c.WP_TYPE_SI_ADAPTER" title="Permalink to this definition"></a><br /></dt>
+<dd><p>The WpSiAdapter GType. </p>
+</dd></dl>
+
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.WP_TYPE_SI_LINKABLE">
+<span class="target" id="group__wpsiinterfaces_1gab3aedd4f554e41554505478fd3a936b8"></span><span class="sig-name descname"><span class="n"><span class="pre">WP_TYPE_SI_LINKABLE</span></span></span> <span class="pre">(wp_si_linkable_get_type</span> <span class="pre">())</span><a class="headerlink" href="#c.WP_TYPE_SI_LINKABLE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>The WpSiLinkable GType. </p>
+</dd></dl>
+
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.WP_TYPE_SI_LINK">
+<span class="target" id="group__wpsiinterfaces_1ga7d50ed5bada3795d75fb4c5c7f454107"></span><span class="sig-name descname"><span class="n"><span class="pre">WP_TYPE_SI_LINK</span></span></span> <span class="pre">(wp_si_link_get_type</span> <span class="pre">())</span><a class="headerlink" href="#c.WP_TYPE_SI_LINK" title="Permalink to this definition"></a><br /></dt>
+<dd><p>The WpSiLink GType. </p>
+</dd></dl>
+
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.WP_TYPE_SI_ACQUISITION">
+<span class="target" id="group__wpsiinterfaces_1ga9c75d0dd7ae211b6c703a1c14a3f5c26"></span><span class="sig-name descname"><span class="n"><span class="pre">WP_TYPE_SI_ACQUISITION</span></span></span> <span class="pre">(wp_si_acquisition_get_type</span> <span class="pre">())</span><a class="headerlink" href="#c.WP_TYPE_SI_ACQUISITION" title="Permalink to this definition"></a><br /></dt>
+<dd><p>The WpSiAcquisition GType. </p>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="session_item_api.html" class="btn btn-neutral float-left" title="Session Items" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="si_factory_api.html" class="btn btn-neutral float-right" title="Session Items Factory" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Collabora.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

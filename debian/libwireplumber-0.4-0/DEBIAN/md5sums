@@ -1,0 +1,17 @@
+4ef63f7e771101512684f26e2c15d4fe  usr/lib/x86_64-linux-gnu/libwireplumber-0.4.so.0.4.16
+9b7ea79ffff009971f97c73677000874  usr/lib/x86_64-linux-gnu/wireplumber-0.4/libwireplumber-module-default-nodes-api.so
+68d76f43f93e2319b30bbd3b6637d29b  usr/lib/x86_64-linux-gnu/wireplumber-0.4/libwireplumber-module-default-nodes.so
+3ba44d8c684adc1b7615076a981860db  usr/lib/x86_64-linux-gnu/wireplumber-0.4/libwireplumber-module-default-profile.so
+5c85d300b8bc6dc18546edad914ef635  usr/lib/x86_64-linux-gnu/wireplumber-0.4/libwireplumber-module-file-monitor-api.so
+e2dfbdb679cbeffacbd61871235b5833  usr/lib/x86_64-linux-gnu/wireplumber-0.4/libwireplumber-module-logind.so
+6ca5e13e6c6678fe5807df89532ed540  usr/lib/x86_64-linux-gnu/wireplumber-0.4/libwireplumber-module-lua-scripting.so
+cb8992d8378b38097f59e44351276cb6  usr/lib/x86_64-linux-gnu/wireplumber-0.4/libwireplumber-module-metadata.so
+9f05c7db38da8891b198795acb192b8a  usr/lib/x86_64-linux-gnu/wireplumber-0.4/libwireplumber-module-mixer-api.so
+4724d9d2140544e5c7fa2adf89807ebd  usr/lib/x86_64-linux-gnu/wireplumber-0.4/libwireplumber-module-portal-permissionstore.so
+ff72414d467f84cd5637185c15dda8ab  usr/lib/x86_64-linux-gnu/wireplumber-0.4/libwireplumber-module-reserve-device.so
+9967c7ee1ebb7ee074cc697e77f24bd8  usr/lib/x86_64-linux-gnu/wireplumber-0.4/libwireplumber-module-si-audio-adapter.so
+79057f767617fc8270537033b65d2d9d  usr/lib/x86_64-linux-gnu/wireplumber-0.4/libwireplumber-module-si-audio-endpoint.so
+eaba7138294bfb1a1e90d14a6de562d8  usr/lib/x86_64-linux-gnu/wireplumber-0.4/libwireplumber-module-si-node.so
+5feb83f2c3144885b039892dd594847c  usr/lib/x86_64-linux-gnu/wireplumber-0.4/libwireplumber-module-si-standard-link.so
+eb9547bd67e6b54b7b53881f71fae725  usr/share/doc/libwireplumber-0.4-0/changelog.gz
+aa70a722d674e3edbda4d72eaf23c6fd  usr/share/doc/libwireplumber-0.4-0/copyright

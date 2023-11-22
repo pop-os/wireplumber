@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GObject Integration &mdash; WirePlumber 0.4.16 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Core" href="lua_core_api.html" />
+    <link rel="prev" title="Introduction" href="lua_introduction.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> WirePlumber
+          </a>
+              <div class="version">
+                0.4.16
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">The WirePlumber Daemon</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installing-wireplumber.html">Installing WirePlumber</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../running-wireplumber-daemon.html">Running the WirePlumber daemon</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../daemon-logging.html">Debug Logging</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">The WirePlumber Library</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../c_api.html">C API Documentation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../lua_api.html">Lua API Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="lua_introduction.html">Introduction</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">GObject Integration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#properties">Properties</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#signals">Signals</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#type-conversions">Type conversions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#c-to-lua">C to Lua</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#lua-to-c">Lua to C</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#gvariant-to-lua">GVariant to Lua</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#lua-to-gvariant">Lua to GVariant</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#closures">Closures</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#reference-counting">Reference counting</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="lua_core_api.html">Core</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lua_log_api.html">Debug Logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lua_object_api.html">WpObject</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lua_object_manager_api.html">Object Manager</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lua_object_interest_api.html">Object Interest</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lua_proxies_api.html">PipeWire Proxies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lua_session_item_api.html">Session Item</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lua_spa_device_api.html">Spa Device</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lua_spa_pod.html">Spa Pod</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lua_local_module_api.html">Local Modules</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Resources</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing to WirePlumber</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../testing.html">Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../community.html">Community Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Releases</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">WirePlumber</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../lua_api.html">Lua API Documentation</a> &raquo;</li>
+      <li>GObject Integration</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/lua_api/lua_gobject.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="lua_introduction.html" class="btn btn-neutral float-left" title="Introduction" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="lua_core_api.html" class="btn btn-neutral float-right" title="Core" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+  </div>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="gobject-integration">
+<span id="lua-gobject"></span><h1>GObject Integration<a class="headerlink" href="#gobject-integration" title="Permalink to this headline"></a></h1>
+<p>The Lua engine that powers WirePlumber’s scripts provides direct integration
+with <a class="reference external" href="https://developer.gnome.org/gobject/stable/">GObject</a>. Most of the objects that you will deal with in the lua scripts
+are wrapping GObjects. In order to work with the scripts, you will first need
+to have a basic understanding of GObject’s basic concepts, such as signals and
+properties.</p>
+<section id="properties">
+<h2>Properties<a class="headerlink" href="#properties" title="Permalink to this headline"></a></h2>
+<p>All GObjects have the ability to have <a class="reference external" href="https://developer.gnome.org/gobject/stable/gobject-properties.html">properties</a>.
+In C we normally use <a class="reference external" href="https://developer.gnome.org/gobject/stable/gobject-The-Base-Object-Type.html#g-object-get">g_object_get</a> to retrieve them and <a class="reference external" href="https://developer.gnome.org/gobject/stable/gobject-The-Base-Object-Type.html#g-object-set">g_object_set</a>
+to set them.</p>
+<p>In WirePlumber’s lua engine, these properties are exposed as object members
+of the Lua object.</p>
+<p>For example:</p>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="c1">-- read the &quot;bound-id&quot; GObject property from the proxy</span>
+<span class="kd">local</span> <span class="n">proxy</span> <span class="o">=</span> <span class="n">function_that_returns_a_wp_proxy</span><span class="p">()</span>
+<span class="kd">local</span> <span class="n">proxy_id</span> <span class="o">=</span> <span class="n">proxy</span><span class="p">[</span><span class="s2">&quot;bound-id&quot;</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Bound ID: &quot;</span> <span class="o">..</span> <span class="n">proxy_id</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Writable properties can also be set in a similar fashion:</p>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="c1">-- set the &quot;scale&quot; GObject property to the enum value &quot;cubic&quot;</span>
+<span class="kd">local</span> <span class="n">mixer</span> <span class="o">=</span> <span class="p">...</span>
+<span class="n">mixer</span><span class="p">[</span><span class="s2">&quot;scale&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;cubic&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="signals">
+<h2>Signals<a class="headerlink" href="#signals" title="Permalink to this headline"></a></h2>
+<p>GObjects also have a generic mechanism to deliver events to external callbacks.
+These events are called <a class="reference external" href="https://developer.gnome.org/gobject/stable/signal.html">signals</a>.
+To connect to a signal and handle it, you may use the <em>connect</em> method:</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="GObject.connect">
+<span class="sig-prename descclassname"><span class="pre">GObject.</span></span><span class="sig-name descname"><span class="pre">connect</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">detailed_signal</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">callback</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GObject.connect" title="Permalink to this definition"></a></dt>
+<dd><p>Connects the signal to a callback. When the signal is emitted by the
+underlying object, the callback will be executed.</p>
+<p>The signature of the callback is expected to match the signature of the
+signal, with the first parameter being the object itself.</p>
+<p><strong>Example:</strong></p>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="c1">-- connects the &quot;bound&quot; signal from WpProxy to a callback</span>
+<span class="kd">local</span> <span class="n">proxy</span> <span class="o">=</span> <span class="n">function_that_returns_a_wp_proxy</span><span class="p">()</span>
+<span class="n">proxy</span><span class="p">:</span><span class="n">connect</span><span class="p">(</span><span class="s2">&quot;bound&quot;</span><span class="p">,</span> <span class="kr">function</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">id</span><span class="p">)</span>
+  <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Proxy &quot;</span> <span class="o">..</span> <span class="nb">tostring</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="o">..</span> <span class="s2">&quot; bound to &quot;</span> <span class="o">..</span> <span class="nb">tostring</span><span class="p">(</span><span class="n">id</span><span class="p">))</span>
+<span class="kr">end</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>In this example, the <code class="docutils literal notranslate"><span class="pre">p</span></code> variable in the callback is the <code class="docutils literal notranslate"><span class="pre">proxy</span></code> object,
+while <code class="docutils literal notranslate"><span class="pre">id</span></code> is the first parameter of the <em>“bound”</em> signal, as documented
+in <a class="reference internal" href="../c_api/proxy_api.html#c.WpProxy" title="WpProxy"><code class="xref c c-struct docutils literal notranslate"><span class="pre">WpProxy</span></code></a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>detailed_signal</strong> – the signal name to listen to
+(of the form “signal-name::detail”)</p></li>
+<li><p><strong>callback</strong> – a lua function that will be called when the signal is emitted</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<p>Signals may also be used as a way to have dynamic methods on objects. These
+signals are meant to be called by external code and not handled. These signals
+are called <strong>action signals</strong>.
+You may call an action signal using the <em>call</em> method:</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="GObject.call">
+<span class="sig-prename descclassname"><span class="pre">GObject.</span></span><span class="sig-name descname"><span class="pre">call</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">action_signal</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">...</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GObject.call" title="Permalink to this definition"></a></dt>
+<dd><p>Calls an action signal on this object.</p>
+<p><strong>Example:</strong></p>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="n">Core</span><span class="p">.</span><span class="n">require_api</span><span class="p">(</span><span class="s2">&quot;default-nodes&quot;</span><span class="p">,</span> <span class="s2">&quot;mixer&quot;</span><span class="p">,</span> <span class="kr">function</span><span class="p">(...)</span>
+  <span class="kd">local</span> <span class="n">default_nodes</span><span class="p">,</span> <span class="n">mixer</span> <span class="o">=</span> <span class="p">...</span>
+
+  <span class="c1">-- &quot;get-default-node&quot; and &quot;get-volume&quot; are action signals of the</span>
+  <span class="c1">-- &quot;default-nodes-api&quot; and &quot;mixer-api&quot; plugins respectively</span>
+  <span class="kd">local</span> <span class="n">id</span> <span class="o">=</span> <span class="n">default_nodes</span><span class="p">:</span><span class="n">call</span><span class="p">(</span><span class="s2">&quot;get-default-node&quot;</span><span class="p">,</span> <span class="s2">&quot;Audio/Sink&quot;</span><span class="p">)</span>
+  <span class="kd">local</span> <span class="n">volume</span> <span class="o">=</span> <span class="n">mixer</span><span class="p">:</span><span class="n">call</span><span class="p">(</span><span class="s2">&quot;get-volume&quot;</span><span class="p">,</span> <span class="n">id</span><span class="p">)</span>
+
+  <span class="c1">-- the return value of &quot;get-volume&quot; is a GVariant(a{sv}),</span>
+  <span class="c1">-- which gets translated to a Lua table</span>
+  <span class="n">Debug</span><span class="p">.</span><span class="n">dump_table</span><span class="p">(</span><span class="n">volume</span><span class="p">)</span>
+<span class="kr">end</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>action_signal</strong> – the signal name to call</p></li>
+<li><p><strong>...</strong> – a list of arguments that will be passed to the signal</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the return value of the action signal, if any</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="type-conversions">
+<h2>Type conversions<a class="headerlink" href="#type-conversions" title="Permalink to this headline"></a></h2>
+<p>When working with GObject properties and signals, variables need to be
+converted from C types to Lua types and vice versa. The following tables
+list the type conversions that happen automatically:</p>
+<section id="c-to-lua">
+<h3>C to Lua<a class="headerlink" href="#c-to-lua" title="Permalink to this headline"></a></h3>
+<p>Conversion from C to lua is based on the C type.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 41%" />
+<col style="width: 59%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>C</p></th>
+<th class="head"><p>Lua</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>gchar, guchar, gint, guint</p></td>
+<td><p>integer</p></td>
+</tr>
+<tr class="row-odd"><td><p>glong, gulong, gint64, guint64</p></td>
+<td><p>integer</p></td>
+</tr>
+<tr class="row-even"><td><p>gfloat, gdouble</p></td>
+<td><p>number</p></td>
+</tr>
+<tr class="row-odd"><td><p>gboolean</p></td>
+<td><p>boolean</p></td>
+</tr>
+<tr class="row-even"><td><p>gchar *</p></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-odd"><td><p>gpointer</p></td>
+<td><p>lightuserdata</p></td>
+</tr>
+<tr class="row-even"><td><p>WpProperties *</p></td>
+<td><p>table (keys: string, values: string)</p></td>
+</tr>
+<tr class="row-odd"><td><p>enum</p></td>
+<td><p>string containing the nickname (short name) of
+the enum, or integer if the enum is not
+registered with GType</p></td>
+</tr>
+<tr class="row-even"><td><p>flags</p></td>
+<td><p>integer (as in C)</p></td>
+</tr>
+<tr class="row-odd"><td><p>GVariant *</p></td>
+<td><p>a native type, see below</p></td>
+</tr>
+<tr class="row-even"><td><p>other GObject, GInterface</p></td>
+<td><p>userdata holding reference to the object</p></td>
+</tr>
+<tr class="row-odd"><td><p>other GBoxed</p></td>
+<td><p>userdata holding reference to the object</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="lua-to-c">
+<span id="lua-gobject-lua-to-c"></span><h3>Lua to C<a class="headerlink" href="#lua-to-c" title="Permalink to this headline"></a></h3>
+<p>Conversion from Lua to C is based on the expected type in C.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 38%" />
+<col style="width: 63%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Expecting</p></th>
+<th class="head"><p>Lua</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>gchar, guchar, gint, guint,</p></td>
+<td><p>convertible to integer</p></td>
+</tr>
+<tr class="row-odd"><td><p>glong, gulong, gint64, guint64</p></td>
+<td><p>convertible to integer</p></td>
+</tr>
+<tr class="row-even"><td><p>gfloat, gdouble</p></td>
+<td><p>convertible to number</p></td>
+</tr>
+<tr class="row-odd"><td><p>gboolean</p></td>
+<td><p>convertible to boolean</p></td>
+</tr>
+<tr class="row-even"><td><p>gchar *</p></td>
+<td><p>convertible to string</p></td>
+</tr>
+<tr class="row-odd"><td><p>gpointer</p></td>
+<td><p>must be lightuserdata</p></td>
+</tr>
+<tr class="row-even"><td><p>WpProperties *</p></td>
+<td><p>must be table (keys: string, values: convertible
+to string)</p></td>
+</tr>
+<tr class="row-odd"><td><p>enum</p></td>
+<td><p>must be string holding the nickname of the enum,
+or convertible to integer</p></td>
+</tr>
+<tr class="row-even"><td><p>flags</p></td>
+<td><p>convertible to integer</p></td>
+</tr>
+<tr class="row-odd"><td><p>GVariant *</p></td>
+<td><p>see below</p></td>
+</tr>
+<tr class="row-even"><td><p>other GObject, GInterface</p></td>
+<td><p>must be userdata holding a compatible GObject type</p></td>
+</tr>
+<tr class="row-odd"><td><p>other GBoxed</p></td>
+<td><p>must be userdata holding the same GBoxed type</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="gvariant-to-lua">
+<h3>GVariant to Lua<a class="headerlink" href="#gvariant-to-lua" title="Permalink to this headline"></a></h3>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 39%" />
+<col style="width: 61%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>GVariant</p></th>
+<th class="head"><p>Lua</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>NULL or G_VARIANT_TYPE_UNIT</p></td>
+<td><p>nil</p></td>
+</tr>
+<tr class="row-odd"><td><p>G_VARIANT_TYPE_INT16</p></td>
+<td><p>integer</p></td>
+</tr>
+<tr class="row-even"><td><p>G_VARIANT_TYPE_INT32</p></td>
+<td><p>integer</p></td>
+</tr>
+<tr class="row-odd"><td><p>G_VARIANT_TYPE_INT64</p></td>
+<td><p>integer</p></td>
+</tr>
+<tr class="row-even"><td><p>G_VARIANT_TYPE_UINT16</p></td>
+<td><p>integer</p></td>
+</tr>
+<tr class="row-odd"><td><p>G_VARIANT_TYPE_UINT32</p></td>
+<td><p>integer</p></td>
+</tr>
+<tr class="row-even"><td><p>G_VARIANT_TYPE_UINT64</p></td>
+<td><p>integer</p></td>
+</tr>
+<tr class="row-odd"><td><p>G_VARIANT_TYPE_DOUBLE</p></td>
+<td><p>number</p></td>
+</tr>
+<tr class="row-even"><td><p>G_VARIANT_TYPE_BOOLEAN</p></td>
+<td><p>boolean</p></td>
+</tr>
+<tr class="row-odd"><td><p>G_VARIANT_TYPE_STRING</p></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-even"><td><p>G_VARIANT_TYPE_VARIANT</p></td>
+<td><p>converted recursively</p></td>
+</tr>
+<tr class="row-odd"><td><p>G_VARIANT_TYPE_DICTIONARY</p></td>
+<td><p>table (keys &amp; values converted recursively)</p></td>
+</tr>
+<tr class="row-even"><td><p>G_VARIANT_TYPE_ARRAY</p></td>
+<td><p>table (children converted recursively)</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="lua-to-gvariant">
+<h3>Lua to GVariant<a class="headerlink" href="#lua-to-gvariant" title="Permalink to this headline"></a></h3>
+<p>Conversion from Lua to GVariant is based on the lua type and is quite limited.</p>
+<p>There is no way to recover an array, for instance, because there is no way
+in Lua to tell if a table contains an array or a dictionary. All Lua tables
+are converted to dictionaries and integer keys are converted to strings.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 22%" />
+<col style="width: 78%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Lua</p></th>
+<th class="head"><p>GVariant</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>nil</p></td>
+<td><p>G_VARIANT_TYPE_UNIT</p></td>
+</tr>
+<tr class="row-odd"><td><p>boolean</p></td>
+<td><p>G_VARIANT_TYPE_BOOLEAN</p></td>
+</tr>
+<tr class="row-even"><td><p>integer</p></td>
+<td><p>G_VARIANT_TYPE_INT64</p></td>
+</tr>
+<tr class="row-odd"><td><p>number</p></td>
+<td><p>G_VARIANT_TYPE_DOUBLE</p></td>
+</tr>
+<tr class="row-even"><td><p>string</p></td>
+<td><p>G_VARIANT_TYPE_STRING</p></td>
+</tr>
+<tr class="row-odd"><td><p>table</p></td>
+<td><p>G_VARIANT_TYPE_VARDICT (a{sv})</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="closures">
+<h2>Closures<a class="headerlink" href="#closures" title="Permalink to this headline"></a></h2>
+<p>When a C function is expecting a GClosure, in Lua it is possible to pass
+a Lua function directly. The function is then wrapped into a custom GClosure.</p>
+<p>When this GClosure is invalidated, the reference to the Lua function is dropped.
+Similarly, when the lua engine is stopped, all the GClosures that were
+created by this engine are invalidated.</p>
+</section>
+<section id="reference-counting">
+<h2>Reference counting<a class="headerlink" href="#reference-counting" title="Permalink to this headline"></a></h2>
+<p>GObject references in Lua always hold a reference to the underlying GObject.
+When moving this reference around to other variables in Lua, the underlying
+GObject reference is shared, but Lua reference counts the wrapper “userdata”
+object.</p>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="c1">-- creating a new FooObject instance; obj holds the GObject reference</span>
+<span class="kd">local</span> <span class="n">obj</span> <span class="o">=</span> <span class="n">FooObject</span><span class="p">()</span>
+
+<span class="c1">-- GObject reference is dropped and FooObject is finalized</span>
+<span class="n">obj</span> <span class="o">=</span> <span class="kc">nil</span>
+</pre></div>
+</div>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="c1">-- creating a new FooObject instance; obj holds the GObject reference</span>
+<span class="kd">local</span> <span class="n">obj</span> <span class="o">=</span> <span class="n">FooObject</span><span class="p">()</span>
+
+<span class="kr">function</span> <span class="nf">store_global</span><span class="p">(</span><span class="n">o</span><span class="p">)</span>
+  <span class="c1">-- o is now stored in the global &#39;obj_global&#39; variable</span>
+  <span class="c1">-- the GObject ref count is still 1</span>
+  <span class="n">obj_global</span> <span class="o">=</span> <span class="n">o</span>
+<span class="kr">end</span>
+
+<span class="c1">-- obj userdata reference is passed to o, the GObject ref count is still 1</span>
+<span class="n">store_global</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+
+<span class="c1">-- userdata reference dropped from obj, the GObject is still alive</span>
+<span class="n">obj</span> <span class="o">=</span> <span class="kc">nil</span>
+
+<span class="c1">-- userdata reference dropped from obj_global,</span>
+<span class="c1">-- the GObject ref is dropped and FooObject is finalized</span>
+<span class="n">obj_global</span> <span class="o">=</span> <span class="kc">nil</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>When assigning a variable to nil, Lua may not immediately drop
+the reference of the underlying object. This is because Lua uses a garbage
+collector and goes through all the unreferenced objects to cleanup when
+the garbage collector runs.</p>
+</div>
+<p>When a GObject that is already referenced in Lua re-appears somewhere else
+through calling some API or because of a callback from C, a new reference is
+added on the GObject.</p>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="c1">-- ObjectManager is created in Lua, om holds 1 ref</span>
+<span class="kd">local</span> <span class="n">om</span> <span class="o">=</span> <span class="n">ObjectManager</span><span class="p">(...)</span>
+<span class="n">om</span><span class="p">:</span><span class="n">connect</span><span class="p">(</span><span class="s2">&quot;objects-changed&quot;</span><span class="p">,</span> <span class="kr">function</span> <span class="p">(</span><span class="n">om</span><span class="p">)</span>
+  <span class="c1">-- om in this scope is a local function argument that was created</span>
+  <span class="c1">-- by the signal&#39;s closure marshaller and holds a second reference</span>
+  <span class="c1">-- to the ObjectManager</span>
+
+  <span class="n">do_some_stuff</span><span class="p">()</span>
+
+  <span class="c1">-- this second reference is dropped when the function goes out of scope</span>
+<span class="kr">end</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition danger">
+<p class="admonition-title">Danger</p>
+<p>Because Lua variables hold strong references to GObjects, it is dangerous
+to create closures that reference such variables, because these closures
+may create reference loops and <strong>leak</strong> objects</p>
+</div>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="kd">local</span> <span class="n">om</span> <span class="o">=</span> <span class="n">ObjectManager</span><span class="p">(...)</span>
+
+<span class="n">om</span><span class="p">:</span><span class="n">connect</span><span class="p">(</span><span class="s2">&quot;objects-changed&quot;</span><span class="p">,</span> <span class="kr">function</span> <span class="p">(</span><span class="n">obj_mgr</span><span class="p">)</span>
+  <span class="c1">-- using &#39;om&#39; here instead of the local &#39;obj_mgr&#39;</span>
+  <span class="c1">-- creates a dangerous reference from the closure to &#39;om&#39;</span>
+  <span class="kr">for</span> <span class="n">obj</span> <span class="kr">in</span> <span class="n">om</span><span class="p">:</span><span class="n">iterate</span><span class="p">()</span> <span class="kr">do</span>
+     <span class="n">do_stuff</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+  <span class="kr">end</span>
+<span class="kr">end</span><span class="p">)</span>
+
+<span class="c1">-- local userdata reference dropped, but the GClosure that was generated</span>
+<span class="c1">-- from the above function is still holding a reference and keeps</span>
+<span class="c1">-- the ObjectManager alive; the GClosure is referenced by the ObjectManager</span>
+<span class="c1">-- because of the signal connection, so the ObjectManager is leaked</span>
+<span class="n">om</span> <span class="o">=</span> <span class="kc">nil</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="lua_introduction.html" class="btn btn-neutral float-left" title="Introduction" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="lua_core_api.html" class="btn btn-neutral float-right" title="Core" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Collabora.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

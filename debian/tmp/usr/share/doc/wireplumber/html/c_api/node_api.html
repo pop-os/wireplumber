@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PipeWire Node &mdash; WirePlumber 0.4.16 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="PipeWire Port" href="port_api.html" />
+    <link rel="prev" title="PipeWire Global Object Proxy" href="global_proxy_api.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> WirePlumber
+          </a>
+              <div class="version">
+                0.4.16
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">The WirePlumber Daemon</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installing-wireplumber.html">Installing WirePlumber</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../running-wireplumber-daemon.html">Running the WirePlumber daemon</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../daemon-logging.html">Debug Logging</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">The WirePlumber Library</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../c_api.html">C API Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="wp_api.html">Library Initialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core_api.html">Core</a></li>
+<li class="toctree-l2"><a class="reference internal" href="object_api.html">WpObject</a></li>
+<li class="toctree-l2"><a class="reference internal" href="obj_manager_api.html">Object Manager</a></li>
+<li class="toctree-l2"><a class="reference internal" href="obj_interest_api.html">Object Interest</a></li>
+<li class="toctree-l2"><a class="reference internal" href="iterator_api.html">Iterator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="transitions_api.html">Transitions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wperror_api.html">Error Codes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="log_api.html">Debug Logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="proxy_api.html">PipeWire Proxy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipewire_object_api.html">PipeWire Object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="global_proxy_api.html">PipeWire Global Object Proxy</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">PipeWire Node</a></li>
+<li class="toctree-l2"><a class="reference internal" href="port_api.html">PipeWire Port</a></li>
+<li class="toctree-l2"><a class="reference internal" href="link_api.html">PipeWire Link</a></li>
+<li class="toctree-l2"><a class="reference internal" href="device_api.html">PipeWire Device</a></li>
+<li class="toctree-l2"><a class="reference internal" href="client_api.html">PipeWire Client</a></li>
+<li class="toctree-l2"><a class="reference internal" href="metadata_api.html">PipeWire Metadata</a></li>
+<li class="toctree-l2"><a class="reference internal" href="endpoint_api.html">PipeWire Endpoint</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spa_device_api.html">Spa Device</a></li>
+<li class="toctree-l2"><a class="reference internal" href="impl_node_api.html">Local Nodes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="impl_module_api.html">Local Modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="properties_api.html">Properties Dictionary</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spa_type_api.html">Spa Type Information</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spa_json_api.html">Spa Json</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spa_pod_api.html">Spa Pod (Plain Old Data)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plugin_api.html">Plugins</a></li>
+<li class="toctree-l2"><a class="reference internal" href="component_loader_api.html">Component Loader</a></li>
+<li class="toctree-l2"><a class="reference internal" href="session_item_api.html">Session Items</a></li>
+<li class="toctree-l2"><a class="reference internal" href="si_interfaces_api.html">Session Items Interfaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="si_factory_api.html">Session Items Factory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="state_api.html">State Storage</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../lua_api.html">Lua API Documentation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Resources</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing to WirePlumber</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../testing.html">Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../community.html">Community Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Releases</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">WirePlumber</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../c_api.html">C API Documentation</a> &raquo;</li>
+      <li>PipeWire Node</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/c_api/node_api.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="global_proxy_api.html" class="btn btn-neutral float-left" title="PipeWire Global Object Proxy" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="port_api.html" class="btn btn-neutral float-right" title="PipeWire Port" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+  </div>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="pipewire-node">
+<span id="node-api"></span><h1>PipeWire Node<a class="headerlink" href="#pipewire-node" title="Permalink to this headline"></a></h1>
+<div align="center" class="align-center"><div class="graphviz"><object data="../_images/graphviz-06818983649296542bab7a3d274ea9dce79fe838.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph inheritance {
+    rankdir=LR;
+    GObject -&gt; WpObject;
+    WpObject -&gt; WpProxy;
+    WpProxy -&gt; WpGlobalProxy;
+    WpGlobalProxy -&gt; WpNode;
+    GInterface -&gt; WpPipewireObject;
+    WpPipewireObject -&gt; WpNode;
+ }</p></object></div>
+</div>
+<dl class="c struct">
+<dt class="sig sig-object c" id="c.WpNode">
+<span class="target" id="structWpNode"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">WpNode</span></span></span><a class="headerlink" href="#c.WpNode" title="Permalink to this definition"></a><br /></dt>
+<dd><p>The WpNode class allows accessing the properties and methods of a PipeWire node object (<code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">pw_node</span></code>).</p>
+<p>A WpNode is constructed internally when a new node appears on the PipeWire registry and it is made available through the WpObjectManager API. Alternatively, a WpNode can also be constructed using <a class="reference internal" href="#group__wpnode_1ga833f264b4704fc298d9fb9289d212904"><span class="std std-ref">wp_node_new_from_factory()</span></a>, which creates a new node object on the remote PipeWire server by calling into a factory.</p>
+<p><strong>GObject</strong> <strong>Properties</strong> </p>
+<p><dl>
+<dt class="sig sig-object cpp">
+<span class="pre">state</span></dt>
+<dd><p></p>
+<p>The current state of the node</p>
+<p><table class="colwidths-auto docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">WpNodeState</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">G_PARAM_READABLE</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</p>
+</dd></dl>
+
+</p>
+<p><dl>
+<dt class="sig sig-object cpp">
+<span class="pre">n-input-ports</span></dt>
+<dd><p></p>
+<p>The number of input ports</p>
+<p><table class="colwidths-auto docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">uint</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">G_PARAM_READABLE</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</p>
+</dd></dl>
+
+</p>
+<p><dl>
+<dt class="sig sig-object cpp">
+<span class="pre">n-output-ports</span></dt>
+<dd><p></p>
+<p>The number of output ports</p>
+<p><table class="colwidths-auto docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">uint</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">G_PARAM_READABLE</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</p>
+</dd></dl>
+
+</p>
+<p><dl>
+<dt class="sig sig-object cpp">
+<span class="pre">max-input-ports</span></dt>
+<dd><p></p>
+<p>The max number of input ports</p>
+<p><table class="colwidths-auto docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">uint</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">G_PARAM_READABLE</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</p>
+</dd></dl>
+
+</p>
+<p><dl>
+<dt class="sig sig-object cpp">
+<span class="pre">max-output-ports</span></dt>
+<dd><p></p>
+<p>The max number of output ports</p>
+<p><table class="colwidths-auto docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">uint</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">G_PARAM_READABLE</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</p>
+</dd></dl>
+
+</p>
+<p><strong>GObject</strong> <strong>Signals</strong> </p>
+<p><dl class="simple">
+<dt><strong>ports-changed</strong></dt><dd><p><p><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">void</span>
+<span class="n">ports_changed_callback</span> <span class="p">(</span><span class="n">WpNode</span> <span class="o">*</span> <span class="bp">self</span><span class="p">,</span>
+                        <span class="n">gpointer</span> <span class="n">user_data</span><span class="p">)</span>
+</pre></div>
+</div>
+</p>
+<p>Emitted when the node’s ports change. This is only emitted when WP_NODE_FEATURE_PORTS is enabled.</p>
+<p>Flags: G_SIGNAL_RUN_LAST </p>
+</p>
+</dd>
+</dl>
+</p>
+<p><dl class="simple">
+<dt><strong>state-changed</strong></dt><dd><p><p><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">void</span>
+<span class="n">state_changed_callback</span> <span class="p">(</span><span class="n">WpNode</span> <span class="o">*</span> <span class="bp">self</span><span class="p">,</span>
+                        <span class="n">WpNodeState</span> <span class="o">*</span> <span class="n">old_state</span><span class="p">,</span>
+                        <span class="n">WpNodeState</span> <span class="o">*</span> <span class="n">new_state</span><span class="p">,</span>
+                        <span class="n">gpointer</span> <span class="n">user_data</span><span class="p">)</span>
+</pre></div>
+</div>
+</p>
+<p>Emitted when the node changes state. This is only emitted when WP_PIPEWIRE_OBJECT_FEATURE_INFO is enabled.</p>
+<p>Parameters:<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">old_state</span></code> - the old state</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">new_state</span></code> - the new state</p></li>
+</ul>
+</p>
+<p>Flags: G_SIGNAL_RUN_LAST </p>
+</p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="c enum">
+<dt class="sig sig-object c" id="c.WpNodeState">
+<span class="target" id="group__wpnode_1ga5ed882046b91664625586cb37bfa63bd"></span><span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">WpNodeState</span></span></span><a class="headerlink" href="#c.WpNodeState" title="Permalink to this definition"></a><br /></dt>
+<dd><p>The state of the node. </p>
+<p><em>Values:</em></p>
+<dl class="c enumerator">
+<dt class="sig sig-object c" id="c.WpNodeState.WP_NODE_STATE_ERROR">
+<span class="target" id="group__wpnode_1gga5ed882046b91664625586cb37bfa63bda0b4d5ba17a87265d3f09ff21e43d9c44"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">WP_NODE_STATE_ERROR</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="o"><span class="pre">-</span></span><span class="m"><span class="pre">1</span></span><a class="headerlink" href="#c.WpNodeState.WP_NODE_STATE_ERROR" title="Permalink to this definition"></a><br /></dt>
+<dd><p>error state </p>
+</dd></dl>
+
+<dl class="c enumerator">
+<dt class="sig sig-object c" id="c.WpNodeState.WP_NODE_STATE_CREATING">
+<span class="target" id="group__wpnode_1gga5ed882046b91664625586cb37bfa63bdad0560f0fae43aa5f26a1a0f6e7008d5e"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">WP_NODE_STATE_CREATING</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">0</span></span><a class="headerlink" href="#c.WpNodeState.WP_NODE_STATE_CREATING" title="Permalink to this definition"></a><br /></dt>
+<dd><p>the node is being created </p>
+</dd></dl>
+
+<dl class="c enumerator">
+<dt class="sig sig-object c" id="c.WpNodeState.WP_NODE_STATE_SUSPENDED">
+<span class="target" id="group__wpnode_1gga5ed882046b91664625586cb37bfa63bdabbf06942406031c04c838aa423887f02"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">WP_NODE_STATE_SUSPENDED</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">1</span></span><a class="headerlink" href="#c.WpNodeState.WP_NODE_STATE_SUSPENDED" title="Permalink to this definition"></a><br /></dt>
+<dd><p>the node is suspended, the device might be closed </p>
+</dd></dl>
+
+<dl class="c enumerator">
+<dt class="sig sig-object c" id="c.WpNodeState.WP_NODE_STATE_IDLE">
+<span class="target" id="group__wpnode_1gga5ed882046b91664625586cb37bfa63bda9db0d403ddf1e8b01f4de0d7e821d3e7"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">WP_NODE_STATE_IDLE</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">2</span></span><a class="headerlink" href="#c.WpNodeState.WP_NODE_STATE_IDLE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>the node is running but there is no active port </p>
+</dd></dl>
+
+<dl class="c enumerator">
+<dt class="sig sig-object c" id="c.WpNodeState.WP_NODE_STATE_RUNNING">
+<span class="target" id="group__wpnode_1gga5ed882046b91664625586cb37bfa63bda690c02b79dd3d4ecfd6efaec4b28cf16"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">WP_NODE_STATE_RUNNING</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">3</span></span><a class="headerlink" href="#c.WpNodeState.WP_NODE_STATE_RUNNING" title="Permalink to this definition"></a><br /></dt>
+<dd><p>the node is running </p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="c enum">
+<dt class="sig sig-object c" id="c.WpNodeFeatures">
+<span class="target" id="group__wpnode_1ga8b30ef42b9cc87190c9b341bb11bc7ab"></span><span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">WpNodeFeatures</span></span></span><a class="headerlink" href="#c.WpNodeFeatures" title="Permalink to this definition"></a><br /></dt>
+<dd><p>An extension of WpProxyFeatures. </p>
+<p><em>Values:</em></p>
+<dl class="c enumerator">
+<dt class="sig sig-object c" id="c.WpNodeFeatures.WP_NODE_FEATURE_PORTS">
+<span class="target" id="group__wpnode_1gga8b30ef42b9cc87190c9b341bb11bc7aba3ec93efdfb27bc82a43d3f277255addd"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">WP_NODE_FEATURE_PORTS</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="p"><span class="pre">(</span></span><a class="reference internal" href="proxy_api.html#c.WpProxyFeatures.WP_PROXY_FEATURE_CUSTOM_START" title="WP_PROXY_FEATURE_CUSTOM_START"><span class="n"><span class="pre">WP_PROXY_FEATURE_CUSTOM_START</span></span></a><span class="w"> </span><span class="o"><span class="pre">&lt;&lt;</span></span><span class="w"> </span><span class="m"><span class="pre">0</span></span><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#c.WpNodeFeatures.WP_NODE_FEATURE_PORTS" title="Permalink to this definition"></a><br /></dt>
+<dd><p>caches information about ports, enabling the use of <a class="reference internal" href="#group__wpnode_1ga700053ece79ff8db52be3cfc5c96ec4e"><span class="std std-ref">wp_node_get_n_ports()</span></a>, <a class="reference internal" href="#group__wpnode_1ga75c5d907621598c340e3822191fc28d8"><span class="std std-ref">wp_node_lookup_port()</span></a>, <a class="reference internal" href="#group__wpnode_1ga1d906da050ea145e2fdb7e6a0aac4079"><span class="std std-ref">wp_node_new_ports_iterator()</span></a> and related methods </p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_node_new_from_factory">
+<span class="target" id="group__wpnode_1ga833f264b4704fc298d9fb9289d212904"></span><a class="reference internal" href="#c.WpNode" title="WpNode"><span class="n"><span class="pre">WpNode</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_node_new_from_factory</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="core_api.html#c.WpCore" title="WpCore"><span class="n"><span class="pre">WpCore</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">core</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">gchar</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">factory_name</span></span>, <a class="reference internal" href="properties_api.html#c.WpProperties" title="WpProperties"><span class="n"><span class="pre">WpProperties</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">properties</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_node_new_from_factory" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Constructs a node on the PipeWire server by asking the remote factory <em>factory_name</em> to create it. </p>
+<p>Because of the nature of the PipeWire protocol, this operation completes asynchronously at some point in the future. In order to find out when this is done, you should call <a class="reference internal" href="object_api.html#group__wpobject_1ga0a2bbc62e3a198cee10c74f97d52fe39"><span class="std std-ref">wp_object_activate()</span></a>, requesting at least WP_PROXY_FEATURE_BOUND. When this feature is ready, the node is ready for use on the server. If the node cannot be created, this activation operation will fail.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>core</strong> – the wireplumber core </p></li>
+<li><p><strong>factory_name</strong> – the pipewire factory name to construct the node </p></li>
+<li><p><strong>properties</strong> – (nullable) (transfer full): the properties to pass to the factory </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(nullable) (transfer full): the new node or NULL if the core is not connected and therefore the node cannot be created </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_node_get_state">
+<span class="target" id="group__wpnode_1gafa423c0761e9a3acf7b28f3e3e676a26"></span><a class="reference internal" href="#c.WpNodeState" title="WpNodeState"><span class="n"><span class="pre">WpNodeState</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_node_get_state</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpNode" title="WpNode"><span class="n"><span class="pre">WpNode</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">gchar</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">error</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_node_get_state" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Gets the current state of the node. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the node </p></li>
+<li><p><strong>error</strong> – (out) (optional) (transfer none): the error </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the current state of the node </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_node_get_n_input_ports">
+<span class="target" id="group__wpnode_1gaee2a24c87ad0556c34bf309417475498"></span><span class="n"><span class="pre">guint</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_node_get_n_input_ports</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpNode" title="WpNode"><span class="n"><span class="pre">WpNode</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="n"><span class="pre">guint</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">max</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_node_get_n_input_ports" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Gets the number of input ports of this node. </p>
+<p><div class="remark admonition">
+<p class="admonition-title">Remark</p>
+<p>Requires WP_PIPEWIRE_OBJECT_FEATURE_INFO</p>
+</div>
+</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the node </p></li>
+<li><p><strong>max</strong> – (out) (optional): the maximum supported number of input ports </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the number of input ports of this node, as reported by the node info </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_node_get_n_output_ports">
+<span class="target" id="group__wpnode_1ga948a59c9d5938574ce3ef02cdcd3b51e"></span><span class="n"><span class="pre">guint</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_node_get_n_output_ports</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpNode" title="WpNode"><span class="n"><span class="pre">WpNode</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="n"><span class="pre">guint</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">max</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_node_get_n_output_ports" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Gets the number of output ports of this node. </p>
+<p><div class="remark admonition">
+<p class="admonition-title">Remark</p>
+<p>Requires WP_PIPEWIRE_OBJECT_FEATURE_INFO</p>
+</div>
+</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the node </p></li>
+<li><p><strong>max</strong> – (out) (optional): the maximum supported number of output ports </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the number of output ports of this node, as reported by the node info </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_node_get_n_ports">
+<span class="target" id="group__wpnode_1ga700053ece79ff8db52be3cfc5c96ec4e"></span><span class="n"><span class="pre">guint</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_node_get_n_ports</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpNode" title="WpNode"><span class="n"><span class="pre">WpNode</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_node_get_n_ports" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Gets the number of ports of this node. </p>
+<p>Note that this number may not add up to <a class="reference internal" href="#group__wpnode_1gaee2a24c87ad0556c34bf309417475498"><span class="std std-ref">wp_node_get_n_input_ports()</span></a> + <a class="reference internal" href="#group__wpnode_1ga948a59c9d5938574ce3ef02cdcd3b51e"><span class="std std-ref">wp_node_get_n_output_ports()</span></a> because it is discovered by looking at the number of available ports in the registry, however ports may appear there with a delay or may not appear at all if this client does not have permission to read them</p>
+<p><div class="remark admonition">
+<p class="admonition-title">Remark</p>
+<p>Requires WP_NODE_FEATURE_PORTS</p>
+</div>
+</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the node </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the number of ports of this node. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_node_new_ports_iterator">
+<span class="target" id="group__wpnode_1ga1d906da050ea145e2fdb7e6a0aac4079"></span><a class="reference internal" href="iterator_api.html#c.WpIterator" title="WpIterator"><span class="n"><span class="pre">WpIterator</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_node_new_ports_iterator</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpNode" title="WpNode"><span class="n"><span class="pre">WpNode</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_node_new_ports_iterator" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Gets a new iterator that iterates over all the ports that belong to this node. </p>
+<p><div class="remark admonition">
+<p class="admonition-title">Remark</p>
+<p>Requires WP_NODE_FEATURE_PORTS</p>
+</div>
+</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the node </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full): a WpIterator that iterates over WpPort objects </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_node_new_ports_filtered_iterator">
+<span class="target" id="group__wpnode_1ga7066c8267de163bc872210077e84521f"></span><a class="reference internal" href="iterator_api.html#c.WpIterator" title="WpIterator"><span class="n"><span class="pre">WpIterator</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_node_new_ports_filtered_iterator</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpNode" title="WpNode"><span class="n"><span class="pre">WpNode</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="p"><span class="pre">...</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_node_new_ports_filtered_iterator" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Gets a new iterator that iterates over all the ports that belong to this node and match the constraints. </p>
+<p>The constraints specified in the variable arguments must follow the rules documented in <a class="reference internal" href="obj_interest_api.html#group__wpobjectinterest_1gad0b9f3fb4f61390b76b994910b6462bd"><span class="std std-ref">wp_object_interest_new()</span></a>.</p>
+<p><div class="remark admonition">
+<p class="admonition-title">Remark</p>
+<p>Requires WP_NODE_FEATURE_PORTS</p>
+</div>
+</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the node </p></li>
+<li><p><strong>...</strong> – a list of constraints, terminated by NULL </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full): a WpIterator that iterates over WpPort objects </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_node_new_ports_filtered_iterator_full">
+<span class="target" id="group__wpnode_1ga2c744deb03a0a6783324c82f2c519fb1"></span><a class="reference internal" href="iterator_api.html#c.WpIterator" title="WpIterator"><span class="n"><span class="pre">WpIterator</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_node_new_ports_filtered_iterator_full</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpNode" title="WpNode"><span class="n"><span class="pre">WpNode</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <a class="reference internal" href="obj_interest_api.html#c.WpObjectInterest" title="WpObjectInterest"><span class="n"><span class="pre">WpObjectInterest</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">interest</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_node_new_ports_filtered_iterator_full" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Gets a new iterator that iterates over all the ports that belong to this node and match the <em>interest</em>. </p>
+<p><div class="remark admonition">
+<p class="admonition-title">Remark</p>
+<p>Requires WP_NODE_FEATURE_PORTS</p>
+</div>
+</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the node </p></li>
+<li><p><strong>interest</strong> – (transfer full): the interest </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full): a WpIterator that iterates over WpPort objects </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_node_lookup_port">
+<span class="target" id="group__wpnode_1ga75c5d907621598c340e3822191fc28d8"></span><a class="reference internal" href="port_api.html#c.WpPort" title="WpPort"><span class="n"><span class="pre">WpPort</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_node_lookup_port</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpNode" title="WpNode"><span class="n"><span class="pre">WpNode</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="p"><span class="pre">...</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_node_lookup_port" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Retrieves the first port that matches the constraints. </p>
+<p>The constraints specified in the variable arguments must follow the rules documented in <a class="reference internal" href="obj_interest_api.html#group__wpobjectinterest_1gad0b9f3fb4f61390b76b994910b6462bd"><span class="std std-ref">wp_object_interest_new()</span></a>.</p>
+<p><div class="remark admonition">
+<p class="admonition-title">Remark</p>
+<p>Requires WP_NODE_FEATURE_PORTS</p>
+</div>
+</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the node </p></li>
+<li><p><strong>...</strong> – a list of constraints, terminated by NULL </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full) (nullable): the first port that matches the constraints, or NULL if there is no such port </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_node_lookup_port_full">
+<span class="target" id="group__wpnode_1gaf72285e86b92c596e32b44c494373f8a"></span><a class="reference internal" href="port_api.html#c.WpPort" title="WpPort"><span class="n"><span class="pre">WpPort</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_node_lookup_port_full</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpNode" title="WpNode"><span class="n"><span class="pre">WpNode</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <a class="reference internal" href="obj_interest_api.html#c.WpObjectInterest" title="WpObjectInterest"><span class="n"><span class="pre">WpObjectInterest</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">interest</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_node_lookup_port_full" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Retrieves the first port that matches the <em>interest</em>. </p>
+<p><div class="remark admonition">
+<p class="admonition-title">Remark</p>
+<p>Requires WP_NODE_FEATURE_PORTS</p>
+</div>
+</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the node </p></li>
+<li><p><strong>interest</strong> – (transfer full): the interest </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full) (nullable): the first port that matches the <em>interest</em>, or NULL if there is no such port </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_node_send_command">
+<span class="target" id="group__wpnode_1gac3daaf8e48d771ce79ec1e999626037f"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_node_send_command</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpNode" title="WpNode"><span class="n"><span class="pre">WpNode</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">gchar</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">command</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_node_send_command" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Sends a command to a node. </p>
+<p>Valid commands are the short string reprepsentations of <code class="docutils literal notranslate"><span class="pre">enum</span> <span class="pre">spa_node_command</span></code>. For example, “Suspend” or “Flush” are valid commands</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the node </p></li>
+<li><p><strong>command</strong> – the command </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.WP_TYPE_NODE">
+<span class="target" id="group__wpnode_1gac7f8684613bb99c15c208e49646dcb72"></span><span class="sig-name descname"><span class="n"><span class="pre">WP_TYPE_NODE</span></span></span> <span class="pre">(wp_node_get_type</span> <span class="pre">())</span><a class="headerlink" href="#c.WP_TYPE_NODE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>The WpNode GType. </p>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="global_proxy_api.html" class="btn btn-neutral float-left" title="PipeWire Global Object Proxy" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="port_api.html" class="btn btn-neutral float-right" title="PipeWire Port" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Collabora.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

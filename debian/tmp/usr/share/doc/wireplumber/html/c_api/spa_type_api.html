@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Spa Type Information &mdash; WirePlumber 0.4.16 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Spa Json" href="spa_json_api.html" />
+    <link rel="prev" title="Properties Dictionary" href="properties_api.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> WirePlumber
+          </a>
+              <div class="version">
+                0.4.16
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">The WirePlumber Daemon</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installing-wireplumber.html">Installing WirePlumber</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../running-wireplumber-daemon.html">Running the WirePlumber daemon</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../daemon-logging.html">Debug Logging</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">The WirePlumber Library</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../c_api.html">C API Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="wp_api.html">Library Initialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core_api.html">Core</a></li>
+<li class="toctree-l2"><a class="reference internal" href="object_api.html">WpObject</a></li>
+<li class="toctree-l2"><a class="reference internal" href="obj_manager_api.html">Object Manager</a></li>
+<li class="toctree-l2"><a class="reference internal" href="obj_interest_api.html">Object Interest</a></li>
+<li class="toctree-l2"><a class="reference internal" href="iterator_api.html">Iterator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="transitions_api.html">Transitions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wperror_api.html">Error Codes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="log_api.html">Debug Logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="proxy_api.html">PipeWire Proxy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipewire_object_api.html">PipeWire Object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="global_proxy_api.html">PipeWire Global Object Proxy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="node_api.html">PipeWire Node</a></li>
+<li class="toctree-l2"><a class="reference internal" href="port_api.html">PipeWire Port</a></li>
+<li class="toctree-l2"><a class="reference internal" href="link_api.html">PipeWire Link</a></li>
+<li class="toctree-l2"><a class="reference internal" href="device_api.html">PipeWire Device</a></li>
+<li class="toctree-l2"><a class="reference internal" href="client_api.html">PipeWire Client</a></li>
+<li class="toctree-l2"><a class="reference internal" href="metadata_api.html">PipeWire Metadata</a></li>
+<li class="toctree-l2"><a class="reference internal" href="endpoint_api.html">PipeWire Endpoint</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spa_device_api.html">Spa Device</a></li>
+<li class="toctree-l2"><a class="reference internal" href="impl_node_api.html">Local Nodes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="impl_module_api.html">Local Modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="properties_api.html">Properties Dictionary</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Spa Type Information</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spa_json_api.html">Spa Json</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spa_pod_api.html">Spa Pod (Plain Old Data)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plugin_api.html">Plugins</a></li>
+<li class="toctree-l2"><a class="reference internal" href="component_loader_api.html">Component Loader</a></li>
+<li class="toctree-l2"><a class="reference internal" href="session_item_api.html">Session Items</a></li>
+<li class="toctree-l2"><a class="reference internal" href="si_interfaces_api.html">Session Items Interfaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="si_factory_api.html">Session Items Factory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="state_api.html">State Storage</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../lua_api.html">Lua API Documentation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Resources</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing to WirePlumber</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../testing.html">Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../community.html">Community Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Releases</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">WirePlumber</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../c_api.html">C API Documentation</a> &raquo;</li>
+      <li>Spa Type Information</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/c_api/spa_type_api.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="properties_api.html" class="btn btn-neutral float-left" title="Properties Dictionary" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="spa_json_api.html" class="btn btn-neutral float-right" title="Spa Json" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+  </div>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="spa-type-information">
+<span id="spa-type-api"></span><h1>Spa Type Information<a class="headerlink" href="#spa-type-information" title="Permalink to this headline"></a></h1>
+<dl>
+<dt class="sig sig-object cpp">
+<span class="target" id="group__wpspatype"></span><em><span class="pre">group</span></em> <span class="sig-name descname"><span class="pre">wpspatype</span></span></dt>
+<dd><p>Spa has a type system that is represented by a set of arrays that contain <code class="docutils literal notranslate"><span class="pre">spa_type_info</span></code> structures. This type system is simple, yet complex to work with for a couple of reasons.</p>
+<p>WirePlumber uses this API to access the spa type system, which makes some things easier to understand and work with. The main benefit of using this API is that it makes it easy to work with string representations of the types, allowing easier access from script bindings.</p>
+<p><strong>Type</strong> <strong>hierarchy</strong> </p>
+<p>On the top level, there is a list of types like Int, Bool, String, Id, Object. These are called fundamental types (terms borrowed from GType). Fundamental types can be derived and therefore we can have other types that represent specific objects, for instance.</p>
+<p>Enum and flag types are all represented with <code class="docutils literal notranslate"><span class="pre">SPA_TYPE_Id</span></code>. These types may have a list of possible values that one can select from (enums) or combine (flags). These values are accessed with the WpSpaIdTable API.</p>
+<p>Object types can have fields. All objects always have a special “id” field, which is an enum. Its possible values can be given by <a class="reference internal" href="#group__wpspatype_1ga8a7415d7b74723967bd2f4fec2195cf2"><span class="std std-ref">wp_spa_type_get_object_id_values_table()</span></a>. Optionally, objects can also have other object-specific fields, which can be accessed with <a class="reference internal" href="#group__wpspatype_1ga2ad026802482c6ac5cbd2d2c3db09f48"><span class="std std-ref">wp_spa_type_get_values_table()</span></a>.</p>
+<p>Every object field or enum value is represented by a WpSpaIdValue. In the case of object fields, each field can be of a specific type, which is returned by <a class="reference internal" href="#group__wpspatype_1ga57d1d260b48a687b96ec7fe9262a99a2"><span class="std std-ref">wp_spa_id_value_get_value_type()</span></a>. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-defines">Defines</p>
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.WP_TYPE_SPA_TYPE">
+<span class="target" id="group__wpspatype_1ga7b8a780d130b139fb14cdc0f8454e7d6"></span><span class="sig-name descname"><span class="n"><span class="pre">WP_TYPE_SPA_TYPE</span></span></span> <span class="pre">(wp_spa_type_get_type</span> <span class="pre">())</span><a class="headerlink" href="#c.WP_TYPE_SPA_TYPE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>The WpSpaType GType. </p>
+</dd></dl>
+
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.WP_TYPE_SPA_ID_TABLE">
+<span class="target" id="group__wpspatype_1ga37ae2e5a8ccbaffb9dc7ea6d1d749cb3"></span><span class="sig-name descname"><span class="n"><span class="pre">WP_TYPE_SPA_ID_TABLE</span></span></span> <span class="pre">(wp_spa_id_table_get_type</span> <span class="pre">())</span><a class="headerlink" href="#c.WP_TYPE_SPA_ID_TABLE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>The WpSpaIdTable GType. </p>
+</dd></dl>
+
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.WP_TYPE_SPA_ID_VALUE">
+<span class="target" id="group__wpspatype_1ga1ea8c63bf163ab482a336d3b40cd022d"></span><span class="sig-name descname"><span class="n"><span class="pre">WP_TYPE_SPA_ID_VALUE</span></span></span> <span class="pre">(wp_spa_id_value_get_type</span> <span class="pre">())</span><a class="headerlink" href="#c.WP_TYPE_SPA_ID_VALUE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>The WpSpaIdValue GType. </p>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-typedefs">Typedefs</p>
+<dl class="c type">
+<dt class="sig sig-object c" id="c.WpSpaType">
+<span class="target" id="group__wpspatype_1ga4fb5038ef60e2641bc874058b7ee45c1"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="n"><span class="pre">guint32</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">WpSpaType</span></span></span><a class="headerlink" href="#c.WpSpaType" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c type">
+<dt class="sig sig-object c" id="c.WpSpaIdTable">
+<span class="target" id="group__wpspatype_1ga9fd9e16e811863bee2c380a0712ff0f7"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="n"><span class="pre">gconstpointer</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">WpSpaIdTable</span></span></span><a class="headerlink" href="#c.WpSpaIdTable" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c type">
+<dt class="sig sig-object c" id="c.WpSpaIdValue">
+<span class="target" id="group__wpspatype_1ga46ae01feca6d4e8b9ced5542245cd36e"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="n"><span class="pre">gconstpointer</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">WpSpaIdValue</span></span></span><a class="headerlink" href="#c.WpSpaIdValue" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-functions">Functions</p>
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_type_from_name">
+<span class="target" id="group__wpspatype_1gad81f9be7065b3c754985e701bf0144ac"></span><a class="reference internal" href="#c.WpSpaType" title="WpSpaType"><span class="n"><span class="pre">WpSpaType</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_type_from_name</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">gchar</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">name</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_type_from_name" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Looks up the type id from a given type name. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> – the name to look up </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer none): the corresponding type id or WP_SPA_TYPE_INVALID if not found </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_type_parent">
+<span class="target" id="group__wpspatype_1ga653ab98f08a37eddc7f070c132c46cbb"></span><a class="reference internal" href="#c.WpSpaType" title="WpSpaType"><span class="n"><span class="pre">WpSpaType</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_type_parent</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaType" title="WpSpaType"><span class="n"><span class="pre">WpSpaType</span></span></a><span class="w"> </span><span class="n"><span class="pre">type</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_type_parent" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Gets the parent type of an SPA type. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>type</strong> – a type id </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer none): the direct parent type of the given <em>type</em>; if the type is fundamental (i.e. has no parent), the returned type is the same as <em>type</em> </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_type_name">
+<span class="target" id="group__wpspatype_1gaec0c8a85113956b4e3bf1b5b66eae7e4"></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">gchar</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_type_name</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaType" title="WpSpaType"><span class="n"><span class="pre">WpSpaType</span></span></a><span class="w"> </span><span class="n"><span class="pre">type</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_type_name" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Gets the name of an SPA type. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>type</strong> – a type id </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the complete name of the given <em>type</em> or NULL if <em>type</em> is invalid </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_type_is_fundamental">
+<span class="target" id="group__wpspatype_1gaef8cc7d69e7455be5c0bf4e8af3b7a34"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_type_is_fundamental</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaType" title="WpSpaType"><span class="n"><span class="pre">WpSpaType</span></span></a><span class="w"> </span><span class="n"><span class="pre">type</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_type_is_fundamental" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Checks if an SPA type is a fundamental type. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>type</strong> – a type id </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if the <em>type</em> has no parent, FALSE otherwise </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_type_is_id">
+<span class="target" id="group__wpspatype_1ga78a698709b5ec525012269d0c140ccff"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_type_is_id</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaType" title="WpSpaType"><span class="n"><span class="pre">WpSpaType</span></span></a><span class="w"> </span><span class="n"><span class="pre">type</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_type_is_id" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Checks if an SPA type is an Id type. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>type</strong> – a type id </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if the <em>type</em> is a SPA_TYPE_Id, FALSE otherwise </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_type_is_object">
+<span class="target" id="group__wpspatype_1gaf71ad87802ebee38b325f05df345e0d2"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_type_is_object</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaType" title="WpSpaType"><span class="n"><span class="pre">WpSpaType</span></span></a><span class="w"> </span><span class="n"><span class="pre">type</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_type_is_object" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Checks if an SPA type is an Object type. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>type</strong> – a type id </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if the <em>type</em> is a SPA_TYPE_Object, FALSE otherwise </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_type_get_object_id_values_table">
+<span class="target" id="group__wpspatype_1ga8a7415d7b74723967bd2f4fec2195cf2"></span><a class="reference internal" href="#c.WpSpaIdTable" title="WpSpaIdTable"><span class="n"><span class="pre">WpSpaIdTable</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_type_get_object_id_values_table</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaType" title="WpSpaType"><span class="n"><span class="pre">WpSpaType</span></span></a><span class="w"> </span><span class="n"><span class="pre">type</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_type_get_object_id_values_table" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Gets the table with the values that can be stored in the special “id” field of an object of the given <em>type</em>. </p>
+<p>Object pods (see WpSpaPod) always have a special “id” field along with other fields that can be defined. This “id” field can only store values of a specific <code class="docutils literal notranslate"><span class="pre">SPA_TYPE_Id</span></code> type. This function returns the table that contains the possible values for that field.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>type</strong> – the type id of an object type </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the table with the values that can be stored in the special “id” field of an object of the given <em>type</em> </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_type_get_values_table">
+<span class="target" id="group__wpspatype_1ga2ad026802482c6ac5cbd2d2c3db09f48"></span><a class="reference internal" href="#c.WpSpaIdTable" title="WpSpaIdTable"><span class="n"><span class="pre">WpSpaIdTable</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_type_get_values_table</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaType" title="WpSpaType"><span class="n"><span class="pre">WpSpaType</span></span></a><span class="w"> </span><span class="n"><span class="pre">type</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_type_get_values_table" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Gets the values table of an SPA type. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>type</strong> – a type id </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the associated WpSpaIdTable that contains possible values or object fields for this type, or NULL </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_id_table_from_name">
+<span class="target" id="group__wpspatype_1ga65d3f301fe3538505ac5d9cb5287e2cf"></span><a class="reference internal" href="#c.WpSpaIdTable" title="WpSpaIdTable"><span class="n"><span class="pre">WpSpaIdTable</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_id_table_from_name</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">gchar</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">name</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_id_table_from_name" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Finds a WpSpaIdTable given its name. </p>
+<p>This name can either be the full type name of an object type, or the name of an enum (which is <strong>not</strong>(!!) a type). For example, “Spa:Pod:Object:Param:Format” and “Spa:Enum:ParamId” are both valid table names.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> – the full name of an id table </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(nullable): the associated table, or NULL </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_id_table_new_iterator">
+<span class="target" id="group__wpspatype_1gacf34d3de819d503f5689a2daa35ba2b4"></span><a class="reference internal" href="iterator_api.html#c.WpIterator" title="WpIterator"><span class="n"><span class="pre">WpIterator</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_id_table_new_iterator</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaIdTable" title="WpSpaIdTable"><span class="n"><span class="pre">WpSpaIdTable</span></span></a><span class="w"> </span><span class="n"><span class="pre">table</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_id_table_new_iterator" title="Permalink to this definition"></a><br /></dt>
+<dd><p>This function returns an iterator that allows you to iterate through the values associated with this table. </p>
+<p>The items in the iterator are of type WpSpaIdValue.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>table</strong> – the id table </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a WpIterator that iterates over WpSpaIdValue items </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_id_table_find_value">
+<span class="target" id="group__wpspatype_1gacab160dfaa2ced2d19b97ededab903c8"></span><a class="reference internal" href="#c.WpSpaIdValue" title="WpSpaIdValue"><span class="n"><span class="pre">WpSpaIdValue</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_id_table_find_value</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaIdTable" title="WpSpaIdTable"><span class="n"><span class="pre">WpSpaIdTable</span></span></a><span class="w"> </span><span class="n"><span class="pre">table</span></span>, <span class="n"><span class="pre">guint</span></span><span class="w"> </span><span class="n"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_id_table_find_value" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Finds a value in an SPA Id table. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>table</strong> – the id table </p></li>
+<li><p><strong>value</strong> – a numeric value that is contained in the table </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(nullable): the WpSpaIdValue associated with <em>value</em>, or NULL </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_id_table_find_value_from_name">
+<span class="target" id="group__wpspatype_1ga67cb14c0879aaf4487e39788f7362d93"></span><a class="reference internal" href="#c.WpSpaIdValue" title="WpSpaIdValue"><span class="n"><span class="pre">WpSpaIdValue</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_id_table_find_value_from_name</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaIdTable" title="WpSpaIdTable"><span class="n"><span class="pre">WpSpaIdTable</span></span></a><span class="w"> </span><span class="n"><span class="pre">table</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">gchar</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">name</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_id_table_find_value_from_name" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Finds a named value in an SPA Id table. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>table</strong> – the id table </p></li>
+<li><p><strong>name</strong> – the full name of a value that is contained in the table </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(nullable): the WpSpaIdValue associated with <em>name</em>, or NULL </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_id_table_find_value_from_short_name">
+<span class="target" id="group__wpspatype_1ga77a1e05313157fc76c6866e943a7fee1"></span><a class="reference internal" href="#c.WpSpaIdValue" title="WpSpaIdValue"><span class="n"><span class="pre">WpSpaIdValue</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_id_table_find_value_from_short_name</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaIdTable" title="WpSpaIdTable"><span class="n"><span class="pre">WpSpaIdTable</span></span></a><span class="w"> </span><span class="n"><span class="pre">table</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">gchar</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">short_name</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_id_table_find_value_from_short_name" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Finds a short named value in an SPA Id table. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>table</strong> – the id table </p></li>
+<li><p><strong>short_name</strong> – the short name of a value that is contained in the table </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(nullable): the WpSpaIdValue associated with <em>short_name</em>, or NULL </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_id_value_from_name">
+<span class="target" id="group__wpspatype_1gacfed24931025774265978c62952de5e6"></span><a class="reference internal" href="#c.WpSpaIdValue" title="WpSpaIdValue"><span class="n"><span class="pre">WpSpaIdValue</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_id_value_from_name</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">gchar</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">name</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_id_value_from_name" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Looks up an id value (enum, flag or object field) directly from its full name. </p>
+<p>For instance, “Spa:Enum:Direction:Input” will resolve to the id value that represents “Input” in the “Spa:Enum:Direction” enum.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> – the full name of an id value </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the id value for <em>name</em>, or NULL if no such id value was found </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_id_value_from_short_name">
+<span class="target" id="group__wpspatype_1gaa5e36240576d89ab274484e82904a464"></span><a class="reference internal" href="#c.WpSpaIdValue" title="WpSpaIdValue"><span class="n"><span class="pre">WpSpaIdValue</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_id_value_from_short_name</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">gchar</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">table_name</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">gchar</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">short_name</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_id_value_from_short_name" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Looks up an id value given its container <em>table_name</em> and its <em>short_name</em>. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>table_name</strong> – the name of the WpSpaIdTable to look up the value in </p></li>
+<li><p><strong>short_name</strong> – the short name of the value to look up </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the id value or NULL if it was not found </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_id_value_from_number">
+<span class="target" id="group__wpspatype_1gae282e80bae6fdc0e61abf919b5dcc568"></span><a class="reference internal" href="#c.WpSpaIdValue" title="WpSpaIdValue"><span class="n"><span class="pre">WpSpaIdValue</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_id_value_from_number</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">gchar</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">table_name</span></span>, <span class="n"><span class="pre">guint</span></span><span class="w"> </span><span class="n"><span class="pre">id</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_id_value_from_number" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Looks up an id value given its container <em>table_name</em> and its numeric representation, <em>id</em>. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>table_name</strong> – the name of the WpSpaIdTable to look up the value in </p></li>
+<li><p><strong>id</strong> – the numeric representation of the value to look up </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the id value or NULL if it was not found </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_id_value_number">
+<span class="target" id="group__wpspatype_1ga69426c25705618ceb4fd73a2872795a6"></span><span class="n"><span class="pre">guint</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_id_value_number</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaIdValue" title="WpSpaIdValue"><span class="n"><span class="pre">WpSpaIdValue</span></span></a><span class="w"> </span><span class="n"><span class="pre">id</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_id_value_number" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Gets the numeric value of an id value. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>id</strong> – an id value </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the numeric representation of this id value </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_id_value_name">
+<span class="target" id="group__wpspatype_1ga0472ba036edc0c495324cea2e109fa07"></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">gchar</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_id_value_name</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaIdValue" title="WpSpaIdValue"><span class="n"><span class="pre">WpSpaIdValue</span></span></a><span class="w"> </span><span class="n"><span class="pre">id</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_id_value_name" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Gets the name of an id value. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>id</strong> – an id value </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the full name of this id value </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_id_value_short_name">
+<span class="target" id="group__wpspatype_1ga16415f3d5aee97407b0f40d6d17c4ef8"></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">gchar</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_id_value_short_name</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaIdValue" title="WpSpaIdValue"><span class="n"><span class="pre">WpSpaIdValue</span></span></a><span class="w"> </span><span class="n"><span class="pre">id</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_id_value_short_name" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Gets the short name of an id value. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>id</strong> – an id value </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the short name of this id value </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_id_value_get_value_type">
+<span class="target" id="group__wpspatype_1ga57d1d260b48a687b96ec7fe9262a99a2"></span><a class="reference internal" href="#c.WpSpaType" title="WpSpaType"><span class="n"><span class="pre">WpSpaType</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_id_value_get_value_type</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaIdValue" title="WpSpaIdValue"><span class="n"><span class="pre">WpSpaIdValue</span></span></a><span class="w"> </span><span class="n"><span class="pre">id</span></span>, <a class="reference internal" href="#c.WpSpaIdTable" title="WpSpaIdTable"><span class="n"><span class="pre">WpSpaIdTable</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">table</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_id_value_get_value_type" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Returns the value type associated with this WpSpaIdValue. </p>
+<p>This information is useful when <em>id</em> represents an object field, which can take a value of an arbitrary type.</p>
+<p>When the returned type is (or is derived from) <code class="docutils literal notranslate"><span class="pre">SPA_TYPE_Id</span></code> or <code class="docutils literal notranslate"><span class="pre">SPA_TYPE_Object</span></code>, <em>table</em> is set to point to the WpSpaIdTable that contains the possible Id values / object fields.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>id</strong> – an id value </p></li>
+<li><p><strong>table</strong> – (out) (optional): the associated WpSpaIdTable </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer none): the value type associated with <em>id</em> </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_id_value_array_get_item_type">
+<span class="target" id="group__wpspatype_1ga7178db140327289c3ca4a82f84721c4b"></span><a class="reference internal" href="#c.WpSpaType" title="WpSpaType"><span class="n"><span class="pre">WpSpaType</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_id_value_array_get_item_type</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaIdValue" title="WpSpaIdValue"><span class="n"><span class="pre">WpSpaIdValue</span></span></a><span class="w"> </span><span class="n"><span class="pre">id</span></span>, <a class="reference internal" href="#c.WpSpaIdTable" title="WpSpaIdTable"><span class="n"><span class="pre">WpSpaIdTable</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">table</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_id_value_array_get_item_type" title="Permalink to this definition"></a><br /></dt>
+<dd><p>If the value type of <em>id</em> is <code class="docutils literal notranslate"><span class="pre">SPA_TYPE_Array</span></code>, this function returns the type that is allowed to be contained inside the array. </p>
+<p>When the returned type is (or is derived from) <code class="docutils literal notranslate"><span class="pre">SPA_TYPE_Id</span></code> or <code class="docutils literal notranslate"><span class="pre">SPA_TYPE_Object</span></code>, <em>table</em> is set to point to the WpSpaIdTable that contains the possible Id values / object fields.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>id</strong> – an id value </p></li>
+<li><p><strong>table</strong> – (out) (optional): the associated WpSpaIdTable </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer none): the type that is allowed in the array, if <em>id</em> represents an object field that takes an array as value </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_dynamic_type_init">
+<span class="target" id="group__wpspatype_1gaf413fa7b329f14830f0ccd04ab786a52"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_dynamic_type_init</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_dynamic_type_init" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Initializes the spa dynamic type registry. </p>
+<p>This allows registering new spa types at runtime. The spa type system still works if this function is not called.</p>
+<p>Normally called by <a class="reference internal" href="wp_api.html#group__wp_1gad7843f7640e3cc4775b71c8ada235556"><span class="std std-ref">wp_init()</span></a> when WP_INIT_SPA_TYPES is passed in its flags. </p>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_dynamic_type_deinit">
+<span class="target" id="group__wpspatype_1gab7bb63fe28af406a19749a82b1b95b60"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_dynamic_type_deinit</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_dynamic_type_deinit" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Deinitializes the spa type registry. </p>
+<p>You do not need to ever call this, unless you want to free memory at the end of the execution of a test, so that it doesn’t show as leaked in the memory profiler. </p>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_dynamic_type_register">
+<span class="target" id="group__wpspatype_1ga3bd11a864e980feefcc31f1bb8437e3e"></span><a class="reference internal" href="#c.WpSpaType" title="WpSpaType"><span class="n"><span class="pre">WpSpaType</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_dynamic_type_register</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">gchar</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">name</span></span>, <a class="reference internal" href="#c.WpSpaType" title="WpSpaType"><span class="n"><span class="pre">WpSpaType</span></span></a><span class="w"> </span><span class="n"><span class="pre">parent</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">spa_type_info</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">values</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_dynamic_type_register" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Registers an additional type in the spa type system. </p>
+<p>This is useful to add a custom pod object type.</p>
+<p>Note that both <em>name</em> and <em>values</em> must be statically allocated, or otherwise guaranteed to be kept in memory until <a class="reference internal" href="#group__wpspatype_1gab7bb63fe28af406a19749a82b1b95b60"><span class="std std-ref">wp_spa_dynamic_type_deinit()</span></a> is called. No memory copy is done by this function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> – the name of the type </p></li>
+<li><p><strong>parent</strong> – the parent type </p></li>
+<li><p><strong>values</strong> – an array of <code class="docutils literal notranslate"><span class="pre">spa_type_info</span></code> that contains the values of the type, used only for Object types </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer none): the new type </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_dynamic_id_table_register">
+<span class="target" id="group__wpspatype_1ga6555b330b9088046433b39339afb73a4"></span><a class="reference internal" href="#c.WpSpaIdTable" title="WpSpaIdTable"><span class="n"><span class="pre">WpSpaIdTable</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_dynamic_id_table_register</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">gchar</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">name</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">spa_type_info</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">values</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_dynamic_id_table_register" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Registers an additional WpSpaIdTable in the spa type system. </p>
+<p>This is useful to add custom enumeration types.</p>
+<p>Note that both <em>name</em> and <em>values</em> must be statically allocated, or otherwise guaranteed to be kept in memory until <a class="reference internal" href="#group__wpspatype_1gab7bb63fe28af406a19749a82b1b95b60"><span class="std std-ref">wp_spa_dynamic_type_deinit()</span></a> is called. No memory copy is done by this function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> – the name of the id table </p></li>
+<li><p><strong>values</strong> – an array of <code class="docutils literal notranslate"><span class="pre">spa_type_info</span></code> that contains the values of the table </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the new table </p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-variables">Variables</p>
+<dl class="c var">
+<dt class="sig sig-object c" id="c.WP_SPA_TYPE_INVALID">
+<span class="target" id="group__wpspatype_1ga9888648aed7782a04158d63b67dc82b7"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#c.WpSpaType" title="WpSpaType"><span class="n"><span class="pre">WpSpaType</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">WP_SPA_TYPE_INVALID</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">0xffffffff</span></span><a class="headerlink" href="#c.WP_SPA_TYPE_INVALID" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Type id representing an invalid SPA type. </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="properties_api.html" class="btn btn-neutral float-left" title="Properties Dictionary" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="spa_json_api.html" class="btn btn-neutral float-right" title="Spa Json" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Collabora.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

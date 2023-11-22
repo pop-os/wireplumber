@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Iterator &mdash; WirePlumber 0.4.16 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Transitions" href="transitions_api.html" />
+    <link rel="prev" title="Object Interest" href="obj_interest_api.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> WirePlumber
+          </a>
+              <div class="version">
+                0.4.16
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">The WirePlumber Daemon</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installing-wireplumber.html">Installing WirePlumber</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../running-wireplumber-daemon.html">Running the WirePlumber daemon</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../daemon-logging.html">Debug Logging</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">The WirePlumber Library</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../c_api.html">C API Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="wp_api.html">Library Initialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core_api.html">Core</a></li>
+<li class="toctree-l2"><a class="reference internal" href="object_api.html">WpObject</a></li>
+<li class="toctree-l2"><a class="reference internal" href="obj_manager_api.html">Object Manager</a></li>
+<li class="toctree-l2"><a class="reference internal" href="obj_interest_api.html">Object Interest</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Iterator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="transitions_api.html">Transitions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wperror_api.html">Error Codes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="log_api.html">Debug Logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="proxy_api.html">PipeWire Proxy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipewire_object_api.html">PipeWire Object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="global_proxy_api.html">PipeWire Global Object Proxy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="node_api.html">PipeWire Node</a></li>
+<li class="toctree-l2"><a class="reference internal" href="port_api.html">PipeWire Port</a></li>
+<li class="toctree-l2"><a class="reference internal" href="link_api.html">PipeWire Link</a></li>
+<li class="toctree-l2"><a class="reference internal" href="device_api.html">PipeWire Device</a></li>
+<li class="toctree-l2"><a class="reference internal" href="client_api.html">PipeWire Client</a></li>
+<li class="toctree-l2"><a class="reference internal" href="metadata_api.html">PipeWire Metadata</a></li>
+<li class="toctree-l2"><a class="reference internal" href="endpoint_api.html">PipeWire Endpoint</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spa_device_api.html">Spa Device</a></li>
+<li class="toctree-l2"><a class="reference internal" href="impl_node_api.html">Local Nodes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="impl_module_api.html">Local Modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="properties_api.html">Properties Dictionary</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spa_type_api.html">Spa Type Information</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spa_json_api.html">Spa Json</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spa_pod_api.html">Spa Pod (Plain Old Data)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plugin_api.html">Plugins</a></li>
+<li class="toctree-l2"><a class="reference internal" href="component_loader_api.html">Component Loader</a></li>
+<li class="toctree-l2"><a class="reference internal" href="session_item_api.html">Session Items</a></li>
+<li class="toctree-l2"><a class="reference internal" href="si_interfaces_api.html">Session Items Interfaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="si_factory_api.html">Session Items Factory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="state_api.html">State Storage</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../lua_api.html">Lua API Documentation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Resources</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing to WirePlumber</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../testing.html">Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../community.html">Community Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Releases</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">WirePlumber</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../c_api.html">C API Documentation</a> &raquo;</li>
+      <li>Iterator</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/c_api/iterator_api.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="obj_interest_api.html" class="btn btn-neutral float-left" title="Object Interest" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="transitions_api.html" class="btn btn-neutral float-right" title="Transitions" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+  </div>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="iterator">
+<span id="iterator-api"></span><h1>Iterator<a class="headerlink" href="#iterator" title="Permalink to this headline"></a></h1>
+<div align="center" class="align-center"><div class="graphviz"><object data="../_images/graphviz-37c9e1897e4e8309012f00a6d54a9b9e4807b870.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph inheritance {
+    rankdir=LR;
+    GBoxed -&gt; WpIterator;
+ }</p></object></div>
+</div>
+<dl class="c struct">
+<dt class="sig sig-object c" id="c.WpIterator">
+<span class="target" id="structWpIterator"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">WpIterator</span></span></span><a class="headerlink" href="#c.WpIterator" title="Permalink to this definition"></a><br /></dt>
+<dd><p>A generic iterator API </p>
+</dd></dl>
+
+<dl class="c struct">
+<dt class="sig sig-object c" id="c._WpIteratorMethods">
+<span class="target" id="struct__WpIteratorMethods"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">_WpIteratorMethods</span></span></span><a class="headerlink" href="#c._WpIteratorMethods" title="Permalink to this definition"></a><br /></dt>
+<dd><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
+<dl class="c var">
+<dt class="sig sig-object c" id="c._WpIteratorMethods.version">
+<span class="target" id="struct__WpIteratorMethods_1a00592b5c79f6a343b6ba73d0fad70d62"></span><span class="n"><span class="pre">guint32</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">version</span></span></span><a class="headerlink" href="#c._WpIteratorMethods.version" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c._WpIteratorMethods.reset">
+<span class="target" id="struct__WpIteratorMethods_1aa8a308aab63aadedde0e05c0422eb02d"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">reset</span></span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">(</span></span><a class="reference internal" href="#c.WpIterator" title="WpIterator"><span class="n"><span class="pre">WpIterator</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#c._WpIteratorMethods.reset" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c._WpIteratorMethods.next">
+<span class="target" id="struct__WpIteratorMethods_1a8e04afdeb97c60b9904150a5dd23ace9"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">next</span></span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">(</span></span><a class="reference internal" href="#c.WpIterator" title="WpIterator"><span class="n"><span class="pre">WpIterator</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">GValue</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">item</span></span><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#c._WpIteratorMethods.next" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c._WpIteratorMethods.fold">
+<span class="target" id="struct__WpIteratorMethods_1aecd369a18262cd959ac2033bf6d7a4d5"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">fold</span></span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">(</span></span><a class="reference internal" href="#c.WpIterator" title="WpIterator"><span class="n"><span class="pre">WpIterator</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#c.WpIteratorFoldFunc" title="WpIteratorFoldFunc"><span class="n"><span class="pre">WpIteratorFoldFunc</span></span></a><span class="w"> </span><span class="n"><span class="pre">func</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">GValue</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ret</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">gpointer</span></span><span class="w"> </span><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#c._WpIteratorMethods.fold" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c._WpIteratorMethods.foreach">
+<span class="target" id="struct__WpIteratorMethods_1ac70cd296365b25cc499fffb5b7d1a81d"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">foreach</span></span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">(</span></span><a class="reference internal" href="#c.WpIterator" title="WpIterator"><span class="n"><span class="pre">WpIterator</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#c.WpIteratorForeachFunc" title="WpIteratorForeachFunc"><span class="n"><span class="pre">WpIteratorForeachFunc</span></span></a><span class="w"> </span><span class="n"><span class="pre">func</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">gpointer</span></span><span class="w"> </span><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#c._WpIteratorMethods.foreach" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c._WpIteratorMethods.finalize">
+<span class="target" id="struct__WpIteratorMethods_1aba3ef867c04f84ad1ee65aefcabf659b"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">finalize</span></span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">(</span></span><a class="reference internal" href="#c.WpIterator" title="WpIterator"><span class="n"><span class="pre">WpIterator</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#c._WpIteratorMethods.finalize" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="c type">
+<dt class="sig sig-object c" id="c.WpIteratorFoldFunc">
+<span class="target" id="group__wpiterator_1ga874e22075c8f15ceab8d06858ea38366"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">WpIteratorFoldFunc</span></span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">(</span></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">GValue</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">item</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">GValue</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ret</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">gpointer</span></span><span class="w"> </span><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#c.WpIteratorFoldFunc" title="Permalink to this definition"></a><br /></dt>
+<dd><p>A function to be passed to <a class="reference internal" href="#group__wpiterator_1ga939ea29126447003efb2d667c3efbc20"><span class="std std-ref">wp_iterator_fold()</span></a> </p>
+<dl class="field-list simple">
+<dt class="field-odd">Param item</dt>
+<dd class="field-odd"><p>the item to fold </p>
+</dd>
+<dt class="field-even">Param ret</dt>
+<dd class="field-even"><p>the value collecting the result </p>
+</dd>
+<dt class="field-odd">Param data</dt>
+<dd class="field-odd"><p>data passed to <a class="reference internal" href="#group__wpiterator_1ga939ea29126447003efb2d667c3efbc20"><span class="std std-ref">wp_iterator_fold()</span></a> </p>
+</dd>
+<dt class="field-even">Return</dt>
+<dd class="field-even"><p>TRUE if the fold should continue, FALSE if it should stop. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c type">
+<dt class="sig sig-object c" id="c.WpIteratorForeachFunc">
+<span class="target" id="group__wpiterator_1ga890f9627c9a2afaddcc75c8b25e07b45"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">WpIteratorForeachFunc</span></span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">(</span></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">GValue</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">item</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">gpointer</span></span><span class="w"> </span><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#c.WpIteratorForeachFunc" title="Permalink to this definition"></a><br /></dt>
+<dd><p>A function that is called by <a class="reference internal" href="#group__wpiterator_1gaea7eaae6c496dd837c8aa8cefdaa2b9b"><span class="std std-ref">wp_iterator_foreach()</span></a>. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Param item</dt>
+<dd class="field-odd"><p>the item </p>
+</dd>
+<dt class="field-even">Param data</dt>
+<dd class="field-even"><p>the data passed to <a class="reference internal" href="#group__wpiterator_1gaea7eaae6c496dd837c8aa8cefdaa2b9b"><span class="std std-ref">wp_iterator_foreach()</span></a> </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_iterator_new">
+<span class="target" id="group__wpiterator_1gafc2699253a5e4494f72d1a84f4480580"></span><a class="reference internal" href="#c.WpIterator" title="WpIterator"><span class="n"><span class="pre">WpIterator</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_iterator_new</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">WpIteratorMethods</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">methods</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n"><span class="pre">user_size</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_iterator_new" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Constructs an iterator that uses the provided <em>methods</em> to implement its API. </p>
+<p>The WpIterator structure is internally allocated with <em>user_size</em> additional space at the end. A pointer to this space can be retrieved with <a class="reference internal" href="#group__wpiterator_1ga69641a56451d30148017fddaef6a995b"><span class="std std-ref">wp_iterator_get_user_data()</span></a> and is available for implementation-specific storage.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>methods</strong> – method implementations for the new iterator </p></li>
+<li><p><strong>user_size</strong> – size of the user_data structure to be allocated </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full): a new custom iterator </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_iterator_get_user_data">
+<span class="target" id="group__wpiterator_1ga69641a56451d30148017fddaef6a995b"></span><span class="n"><span class="pre">gpointer</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_iterator_get_user_data</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpIterator" title="WpIterator"><span class="n"><span class="pre">WpIterator</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_iterator_get_user_data" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Gets the implementation-specific storage of an iterator. </p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>this only for use by implementations of WpIterator</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – an iterator object </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a pointer to the implementation-specific storage area </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_iterator_ref">
+<span class="target" id="group__wpiterator_1ga7396df103ee06f8adca473056958af33"></span><a class="reference internal" href="#c.WpIterator" title="WpIterator"><span class="n"><span class="pre">WpIterator</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_iterator_ref</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpIterator" title="WpIterator"><span class="n"><span class="pre">WpIterator</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_iterator_ref" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Increases the reference count of an iterator. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – an iterator object </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full): <em>self</em> with an additional reference count on it </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_iterator_unref">
+<span class="target" id="group__wpiterator_1gaaaf750adee46ba208e9f67a23248cdcc"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_iterator_unref</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpIterator" title="WpIterator"><span class="n"><span class="pre">WpIterator</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_iterator_unref" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Decreases the reference count on <em>self</em> and frees it when the ref count reaches zero. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – (transfer full): an iterator object </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_iterator_reset">
+<span class="target" id="group__wpiterator_1gac9ce4a43a559f6f8247f8a0ea710a218"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_iterator_reset</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpIterator" title="WpIterator"><span class="n"><span class="pre">WpIterator</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_iterator_reset" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Resets the iterator so we can iterate again from the beginning. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the iterator </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_iterator_next">
+<span class="target" id="group__wpiterator_1gaa318167a1e5c6ba0fca865a07c46a3cc"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_iterator_next</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpIterator" title="WpIterator"><span class="n"><span class="pre">WpIterator</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="n"><span class="pre">GValue</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">item</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_iterator_next" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Gets the next item of the iterator. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the iterator </p></li>
+<li><p><strong>item</strong> – (out): the next item of the iterator </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if next iterator was obtained, FALSE when the iterator has no more items to iterate through. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_iterator_fold">
+<span class="target" id="group__wpiterator_1ga939ea29126447003efb2d667c3efbc20"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_iterator_fold</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpIterator" title="WpIterator"><span class="n"><span class="pre">WpIterator</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <a class="reference internal" href="#c.WpIteratorFoldFunc" title="WpIteratorFoldFunc"><span class="n"><span class="pre">WpIteratorFoldFunc</span></span></a><span class="w"> </span><span class="n"><span class="pre">func</span></span>, <span class="n"><span class="pre">GValue</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ret</span></span>, <span class="n"><span class="pre">gpointer</span></span><span class="w"> </span><span class="n"><span class="pre">data</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_iterator_fold" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Fold a function over the items of the iterator. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the iterator </p></li>
+<li><p><strong>func</strong> – (scope call): the fold function </p></li>
+<li><p><strong>ret</strong> – (inout): the accumulator data </p></li>
+<li><p><strong>data</strong> – (closure): the user data </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if all the items were processed, FALSE otherwise. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_iterator_foreach">
+<span class="target" id="group__wpiterator_1gaea7eaae6c496dd837c8aa8cefdaa2b9b"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_iterator_foreach</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpIterator" title="WpIterator"><span class="n"><span class="pre">WpIterator</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <a class="reference internal" href="#c.WpIteratorForeachFunc" title="WpIteratorForeachFunc"><span class="n"><span class="pre">WpIteratorForeachFunc</span></span></a><span class="w"> </span><span class="n"><span class="pre">func</span></span>, <span class="n"><span class="pre">gpointer</span></span><span class="w"> </span><span class="n"><span class="pre">data</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_iterator_foreach" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Iterates over all items of the iterator calling a function. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the iterator </p></li>
+<li><p><strong>func</strong> – (scope call): the foreach function </p></li>
+<li><p><strong>data</strong> – (closure): the user data </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if all the items were processed, FALSE otherwise. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_iterator_new_ptr_array">
+<span class="target" id="group__wpiterator_1ga47ce937acaec758f2db0529ddbd04175"></span><a class="reference internal" href="#c.WpIterator" title="WpIterator"><span class="n"><span class="pre">WpIterator</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_iterator_new_ptr_array</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">GPtrArray</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">items</span></span>, <span class="n"><span class="pre">GType</span></span><span class="w"> </span><span class="n"><span class="pre">item_type</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_iterator_new_ptr_array" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Creates an iterator from a pointer array. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>items</strong> – (element-type gpointer) (transfer full): the items to iterate over </p></li>
+<li><p><strong>item_type</strong> – the type of each item </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full): a new iterator that iterates over <em>items</em> </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.WP_TYPE_ITERATOR">
+<span class="target" id="group__wpiterator_1ga7771781c905ce1b4f3c81b09bfcf9aa8"></span><span class="sig-name descname"><span class="n"><span class="pre">WP_TYPE_ITERATOR</span></span></span> <span class="pre">(wp_iterator_get_type</span> <span class="pre">())</span><a class="headerlink" href="#c.WP_TYPE_ITERATOR" title="Permalink to this definition"></a><br /></dt>
+<dd><p>The WpIterator GType. </p>
+</dd></dl>
+
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.WP_ITERATOR_METHODS_VERSION">
+<span class="target" id="group__wpiterator_1ga7b2e4f4567b0ccf2813aa0d54251211c"></span><span class="sig-name descname"><span class="n"><span class="pre">WP_ITERATOR_METHODS_VERSION</span></span></span> <span class="pre">0U</span><a class="headerlink" href="#c.WP_ITERATOR_METHODS_VERSION" title="Permalink to this definition"></a><br /></dt>
+<dd><p>The version to set to _WpIteratorMethods::version. This allows future expansion of the struct. </p>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="obj_interest_api.html" class="btn btn-neutral float-left" title="Object Interest" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="transitions_api.html" class="btn btn-neutral float-right" title="Transitions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Collabora.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

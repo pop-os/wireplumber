@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WpObject &mdash; WirePlumber 0.4.16 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Object Manager" href="obj_manager_api.html" />
+    <link rel="prev" title="Core" href="core_api.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> WirePlumber
+          </a>
+              <div class="version">
+                0.4.16
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">The WirePlumber Daemon</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installing-wireplumber.html">Installing WirePlumber</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../running-wireplumber-daemon.html">Running the WirePlumber daemon</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../daemon-logging.html">Debug Logging</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">The WirePlumber Library</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../c_api.html">C API Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="wp_api.html">Library Initialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core_api.html">Core</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">WpObject</a></li>
+<li class="toctree-l2"><a class="reference internal" href="obj_manager_api.html">Object Manager</a></li>
+<li class="toctree-l2"><a class="reference internal" href="obj_interest_api.html">Object Interest</a></li>
+<li class="toctree-l2"><a class="reference internal" href="iterator_api.html">Iterator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="transitions_api.html">Transitions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wperror_api.html">Error Codes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="log_api.html">Debug Logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="proxy_api.html">PipeWire Proxy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipewire_object_api.html">PipeWire Object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="global_proxy_api.html">PipeWire Global Object Proxy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="node_api.html">PipeWire Node</a></li>
+<li class="toctree-l2"><a class="reference internal" href="port_api.html">PipeWire Port</a></li>
+<li class="toctree-l2"><a class="reference internal" href="link_api.html">PipeWire Link</a></li>
+<li class="toctree-l2"><a class="reference internal" href="device_api.html">PipeWire Device</a></li>
+<li class="toctree-l2"><a class="reference internal" href="client_api.html">PipeWire Client</a></li>
+<li class="toctree-l2"><a class="reference internal" href="metadata_api.html">PipeWire Metadata</a></li>
+<li class="toctree-l2"><a class="reference internal" href="endpoint_api.html">PipeWire Endpoint</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spa_device_api.html">Spa Device</a></li>
+<li class="toctree-l2"><a class="reference internal" href="impl_node_api.html">Local Nodes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="impl_module_api.html">Local Modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="properties_api.html">Properties Dictionary</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spa_type_api.html">Spa Type Information</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spa_json_api.html">Spa Json</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spa_pod_api.html">Spa Pod (Plain Old Data)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plugin_api.html">Plugins</a></li>
+<li class="toctree-l2"><a class="reference internal" href="component_loader_api.html">Component Loader</a></li>
+<li class="toctree-l2"><a class="reference internal" href="session_item_api.html">Session Items</a></li>
+<li class="toctree-l2"><a class="reference internal" href="si_interfaces_api.html">Session Items Interfaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="si_factory_api.html">Session Items Factory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="state_api.html">State Storage</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../lua_api.html">Lua API Documentation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Resources</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing to WirePlumber</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../testing.html">Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../community.html">Community Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Releases</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">WirePlumber</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../c_api.html">C API Documentation</a> &raquo;</li>
+      <li>WpObject</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/c_api/object_api.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="core_api.html" class="btn btn-neutral float-left" title="Core" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="obj_manager_api.html" class="btn btn-neutral float-right" title="Object Manager" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+  </div>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="wpobject">
+<span id="object-api"></span><h1>WpObject<a class="headerlink" href="#wpobject" title="Permalink to this headline"></a></h1>
+<div align="center" class="align-center"><div class="graphviz"><object data="../_images/graphviz-f6ac565239828af555c72b4a05432b1130f6bf36.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph inheritance {
+    rankdir=LR;
+    GObject -&gt; WpObject;
+ }</p></object></div>
+</div>
+<dl class="c struct">
+<dt class="sig sig-object c" id="c.WpObject">
+<span class="target" id="structWpObject"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">WpObject</span></span></span><a class="headerlink" href="#c.WpObject" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Base class for objects that have activatable features.</p>
+<p><strong>GObject</strong> <strong>Properties</strong> </p>
+<p><dl>
+<dt class="sig sig-object cpp">
+<span class="pre">core</span></dt>
+<dd><p></p>
+<p>The WpCore associated with this object</p>
+<p><table class="colwidths-auto docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">WpCore</span> <span class="pre">*</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">G_PARAM_READWRITE</span> <span class="pre">|</span> <span class="pre">G_PARAM_CONSTRUCT_ONLY</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</p>
+</dd></dl>
+
+</p>
+<p><dl>
+<dt class="sig sig-object cpp">
+<span class="pre">active-features</span></dt>
+<dd><p></p>
+<p>The active WpObjectFeatures on this proxy</p>
+<p><table class="colwidths-auto docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">guint</span> <span class="pre">(WpObjectFeatures)</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">G_PARAM_READABLE</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</p>
+</dd></dl>
+
+</p>
+<p><dl>
+<dt class="sig sig-object cpp">
+<span class="pre">supported-features</span></dt>
+<dd><p></p>
+<p>The supported WpObjectFeatures on this proxy</p>
+<p><table class="colwidths-auto docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">guint</span> <span class="pre">(WpObjectFeatures)</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">G_PARAM_READABLE</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</p>
+</dd></dl>
+
+</p>
+</dd></dl>
+
+<dl class="c struct">
+<dt class="sig sig-object c" id="c._WpObjectClass">
+<span class="target" id="struct__WpObjectClass"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">_WpObjectClass</span></span></span><a class="headerlink" href="#c._WpObjectClass" title="Permalink to this definition"></a><br /></dt>
+<dd><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
+<dl class="c var">
+<dt class="sig sig-object c" id="c._WpObjectClass.parent_class">
+<span class="target" id="struct__WpObjectClass_1a926fa3e98a46ba326187bb4229b8aaac"></span><span class="n"><span class="pre">GObjectClass</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">parent_class</span></span></span><a class="headerlink" href="#c._WpObjectClass.parent_class" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c._WpObjectClass.get_supported_features">
+<span class="target" id="struct__WpObjectClass_1a322fe2823e538044afd1c59c9c902ace"></span><a class="reference internal" href="#c.WpObjectFeatures" title="WpObjectFeatures"><span class="n"><span class="pre">WpObjectFeatures</span></span></a><span class="w"> </span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">get_supported_features</span></span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">(</span></span><a class="reference internal" href="#c.WpObject" title="WpObject"><span class="n"><span class="pre">WpObject</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#c._WpObjectClass.get_supported_features" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c._WpObjectClass.activate_get_next_step">
+<span class="target" id="struct__WpObjectClass_1a6b3b54e8d44f24a3a2c9fa96eea0d4eb"></span><span class="n"><span class="pre">guint</span></span><span class="w"> </span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">activate_get_next_step</span></span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">(</span></span><a class="reference internal" href="#c.WpObject" title="WpObject"><span class="n"><span class="pre">WpObject</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="transitions_api.html#c.WpFeatureActivationTransition" title="WpFeatureActivationTransition"><span class="n"><span class="pre">WpFeatureActivationTransition</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">transition</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">guint</span></span><span class="w"> </span><span class="n"><span class="pre">step</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#c.WpObjectFeatures" title="WpObjectFeatures"><span class="n"><span class="pre">WpObjectFeatures</span></span></a><span class="w"> </span><span class="n"><span class="pre">missing</span></span><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#c._WpObjectClass.activate_get_next_step" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c._WpObjectClass.activate_execute_step">
+<span class="target" id="struct__WpObjectClass_1a3cdb30f257ba127748273daee1862c35"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">activate_execute_step</span></span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">(</span></span><a class="reference internal" href="#c.WpObject" title="WpObject"><span class="n"><span class="pre">WpObject</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="transitions_api.html#c.WpFeatureActivationTransition" title="WpFeatureActivationTransition"><span class="n"><span class="pre">WpFeatureActivationTransition</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">transition</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">guint</span></span><span class="w"> </span><span class="n"><span class="pre">step</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#c.WpObjectFeatures" title="WpObjectFeatures"><span class="n"><span class="pre">WpObjectFeatures</span></span></a><span class="w"> </span><span class="n"><span class="pre">missing</span></span><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#c._WpObjectClass.activate_execute_step" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c._WpObjectClass.deactivate">
+<span class="target" id="struct__WpObjectClass_1a212b7b01cf537742321f765daa0706f7"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">deactivate</span></span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">(</span></span><a class="reference internal" href="#c.WpObject" title="WpObject"><span class="n"><span class="pre">WpObject</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#c.WpObjectFeatures" title="WpObjectFeatures"><span class="n"><span class="pre">WpObjectFeatures</span></span></a><span class="w"> </span><span class="n"><span class="pre">features</span></span><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#c._WpObjectClass.deactivate" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="c type">
+<dt class="sig sig-object c" id="c.WpObjectFeatures">
+<span class="target" id="group__wpobject_1gaf8810fd1412c306f5410770aaa7a5bca"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="n"><span class="pre">guint</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">WpObjectFeatures</span></span></span><a class="headerlink" href="#c.WpObjectFeatures" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Flags that specify functionality that is available on this class. </p>
+<p>Use <a class="reference internal" href="#group__wpobject_1ga0a2bbc62e3a198cee10c74f97d52fe39"><span class="std std-ref">wp_object_activate()</span></a> to enable more features, <a class="reference internal" href="#group__wpobject_1gaece37e354def9143399c4f8bd5632588"><span class="std std-ref">wp_object_get_supported_features()</span></a> to see which features are supported and <a class="reference internal" href="#group__wpobject_1ga6f6a1c8e99b24048086735efdf3e002d"><span class="std std-ref">wp_object_get_active_features()</span></a> to find out which features are already enabled. Features can also be deactivated later using <a class="reference internal" href="#group__wpobject_1ga4f25cef156b3805b1ca41983d432dd94"><span class="std std-ref">wp_object_deactivate()</span></a>.</p>
+<p>Actual feature flags are to be specified by subclasses and their interfaces. WP_OBJECT_FEATURES_ALL is a special value that can be used to activate all the supported features in any given object. </p>
+</dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.WP_OBJECT_FEATURES_ALL">
+<span class="target" id="group__wpobject_1ga09b194d9f38f0f48949b2e6279fdae96"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#c.WpObjectFeatures" title="WpObjectFeatures"><span class="n"><span class="pre">WpObjectFeatures</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">WP_OBJECT_FEATURES_ALL</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">0xffffffff</span></span><a class="headerlink" href="#c.WP_OBJECT_FEATURES_ALL" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Special value that can be used to activate all the supported features in any given object. </p>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_object_get_core">
+<span class="target" id="group__wpobject_1ga33bf157412c40813a9154e3c5de293bb"></span><a class="reference internal" href="core_api.html#c.WpCore" title="WpCore"><span class="n"><span class="pre">WpCore</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_object_get_core</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpObject" title="WpObject"><span class="n"><span class="pre">WpObject</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_object_get_core" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Gets the core associated with this object. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the object </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full): the core associated with this object </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_object_get_active_features">
+<span class="target" id="group__wpobject_1ga6f6a1c8e99b24048086735efdf3e002d"></span><a class="reference internal" href="#c.WpObjectFeatures" title="WpObjectFeatures"><span class="n"><span class="pre">WpObjectFeatures</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_object_get_active_features</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpObject" title="WpObject"><span class="n"><span class="pre">WpObject</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_object_get_active_features" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Gets the active features of this object. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the object </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A bitset containing the active features of this object </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_object_get_supported_features">
+<span class="target" id="group__wpobject_1gaece37e354def9143399c4f8bd5632588"></span><a class="reference internal" href="#c.WpObjectFeatures" title="WpObjectFeatures"><span class="n"><span class="pre">WpObjectFeatures</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_object_get_supported_features</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpObject" title="WpObject"><span class="n"><span class="pre">WpObject</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_object_get_supported_features" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Gets the supported features of this object. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the object </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A bitset containing the supported features of this object; note that supported features may change at runtime </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_object_activate">
+<span class="target" id="group__wpobject_1ga0a2bbc62e3a198cee10c74f97d52fe39"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_object_activate</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpObject" title="WpObject"><span class="n"><span class="pre">WpObject</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <a class="reference internal" href="#c.WpObjectFeatures" title="WpObjectFeatures"><span class="n"><span class="pre">WpObjectFeatures</span></span></a><span class="w"> </span><span class="n"><span class="pre">features</span></span>, <span class="n"><span class="pre">GCancellable</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">cancellable</span></span>, <span class="n"><span class="pre">GAsyncReadyCallback</span></span><span class="w"> </span><span class="n"><span class="pre">callback</span></span>, <span class="n"><span class="pre">gpointer</span></span><span class="w"> </span><span class="n"><span class="pre">user_data</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_object_activate" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Callback version of <a class="reference internal" href="#group__wpobject_1ga3674ce2fa8ce1439ca6b29d54c932424"><span class="std std-ref">wp_object_activate_closure()</span></a> </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the object </p></li>
+<li><p><strong>features</strong> – the features to enable </p></li>
+<li><p><strong>cancellable</strong> – (nullable): a cancellable for the async operation </p></li>
+<li><p><strong>callback</strong> – (scope async): a function to call when activation is complete </p></li>
+<li><p><strong>user_data</strong> – (closure): data for <em>callback</em> </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_object_activate_closure">
+<span class="target" id="group__wpobject_1ga3674ce2fa8ce1439ca6b29d54c932424"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_object_activate_closure</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpObject" title="WpObject"><span class="n"><span class="pre">WpObject</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <a class="reference internal" href="#c.WpObjectFeatures" title="WpObjectFeatures"><span class="n"><span class="pre">WpObjectFeatures</span></span></a><span class="w"> </span><span class="n"><span class="pre">features</span></span>, <span class="n"><span class="pre">GCancellable</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">cancellable</span></span>, <span class="n"><span class="pre">GClosure</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">closure</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_object_activate_closure" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Activates the requested <em>features</em> and invokes <em>closure</em> when this is done. <em>features</em> may contain unsupported or already active features. The operation will filter them and activate only ones that are supported and inactive. </p>
+<p>If multiple calls to this method is done, the operations will be executed one after the other to ensure features only get activated once.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><em>closure</em> may be invoked in sync while this method is being called, if there are no features to activate.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the object </p></li>
+<li><p><strong>features</strong> – the features to enable </p></li>
+<li><p><strong>cancellable</strong> – (nullable): a cancellable for the async operation </p></li>
+<li><p><strong>closure</strong> – (transfer full): the closure to use when activation is completed </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_object_activate_finish">
+<span class="target" id="group__wpobject_1gaf5f65e730e3e20d0e2b758f4179ba032"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_object_activate_finish</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpObject" title="WpObject"><span class="n"><span class="pre">WpObject</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="n"><span class="pre">GAsyncResult</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">res</span></span>, <span class="n"><span class="pre">GError</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">error</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_object_activate_finish" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Finishes the async operation that was started with <a class="reference internal" href="#group__wpobject_1ga0a2bbc62e3a198cee10c74f97d52fe39"><span class="std std-ref">wp_object_activate()</span></a> </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the object </p></li>
+<li><p><strong>res</strong> – the async operation result </p></li>
+<li><p><strong>error</strong> – (out) (optional): the error of the operation, if any </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if the requested features were activated, FALSE if there was an error </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_object_deactivate">
+<span class="target" id="group__wpobject_1ga4f25cef156b3805b1ca41983d432dd94"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_object_deactivate</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpObject" title="WpObject"><span class="n"><span class="pre">WpObject</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <a class="reference internal" href="#c.WpObjectFeatures" title="WpObjectFeatures"><span class="n"><span class="pre">WpObjectFeatures</span></span></a><span class="w"> </span><span class="n"><span class="pre">features</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_object_deactivate" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Deactivates the given <em>features</em>, leaving the object in the state it was before they were enabled. </p>
+<p>This is seldom needed to call manually, but it can be used to save resources if some features are no longer needed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the object </p></li>
+<li><p><strong>features</strong> – the features to deactivate </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_object_abort_activation">
+<span class="target" id="group__wpobject_1ga16e69f72769ef4cf563d2cae40aa730d"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_object_abort_activation</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpObject" title="WpObject"><span class="n"><span class="pre">WpObject</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">gchar</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">msg</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_object_abort_activation" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Aborts the current object activation by returning a transition error if any transitions are pending. </p>
+<p>This is usually used to stop any pending activation if an error happened.</p>
+<p><dl class="simple">
+<dt><strong>Since</strong></dt><dd><p>0.4.6 </p>
+</dd>
+</dl>
+</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the object </p></li>
+<li><p><strong>msg</strong> – the message used in the transition error </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_object_update_features">
+<span class="target" id="group__wpobject_1ga199ab74dc7b377667633c0dc9ce1d062"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_object_update_features</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpObject" title="WpObject"><span class="n"><span class="pre">WpObject</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <a class="reference internal" href="#c.WpObjectFeatures" title="WpObjectFeatures"><span class="n"><span class="pre">WpObjectFeatures</span></span></a><span class="w"> </span><span class="n"><span class="pre">activated</span></span>, <a class="reference internal" href="#c.WpObjectFeatures" title="WpObjectFeatures"><span class="n"><span class="pre">WpObjectFeatures</span></span></a><span class="w"> </span><span class="n"><span class="pre">deactivated</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_object_update_features" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Allows subclasses to update the currently active features. </p>
+<p><em>activated</em> should contain new features and <em>deactivated</em> should contain features that were just deactivated. Calling this method also advances the activation transitions.</p>
+<p><div class="remark admonition">
+<p class="admonition-title">Remark</p>
+<p>Private method to be called by subclasses only.</p>
+</div>
+</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the object </p></li>
+<li><p><strong>activated</strong> – the features that were activated, or 0 </p></li>
+<li><p><strong>deactivated</strong> – the features that were deactivated, or 0 </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.WP_TYPE_OBJECT">
+<span class="target" id="group__wpobject_1ga3dba622d3931c68dd8888d0e2fc1fe4a"></span><span class="sig-name descname"><span class="n"><span class="pre">WP_TYPE_OBJECT</span></span></span> <span class="pre">(wp_object_get_type</span> <span class="pre">())</span><a class="headerlink" href="#c.WP_TYPE_OBJECT" title="Permalink to this definition"></a><br /></dt>
+<dd><p>The WpObject GType. </p>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="core_api.html" class="btn btn-neutral float-left" title="Core" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="obj_manager_api.html" class="btn btn-neutral float-right" title="Object Manager" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Collabora.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,11 @@
+prefix=/usr
+libdir=${prefix}/lib/x86_64-linux-gnu
+includedir=${prefix}/include
+
+Name: wireplumber-0.4
+Description: wireplumber: wireplumber-0.4
+Version: 0.4.16
+Requires: gobject-2.0 >=  2.62, gio-2.0 >=  2.62
+Requires.private: gmodule-2.0 >=  2.62, libpipewire-0.3 >=  0.3.68
+Libs: -L${libdir} -lwireplumber-0.4
+Cflags: -I${includedir}/wireplumber-0.4

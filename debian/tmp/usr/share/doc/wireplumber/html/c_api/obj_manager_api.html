@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Object Manager &mdash; WirePlumber 0.4.16 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Object Interest" href="obj_interest_api.html" />
+    <link rel="prev" title="WpObject" href="object_api.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> WirePlumber
+          </a>
+              <div class="version">
+                0.4.16
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">The WirePlumber Daemon</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installing-wireplumber.html">Installing WirePlumber</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../running-wireplumber-daemon.html">Running the WirePlumber daemon</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../daemon-logging.html">Debug Logging</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">The WirePlumber Library</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../c_api.html">C API Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="wp_api.html">Library Initialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core_api.html">Core</a></li>
+<li class="toctree-l2"><a class="reference internal" href="object_api.html">WpObject</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Object Manager</a></li>
+<li class="toctree-l2"><a class="reference internal" href="obj_interest_api.html">Object Interest</a></li>
+<li class="toctree-l2"><a class="reference internal" href="iterator_api.html">Iterator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="transitions_api.html">Transitions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wperror_api.html">Error Codes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="log_api.html">Debug Logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="proxy_api.html">PipeWire Proxy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipewire_object_api.html">PipeWire Object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="global_proxy_api.html">PipeWire Global Object Proxy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="node_api.html">PipeWire Node</a></li>
+<li class="toctree-l2"><a class="reference internal" href="port_api.html">PipeWire Port</a></li>
+<li class="toctree-l2"><a class="reference internal" href="link_api.html">PipeWire Link</a></li>
+<li class="toctree-l2"><a class="reference internal" href="device_api.html">PipeWire Device</a></li>
+<li class="toctree-l2"><a class="reference internal" href="client_api.html">PipeWire Client</a></li>
+<li class="toctree-l2"><a class="reference internal" href="metadata_api.html">PipeWire Metadata</a></li>
+<li class="toctree-l2"><a class="reference internal" href="endpoint_api.html">PipeWire Endpoint</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spa_device_api.html">Spa Device</a></li>
+<li class="toctree-l2"><a class="reference internal" href="impl_node_api.html">Local Nodes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="impl_module_api.html">Local Modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="properties_api.html">Properties Dictionary</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spa_type_api.html">Spa Type Information</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spa_json_api.html">Spa Json</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spa_pod_api.html">Spa Pod (Plain Old Data)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plugin_api.html">Plugins</a></li>
+<li class="toctree-l2"><a class="reference internal" href="component_loader_api.html">Component Loader</a></li>
+<li class="toctree-l2"><a class="reference internal" href="session_item_api.html">Session Items</a></li>
+<li class="toctree-l2"><a class="reference internal" href="si_interfaces_api.html">Session Items Interfaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="si_factory_api.html">Session Items Factory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="state_api.html">State Storage</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../lua_api.html">Lua API Documentation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Resources</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing to WirePlumber</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../testing.html">Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../community.html">Community Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Releases</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">WirePlumber</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../c_api.html">C API Documentation</a> &raquo;</li>
+      <li>Object Manager</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/c_api/obj_manager_api.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="object_api.html" class="btn btn-neutral float-left" title="WpObject" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="obj_interest_api.html" class="btn btn-neutral float-right" title="Object Interest" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+  </div>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="object-manager">
+<span id="obj-manager-api"></span><h1>Object Manager<a class="headerlink" href="#object-manager" title="Permalink to this headline"></a></h1>
+<div align="center" class="align-center"><div class="graphviz"><object data="../_images/graphviz-22e39f06b788d2035dc105fea5773a2cdeb880e4.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph inheritance {
+    rankdir=LR;
+    GObject -&gt; WpObjectManager;
+ }</p></object></div>
+</div>
+<dl class="c struct">
+<dt class="sig sig-object c" id="c.WpObjectManager">
+<span class="target" id="structWpObjectManager"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">WpObjectManager</span></span></span><a class="headerlink" href="#c.WpObjectManager" title="Permalink to this definition"></a><br /></dt>
+<dd><p>The WpObjectManager class provides a way to collect a set of objects and be notified when objects that fulfill a certain set of criteria are created or destroyed.</p>
+<p>There are 4 kinds of objects that can be managed by a WpObjectManager:<ul class="simple">
+<li><p>remote PipeWire global objects that are advertised on the registry; these are bound locally to subclasses of WpGlobalProxy</p></li>
+<li><p>remote PipeWire global objects that are created by calling a remote factory through the WirePlumber API; these are very similar to other global objects but it should be noted that the same WpGlobalProxy instance that created them appears in the WpObjectManager (as soon as its WP_PROXY_FEATURE_BOUND is enabled)</p></li>
+<li><p>local PipeWire objects that are being exported to PipeWire (WpImplMetadata, WpImplEndpoint, etc); these appear in the WpObjectManager as soon as they are exported (so, when their WP_PROXY_FEATURE_BOUND is enabled)</p></li>
+<li><p>WirePlumber-specific objects, such as plugins, factories and session items</p></li>
+</ul>
+</p>
+<p>To start an object manager, you first need to declare interest in a certain kind of object by calling <a class="reference internal" href="#group__wpobjectmanager_1gae9402ed409e45e7eaf51ab3381ee47cb"><span class="std std-ref">wp_object_manager_add_interest()</span></a> and then install it on the WpCore with <a class="reference internal" href="#group__wpobjectmanager_1gae375196bf476d5175e5e2480f7b7047b"><span class="std std-ref">wp_core_install_object_manager()</span></a>.</p>
+<p>Upon installing a WpObjectManager on a WpCore, any pre-existing objects that match the interests of this WpObjectManager will immediately become available to get through <a class="reference internal" href="#group__wpobjectmanager_1ga025b8f5fdbeb989862d758f985483be4"><span class="std std-ref">wp_object_manager_new_iterator()</span></a> and the WpObjectManager <code class="docutils literal notranslate"><span class="pre">object-added</span></code> signal will be emitted for all of them. However, note that if these objects need to be prepared (to activate some features on them), the emission of <code class="docutils literal notranslate"><span class="pre">object-added</span></code> will be delayed. To know when it is safe to access the initial set of objects, wait until the <code class="docutils literal notranslate"><span class="pre">installed</span></code> signal has been emitted. That signal is emitted asynchronously after all the initial objects have been prepared.</p>
+<p><strong>GObject</strong> <strong>Properties</strong> </p>
+<p><dl>
+<dt class="sig sig-object cpp">
+<span class="pre">core</span></dt>
+<dd><p></p>
+<p>The core</p>
+<p><table class="colwidths-auto docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">WpCore</span> <span class="pre">*</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">G_PARAM_READABLE</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</p>
+</dd></dl>
+
+</p>
+<p><strong>GObject</strong> <strong>Signals</strong> </p>
+<p><dl class="simple">
+<dt><strong>installed</strong></dt><dd><p><p><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">void</span>
+<span class="n">installed_callback</span> <span class="p">(</span><span class="n">WpObjectManager</span> <span class="o">*</span> <span class="bp">self</span><span class="p">,</span>
+                    <span class="n">gpointer</span> <span class="n">user_data</span><span class="p">)</span>
+</pre></div>
+</div>
+</p>
+<p>This is emitted once after the object manager is installed with <a class="reference internal" href="#group__wpobjectmanager_1gae375196bf476d5175e5e2480f7b7047b"><span class="std std-ref">wp_core_install_object_manager()</span></a>. If there are objects that need to be prepared asynchronously internally, emission of this signal is delayed until all objects are ready.</p>
+<p>Flags: G_SIGNAL_RUN_FIRST </p>
+</p>
+</dd>
+</dl>
+</p>
+<p><dl class="simple">
+<dt><strong>object-added</strong></dt><dd><p><p><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">void</span>
+<span class="n">object_added_callback</span> <span class="p">(</span><span class="n">WpObjectManager</span> <span class="o">*</span> <span class="bp">self</span><span class="p">,</span>
+                       <span class="n">gpointer</span> <span class="nb">object</span><span class="p">,</span>
+                       <span class="n">gpointer</span> <span class="n">user_data</span><span class="p">)</span>
+</pre></div>
+</div>
+</p>
+<p>Emitted when an object that matches the interests of this object manager is made available.</p>
+<p>Parameters:<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">object</span></code> - the managed object that was just added</p></li>
+</ul>
+</p>
+<p>Flags: G_SIGNAL_RUN_FIRST </p>
+</p>
+</dd>
+</dl>
+</p>
+<p><dl class="simple">
+<dt><strong>object-removed</strong></dt><dd><p><p><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">void</span>
+<span class="n">object_removed_callback</span> <span class="p">(</span><span class="n">WpObjectManager</span> <span class="o">*</span> <span class="bp">self</span><span class="p">,</span>
+                         <span class="n">gpointer</span> <span class="nb">object</span><span class="p">,</span>
+                         <span class="n">gpointer</span> <span class="n">user_data</span><span class="p">)</span>
+</pre></div>
+</div>
+</p>
+<p>Emitted when an object that was previously added on this object manager is now being removed (and most likely destroyed). At the time that this signal is emitted, the object is still alive.</p>
+<p>Parameters:<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">object</span></code> - the managed object that is being removed</p></li>
+</ul>
+</p>
+<p>Flags: G_SIGNAL_RUN_FIRST </p>
+</p>
+</dd>
+</dl>
+</p>
+<p><dl class="simple">
+<dt><strong>objects-changed</strong></dt><dd><p><p><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">void</span>
+<span class="n">objects_changed_callback</span> <span class="p">(</span><span class="n">WpObjectManager</span> <span class="o">*</span> <span class="bp">self</span><span class="p">,</span>
+                         <span class="n">gpointer</span> <span class="n">user_data</span><span class="p">)</span>
+</pre></div>
+</div>
+</p>
+<p>Emitted when one or more objects have been recently added or removed from this object manager. This signal is useful to get notified only once when multiple changes happen in a short timespan. The receiving callback may retrieve the updated list of objects by calling <a class="reference internal" href="#group__wpobjectmanager_1ga025b8f5fdbeb989862d758f985483be4"><span class="std std-ref">wp_object_manager_new_iterator()</span></a></p>
+<p>Flags: G_SIGNAL_RUN_FIRST </p>
+</p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_object_manager_new">
+<span class="target" id="group__wpobjectmanager_1gab6364c1e8ea544b8967fedd9d625eb78"></span><a class="reference internal" href="#c.WpObjectManager" title="WpObjectManager"><span class="n"><span class="pre">WpObjectManager</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_object_manager_new</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_object_manager_new" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Constructs a new object manager. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>(transfer full): the newly constructed object manager </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_object_manager_is_installed">
+<span class="target" id="group__wpobjectmanager_1ga9de679107eb65e7b7e37c92ac0c12702"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_object_manager_is_installed</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpObjectManager" title="WpObjectManager"><span class="n"><span class="pre">WpObjectManager</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_object_manager_is_installed" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Checks if an object manager is installed. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the object manager </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if the object manager is installed (i.e. the WpObjectManager <code class="docutils literal notranslate"><span class="pre">installed</span></code> signal has been emitted), FALSE otherwise </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_object_manager_add_interest">
+<span class="target" id="group__wpobjectmanager_1gae9402ed409e45e7eaf51ab3381ee47cb"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_object_manager_add_interest</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpObjectManager" title="WpObjectManager"><span class="n"><span class="pre">WpObjectManager</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="n"><span class="pre">GType</span></span><span class="w"> </span><span class="n"><span class="pre">gtype</span></span>, <span class="p"><span class="pre">...</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_object_manager_add_interest" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Equivalent to: </p>
+<p><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">WpObjectInterest</span> <span class="o">*</span><span class="n">i</span> <span class="o">=</span> <span class="n">wp_object_interest_new</span> <span class="p">(</span><span class="n">gtype</span><span class="p">,</span> <span class="o">...</span><span class="p">);</span>
+<span class="n">wp_object_manager_add_interest_full</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">);</span>
+</pre></div>
+</div>
+</p>
+<p>The constraints specified in the variable arguments must follow the rules documented in <a class="reference internal" href="obj_interest_api.html#group__wpobjectinterest_1gad0b9f3fb4f61390b76b994910b6462bd"><span class="std std-ref">wp_object_interest_new()</span></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the object manager </p></li>
+<li><p><strong>gtype</strong> – the GType of the objects that we are declaring interest in </p></li>
+<li><p><strong>...</strong> – a list of constraints, terminated by NULL </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_object_manager_add_interest_full">
+<span class="target" id="group__wpobjectmanager_1gae15e3eb0d2da047e7beb92eafe0e7141"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_object_manager_add_interest_full</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpObjectManager" title="WpObjectManager"><span class="n"><span class="pre">WpObjectManager</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <a class="reference internal" href="obj_interest_api.html#c.WpObjectInterest" title="WpObjectInterest"><span class="n"><span class="pre">WpObjectInterest</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">interest</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_object_manager_add_interest_full" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Declares interest in a certain kind of object. </p>
+<p>Interest consists of a GType that the object must be an ancestor of (g_type_is_a() must match) and optionally, a set of additional constraints on certain properties of the object. Refer to WpObjectInterest for more details.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the object manager </p></li>
+<li><p><strong>interest</strong> – (transfer full): the interest </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_object_manager_request_object_features">
+<span class="target" id="group__wpobjectmanager_1ga2b7d95e1d07c4ede87152f15adee4de2"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_object_manager_request_object_features</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpObjectManager" title="WpObjectManager"><span class="n"><span class="pre">WpObjectManager</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="n"><span class="pre">GType</span></span><span class="w"> </span><span class="n"><span class="pre">object_type</span></span>, <a class="reference internal" href="object_api.html#c.WpObjectFeatures" title="WpObjectFeatures"><span class="n"><span class="pre">WpObjectFeatures</span></span></a><span class="w"> </span><span class="n"><span class="pre">wanted_features</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_object_manager_request_object_features" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Requests the object manager to automatically prepare the <em>wanted_features</em> on any managed object that is of the specified <em>object_type</em>. </p>
+<p>These features will always be prepared before the object appears on the object manager.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the object manager </p></li>
+<li><p><strong>object_type</strong> – the WpProxy descendant type </p></li>
+<li><p><strong>wanted_features</strong> – the features to enable on this kind of object </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_object_manager_get_n_objects">
+<span class="target" id="group__wpobjectmanager_1ga168bca71d42d761ddb9d1dcd03f15760"></span><span class="n"><span class="pre">guint</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_object_manager_get_n_objects</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpObjectManager" title="WpObjectManager"><span class="n"><span class="pre">WpObjectManager</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_object_manager_get_n_objects" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Gets the number of objects managed by the object manager. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the object manager </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the number of objects managed by this WpObjectManager </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_object_manager_new_iterator">
+<span class="target" id="group__wpobjectmanager_1ga025b8f5fdbeb989862d758f985483be4"></span><a class="reference internal" href="iterator_api.html#c.WpIterator" title="WpIterator"><span class="n"><span class="pre">WpIterator</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_object_manager_new_iterator</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpObjectManager" title="WpObjectManager"><span class="n"><span class="pre">WpObjectManager</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_object_manager_new_iterator" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Iterates through all the objects managed by this object manager. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the object manager </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full): a WpIterator that iterates over all the managed objects of this object manager </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_object_manager_new_filtered_iterator">
+<span class="target" id="group__wpobjectmanager_1ga9efdbf9d46fcf2542b3bb3c2cf6844cb"></span><a class="reference internal" href="iterator_api.html#c.WpIterator" title="WpIterator"><span class="n"><span class="pre">WpIterator</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_object_manager_new_filtered_iterator</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpObjectManager" title="WpObjectManager"><span class="n"><span class="pre">WpObjectManager</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="n"><span class="pre">GType</span></span><span class="w"> </span><span class="n"><span class="pre">gtype</span></span>, <span class="p"><span class="pre">...</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_object_manager_new_filtered_iterator" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Equivalent to: </p>
+<p><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">WpObjectInterest</span> <span class="o">*</span><span class="n">i</span> <span class="o">=</span> <span class="n">wp_object_interest_new</span> <span class="p">(</span><span class="n">gtype</span><span class="p">,</span> <span class="o">...</span><span class="p">);</span>
+<span class="k">return</span> <span class="n">wp_object_manager_new_filtered_iterator_full</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">);</span>
+</pre></div>
+</div>
+</p>
+<p>The constraints specified in the variable arguments must follow the rules documented in <a class="reference internal" href="obj_interest_api.html#group__wpobjectinterest_1gad0b9f3fb4f61390b76b994910b6462bd"><span class="std std-ref">wp_object_interest_new()</span></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the object manager </p></li>
+<li><p><strong>gtype</strong> – the GType of the objects to iterate through </p></li>
+<li><p><strong>...</strong> – a list of constraints, terminated by NULL </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full): a WpIterator that iterates over all the matching objects of this object manager </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_object_manager_new_filtered_iterator_full">
+<span class="target" id="group__wpobjectmanager_1ga6407ab34aaa7e941a026f4e559b27ece"></span><a class="reference internal" href="iterator_api.html#c.WpIterator" title="WpIterator"><span class="n"><span class="pre">WpIterator</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_object_manager_new_filtered_iterator_full</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpObjectManager" title="WpObjectManager"><span class="n"><span class="pre">WpObjectManager</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <a class="reference internal" href="obj_interest_api.html#c.WpObjectInterest" title="WpObjectInterest"><span class="n"><span class="pre">WpObjectInterest</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">interest</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_object_manager_new_filtered_iterator_full" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Iterates through all the objects managed by this object manager that match the specified <em>interest</em>. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the object manager </p></li>
+<li><p><strong>interest</strong> – (transfer full): the interest </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full): a WpIterator that iterates over all the matching objects of this object manager </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_object_manager_lookup">
+<span class="target" id="group__wpobjectmanager_1gadf1e4affee77fb34c1790c0a13456f77"></span><span class="n"><span class="pre">gpointer</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_object_manager_lookup</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpObjectManager" title="WpObjectManager"><span class="n"><span class="pre">WpObjectManager</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="n"><span class="pre">GType</span></span><span class="w"> </span><span class="n"><span class="pre">gtype</span></span>, <span class="p"><span class="pre">...</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_object_manager_lookup" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Equivalent to: </p>
+<p><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">WpObjectInterest</span> <span class="o">*</span><span class="n">i</span> <span class="o">=</span> <span class="n">wp_object_interest_new</span> <span class="p">(</span><span class="n">gtype</span><span class="p">,</span> <span class="o">...</span><span class="p">);</span>
+<span class="k">return</span> <span class="n">wp_object_manager_lookup_full</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">);</span>
+</pre></div>
+</div>
+</p>
+<p>The constraints specified in the variable arguments must follow the rules documented in <a class="reference internal" href="obj_interest_api.html#group__wpobjectinterest_1gad0b9f3fb4f61390b76b994910b6462bd"><span class="std std-ref">wp_object_interest_new()</span></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the object manager </p></li>
+<li><p><strong>gtype</strong> – the GType of the object to lookup </p></li>
+<li><p><strong>...</strong> – a list of constraints, terminated by NULL </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(type GObject)(transfer full)(nullable): the first managed object that matches the lookup interest, or NULL if no object matches </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_object_manager_lookup_full">
+<span class="target" id="group__wpobjectmanager_1gaeea5aae2c9070d0650ef65d861cd1706"></span><span class="n"><span class="pre">gpointer</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_object_manager_lookup_full</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpObjectManager" title="WpObjectManager"><span class="n"><span class="pre">WpObjectManager</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <a class="reference internal" href="obj_interest_api.html#c.WpObjectInterest" title="WpObjectInterest"><span class="n"><span class="pre">WpObjectInterest</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">interest</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_object_manager_lookup_full" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Searches for an object that matches the specified <em>interest</em> and returns it, if found. </p>
+<p>If more than one objects match, only the first one is returned. To find multiple objects that match certain criteria, <a class="reference internal" href="#group__wpobjectmanager_1ga9efdbf9d46fcf2542b3bb3c2cf6844cb"><span class="std std-ref">wp_object_manager_new_filtered_iterator()</span></a> is more suitable.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the object manager </p></li>
+<li><p><strong>interest</strong> – (transfer full): the interst </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(type GObject)(transfer full)(nullable): the first managed object that matches the lookup interest, or NULL if no object matches </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_core_install_object_manager">
+<span class="target" id="group__wpobjectmanager_1gae375196bf476d5175e5e2480f7b7047b"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_core_install_object_manager</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="core_api.html#c.WpCore" title="WpCore"><span class="n"><span class="pre">WpCore</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <a class="reference internal" href="#c.WpObjectManager" title="WpObjectManager"><span class="n"><span class="pre">WpObjectManager</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">om</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_core_install_object_manager" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Installs the object manager on this core, activating its internal management engine. </p>
+<p>This will immediately emit signals about objects added on <em>om</em> if objects that the <em>om</em> is interested in were in existence already.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the core </p></li>
+<li><p><strong>om</strong> – (transfer none): a WpObjectManager </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.WP_TYPE_OBJECT_MANAGER">
+<span class="target" id="group__wpobjectmanager_1ga577c64aed936e0671717990806da80dc"></span><span class="sig-name descname"><span class="n"><span class="pre">WP_TYPE_OBJECT_MANAGER</span></span></span> <span class="pre">(wp_object_manager_get_type</span> <span class="pre">())</span><a class="headerlink" href="#c.WP_TYPE_OBJECT_MANAGER" title="Permalink to this definition"></a><br /></dt>
+<dd><p>The WpObjectManager GType. </p>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="object_api.html" class="btn btn-neutral float-left" title="WpObject" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="obj_interest_api.html" class="btn btn-neutral float-right" title="Object Interest" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Collabora.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

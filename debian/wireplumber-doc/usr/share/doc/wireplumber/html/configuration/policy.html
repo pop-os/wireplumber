@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Policy Configuration &mdash; WirePlumber 0.4.16 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Access configuration" href="access.html" />
+    <link rel="prev" title="Bluetooth configuration" href="bluetooth.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> WirePlumber
+          </a>
+              <div class="version">
+                0.4.16
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">The WirePlumber Daemon</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installing-wireplumber.html">Installing WirePlumber</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../running-wireplumber-daemon.html">Running the WirePlumber daemon</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../configuration.html">Configuration</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="locations.html">Locations of files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="main.html">Main configuration file</a></li>
+<li class="toctree-l2"><a class="reference internal" href="config_lua.html">Lua Configuration Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multi_instance.html">Running multiple instances</a></li>
+<li class="toctree-l2"><a class="reference internal" href="alsa.html">ALSA configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bluetooth.html">Bluetooth configuration</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Policy Configuration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#policy-lua-d-10-default-policy-lua">policy.lua.d/10-default-policy.lua</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#policy-lua-d-50-endpoints-config-lua">policy.lua.d/50-endpoints-config.lua</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="access.html">Access configuration</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../daemon-logging.html">Debug Logging</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">The WirePlumber Library</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../c_api.html">C API Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../lua_api.html">Lua API Documentation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Resources</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing to WirePlumber</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../testing.html">Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../community.html">Community Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Releases</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">WirePlumber</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../configuration.html">Configuration</a> &raquo;</li>
+      <li>Policy Configuration</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/configuration/policy.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="bluetooth.html" class="btn btn-neutral float-left" title="Bluetooth configuration" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="access.html" class="btn btn-neutral float-right" title="Access configuration" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+  </div>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="policy-configuration">
+<span id="config-policy"></span><h1>Policy Configuration<a class="headerlink" href="#policy-configuration" title="Permalink to this headline"></a></h1>
+<section id="policy-lua-d-10-default-policy-lua">
+<h2>policy.lua.d/10-default-policy.lua<a class="headerlink" href="#policy-lua-d-10-default-policy-lua" title="Permalink to this headline"></a></h2>
+<p>This file contains generic default policy properties that can be configured.</p>
+<ul>
+<li><p><em>default_policy.policy</em></p>
+<p>This is a Lua object that contains several properties that change the
+behavior of the default WirePlumber policy.</p>
+<p>Example:</p>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="n">default_policy</span><span class="p">.</span><span class="n">policy</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="p">[</span><span class="s2">&quot;move&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">true</span><span class="p">,</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>The above example will set the <code class="docutils literal notranslate"><span class="pre">move</span></code> policy property to <code class="docutils literal notranslate"><span class="pre">true</span></code>.</p>
+<p>The list of supported properties are:</p>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="s2">&quot;move&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">true</span>
+</pre></div>
+</div>
+<p>Moves session items when metadata <code class="docutils literal notranslate"><span class="pre">target.node</span></code> changes.</p>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="s2">&quot;follow&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">true</span>
+</pre></div>
+</div>
+<p>Moves session items to the default device when it has changed.</p>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="s2">&quot;audio.no-dsp&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">false</span>
+</pre></div>
+</div>
+<p>Set to <code class="docutils literal notranslate"><span class="pre">true</span></code> to disable channel splitting &amp; merging on nodes and enable
+passthrough of audio in the same format as the format of the device. Note that
+this breaks JACK support; it is generally not recommended.</p>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="s2">&quot;duck.level&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.3</span>
+</pre></div>
+</div>
+<p>How much to lower the volume of lower priority streams when ducking. Note that
+this is a linear volume modifier (not cubic as in PulseAudio).</p>
+</li>
+</ul>
+</section>
+<section id="policy-lua-d-50-endpoints-config-lua">
+<h2>policy.lua.d/50-endpoints-config.lua<a class="headerlink" href="#policy-lua-d-50-endpoints-config-lua" title="Permalink to this headline"></a></h2>
+<blockquote>
+<div><p>Endpoints are objects that can group multiple clients into different groups or
+roles. This is useful if a user wants to apply specific actions when a client
+is connected to a particular role/endpoint. This configuration file allows
+users to configure those endpoints and their actions.</p>
+</div></blockquote>
+<ul>
+<li><p><em>default_policy.policy.roles</em></p>
+<p>This is a Lua array with objects defining the actions of each role.</p>
+<p>Example:</p>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="n">default_policy</span><span class="p">.</span><span class="n">policy</span><span class="p">.</span><span class="n">roles</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="p">[</span><span class="s2">&quot;Multimedia&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="p">[</span><span class="s2">&quot;alias&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span> <span class="s2">&quot;Movie&quot;</span><span class="p">,</span> <span class="s2">&quot;Music&quot;</span><span class="p">,</span> <span class="s2">&quot;Game&quot;</span> <span class="p">},</span>
+    <span class="p">[</span><span class="s2">&quot;priority&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
+    <span class="p">[</span><span class="s2">&quot;action.default&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;mix&quot;</span><span class="p">,</span>
+  <span class="p">}</span>
+  <span class="p">[</span><span class="s2">&quot;Notification&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="p">[</span><span class="s2">&quot;priority&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">20</span><span class="p">,</span>
+    <span class="p">[</span><span class="s2">&quot;action.default&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;duck&quot;</span><span class="p">,</span>
+    <span class="p">[</span><span class="s2">&quot;action.Notification&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;mix&quot;</span><span class="p">,</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>The above example defines actions for both <code class="docutils literal notranslate"><span class="pre">Multimedia</span></code> and <code class="docutils literal notranslate"><span class="pre">Notification</span></code>
+roles. Since the Notification role has more priority than the Multimedia
+role, when a client connects to the Notification endpoint, it will <code class="docutils literal notranslate"><span class="pre">duck</span></code>
+the volume of all Multimedia clients. If Multiple Notification clients want
+to play audio, only the Notifications audio will be mixed.</p>
+<p>Possible values of actions are: <code class="docutils literal notranslate"><span class="pre">mix</span></code> (Mixes audio),
+<code class="docutils literal notranslate"><span class="pre">duck</span></code> (Mixes and lowers the audio volume) or <code class="docutils literal notranslate"><span class="pre">cork</span></code> (Pauses audio).</p>
+</li>
+<li><p><em>default_policy.policy.endpoints</em></p>
+<p>This is a Lua array with objects defining the endpoints that the user wants
+to create.</p>
+<p>Example:</p>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="n">default_policy</span><span class="p">.</span><span class="n">endpoints</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="p">[</span><span class="s2">&quot;endpoint.multimedia&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="p">[</span><span class="s2">&quot;media.class&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Audio/Sink&quot;</span><span class="p">,</span>
+    <span class="p">[</span><span class="s2">&quot;role&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Multimedia&quot;</span><span class="p">,</span>
+  <span class="p">}</span>
+<span class="p">},</span>
+<span class="p">[</span><span class="s2">&quot;endpoint.notifications&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="p">[</span><span class="s2">&quot;media.class&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Audio/Sink&quot;</span><span class="p">,</span>
+  <span class="p">[</span><span class="s2">&quot;role&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Notification&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>This example creates 2 endpoints, with names <code class="docutils literal notranslate"><span class="pre">endpoint.multimedia</span></code> and
+<code class="docutils literal notranslate"><span class="pre">endpoint.notifications</span></code>; and assigned roles <code class="docutils literal notranslate"><span class="pre">Multimedia</span></code> and <code class="docutils literal notranslate"><span class="pre">Notification</span></code>
+respectively. Both endpoints have <code class="docutils literal notranslate"><span class="pre">Audio/Sink</span></code> media class, and so are only
+used for playback.</p>
+</li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="bluetooth.html" class="btn btn-neutral float-left" title="Bluetooth configuration" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="access.html" class="btn btn-neutral float-right" title="Access configuration" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Collabora.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

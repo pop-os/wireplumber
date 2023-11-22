@@ -1,0 +1,2287 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Spa Pod (Plain Old Data) &mdash; WirePlumber 0.4.16 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Plugins" href="plugin_api.html" />
+    <link rel="prev" title="Spa Json" href="spa_json_api.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> WirePlumber
+          </a>
+              <div class="version">
+                0.4.16
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">The WirePlumber Daemon</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installing-wireplumber.html">Installing WirePlumber</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../running-wireplumber-daemon.html">Running the WirePlumber daemon</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../daemon-logging.html">Debug Logging</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">The WirePlumber Library</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../c_api.html">C API Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="wp_api.html">Library Initialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core_api.html">Core</a></li>
+<li class="toctree-l2"><a class="reference internal" href="object_api.html">WpObject</a></li>
+<li class="toctree-l2"><a class="reference internal" href="obj_manager_api.html">Object Manager</a></li>
+<li class="toctree-l2"><a class="reference internal" href="obj_interest_api.html">Object Interest</a></li>
+<li class="toctree-l2"><a class="reference internal" href="iterator_api.html">Iterator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="transitions_api.html">Transitions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wperror_api.html">Error Codes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="log_api.html">Debug Logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="proxy_api.html">PipeWire Proxy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipewire_object_api.html">PipeWire Object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="global_proxy_api.html">PipeWire Global Object Proxy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="node_api.html">PipeWire Node</a></li>
+<li class="toctree-l2"><a class="reference internal" href="port_api.html">PipeWire Port</a></li>
+<li class="toctree-l2"><a class="reference internal" href="link_api.html">PipeWire Link</a></li>
+<li class="toctree-l2"><a class="reference internal" href="device_api.html">PipeWire Device</a></li>
+<li class="toctree-l2"><a class="reference internal" href="client_api.html">PipeWire Client</a></li>
+<li class="toctree-l2"><a class="reference internal" href="metadata_api.html">PipeWire Metadata</a></li>
+<li class="toctree-l2"><a class="reference internal" href="endpoint_api.html">PipeWire Endpoint</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spa_device_api.html">Spa Device</a></li>
+<li class="toctree-l2"><a class="reference internal" href="impl_node_api.html">Local Nodes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="impl_module_api.html">Local Modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="properties_api.html">Properties Dictionary</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spa_type_api.html">Spa Type Information</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spa_json_api.html">Spa Json</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Spa Pod (Plain Old Data)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plugin_api.html">Plugins</a></li>
+<li class="toctree-l2"><a class="reference internal" href="component_loader_api.html">Component Loader</a></li>
+<li class="toctree-l2"><a class="reference internal" href="session_item_api.html">Session Items</a></li>
+<li class="toctree-l2"><a class="reference internal" href="si_interfaces_api.html">Session Items Interfaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="si_factory_api.html">Session Items Factory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="state_api.html">State Storage</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../lua_api.html">Lua API Documentation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Resources</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing to WirePlumber</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../testing.html">Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../community.html">Community Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Releases</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">WirePlumber</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../c_api.html">C API Documentation</a> &raquo;</li>
+      <li>Spa Pod (Plain Old Data)</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/c_api/spa_pod_api.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="spa_json_api.html" class="btn btn-neutral float-left" title="Spa Json" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="plugin_api.html" class="btn btn-neutral float-right" title="Plugins" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+  </div>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="spa-pod-plain-old-data">
+<span id="spa-pod-api"></span><h1>Spa Pod (Plain Old Data)<a class="headerlink" href="#spa-pod-plain-old-data" title="Permalink to this headline"></a></h1>
+<div align="center" class="align-center"><div class="graphviz"><object data="../_images/graphviz-a98197578764dec1270305e289612fd5401d2147.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph inheritance {
+    rankdir=LR;
+    GBoxed -&gt; WpSpaPod;
+    GBoxed -&gt; WpSpaPodBuilder;
+    GBoxed -&gt; WpSpaPodParser;
+ }</p></object></div>
+</div>
+<dl class="c struct">
+<dt class="sig sig-object c" id="c.WpSpaPod">
+<span class="target" id="structWpSpaPod"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">WpSpaPod</span></span></span><a class="headerlink" href="#c.WpSpaPod" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c struct">
+<dt class="sig sig-object c" id="c.WpSpaPodBuilder">
+<span class="target" id="structWpSpaPodBuilder"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">WpSpaPodBuilder</span></span></span><a class="headerlink" href="#c.WpSpaPodBuilder" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c struct">
+<dt class="sig sig-object c" id="c.WpSpaPodParser">
+<span class="target" id="structWpSpaPodParser"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">WpSpaPodParser</span></span></span><a class="headerlink" href="#c.WpSpaPodParser" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_ref">
+<span class="target" id="group__wpspapod_1ga04697fe184f04f0bbe425f25d0de2d02"></span><a class="reference internal" href="#c.WpSpaPod" title="WpSpaPod"><span class="n"><span class="pre">WpSpaPod</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_ref</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaPod" title="WpSpaPod"><span class="n"><span class="pre">WpSpaPod</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_ref" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Increases the reference count of a spa pod object. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – a spa pod object </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full): <em>self</em> with an additional reference count on it </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_unref">
+<span class="target" id="group__wpspapod_1ga915f74425f1811106db1979e2523d7f9"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_unref</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaPod" title="WpSpaPod"><span class="n"><span class="pre">WpSpaPod</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_unref" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Decreases the reference count on <em>self</em> and frees it when the ref count reaches zero. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – (transfer full): a spa pod object </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_new_wrap">
+<span class="target" id="group__wpspapod_1ga5777d1afc4b0123565ab7c63e499d460"></span><a class="reference internal" href="#c.WpSpaPod" title="WpSpaPod"><span class="n"><span class="pre">WpSpaPod</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_new_wrap</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">spa_pod</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">pod</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_new_wrap" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Constructs a new WpSpaPod that wraps the given <code class="docutils literal notranslate"><span class="pre">spa_pod</span></code>. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pod</strong> – a spa_pod </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a new WpSpaPod that references the data in <em>pod</em>. <em>pod</em> is not copied, so it needs to stay alive. The returned WpSpaPod can be modified by using the setter functions, in which case <em>pod</em> will be modified underneath. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_new_wrap_const">
+<span class="target" id="group__wpspapod_1ga3fa735f6e59ee377485ab9f62659561f"></span><a class="reference internal" href="#c.WpSpaPod" title="WpSpaPod"><span class="n"><span class="pre">WpSpaPod</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_new_wrap_const</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">spa_pod</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">pod</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_new_wrap_const" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Constructs a new immutable WpSpaPod that wraps the given <code class="docutils literal notranslate"><span class="pre">spa_pod</span></code>. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pod</strong> – a constant spa_pod </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a new WpSpaPod that references the data in <em>pod</em>. <em>pod</em> is not copied, so it needs to stay alive. The returned WpSpaPod cannot be modified, unless it’s copied first. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_get_spa_pod">
+<span class="target" id="group__wpspapod_1ga96a43e9c3a8d4cb0783916b0a3959ed5"></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">spa_pod</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_get_spa_pod</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#c.WpSpaPod" title="WpSpaPod"><span class="n"><span class="pre">WpSpaPod</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_get_spa_pod" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Converts a WpSpaPod pointer to a <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">spa_pod</span></code> one, for use with native pipewire &amp; spa functions. The returned pointer is owned by WpSpaPod and may not be modified or freed. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – a spa pod object </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a const pointer to the underlying spa_pod structure </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_get_spa_type">
+<span class="target" id="group__wpspapod_1ga19d83556e9f504adfe585458935f961b"></span><a class="reference internal" href="spa_type_api.html#c.WpSpaType" title="WpSpaType"><span class="n"><span class="pre">WpSpaType</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_get_spa_type</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaPod" title="WpSpaPod"><span class="n"><span class="pre">WpSpaPod</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_get_spa_type" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Gets the SPA type of the spa pod. </p>
+<p>If the pod is an object or pointer, this will return the derived object/pointer type directly. If the pod is an object property or a control, this will return the type of the contained value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – a spa pod </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer none): the type of the spa pod </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_get_choice_type">
+<span class="target" id="group__wpspapod_1gabdc504d30ed45b7ecfcc615fb4d78ba7"></span><a class="reference internal" href="spa_type_api.html#c.WpSpaIdValue" title="WpSpaIdValue"><span class="n"><span class="pre">WpSpaIdValue</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_get_choice_type</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaPod" title="WpSpaPod"><span class="n"><span class="pre">WpSpaPod</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_get_choice_type" title="Permalink to this definition"></a><br /></dt>
+<dd><p>If the pod is a Choice, this gets the choice type (Range, Step, Enum, …) </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – a choice pod </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the choice type of the choice pod </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_copy">
+<span class="target" id="group__wpspapod_1gac133d2405278daf7e3d6d73c0fb217d0"></span><a class="reference internal" href="#c.WpSpaPod" title="WpSpaPod"><span class="n"><span class="pre">WpSpaPod</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_copy</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaPod" title="WpSpaPod"><span class="n"><span class="pre">WpSpaPod</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">other</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_copy" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Copies a spa pod object. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>other</strong> – a spa pod object </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full): The newly copied spa pod </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_is_unique_owner">
+<span class="target" id="group__wpspapod_1gac085027b37a8eaad260a94ee9cd2e902"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_is_unique_owner</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaPod" title="WpSpaPod"><span class="n"><span class="pre">WpSpaPod</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_is_unique_owner" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Checks if the pod is the unique owner of its data or not. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – a spa pod object </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if the pod owns the data, FALSE otherwise. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_ensure_unique_owner">
+<span class="target" id="group__wpspapod_1ga4dc65b5ac393858f63bb0caf42eca626"></span><a class="reference internal" href="#c.WpSpaPod" title="WpSpaPod"><span class="n"><span class="pre">WpSpaPod</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_ensure_unique_owner</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaPod" title="WpSpaPod"><span class="n"><span class="pre">WpSpaPod</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_ensure_unique_owner" title="Permalink to this definition"></a><br /></dt>
+<dd><p>If <em>self</em> is not uniquely owned already, then it is unrefed and a copy of it is returned instead. You should always consider <em>self</em> as unsafe to use after this call and you should use the returned object instead. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – (transfer full): a spa pod object </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full): the uniquely owned spa pod object which may or may not be the same as <em>self</em>. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_new_none">
+<span class="target" id="group__wpspapod_1gae9f5ddd686f2d36278a2418888d45a15"></span><a class="reference internal" href="#c.WpSpaPod" title="WpSpaPod"><span class="n"><span class="pre">WpSpaPod</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_new_none</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_new_none" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Creates a spa pod of type None. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>(transfer full): The new spa pod </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_new_boolean">
+<span class="target" id="group__wpspapod_1ga6d52a4a3f3beeff718660fdd867b219a"></span><a class="reference internal" href="#c.WpSpaPod" title="WpSpaPod"><span class="n"><span class="pre">WpSpaPod</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_new_boolean</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="n"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_new_boolean" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Creates a spa pod of type boolean. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>value</strong> – the boolean value </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full): The new spa pod </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_new_id">
+<span class="target" id="group__wpspapod_1gab7ebbff1e61cc73742c2f4604b5fe08f"></span><a class="reference internal" href="#c.WpSpaPod" title="WpSpaPod"><span class="n"><span class="pre">WpSpaPod</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_new_id</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">guint32</span></span><span class="w"> </span><span class="n"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_new_id" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Creates a spa pod of type Id. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>value</strong> – the Id value </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full): The new spa pod </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_new_int">
+<span class="target" id="group__wpspapod_1gad48d9fd56d133ac296965415b849f2aa"></span><a class="reference internal" href="#c.WpSpaPod" title="WpSpaPod"><span class="n"><span class="pre">WpSpaPod</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_new_int</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">gint32</span></span><span class="w"> </span><span class="n"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_new_int" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Creates a spa pod of type int. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>value</strong> – the int value </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full): The new spa pod </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_new_long">
+<span class="target" id="group__wpspapod_1gac88ebfe4fc7db783905968f5ddf07fcd"></span><a class="reference internal" href="#c.WpSpaPod" title="WpSpaPod"><span class="n"><span class="pre">WpSpaPod</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_new_long</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">gint64</span></span><span class="w"> </span><span class="n"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_new_long" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Creates a spa pod of type long. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>value</strong> – the long value </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full): The new spa pod </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_new_float">
+<span class="target" id="group__wpspapod_1gaf74ef258396bae03cb1a7560ea37648f"></span><a class="reference internal" href="#c.WpSpaPod" title="WpSpaPod"><span class="n"><span class="pre">WpSpaPod</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_new_float</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">float</span></span><span class="w"> </span><span class="n"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_new_float" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Creates a spa pod of type float. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>value</strong> – the float value </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full): The new spa pod </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_new_double">
+<span class="target" id="group__wpspapod_1gae78dfc01e7abefc39c4288d7f947bd4b"></span><a class="reference internal" href="#c.WpSpaPod" title="WpSpaPod"><span class="n"><span class="pre">WpSpaPod</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_new_double</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_new_double" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Creates a spa pod of type double. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>value</strong> – the double value </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full): The new spa pod </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_new_string">
+<span class="target" id="group__wpspapod_1ga8f90babfe0821a7d1f43cb98eb8b6448"></span><a class="reference internal" href="#c.WpSpaPod" title="WpSpaPod"><span class="n"><span class="pre">WpSpaPod</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_new_string</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_new_string" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Creates a spa pod of type string. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>value</strong> – the string value </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full): The new spa pod </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_new_bytes">
+<span class="target" id="group__wpspapod_1ga45fb0b6653074e8ad3ba1df4b53099b9"></span><a class="reference internal" href="#c.WpSpaPod" title="WpSpaPod"><span class="n"><span class="pre">WpSpaPod</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_new_bytes</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">gconstpointer</span></span><span class="w"> </span><span class="n"><span class="pre">value</span></span>, <span class="n"><span class="pre">guint32</span></span><span class="w"> </span><span class="n"><span class="pre">len</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_new_bytes" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Creates a spa pod of type bytes. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>value</strong> – the bytes value </p></li>
+<li><p><strong>len</strong> – the length of the bytes value </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full): The new spa pod </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_new_pointer">
+<span class="target" id="group__wpspapod_1gac0d35ca9f492b0955175ad61c5de081d"></span><a class="reference internal" href="#c.WpSpaPod" title="WpSpaPod"><span class="n"><span class="pre">WpSpaPod</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_new_pointer</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">type_name</span></span>, <span class="n"><span class="pre">gconstpointer</span></span><span class="w"> </span><span class="n"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_new_pointer" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Creates a spa pod of type pointer. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>type_name</strong> – the name of the type of the pointer </p></li>
+<li><p><strong>value</strong> – the pointer value </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full): The new spa pod </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_new_fd">
+<span class="target" id="group__wpspapod_1ga3f052f43b180faca8c8b342cf3c390d4"></span><a class="reference internal" href="#c.WpSpaPod" title="WpSpaPod"><span class="n"><span class="pre">WpSpaPod</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_new_fd</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">gint64</span></span><span class="w"> </span><span class="n"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_new_fd" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Creates a spa pod of type Fd. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>value</strong> – the Fd value </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full): The new spa pod </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_new_rectangle">
+<span class="target" id="group__wpspapod_1ga67f3599581191b29ede12d3cf882cac7"></span><a class="reference internal" href="#c.WpSpaPod" title="WpSpaPod"><span class="n"><span class="pre">WpSpaPod</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_new_rectangle</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">guint32</span></span><span class="w"> </span><span class="n"><span class="pre">width</span></span>, <span class="n"><span class="pre">guint32</span></span><span class="w"> </span><span class="n"><span class="pre">height</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_new_rectangle" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Creates a spa pod of type rectangle. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>width</strong> – the width value of the rectangle </p></li>
+<li><p><strong>height</strong> – the height value of the rectangle </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full): The new spa pod </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_new_fraction">
+<span class="target" id="group__wpspapod_1ga7b44f5714b85a3f7aa8795bd0aeba6cf"></span><a class="reference internal" href="#c.WpSpaPod" title="WpSpaPod"><span class="n"><span class="pre">WpSpaPod</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_new_fraction</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">guint32</span></span><span class="w"> </span><span class="n"><span class="pre">num</span></span>, <span class="n"><span class="pre">guint32</span></span><span class="w"> </span><span class="n"><span class="pre">denom</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_new_fraction" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Creates a spa pod of type fraction. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>num</strong> – the numerator value of the fraction </p></li>
+<li><p><strong>denom</strong> – the denominator value of the fraction </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full): The new spa pod </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_new_choice">
+<span class="target" id="group__wpspapod_1ga90f377c2a6234890bf80aea33466105b"></span><a class="reference internal" href="#c.WpSpaPod" title="WpSpaPod"><span class="n"><span class="pre">WpSpaPod</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_new_choice</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">choice_type</span></span>, <span class="p"><span class="pre">...</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_new_choice" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Creates a spa pod of type choice. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>choice_type</strong> – the name of the choice type (“Range”, “Step”, …), </p></li>
+<li><p><strong>...</strong> – a list of choice values, followed by NULL </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full): The new spa pod </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_new_choice_valist">
+<span class="target" id="group__wpspapod_1ga1ab3f2226cb9460dffb41a34e16442eb"></span><a class="reference internal" href="#c.WpSpaPod" title="WpSpaPod"><span class="n"><span class="pre">WpSpaPod</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_new_choice_valist</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">choice_type</span></span>, <span class="n"><span class="pre">va_list</span></span><span class="w"> </span><span class="n"><span class="pre">args</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_new_choice_valist" title="Permalink to this definition"></a><br /></dt>
+<dd><p>This is the <code class="docutils literal notranslate"><span class="pre">va_list</span></code> version of <a class="reference internal" href="#group__wpspapod_1ga90f377c2a6234890bf80aea33466105b"><span class="std std-ref">wp_spa_pod_new_choice()</span></a> </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>choice_type</strong> – the name of the choice type (“Range”, “Step”, …) </p></li>
+<li><p><strong>args</strong> – the variable arguments passed to <a class="reference internal" href="#group__wpspapod_1ga90f377c2a6234890bf80aea33466105b"><span class="std std-ref">wp_spa_pod_new_choice()</span></a> </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full): The new spa pod </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_new_object">
+<span class="target" id="group__wpspapod_1ga4ee093a5392aee5ec8be5da44d8b6f58"></span><a class="reference internal" href="#c.WpSpaPod" title="WpSpaPod"><span class="n"><span class="pre">WpSpaPod</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_new_object</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">type_name</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">id_name</span></span>, <span class="p"><span class="pre">...</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_new_object" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Creates a spa pod of type object. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>type_name</strong> – the type name of the object type </p></li>
+<li><p><strong>id_name</strong> – the id name of the object, </p></li>
+<li><p><strong>...</strong> – a list of object properties with their values, followed by NULL </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full): The new spa pod </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_new_object_valist">
+<span class="target" id="group__wpspapod_1gaeb16ce53579d880b65f8c5b6445704eb"></span><a class="reference internal" href="#c.WpSpaPod" title="WpSpaPod"><span class="n"><span class="pre">WpSpaPod</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_new_object_valist</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">type_name</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">id_name</span></span>, <span class="n"><span class="pre">va_list</span></span><span class="w"> </span><span class="n"><span class="pre">args</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_new_object_valist" title="Permalink to this definition"></a><br /></dt>
+<dd><p>This is the <code class="docutils literal notranslate"><span class="pre">va_list</span></code> version of <a class="reference internal" href="#group__wpspapod_1ga4ee093a5392aee5ec8be5da44d8b6f58"><span class="std std-ref">wp_spa_pod_new_object()</span></a> </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>type_name</strong> – the type name of the object type </p></li>
+<li><p><strong>id_name</strong> – the id name of the object </p></li>
+<li><p><strong>args</strong> – the variable arguments passed to <a class="reference internal" href="#group__wpspapod_1ga4ee093a5392aee5ec8be5da44d8b6f58"><span class="std std-ref">wp_spa_pod_new_object()</span></a> </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full): The new spa pod </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_new_sequence">
+<span class="target" id="group__wpspapod_1gaedc6797969cffa3cd63a232e49cc0bd0"></span><a class="reference internal" href="#c.WpSpaPod" title="WpSpaPod"><span class="n"><span class="pre">WpSpaPod</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_new_sequence</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">guint</span></span><span class="w"> </span><span class="n"><span class="pre">unit</span></span>, <span class="p"><span class="pre">...</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_new_sequence" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Creates a spa pod of type sequence. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>unit</strong> – the unit of the sequence </p></li>
+<li><p><strong>...</strong> – a list of sequence controls with their values, followed by NULL </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full): The new spa pod </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_new_sequence_valist">
+<span class="target" id="group__wpspapod_1gadaf537fe10d2b1508bffe184f305255f"></span><a class="reference internal" href="#c.WpSpaPod" title="WpSpaPod"><span class="n"><span class="pre">WpSpaPod</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_new_sequence_valist</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">guint</span></span><span class="w"> </span><span class="n"><span class="pre">unit</span></span>, <span class="n"><span class="pre">va_list</span></span><span class="w"> </span><span class="n"><span class="pre">args</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_new_sequence_valist" title="Permalink to this definition"></a><br /></dt>
+<dd><p>This is the <code class="docutils literal notranslate"><span class="pre">va_list</span></code> version of <a class="reference internal" href="#group__wpspapod_1gaedc6797969cffa3cd63a232e49cc0bd0"><span class="std std-ref">wp_spa_pod_new_sequence()</span></a> </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>unit</strong> – the unit of the sequence </p></li>
+<li><p><strong>args</strong> – the variable arguments passed to <a class="reference internal" href="#group__wpspapod_1gaedc6797969cffa3cd63a232e49cc0bd0"><span class="std std-ref">wp_spa_pod_new_sequence()</span></a> </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full): The new spa pod </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_is_none">
+<span class="target" id="group__wpspapod_1ga576c2a93b7ccbb0670900a869522364b"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_is_none</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaPod" title="WpSpaPod"><span class="n"><span class="pre">WpSpaPod</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_is_none" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Checks wether the spa pod is of type none or not. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa pod object </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if it is of type none, FALSE otherwise </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_is_boolean">
+<span class="target" id="group__wpspapod_1ga08a638d607f2acc778cb214df77ecaac"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_is_boolean</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaPod" title="WpSpaPod"><span class="n"><span class="pre">WpSpaPod</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_is_boolean" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Checks wether the spa pod is of type boolean or not. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa pod object </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if it is of type boolean, FALSE otherwise </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_is_id">
+<span class="target" id="group__wpspapod_1gacaee79d94391a4b1fa67aba78d1c2af3"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_is_id</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaPod" title="WpSpaPod"><span class="n"><span class="pre">WpSpaPod</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_is_id" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Checks wether the spa pod is of type Id or not. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa pod object </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if it is of type Id, FALSE otherwise </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_is_int">
+<span class="target" id="group__wpspapod_1ga85262d15fcf0797aa3a77f72e8336e55"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_is_int</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaPod" title="WpSpaPod"><span class="n"><span class="pre">WpSpaPod</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_is_int" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Checks wether the spa pod is of type int or not. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa pod object </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if it is of type int, FALSE otherwise </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_is_long">
+<span class="target" id="group__wpspapod_1ga9f76200795f49df82bfa54a55a9e3ad3"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_is_long</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaPod" title="WpSpaPod"><span class="n"><span class="pre">WpSpaPod</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_is_long" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Checks wether the spa pod is of type long or not. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa pod object </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if it is of type long, FALSE otherwise </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_is_float">
+<span class="target" id="group__wpspapod_1ga09e51ce664a9ca64fe757f9e7ae5b2f1"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_is_float</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaPod" title="WpSpaPod"><span class="n"><span class="pre">WpSpaPod</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_is_float" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Checks wether the spa pod is of type float or not. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa pod object </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if it is of type float, FALSE otherwise </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_is_double">
+<span class="target" id="group__wpspapod_1gadf0dc5a2c528cdabdedb2e499c93b2a5"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_is_double</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaPod" title="WpSpaPod"><span class="n"><span class="pre">WpSpaPod</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_is_double" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Checks wether the spa pod is of type double or not. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa pod object </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if it is of type double, FALSE otherwise </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_is_string">
+<span class="target" id="group__wpspapod_1ga8ed40058ad85035aa8b648648a256649"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_is_string</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaPod" title="WpSpaPod"><span class="n"><span class="pre">WpSpaPod</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_is_string" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Checks wether the spa pod is of type string or not. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa pod object </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if it is of type string, FALSE otherwise </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_is_bytes">
+<span class="target" id="group__wpspapod_1ga1eb9977652921bb5a92a9753fcd80670"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_is_bytes</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaPod" title="WpSpaPod"><span class="n"><span class="pre">WpSpaPod</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_is_bytes" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Checks wether the spa pod is of type bytes or not. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa pod object </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if it is of type bytes, FALSE otherwise </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_is_pointer">
+<span class="target" id="group__wpspapod_1ga10bb741ce4bddfecbe8c007d1a1a2031"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_is_pointer</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaPod" title="WpSpaPod"><span class="n"><span class="pre">WpSpaPod</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_is_pointer" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Checks wether the spa pod is of type pointer or not. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa pod object </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if it is of type pointer, FALSE otherwise </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_is_fd">
+<span class="target" id="group__wpspapod_1ga7643bedb2b6bf4eaa7cdffe50b410f4b"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_is_fd</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaPod" title="WpSpaPod"><span class="n"><span class="pre">WpSpaPod</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_is_fd" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Checks wether the spa pod is of type Fd or not. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa pod object </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if it is of type Fd, FALSE otherwise </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_is_rectangle">
+<span class="target" id="group__wpspapod_1gaab49281d5076fdf305f2f7973ecc8338"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_is_rectangle</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaPod" title="WpSpaPod"><span class="n"><span class="pre">WpSpaPod</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_is_rectangle" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Checks wether the spa pod is of type rectangle or not. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa pod object </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if it is of type rectangle, FALSE otherwise </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_is_fraction">
+<span class="target" id="group__wpspapod_1ga4d706f28b6380a06a85459999a98932b"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_is_fraction</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaPod" title="WpSpaPod"><span class="n"><span class="pre">WpSpaPod</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_is_fraction" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Checks wether the spa pod is of type fraction or not. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa pod object </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if it is of type fraction, FALSE otherwise </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_is_array">
+<span class="target" id="group__wpspapod_1gad5426f01268ee2f5fb77c215899de47d"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_is_array</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaPod" title="WpSpaPod"><span class="n"><span class="pre">WpSpaPod</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_is_array" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Checks wether the spa pod is of type array or not. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa pod object </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if it is of type array, FALSE otherwise </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_is_choice">
+<span class="target" id="group__wpspapod_1gad668cf2869ae086f61b3c19b7c1f1653"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_is_choice</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaPod" title="WpSpaPod"><span class="n"><span class="pre">WpSpaPod</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_is_choice" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Checks wether the spa pod is of type choice or not. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa pod object </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if it is of type choice, FALSE otherwise </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_is_object">
+<span class="target" id="group__wpspapod_1gabc41ed10caa670e99ee3502e3258f022"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_is_object</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaPod" title="WpSpaPod"><span class="n"><span class="pre">WpSpaPod</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_is_object" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Checks wether the spa pod is of type object or not. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa pod object </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if it is of type object, FALSE otherwise </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_is_struct">
+<span class="target" id="group__wpspapod_1gaff8c3cd22edd85c17f54ea096d8b3c1e"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_is_struct</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaPod" title="WpSpaPod"><span class="n"><span class="pre">WpSpaPod</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_is_struct" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Checks wether the spa pod is of type struct or not. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa pod object </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if it is of type struct, FALSE otherwise </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_is_sequence">
+<span class="target" id="group__wpspapod_1ga4875eab5ae91099b02a38a8a505279eb"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_is_sequence</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaPod" title="WpSpaPod"><span class="n"><span class="pre">WpSpaPod</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_is_sequence" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Checks wether the spa pod is of type sequence or not. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa pod object </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if it is of type sequence, FALSE otherwise </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_is_property">
+<span class="target" id="group__wpspapod_1gaeaf21a457c32c457b8a7ffa0df1ba3d1"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_is_property</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaPod" title="WpSpaPod"><span class="n"><span class="pre">WpSpaPod</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_is_property" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Checks wether the spa pod is of type property or not. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa pod object </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if it is of type property, FALSE otherwise </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_is_control">
+<span class="target" id="group__wpspapod_1ga7e450a61f4a9c8f63638928df97ece6b"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_is_control</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaPod" title="WpSpaPod"><span class="n"><span class="pre">WpSpaPod</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_is_control" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Checks wether the spa pod is of type control or not. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa pod object </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if it is of type control, FALSE otherwise </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_get_boolean">
+<span class="target" id="group__wpspapod_1gad6ec84ef10d1637e00736d707e3c1b4d"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_get_boolean</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaPod" title="WpSpaPod"><span class="n"><span class="pre">WpSpaPod</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_get_boolean" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Gets the boolean value of a spa pod object. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa pod object </p></li>
+<li><p><strong>value</strong> – (out): the boolean value </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if the value was obtained, FALSE otherwise </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_get_id">
+<span class="target" id="group__wpspapod_1ga760f0b58825fed491eedfb3dd577ce56"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_get_id</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaPod" title="WpSpaPod"><span class="n"><span class="pre">WpSpaPod</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="n"><span class="pre">guint32</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_get_id" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Gets the Id value of a spa pod object. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa pod object </p></li>
+<li><p><strong>value</strong> – (out): the Id value </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if the value was obtained, FALSE otherwise </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_get_int">
+<span class="target" id="group__wpspapod_1ga10f773689daef5a5752a129c5be5da2b"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_get_int</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaPod" title="WpSpaPod"><span class="n"><span class="pre">WpSpaPod</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="n"><span class="pre">gint32</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_get_int" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Gets the int value of a spa pod object. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa pod object </p></li>
+<li><p><strong>value</strong> – (out): the int value </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if the value was obtained, FALSE otherwise </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_get_long">
+<span class="target" id="group__wpspapod_1ga55c7adf16f40e838231b1442252b00ab"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_get_long</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaPod" title="WpSpaPod"><span class="n"><span class="pre">WpSpaPod</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="n"><span class="pre">gint64</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_get_long" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Gets the long value of a spa pod object. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa pod object </p></li>
+<li><p><strong>value</strong> – (out): the long value </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if the value was obtained, FALSE otherwise </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_get_float">
+<span class="target" id="group__wpspapod_1ga7926b0ceb203af174842319a7a2d8a5b"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_get_float</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaPod" title="WpSpaPod"><span class="n"><span class="pre">WpSpaPod</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="kt"><span class="pre">float</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_get_float" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Gets the float value of a spa pod object. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa pod object </p></li>
+<li><p><strong>value</strong> – (out): the float value </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if the value was obtained, FALSE otherwise </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_get_double">
+<span class="target" id="group__wpspapod_1ga46a3ae6983dd44879881db60b6ff6511"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_get_double</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaPod" title="WpSpaPod"><span class="n"><span class="pre">WpSpaPod</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_get_double" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Gets the double value of a spa pod object. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa pod object </p></li>
+<li><p><strong>value</strong> – (out): the double value </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if the value was obtained, FALSE otherwise </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_get_string">
+<span class="target" id="group__wpspapod_1ga6b51ab1cc4d1a0248585b082a939a45e"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_get_string</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaPod" title="WpSpaPod"><span class="n"><span class="pre">WpSpaPod</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_get_string" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Gets the string value of a spa pod object. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa pod object </p></li>
+<li><p><strong>value</strong> – (out): the string value </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if the value was obtained, FALSE otherwise </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_get_bytes">
+<span class="target" id="group__wpspapod_1ga6cb224035b7d59520c41445701679db1"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_get_bytes</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaPod" title="WpSpaPod"><span class="n"><span class="pre">WpSpaPod</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="n"><span class="pre">gconstpointer</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">value</span></span>, <span class="n"><span class="pre">guint32</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">len</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_get_bytes" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Gets the bytes value and its len of a spa pod object. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa pod object </p></li>
+<li><p><strong>value</strong> – (out): the bytes value </p></li>
+<li><p><strong>len</strong> – (out): the length of the bytes value </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if the value was obtained, FALSE otherwise </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_get_pointer">
+<span class="target" id="group__wpspapod_1ga57953853a72264a643a744df70e62e22"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_get_pointer</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaPod" title="WpSpaPod"><span class="n"><span class="pre">WpSpaPod</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="n"><span class="pre">gconstpointer</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_get_pointer" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Gets the pointer value and its type name of a spa pod object. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa pod object </p></li>
+<li><p><strong>value</strong> – (out): the pointer value </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if the value was obtained, FALSE otherwise </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_get_fd">
+<span class="target" id="group__wpspapod_1ga305d6649cde01c5fb22ba8a6858ec332"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_get_fd</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaPod" title="WpSpaPod"><span class="n"><span class="pre">WpSpaPod</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="n"><span class="pre">gint64</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_get_fd" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Gets the Fd value of a spa pod object. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa pod object </p></li>
+<li><p><strong>value</strong> – (out): the Fd value </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if the value was obtained, FALSE otherwise </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_get_rectangle">
+<span class="target" id="group__wpspapod_1ga1f5b18919d7b4f5a052b1741af417fcb"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_get_rectangle</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaPod" title="WpSpaPod"><span class="n"><span class="pre">WpSpaPod</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="n"><span class="pre">guint32</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">width</span></span>, <span class="n"><span class="pre">guint32</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">height</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_get_rectangle" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Gets the rectangle’s width and height value of a spa pod object. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa pod object </p></li>
+<li><p><strong>width</strong> – (out): the rectangle’s width value </p></li>
+<li><p><strong>height</strong> – (out): the rectangle’s height value </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if the value was obtained, FALSE otherwise </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_get_fraction">
+<span class="target" id="group__wpspapod_1ga9687dd737fcfbd5d1bef411372fb33b8"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_get_fraction</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaPod" title="WpSpaPod"><span class="n"><span class="pre">WpSpaPod</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="n"><span class="pre">guint32</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">num</span></span>, <span class="n"><span class="pre">guint32</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">denom</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_get_fraction" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Gets the fractions’s numerator and denominator value of a spa pod object. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa pod object </p></li>
+<li><p><strong>num</strong> – (out): the fractions’s numerator value </p></li>
+<li><p><strong>denom</strong> – (out): the fractions’s denominator value </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if the value was obtained, FALSE otherwise </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_set_boolean">
+<span class="target" id="group__wpspapod_1gacee4228f971d759a4e10f0f9194bae01"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_set_boolean</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaPod" title="WpSpaPod"><span class="n"><span class="pre">WpSpaPod</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="n"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_set_boolean" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Sets a boolean value in the spa pod object. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa pod object </p></li>
+<li><p><strong>value</strong> – the boolean value </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if the value could be set, FALSE othewrise. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_set_id">
+<span class="target" id="group__wpspapod_1gaefa85ec7933a8e42b6dec71d7c83f679"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_set_id</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaPod" title="WpSpaPod"><span class="n"><span class="pre">WpSpaPod</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="n"><span class="pre">guint32</span></span><span class="w"> </span><span class="n"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_set_id" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Sets an Id value in the spa pod object. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa pod object </p></li>
+<li><p><strong>value</strong> – the Id value </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if the value could be set, FALSE othewrise. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_set_int">
+<span class="target" id="group__wpspapod_1ga2bdb6fb451d7e3eeeef9921e19515c06"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_set_int</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaPod" title="WpSpaPod"><span class="n"><span class="pre">WpSpaPod</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="n"><span class="pre">gint32</span></span><span class="w"> </span><span class="n"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_set_int" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Sets an int value in the spa pod object. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa pod object </p></li>
+<li><p><strong>value</strong> – the int value </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if the value could be set, FALSE othewrise. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_set_long">
+<span class="target" id="group__wpspapod_1ga10ebe0e4587f483aace0abec8fcd0e43"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_set_long</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaPod" title="WpSpaPod"><span class="n"><span class="pre">WpSpaPod</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="n"><span class="pre">gint64</span></span><span class="w"> </span><span class="n"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_set_long" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Sets a long value in the spa pod object. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa pod object </p></li>
+<li><p><strong>value</strong> – the long value </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if the value could be set, FALSE othewrise. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_set_float">
+<span class="target" id="group__wpspapod_1gafcd48930b1935c9c193722ffabf93429"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_set_float</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaPod" title="WpSpaPod"><span class="n"><span class="pre">WpSpaPod</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="kt"><span class="pre">float</span></span><span class="w"> </span><span class="n"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_set_float" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Sets a float value in the spa pod object. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa pod object </p></li>
+<li><p><strong>value</strong> – the float value </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if the value could be set, FALSE othewrise. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_set_double">
+<span class="target" id="group__wpspapod_1ga8a856243d47f85d42ebf7d862b2a18f0"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_set_double</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaPod" title="WpSpaPod"><span class="n"><span class="pre">WpSpaPod</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_set_double" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Sets a double value in the spa pod object. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa pod object </p></li>
+<li><p><strong>value</strong> – the double value </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if the value could be set, FALSE othewrise. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_set_pointer">
+<span class="target" id="group__wpspapod_1gaf254e7d107f020ccce17b895a975c7ae"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_set_pointer</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaPod" title="WpSpaPod"><span class="n"><span class="pre">WpSpaPod</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">type_name</span></span>, <span class="n"><span class="pre">gconstpointer</span></span><span class="w"> </span><span class="n"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_set_pointer" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Sets a pointer value with its type name in the spa pod object. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa pod object </p></li>
+<li><p><strong>type_name</strong> – the name of the type of the pointer </p></li>
+<li><p><strong>value</strong> – the pointer value </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if the value could be set, FALSE othewrise. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_set_fd">
+<span class="target" id="group__wpspapod_1ga154e850744e0217512f053f6335c135c"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_set_fd</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaPod" title="WpSpaPod"><span class="n"><span class="pre">WpSpaPod</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="n"><span class="pre">gint64</span></span><span class="w"> </span><span class="n"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_set_fd" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Sets a Fd value in the spa pod object. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa pod object </p></li>
+<li><p><strong>value</strong> – the Fd value </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if the value could be set, FALSE othewrise. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_set_rectangle">
+<span class="target" id="group__wpspapod_1ga1afabbcaa83926e845a0d5fe585308e9"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_set_rectangle</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaPod" title="WpSpaPod"><span class="n"><span class="pre">WpSpaPod</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="n"><span class="pre">guint32</span></span><span class="w"> </span><span class="n"><span class="pre">width</span></span>, <span class="n"><span class="pre">guint32</span></span><span class="w"> </span><span class="n"><span class="pre">height</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_set_rectangle" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Sets the width and height values of a rectangle in the spa pod object. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa pod object </p></li>
+<li><p><strong>width</strong> – the width value of the rectangle </p></li>
+<li><p><strong>height</strong> – the height value of the rectangle </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if the value could be set, FALSE othewrise. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_set_fraction">
+<span class="target" id="group__wpspapod_1ga0f2b4b9e18b736bddad5aa07e1c2bd39"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_set_fraction</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaPod" title="WpSpaPod"><span class="n"><span class="pre">WpSpaPod</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="n"><span class="pre">guint32</span></span><span class="w"> </span><span class="n"><span class="pre">num</span></span>, <span class="n"><span class="pre">guint32</span></span><span class="w"> </span><span class="n"><span class="pre">denom</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_set_fraction" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Sets the numerator and denominator values of a fraction in the spa pod object. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa pod object </p></li>
+<li><p><strong>num</strong> – the numerator value of the farction </p></li>
+<li><p><strong>denom</strong> – the denominator value of the fraction </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if the value could be set, FALSE othewrise. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_set_pod">
+<span class="target" id="group__wpspapod_1gaf1bce123748724af920be95abc679b88"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_set_pod</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaPod" title="WpSpaPod"><span class="n"><span class="pre">WpSpaPod</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <a class="reference internal" href="#c.WpSpaPod" title="WpSpaPod"><span class="n"><span class="pre">WpSpaPod</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">pod</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_set_pod" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Sets the value of a spa pod object in the current spa pod object. The spa pod objects must be of the same value. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa pod object </p></li>
+<li><p><strong>pod</strong> – the pod with the value to be set </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if the value could be set, FALSE othewrise. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_equal">
+<span class="target" id="group__wpspapod_1gacc3730e9abc058e67a3685d2100fdaa3"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_equal</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaPod" title="WpSpaPod"><span class="n"><span class="pre">WpSpaPod</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <a class="reference internal" href="#c.WpSpaPod" title="WpSpaPod"><span class="n"><span class="pre">WpSpaPod</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">pod</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_equal" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Checks whether two spa pod objects have the same value or not. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa pod object </p></li>
+<li><p><strong>pod</strong> – the pod with the value to be compared with </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if both spa pod objects have the same values, FALSE othewrise. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_get_object">
+<span class="target" id="group__wpspapod_1gae9a3d0196defad353600e4f4b6c8ca76"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_get_object</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaPod" title="WpSpaPod"><span class="n"><span class="pre">WpSpaPod</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">id_name</span></span>, <span class="p"><span class="pre">...</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_get_object" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Gets the object properties values of a spa pod object. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa pod object </p></li>
+<li><p><strong>id_name</strong> – (out): the id name of the object, </p></li>
+<li><p><strong>...</strong> – (out): the list of the object properties values, followed by NULL </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if the object properties values were obtained, FALSE otherwise </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_get_object_valist">
+<span class="target" id="group__wpspapod_1ga7b18d45251f9eecdb709d6bad265d446"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_get_object_valist</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaPod" title="WpSpaPod"><span class="n"><span class="pre">WpSpaPod</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">id_name</span></span>, <span class="n"><span class="pre">va_list</span></span><span class="w"> </span><span class="n"><span class="pre">args</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_get_object_valist" title="Permalink to this definition"></a><br /></dt>
+<dd><p>This is the <code class="docutils literal notranslate"><span class="pre">va_list</span></code> version of <a class="reference internal" href="#group__wpspapod_1gae9a3d0196defad353600e4f4b6c8ca76"><span class="std std-ref">wp_spa_pod_get_object()</span></a> </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa pod object </p></li>
+<li><p><strong>id_name</strong> – (out): the id name of the object </p></li>
+<li><p><strong>args</strong> – (out): the variable arguments passed to <a class="reference internal" href="#group__wpspapod_1gae9a3d0196defad353600e4f4b6c8ca76"><span class="std std-ref">wp_spa_pod_get_object()</span></a> </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if the object properties values were obtained, FALSE otherwise </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_get_struct">
+<span class="target" id="group__wpspapod_1ga96f4705e84c42eee63646f443e5c9305"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_get_struct</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaPod" title="WpSpaPod"><span class="n"><span class="pre">WpSpaPod</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="p"><span class="pre">...</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_get_struct" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Gets the struct’s values of a spa pod object. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa pod object </p></li>
+<li><p><strong>...</strong> – (out): the list of the struct values, followed by NULL </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if the struct values were obtained, FALSE otherwise </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_get_struct_valist">
+<span class="target" id="group__wpspapod_1ga4debbdcbdaf5dd9044660e548aeac5f1"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_get_struct_valist</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaPod" title="WpSpaPod"><span class="n"><span class="pre">WpSpaPod</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="n"><span class="pre">va_list</span></span><span class="w"> </span><span class="n"><span class="pre">args</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_get_struct_valist" title="Permalink to this definition"></a><br /></dt>
+<dd><p>This is the <code class="docutils literal notranslate"><span class="pre">va_list</span></code> version of <a class="reference internal" href="#group__wpspapod_1ga96f4705e84c42eee63646f443e5c9305"><span class="std std-ref">wp_spa_pod_get_struct()</span></a> </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa pod object </p></li>
+<li><p><strong>args</strong> – (out): the variable arguments passed to <a class="reference internal" href="#group__wpspapod_1ga96f4705e84c42eee63646f443e5c9305"><span class="std std-ref">wp_spa_pod_get_struct()</span></a> </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if the struct values were obtained, FALSE otherwise </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_get_property">
+<span class="target" id="group__wpspapod_1gaade9b4b04b7c6e5ba882ea1c5b70d12b"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_get_property</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaPod" title="WpSpaPod"><span class="n"><span class="pre">WpSpaPod</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">key</span></span>, <a class="reference internal" href="#c.WpSpaPod" title="WpSpaPod"><span class="n"><span class="pre">WpSpaPod</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_get_property" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Gets the name, flags and spa pod value of a spa pod property. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa pod object </p></li>
+<li><p><strong>key</strong> – (out) (optional): the name of the property </p></li>
+<li><p><strong>value</strong> – (out) (optional): the spa pod value of the property </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if the value was obtained, FALSE otherwise </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_get_control">
+<span class="target" id="group__wpspapod_1gac6b8e840bf67af650bd5f28552f4b28c"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_get_control</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaPod" title="WpSpaPod"><span class="n"><span class="pre">WpSpaPod</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="n"><span class="pre">guint32</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">offset</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ctl_type</span></span>, <a class="reference internal" href="#c.WpSpaPod" title="WpSpaPod"><span class="n"><span class="pre">WpSpaPod</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_get_control" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Gets the offset, type name and spa pod value of a spa pod control. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa pod object </p></li>
+<li><p><strong>offset</strong> – (out) (optional): the offset of the control </p></li>
+<li><p><strong>ctl_type</strong> – (out) (optional): the control type (Properties, Midi, …) </p></li>
+<li><p><strong>value</strong> – (out) (optional): the spa pod value of the control </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if the value was obtained, FALSE otherwise </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_get_choice_child">
+<span class="target" id="group__wpspapod_1ga804c3135528785c04cb05606e2362a5b"></span><a class="reference internal" href="#c.WpSpaPod" title="WpSpaPod"><span class="n"><span class="pre">WpSpaPod</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_get_choice_child</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaPod" title="WpSpaPod"><span class="n"><span class="pre">WpSpaPod</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_get_choice_child" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Gets the child of a spa pod choice object. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – a spa pod choice object </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full): the child of the spa pod choice object </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_get_array_child">
+<span class="target" id="group__wpspapod_1ga40ee958e966bd29cc562895e8ad6e608"></span><a class="reference internal" href="#c.WpSpaPod" title="WpSpaPod"><span class="n"><span class="pre">WpSpaPod</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_get_array_child</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaPod" title="WpSpaPod"><span class="n"><span class="pre">WpSpaPod</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_get_array_child" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Gets the child of a spa pod array object. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – a spa pod choice object </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full): the child of the spa pod array object </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_fixate">
+<span class="target" id="group__wpspapod_1ga7cbb627a72fe1e0060e3d5e442d63b63"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_fixate</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaPod" title="WpSpaPod"><span class="n"><span class="pre">WpSpaPod</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_fixate" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Fixates choices in an object pod so that they only have one value. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – a spa pod </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if the pod was an object and it went through the fixation procedure, FALSE otherwise </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_builder_ref">
+<span class="target" id="group__wpspapod_1gadcd2a1e7221a42ac3aca5cfa2b43bea3"></span><a class="reference internal" href="#c.WpSpaPodBuilder" title="WpSpaPodBuilder"><span class="n"><span class="pre">WpSpaPodBuilder</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_builder_ref</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaPodBuilder" title="WpSpaPodBuilder"><span class="n"><span class="pre">WpSpaPodBuilder</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_builder_ref" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Increases the reference count of a spa pod builder. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – a spa pod builder object </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full): <em>self</em> with an additional reference count on it </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_builder_unref">
+<span class="target" id="group__wpspapod_1ga0cbd31669dcba158bb133af92fadfae5"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_builder_unref</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaPodBuilder" title="WpSpaPodBuilder"><span class="n"><span class="pre">WpSpaPodBuilder</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_builder_unref" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Decreases the reference count on <em>self</em> and frees it when the ref count reaches zero. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – (transfer full): a spa pod builder object </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_builder_new_array">
+<span class="target" id="group__wpspapod_1ga1fa3d0939e7aa2466ff43850402472de"></span><a class="reference internal" href="#c.WpSpaPodBuilder" title="WpSpaPodBuilder"><span class="n"><span class="pre">WpSpaPodBuilder</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_builder_new_array</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_builder_new_array" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Creates a spa pod builder of type array. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>(transfer full): the new spa pod builder </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_builder_new_choice">
+<span class="target" id="group__wpspapod_1gacf090ed7ff78ceb0551e1a94e2774654"></span><a class="reference internal" href="#c.WpSpaPodBuilder" title="WpSpaPodBuilder"><span class="n"><span class="pre">WpSpaPodBuilder</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_builder_new_choice</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">choice_type</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_builder_new_choice" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Creates a spa pod builder of type choice. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>choice_type</strong> – the name of the choice type (“Range”, “Step”, …) </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full): the new spa pod builder </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_builder_new_object">
+<span class="target" id="group__wpspapod_1gaf384eae406c0df9825f1cfc4108675bd"></span><a class="reference internal" href="#c.WpSpaPodBuilder" title="WpSpaPodBuilder"><span class="n"><span class="pre">WpSpaPodBuilder</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_builder_new_object</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">type_name</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">id_name</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_builder_new_object" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Creates a spa pod builder of type object. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>type_name</strong> – the type name of the object type </p></li>
+<li><p><strong>id_name</strong> – the Id name of the object </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full): the new spa pod builder </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_builder_new_struct">
+<span class="target" id="group__wpspapod_1gab1f6f06ffd9021c617725e2cb4087b93"></span><a class="reference internal" href="#c.WpSpaPodBuilder" title="WpSpaPodBuilder"><span class="n"><span class="pre">WpSpaPodBuilder</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_builder_new_struct</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_builder_new_struct" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Creates a spa pod builder of type struct. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>(transfer full): the new spa pod builder </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_builder_new_sequence">
+<span class="target" id="group__wpspapod_1ga831566b9c327afb9dac5208c8088bf4b"></span><a class="reference internal" href="#c.WpSpaPodBuilder" title="WpSpaPodBuilder"><span class="n"><span class="pre">WpSpaPodBuilder</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_builder_new_sequence</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">guint</span></span><span class="w"> </span><span class="n"><span class="pre">unit</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_builder_new_sequence" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Creates a spa pod builder of type sequence. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>(transfer full): the new spa pod builder </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_builder_add_none">
+<span class="target" id="group__wpspapod_1ga411ed90764550b584b585497467e919b"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_builder_add_none</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaPodBuilder" title="WpSpaPodBuilder"><span class="n"><span class="pre">WpSpaPodBuilder</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_builder_add_none" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Adds a none value into the builder. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa pod builder object </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_builder_add_boolean">
+<span class="target" id="group__wpspapod_1gaff9b9e32b54c8fb33956729cded3f150"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_builder_add_boolean</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaPodBuilder" title="WpSpaPodBuilder"><span class="n"><span class="pre">WpSpaPodBuilder</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="n"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_builder_add_boolean" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Adds a boolean value into the builder. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa pod builder object </p></li>
+<li><p><strong>value</strong> – the boolean value </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_builder_add_id">
+<span class="target" id="group__wpspapod_1ga4b316bc205f7a6dd13d4041fa0f9d95c"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_builder_add_id</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaPodBuilder" title="WpSpaPodBuilder"><span class="n"><span class="pre">WpSpaPodBuilder</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="n"><span class="pre">guint32</span></span><span class="w"> </span><span class="n"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_builder_add_id" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Adds a Id value into the builder. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa pod builder object </p></li>
+<li><p><strong>value</strong> – the Id value </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_builder_add_int">
+<span class="target" id="group__wpspapod_1gaf1760f10953ae6d8e3569c37d929bef6"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_builder_add_int</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaPodBuilder" title="WpSpaPodBuilder"><span class="n"><span class="pre">WpSpaPodBuilder</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="n"><span class="pre">gint32</span></span><span class="w"> </span><span class="n"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_builder_add_int" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Adds a int value into the builder. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa pod builder object </p></li>
+<li><p><strong>value</strong> – the int value </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_builder_add_long">
+<span class="target" id="group__wpspapod_1ga2fc2319bd93049118e10bf62cf2fa4cd"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_builder_add_long</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaPodBuilder" title="WpSpaPodBuilder"><span class="n"><span class="pre">WpSpaPodBuilder</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="n"><span class="pre">gint64</span></span><span class="w"> </span><span class="n"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_builder_add_long" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Adds a long value into the builder. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa pod builder object </p></li>
+<li><p><strong>value</strong> – the long value </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_builder_add_float">
+<span class="target" id="group__wpspapod_1ga47e7513710756c1cbf3bbb97fa4fef53"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_builder_add_float</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaPodBuilder" title="WpSpaPodBuilder"><span class="n"><span class="pre">WpSpaPodBuilder</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="kt"><span class="pre">float</span></span><span class="w"> </span><span class="n"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_builder_add_float" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Adds a float value into the builder. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa pod builder object </p></li>
+<li><p><strong>value</strong> – the float value </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_builder_add_double">
+<span class="target" id="group__wpspapod_1ga88fc2aaa059ff9855d60b4714828ee3d"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_builder_add_double</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaPodBuilder" title="WpSpaPodBuilder"><span class="n"><span class="pre">WpSpaPodBuilder</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_builder_add_double" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Adds a double value into the builder. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa pod builder object </p></li>
+<li><p><strong>value</strong> – the double value </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_builder_add_string">
+<span class="target" id="group__wpspapod_1gabd89f3a602e177c0caf4feeb3b7e6fee"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_builder_add_string</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaPodBuilder" title="WpSpaPodBuilder"><span class="n"><span class="pre">WpSpaPodBuilder</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_builder_add_string" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Adds a string value into the builder. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa pod builder object </p></li>
+<li><p><strong>value</strong> – the string value </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_builder_add_bytes">
+<span class="target" id="group__wpspapod_1ga9801c4bcfd5b561aae41fee7d8e56486"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_builder_add_bytes</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaPodBuilder" title="WpSpaPodBuilder"><span class="n"><span class="pre">WpSpaPodBuilder</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="n"><span class="pre">gconstpointer</span></span><span class="w"> </span><span class="n"><span class="pre">value</span></span>, <span class="n"><span class="pre">guint32</span></span><span class="w"> </span><span class="n"><span class="pre">len</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_builder_add_bytes" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Adds a bytes value with its length into the builder. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa pod builder object </p></li>
+<li><p><strong>value</strong> – the bytes value </p></li>
+<li><p><strong>len</strong> – the length of the bytes value </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_builder_add_pointer">
+<span class="target" id="group__wpspapod_1gaa06c59fc0395e27374b27f7f5e0357ac"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_builder_add_pointer</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaPodBuilder" title="WpSpaPodBuilder"><span class="n"><span class="pre">WpSpaPodBuilder</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">type_name</span></span>, <span class="n"><span class="pre">gconstpointer</span></span><span class="w"> </span><span class="n"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_builder_add_pointer" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Adds a pointer value with its type name into the builder. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa pod builder object </p></li>
+<li><p><strong>type_name</strong> – the type name that the pointer points to </p></li>
+<li><p><strong>value</strong> – the pointer vaue </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_builder_add_fd">
+<span class="target" id="group__wpspapod_1ga778211962de8cbaaf3d2d411c40ba0d4"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_builder_add_fd</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaPodBuilder" title="WpSpaPodBuilder"><span class="n"><span class="pre">WpSpaPodBuilder</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="n"><span class="pre">gint64</span></span><span class="w"> </span><span class="n"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_builder_add_fd" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Adds a Fd value into the builder. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa pod builder object </p></li>
+<li><p><strong>value</strong> – the Fd value </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_builder_add_rectangle">
+<span class="target" id="group__wpspapod_1gad2fa3fcf8ddd0c7a9243881e5ad220c2"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_builder_add_rectangle</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaPodBuilder" title="WpSpaPodBuilder"><span class="n"><span class="pre">WpSpaPodBuilder</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="n"><span class="pre">guint32</span></span><span class="w"> </span><span class="n"><span class="pre">width</span></span>, <span class="n"><span class="pre">guint32</span></span><span class="w"> </span><span class="n"><span class="pre">height</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_builder_add_rectangle" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Adds the width and height values of a rectangle into the builder. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa pod builder object </p></li>
+<li><p><strong>width</strong> – the width value of the rectangle </p></li>
+<li><p><strong>height</strong> – the height value of the rectangle </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_builder_add_fraction">
+<span class="target" id="group__wpspapod_1ga25dad9e2f4405b7616d4e11105ec1aaa"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_builder_add_fraction</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaPodBuilder" title="WpSpaPodBuilder"><span class="n"><span class="pre">WpSpaPodBuilder</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="n"><span class="pre">guint32</span></span><span class="w"> </span><span class="n"><span class="pre">num</span></span>, <span class="n"><span class="pre">guint32</span></span><span class="w"> </span><span class="n"><span class="pre">denom</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_builder_add_fraction" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Adds the numerator and denominator values of a fraction into the builder. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa pod builder object </p></li>
+<li><p><strong>num</strong> – the numerator value of the fraction </p></li>
+<li><p><strong>denom</strong> – the denominator value of the fraction </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_builder_add_pod">
+<span class="target" id="group__wpspapod_1gad5c9f317a4e2960d107e3b1df7ab3597"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_builder_add_pod</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaPodBuilder" title="WpSpaPodBuilder"><span class="n"><span class="pre">WpSpaPodBuilder</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <a class="reference internal" href="#c.WpSpaPod" title="WpSpaPod"><span class="n"><span class="pre">WpSpaPod</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">pod</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_builder_add_pod" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Adds a pod value into the builder. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa pod builder object </p></li>
+<li><p><strong>pod</strong> – the pod value </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_builder_add_property">
+<span class="target" id="group__wpspapod_1ga977b5cf98a723b81708ec57c787321ed"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_builder_add_property</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaPodBuilder" title="WpSpaPodBuilder"><span class="n"><span class="pre">WpSpaPodBuilder</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">key</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_builder_add_property" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Adds a property into the builder. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa pod builder object </p></li>
+<li><p><strong>key</strong> – the name of the property </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_builder_add_property_id">
+<span class="target" id="group__wpspapod_1ga3d2885399e577a9d966b7c5ebef13b21"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_builder_add_property_id</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaPodBuilder" title="WpSpaPodBuilder"><span class="n"><span class="pre">WpSpaPodBuilder</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="n"><span class="pre">guint32</span></span><span class="w"> </span><span class="n"><span class="pre">id</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_builder_add_property_id" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Adds a property into the builder. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa pod builder object </p></li>
+<li><p><strong>id</strong> – the id of the property </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_builder_add_control">
+<span class="target" id="group__wpspapod_1gaa376d6bdfc5fb820141549b3d0b98f14"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_builder_add_control</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaPodBuilder" title="WpSpaPodBuilder"><span class="n"><span class="pre">WpSpaPodBuilder</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="n"><span class="pre">guint32</span></span><span class="w"> </span><span class="n"><span class="pre">offset</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ctl_type</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_builder_add_control" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Adds a control into the builder. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa pod builder object </p></li>
+<li><p><strong>offset</strong> – the offset of the control </p></li>
+<li><p><strong>ctl_type</strong> – the type name of the control </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_builder_add">
+<span class="target" id="group__wpspapod_1gaed354f6bb9b49c07dde939d3e5d5cf8f"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_builder_add</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaPodBuilder" title="WpSpaPodBuilder"><span class="n"><span class="pre">WpSpaPodBuilder</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="p"><span class="pre">...</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_builder_add" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Adds a list of values into the builder. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa pod builder object </p></li>
+<li><p><strong>...</strong> – a list of additional values, followed by NULL </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_builder_add_valist">
+<span class="target" id="group__wpspapod_1ga7c217ebd37b01cb401f1e842db4eefd3"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_builder_add_valist</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaPodBuilder" title="WpSpaPodBuilder"><span class="n"><span class="pre">WpSpaPodBuilder</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="n"><span class="pre">va_list</span></span><span class="w"> </span><span class="n"><span class="pre">args</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_builder_add_valist" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Adds a list of values into the builder. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa pod builder object </p></li>
+<li><p><strong>args</strong> – the variable arguments passed to <a class="reference internal" href="#group__wpspapod_1gaed354f6bb9b49c07dde939d3e5d5cf8f"><span class="std std-ref">wp_spa_pod_builder_add()</span></a> </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_builder_end">
+<span class="target" id="group__wpspapod_1ga04c688f492e04d0fc80e18bab4141ac3"></span><a class="reference internal" href="#c.WpSpaPod" title="WpSpaPod"><span class="n"><span class="pre">WpSpaPod</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_builder_end</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaPodBuilder" title="WpSpaPodBuilder"><span class="n"><span class="pre">WpSpaPodBuilder</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_builder_end" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Ends the builder process and returns the constructed spa pod object. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa pod builder object </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full): the constructed spa pod object </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_parser_ref">
+<span class="target" id="group__wpspapod_1gaff9b745a0cdb2b0877b01aae8f4827b2"></span><a class="reference internal" href="#c.WpSpaPodParser" title="WpSpaPodParser"><span class="n"><span class="pre">WpSpaPodParser</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_parser_ref</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaPodParser" title="WpSpaPodParser"><span class="n"><span class="pre">WpSpaPodParser</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_parser_ref" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Increases the reference count of a spa pod parser. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – a spa pod sparser object </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full): <em>self</em> with an additional reference count on it </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_parser_unref">
+<span class="target" id="group__wpspapod_1gac49aff326a71c5c10f47b7c3b60ca4df"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_parser_unref</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaPodParser" title="WpSpaPodParser"><span class="n"><span class="pre">WpSpaPodParser</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_parser_unref" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Decreases the reference count on <em>self</em> and frees it when the ref count reaches zero. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – (transfer full): a spa pod parser object </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_parser_new_object">
+<span class="target" id="group__wpspapod_1ga2241f002e62c9c4b83644ad5648ce6f6"></span><a class="reference internal" href="#c.WpSpaPodParser" title="WpSpaPodParser"><span class="n"><span class="pre">WpSpaPodParser</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_parser_new_object</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaPod" title="WpSpaPod"><span class="n"><span class="pre">WpSpaPod</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">pod</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">id_name</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_parser_new_object" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Creates an object spa pod parser. The <em>pod</em> object must be valid for the entire life-cycle of the returned parser. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pod</strong> – the object spa pod to parse </p></li>
+<li><p><strong>id_name</strong> – the Id name of the object </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full): The new spa pod parser </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_parser_new_struct">
+<span class="target" id="group__wpspapod_1ga059c5ffbf2b9ce7ac9a112586a6f2740"></span><a class="reference internal" href="#c.WpSpaPodParser" title="WpSpaPodParser"><span class="n"><span class="pre">WpSpaPodParser</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_parser_new_struct</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaPod" title="WpSpaPod"><span class="n"><span class="pre">WpSpaPod</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">pod</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_parser_new_struct" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Creates an struct spa pod parser. The <em>pod</em> object must be valid for the entire life-cycle of the returned parser. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pod</strong> – the struct spa pod to parse </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full): The new spa pod parser </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_parser_get_boolean">
+<span class="target" id="group__wpspapod_1ga21fe204ccaa54db324363509d72d299a"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_parser_get_boolean</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaPodParser" title="WpSpaPodParser"><span class="n"><span class="pre">WpSpaPodParser</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_parser_get_boolean" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Gets the boolean value from a spa pod parser. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa pod parser object </p></li>
+<li><p><strong>value</strong> – (out): the boolean value </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if the value was obtained, FALSE otherwise </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_parser_get_id">
+<span class="target" id="group__wpspapod_1ga35d16a307e6dd3c30ccd25ca0a8fb366"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_parser_get_id</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaPodParser" title="WpSpaPodParser"><span class="n"><span class="pre">WpSpaPodParser</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="n"><span class="pre">guint32</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_parser_get_id" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Gets the Id value from a spa pod parser object. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa pod parser object </p></li>
+<li><p><strong>value</strong> – (out): the Id value </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if the value was obtained, FALSE otherwise </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_parser_get_int">
+<span class="target" id="group__wpspapod_1gab462f8ca986c73680dffa70cb6e1870d"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_parser_get_int</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaPodParser" title="WpSpaPodParser"><span class="n"><span class="pre">WpSpaPodParser</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="n"><span class="pre">gint32</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_parser_get_int" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Gets the int value from a spa pod parser object. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa pod parser object </p></li>
+<li><p><strong>value</strong> – (out): the int value </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if the value was obtained, FALSE otherwise </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_parser_get_long">
+<span class="target" id="group__wpspapod_1gaefde2db6afcdfc455a953f4c86c678ec"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_parser_get_long</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaPodParser" title="WpSpaPodParser"><span class="n"><span class="pre">WpSpaPodParser</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="n"><span class="pre">gint64</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_parser_get_long" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Gets the long value from a spa pod parser object. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa pod parser object </p></li>
+<li><p><strong>value</strong> – (out): the long value </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if the value was obtained, FALSE otherwise </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_parser_get_float">
+<span class="target" id="group__wpspapod_1ga3cb8e313e33c94ed45480b4921168010"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_parser_get_float</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaPodParser" title="WpSpaPodParser"><span class="n"><span class="pre">WpSpaPodParser</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="kt"><span class="pre">float</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_parser_get_float" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Gets the float value from a spa pod parser object. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa pod parser object </p></li>
+<li><p><strong>value</strong> – (out): the float value </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if the value was obtained, FALSE otherwise </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_parser_get_double">
+<span class="target" id="group__wpspapod_1ga2186675a355af9118d7698615427bd5d"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_parser_get_double</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaPodParser" title="WpSpaPodParser"><span class="n"><span class="pre">WpSpaPodParser</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_parser_get_double" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Gets the double value from a spa pod parser object. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa pod parser object </p></li>
+<li><p><strong>value</strong> – (out): the double value </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if the value was obtained, FALSE otherwise </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_parser_get_string">
+<span class="target" id="group__wpspapod_1gab732d2ac3b1216480a90d941a63ec1f5"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_parser_get_string</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaPodParser" title="WpSpaPodParser"><span class="n"><span class="pre">WpSpaPodParser</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_parser_get_string" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Gets the string value from a spa pod parser object. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa pod parser object </p></li>
+<li><p><strong>value</strong> – (out): the string value </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if the value was obtained, FALSE otherwise </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_parser_get_bytes">
+<span class="target" id="group__wpspapod_1ga5dfc3c9ca805172f1f911be2c93a1b8c"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_parser_get_bytes</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaPodParser" title="WpSpaPodParser"><span class="n"><span class="pre">WpSpaPodParser</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="n"><span class="pre">gconstpointer</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">value</span></span>, <span class="n"><span class="pre">guint32</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">len</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_parser_get_bytes" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Gets the bytes value and its length from a spa pod parser object. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa pod parser object </p></li>
+<li><p><strong>value</strong> – (out): the bytes value </p></li>
+<li><p><strong>len</strong> – (out): the length of the bytes value </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if the value was obtained, FALSE otherwise </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_parser_get_pointer">
+<span class="target" id="group__wpspapod_1ga07725548479f54b70e827f094e199bd8"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_parser_get_pointer</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaPodParser" title="WpSpaPodParser"><span class="n"><span class="pre">WpSpaPodParser</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="n"><span class="pre">gconstpointer</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_parser_get_pointer" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Gets the pointer value and its type name from a spa pod parser object. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa pod parser object </p></li>
+<li><p><strong>value</strong> – (out): the pointer value </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if the value was obtained, FALSE otherwise </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_parser_get_fd">
+<span class="target" id="group__wpspapod_1gaa5aabc13558542e535d73d2890ca292f"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_parser_get_fd</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaPodParser" title="WpSpaPodParser"><span class="n"><span class="pre">WpSpaPodParser</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="n"><span class="pre">gint64</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_parser_get_fd" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Gets the Fd value from a spa pod parser object. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa pod parser object </p></li>
+<li><p><strong>value</strong> – (out): the Fd value </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if the value was obtained, FALSE otherwise </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_parser_get_rectangle">
+<span class="target" id="group__wpspapod_1ga19d92628fa7aeb60410b42767fbd39ce"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_parser_get_rectangle</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaPodParser" title="WpSpaPodParser"><span class="n"><span class="pre">WpSpaPodParser</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="n"><span class="pre">guint32</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">width</span></span>, <span class="n"><span class="pre">guint32</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">height</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_parser_get_rectangle" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Gets the rectangle’s width and height value from a spa pod parser object. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa pod parser object </p></li>
+<li><p><strong>width</strong> – (out): the rectangle’s width value </p></li>
+<li><p><strong>height</strong> – (out): the rectangle’s height value </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if the value was obtained, FALSE otherwise </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_parser_get_fraction">
+<span class="target" id="group__wpspapod_1gaff69599b14289a7315bd9267577f304f"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_parser_get_fraction</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaPodParser" title="WpSpaPodParser"><span class="n"><span class="pre">WpSpaPodParser</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="n"><span class="pre">guint32</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">num</span></span>, <span class="n"><span class="pre">guint32</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">denom</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_parser_get_fraction" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Gets the fractions’s numerator and denominator value from a spa pod parser object. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa pod parser object </p></li>
+<li><p><strong>num</strong> – (out): the fractions’s numerator value </p></li>
+<li><p><strong>denom</strong> – (out): the fractions’s denominator value </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if the value was obtained, FALSE otherwise </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_parser_get_pod">
+<span class="target" id="group__wpspapod_1ga806229559235b21402f1532ac3e03423"></span><a class="reference internal" href="#c.WpSpaPod" title="WpSpaPod"><span class="n"><span class="pre">WpSpaPod</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_parser_get_pod</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaPodParser" title="WpSpaPodParser"><span class="n"><span class="pre">WpSpaPodParser</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_parser_get_pod" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Gets the spa pod value from a spa pod parser object. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa pod parser object </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full): The spa pod value or NULL if it could not be obtained </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_parser_get">
+<span class="target" id="group__wpspapod_1gadb0e0bd82f28415a27febbc66311fc91"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_parser_get</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaPodParser" title="WpSpaPodParser"><span class="n"><span class="pre">WpSpaPodParser</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="p"><span class="pre">...</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_parser_get" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Gets a list of values from a spa pod parser object. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa pod parser object </p></li>
+<li><p><strong>...</strong> – (out): a list of values to get, followed by NULL </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if the values were obtained, FALSE otherwise </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_parser_get_valist">
+<span class="target" id="group__wpspapod_1gab040abcbc9413e0bda7c48d047cbbfce"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_parser_get_valist</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaPodParser" title="WpSpaPodParser"><span class="n"><span class="pre">WpSpaPodParser</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="n"><span class="pre">va_list</span></span><span class="w"> </span><span class="n"><span class="pre">args</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_parser_get_valist" title="Permalink to this definition"></a><br /></dt>
+<dd><p>This is the <code class="docutils literal notranslate"><span class="pre">va_list</span></code> version of <a class="reference internal" href="#group__wpspapod_1gadb0e0bd82f28415a27febbc66311fc91"><span class="std std-ref">wp_spa_pod_parser_get()</span></a> </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa pod parser object </p></li>
+<li><p><strong>args</strong> – the variable arguments passed to <a class="reference internal" href="#group__wpspapod_1gadb0e0bd82f28415a27febbc66311fc91"><span class="std std-ref">wp_spa_pod_parser_get()</span></a> </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if the values were obtained, FALSE otherwise </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_parser_end">
+<span class="target" id="group__wpspapod_1ga92d76ae81f61963d0b708f6ce9ed4e55"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_parser_end</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaPodParser" title="WpSpaPodParser"><span class="n"><span class="pre">WpSpaPodParser</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_parser_end" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Ends the parser process. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the spa pod parser object </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_pod_new_iterator">
+<span class="target" id="group__wpspapod_1gaf487da506cdf30be66cd4b96abaec181"></span><a class="reference internal" href="iterator_api.html#c.WpIterator" title="WpIterator"><span class="n"><span class="pre">WpIterator</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_pod_new_iterator</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSpaPod" title="WpSpaPod"><span class="n"><span class="pre">WpSpaPod</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">pod</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_pod_new_iterator" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Creates a new iterator for a spa pod object. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pod</strong> – a spa pod object </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full): the new spa pod iterator </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.WP_TYPE_SPA_POD">
+<span class="target" id="group__wpspapod_1ga46dc2c92716877b8760fdca3e2d60677"></span><span class="sig-name descname"><span class="n"><span class="pre">WP_TYPE_SPA_POD</span></span></span> <span class="pre">(wp_spa_pod_get_type</span> <span class="pre">())</span><a class="headerlink" href="#c.WP_TYPE_SPA_POD" title="Permalink to this definition"></a><br /></dt>
+<dd><p>The WpSpaPod GType. </p>
+</dd></dl>
+
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.WP_TYPE_SPA_POD_BUILDER">
+<span class="target" id="group__wpspapod_1ga5db108926673aeb6e5b70eaa25a0755f"></span><span class="sig-name descname"><span class="n"><span class="pre">WP_TYPE_SPA_POD_BUILDER</span></span></span> <span class="pre">(wp_spa_pod_builder_get_type</span> <span class="pre">())</span><a class="headerlink" href="#c.WP_TYPE_SPA_POD_BUILDER" title="Permalink to this definition"></a><br /></dt>
+<dd><p>The WpSpaPodBuilder GType. </p>
+</dd></dl>
+
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.WP_TYPE_SPA_POD_PARSER">
+<span class="target" id="group__wpspapod_1gac9dc395c51b80e9a6aa65d9d4e67dc40"></span><span class="sig-name descname"><span class="n"><span class="pre">WP_TYPE_SPA_POD_PARSER</span></span></span> <span class="pre">(wp_spa_pod_parser_get_type</span> <span class="pre">())</span><a class="headerlink" href="#c.WP_TYPE_SPA_POD_PARSER" title="Permalink to this definition"></a><br /></dt>
+<dd><p>The WpSpaPodParser GType. </p>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="spa_json_api.html" class="btn btn-neutral float-left" title="Spa Json" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="plugin_api.html" class="btn btn-neutral float-right" title="Plugins" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Collabora.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

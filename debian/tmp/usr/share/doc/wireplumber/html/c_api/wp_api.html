@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Library Initialization &mdash; WirePlumber 0.4.16 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Core" href="core_api.html" />
+    <link rel="prev" title="C API Documentation" href="../c_api.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> WirePlumber
+          </a>
+              <div class="version">
+                0.4.16
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">The WirePlumber Daemon</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installing-wireplumber.html">Installing WirePlumber</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../running-wireplumber-daemon.html">Running the WirePlumber daemon</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../daemon-logging.html">Debug Logging</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">The WirePlumber Library</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../c_api.html">C API Documentation</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Library Initialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core_api.html">Core</a></li>
+<li class="toctree-l2"><a class="reference internal" href="object_api.html">WpObject</a></li>
+<li class="toctree-l2"><a class="reference internal" href="obj_manager_api.html">Object Manager</a></li>
+<li class="toctree-l2"><a class="reference internal" href="obj_interest_api.html">Object Interest</a></li>
+<li class="toctree-l2"><a class="reference internal" href="iterator_api.html">Iterator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="transitions_api.html">Transitions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wperror_api.html">Error Codes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="log_api.html">Debug Logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="proxy_api.html">PipeWire Proxy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipewire_object_api.html">PipeWire Object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="global_proxy_api.html">PipeWire Global Object Proxy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="node_api.html">PipeWire Node</a></li>
+<li class="toctree-l2"><a class="reference internal" href="port_api.html">PipeWire Port</a></li>
+<li class="toctree-l2"><a class="reference internal" href="link_api.html">PipeWire Link</a></li>
+<li class="toctree-l2"><a class="reference internal" href="device_api.html">PipeWire Device</a></li>
+<li class="toctree-l2"><a class="reference internal" href="client_api.html">PipeWire Client</a></li>
+<li class="toctree-l2"><a class="reference internal" href="metadata_api.html">PipeWire Metadata</a></li>
+<li class="toctree-l2"><a class="reference internal" href="endpoint_api.html">PipeWire Endpoint</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spa_device_api.html">Spa Device</a></li>
+<li class="toctree-l2"><a class="reference internal" href="impl_node_api.html">Local Nodes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="impl_module_api.html">Local Modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="properties_api.html">Properties Dictionary</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spa_type_api.html">Spa Type Information</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spa_json_api.html">Spa Json</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spa_pod_api.html">Spa Pod (Plain Old Data)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plugin_api.html">Plugins</a></li>
+<li class="toctree-l2"><a class="reference internal" href="component_loader_api.html">Component Loader</a></li>
+<li class="toctree-l2"><a class="reference internal" href="session_item_api.html">Session Items</a></li>
+<li class="toctree-l2"><a class="reference internal" href="si_interfaces_api.html">Session Items Interfaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="si_factory_api.html">Session Items Factory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="state_api.html">State Storage</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../lua_api.html">Lua API Documentation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Resources</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing to WirePlumber</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../testing.html">Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../community.html">Community Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Releases</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">WirePlumber</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../c_api.html">C API Documentation</a> &raquo;</li>
+      <li>Library Initialization</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/c_api/wp_api.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="../c_api.html" class="btn btn-neutral float-left" title="C API Documentation" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="core_api.html" class="btn btn-neutral float-right" title="Core" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+  </div>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="library-initialization">
+<span id="wp-api"></span><h1>Library Initialization<a class="headerlink" href="#library-initialization" title="Permalink to this headline"></a></h1>
+<dl class="c enum">
+<dt class="sig sig-object c" id="c.WpInitFlags">
+<span class="target" id="group__wp_1ga556361fb29b317c9c8b29c39fd6b3b94"></span><span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">WpInitFlags</span></span></span><a class="headerlink" href="#c.WpInitFlags" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Flags for <a class="reference internal" href="#group__wp_1gad7843f7640e3cc4775b71c8ada235556"><span class="std std-ref">wp_init()</span></a> </p>
+<p><em>Values:</em></p>
+<dl class="c enumerator">
+<dt class="sig sig-object c" id="c.WpInitFlags.WP_INIT_PIPEWIRE">
+<span class="target" id="group__wp_1gga556361fb29b317c9c8b29c39fd6b3b94ab1836b234d76f8f3b502764e81211f28"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">WP_INIT_PIPEWIRE</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="p"><span class="pre">(</span></span><span class="m"><span class="pre">1</span></span><span class="w"> </span><span class="o"><span class="pre">&lt;&lt;</span></span><span class="w"> </span><span class="m"><span class="pre">0</span></span><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#c.WpInitFlags.WP_INIT_PIPEWIRE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Initialize PipeWire by calling pw_init() </p>
+</dd></dl>
+
+<dl class="c enumerator">
+<dt class="sig sig-object c" id="c.WpInitFlags.WP_INIT_SPA_TYPES">
+<span class="target" id="group__wp_1gga556361fb29b317c9c8b29c39fd6b3b94aee9a78d3f4c65bae2e81e42b21050b23"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">WP_INIT_SPA_TYPES</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="p"><span class="pre">(</span></span><span class="m"><span class="pre">1</span></span><span class="w"> </span><span class="o"><span class="pre">&lt;&lt;</span></span><span class="w"> </span><span class="m"><span class="pre">1</span></span><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#c.WpInitFlags.WP_INIT_SPA_TYPES" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Initialize support for dynamic spa types. See <a class="reference internal" href="spa_type_api.html#group__wpspatype_1gaf413fa7b329f14830f0ccd04ab786a52"><span class="std std-ref">wp_spa_dynamic_type_init()</span></a> </p>
+</dd></dl>
+
+<dl class="c enumerator">
+<dt class="sig sig-object c" id="c.WpInitFlags.WP_INIT_SET_PW_LOG">
+<span class="target" id="group__wp_1gga556361fb29b317c9c8b29c39fd6b3b94a493bbaa1d6447c7650451191396e8b3e"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">WP_INIT_SET_PW_LOG</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="p"><span class="pre">(</span></span><span class="m"><span class="pre">1</span></span><span class="w"> </span><span class="o"><span class="pre">&lt;&lt;</span></span><span class="w"> </span><span class="m"><span class="pre">2</span></span><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#c.WpInitFlags.WP_INIT_SET_PW_LOG" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Override PipeWire’s logging system with WirePlumber’s one </p>
+</dd></dl>
+
+<dl class="c enumerator">
+<dt class="sig sig-object c" id="c.WpInitFlags.WP_INIT_SET_GLIB_LOG">
+<span class="target" id="group__wp_1gga556361fb29b317c9c8b29c39fd6b3b94a941346b2753ed8c8aa4d8c3cf6fa8e33"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">WP_INIT_SET_GLIB_LOG</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="p"><span class="pre">(</span></span><span class="m"><span class="pre">1</span></span><span class="w"> </span><span class="o"><span class="pre">&lt;&lt;</span></span><span class="w"> </span><span class="m"><span class="pre">3</span></span><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#c.WpInitFlags.WP_INIT_SET_GLIB_LOG" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Set <a class="reference internal" href="log_api.html#group__wplog_1ga15cbc6e3faad3898ed750dd2e8e0b54b"><span class="std std-ref">wp_log_writer_default()</span></a> as GLib’s default log writer function </p>
+</dd></dl>
+
+<dl class="c enumerator">
+<dt class="sig sig-object c" id="c.WpInitFlags.WP_INIT_ALL">
+<span class="target" id="group__wp_1gga556361fb29b317c9c8b29c39fd6b3b94a4449d85dda3de4801ca376755cba9dff"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">WP_INIT_ALL</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">0xf</span></span><a class="headerlink" href="#c.WpInitFlags.WP_INIT_ALL" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Initialize all of the above </p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="c enum">
+<dt class="sig sig-object c" id="c.WpLookupDirs">
+<span class="target" id="group__wp_1ga54f94b818b6a359bd6b616859706a8c5"></span><span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">WpLookupDirs</span></span></span><a class="headerlink" href="#c.WpLookupDirs" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Flags to specify lookup directories. </p>
+<p><em>Values:</em></p>
+<dl class="c enumerator">
+<dt class="sig sig-object c" id="c.WpLookupDirs.WP_LOOKUP_DIR_ENV_CONFIG">
+<span class="target" id="group__wp_1gga54f94b818b6a359bd6b616859706a8c5a6d0f7df18e853355cfd4662a3ba723aa"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">WP_LOOKUP_DIR_ENV_CONFIG</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="p"><span class="pre">(</span></span><span class="m"><span class="pre">1</span></span><span class="w"> </span><span class="o"><span class="pre">&lt;&lt;</span></span><span class="w"> </span><span class="m"><span class="pre">0</span></span><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#c.WpLookupDirs.WP_LOOKUP_DIR_ENV_CONFIG" title="Permalink to this definition"></a><br /></dt>
+<dd><p>$WIREPLUMBER_CONFIG_DIR </p>
+</dd></dl>
+
+<dl class="c enumerator">
+<dt class="sig sig-object c" id="c.WpLookupDirs.WP_LOOKUP_DIR_ENV_DATA">
+<span class="target" id="group__wp_1gga54f94b818b6a359bd6b616859706a8c5a889914f7d667efa94e13ad7ffe839b9c"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">WP_LOOKUP_DIR_ENV_DATA</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="p"><span class="pre">(</span></span><span class="m"><span class="pre">1</span></span><span class="w"> </span><span class="o"><span class="pre">&lt;&lt;</span></span><span class="w"> </span><span class="m"><span class="pre">1</span></span><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#c.WpLookupDirs.WP_LOOKUP_DIR_ENV_DATA" title="Permalink to this definition"></a><br /></dt>
+<dd><p>$WIREPLUMBER_DATA_DIR </p>
+</dd></dl>
+
+<dl class="c enumerator">
+<dt class="sig sig-object c" id="c.WpLookupDirs.WP_LOOKUP_DIR_XDG_CONFIG_HOME">
+<span class="target" id="group__wp_1gga54f94b818b6a359bd6b616859706a8c5ad63af19f5bcd2ce6e91cdf04712d1882"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">WP_LOOKUP_DIR_XDG_CONFIG_HOME</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="p"><span class="pre">(</span></span><span class="m"><span class="pre">1</span></span><span class="w"> </span><span class="o"><span class="pre">&lt;&lt;</span></span><span class="w"> </span><span class="m"><span class="pre">10</span></span><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#c.WpLookupDirs.WP_LOOKUP_DIR_XDG_CONFIG_HOME" title="Permalink to this definition"></a><br /></dt>
+<dd><p>XDG_CONFIG_HOME/wireplumber </p>
+</dd></dl>
+
+<dl class="c enumerator">
+<dt class="sig sig-object c" id="c.WpLookupDirs.WP_LOOKUP_DIR_ETC">
+<span class="target" id="group__wp_1gga54f94b818b6a359bd6b616859706a8c5a15244a42a356ff1887029a7e860e73f1"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">WP_LOOKUP_DIR_ETC</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="p"><span class="pre">(</span></span><span class="m"><span class="pre">1</span></span><span class="w"> </span><span class="o"><span class="pre">&lt;&lt;</span></span><span class="w"> </span><span class="m"><span class="pre">11</span></span><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#c.WpLookupDirs.WP_LOOKUP_DIR_ETC" title="Permalink to this definition"></a><br /></dt>
+<dd><p>($prefix)/etc/wireplumber </p>
+</dd></dl>
+
+<dl class="c enumerator">
+<dt class="sig sig-object c" id="c.WpLookupDirs.WP_LOOKUP_DIR_PREFIX_SHARE">
+<span class="target" id="group__wp_1gga54f94b818b6a359bd6b616859706a8c5a75e35bf9a3faf071d441a2d151bb22e0"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">WP_LOOKUP_DIR_PREFIX_SHARE</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="p"><span class="pre">(</span></span><span class="m"><span class="pre">1</span></span><span class="w"> </span><span class="o"><span class="pre">&lt;&lt;</span></span><span class="w"> </span><span class="m"><span class="pre">12</span></span><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#c.WpLookupDirs.WP_LOOKUP_DIR_PREFIX_SHARE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>$prefix/share/wireplumber </p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_init">
+<span class="target" id="group__wp_1gad7843f7640e3cc4775b71c8ada235556"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_init</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpInitFlags" title="WpInitFlags"><span class="n"><span class="pre">WpInitFlags</span></span></a><span class="w"> </span><span class="n"><span class="pre">flags</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_init" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Initializes WirePlumber and PipeWire underneath. </p>
+<p><em>flags</em> can modify which parts are initialized, in cases where you want to handle part of this initialization externally.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>flags</strong> – initialization flags </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_get_library_version">
+<span class="target" id="group__wp_1ga8300f5213b77c791abb90a481c22e458"></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_get_library_version</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_get_library_version" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Gets the WirePlumber library version. </p>
+<p><dl class="simple">
+<dt><strong>Since</strong></dt><dd><p>0.4.12 </p>
+</dd>
+</dl>
+</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>WirePlumber library version</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_get_library_api_version">
+<span class="target" id="group__wp_1ga95897ef325f92266138106c53e943f87"></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_get_library_api_version</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_get_library_api_version" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Gets the WirePlumber library API version. </p>
+<p><dl class="simple">
+<dt><strong>Since</strong></dt><dd><p>0.4.12 </p>
+</dd>
+</dl>
+</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>WirePlumber library API version</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_get_module_dir">
+<span class="target" id="group__wp_1ga705542ff2716c9c653e481345eb27cd4"></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">gchar</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_get_module_dir</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_get_module_dir" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Gets the WirePlumber module directory. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>WirePlumber’s module directory </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_get_config_dir">
+<span class="target" id="group__wp_1ga51ca3f0591d0762b1d54456e1c8372b7"></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">gchar</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_get_config_dir</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_get_config_dir" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Gets the full path to the WirePlumber configuration directory. </p>
+<p><dl>
+<dt class="sig sig-object cpp">
+<em><span class="pre">Deprecated:</span></em></dt>
+<dd><p>Use <a class="reference internal" href="#group__wp_1ga0399888bcb19f0dc20206fa20130f29a"><span class="std std-ref">wp_find_file()</span></a> instead </p>
+</dd></dl>
+
+</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The WirePlumber configuration directory </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_get_data_dir">
+<span class="target" id="group__wp_1gab4705b9b490dcd0891e7b7e1be4c1b26"></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">gchar</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_get_data_dir</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_get_data_dir" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Gets full path to the WirePlumber data directory. </p>
+<p><dl>
+<dt class="sig sig-object cpp">
+<em><span class="pre">Deprecated:</span></em></dt>
+<dd><p>Use <a class="reference internal" href="#group__wp_1ga0399888bcb19f0dc20206fa20130f29a"><span class="std std-ref">wp_find_file()</span></a> instead </p>
+</dd></dl>
+
+</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The WirePlumber data directory </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_find_file">
+<span class="target" id="group__wp_1ga0399888bcb19f0dc20206fa20130f29a"></span><span class="n"><span class="pre">gchar</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_find_file</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpLookupDirs" title="WpLookupDirs"><span class="n"><span class="pre">WpLookupDirs</span></span></a><span class="w"> </span><span class="n"><span class="pre">dirs</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">gchar</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">filename</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">subdir</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_find_file" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Returns the full path of <em>filename</em> as found in the hierarchy of configuration and data directories. </p>
+<p><dl class="simple">
+<dt><strong>Since</strong></dt><dd><p>0.4.2 </p>
+</dd>
+</dl>
+</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dirs</strong> – the directories to look into </p></li>
+<li><p><strong>filename</strong> – the name of the file to search for </p></li>
+<li><p><strong>subdir</strong> – (nullable): the name of the subdirectory to search in, inside the configuration directories </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full): An allocated string with the configuration file path or NULL if the file was not found. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_new_files_iterator">
+<span class="target" id="group__wp_1gafbc78401967984fc0bf4faa3b8dd6908"></span><a class="reference internal" href="iterator_api.html#c.WpIterator" title="WpIterator"><span class="n"><span class="pre">WpIterator</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_new_files_iterator</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpLookupDirs" title="WpLookupDirs"><span class="n"><span class="pre">WpLookupDirs</span></span></a><span class="w"> </span><span class="n"><span class="pre">dirs</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">gchar</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">subdir</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">gchar</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">suffix</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_new_files_iterator" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Creates an iterator to iterate over configuration files in the <em>subdir</em> of the configuration directories. </p>
+<p>Files are sorted across the hierarchy of configuration and data directories with files in higher-priority directories shadowing files in lower-priority directories. Files are only checked for existence, a caller must be able to handle read errors.</p>
+<p><dl class="simple">
+<dt><strong>Since</strong></dt><dd><p>0.4.2 </p>
+</dd>
+</dl>
+</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>the iterator may contain directories too; it is the responsibility of the caller to ignore or recurse into those.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dirs</strong> – the directories to look into </p></li>
+<li><p><strong>subdir</strong> – (nullable): the name of the subdirectory to search in, inside the configuration directories </p></li>
+<li><p><strong>suffix</strong> – (nullable): The filename suffix, NULL matches all entries </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full): a new iterator iterating over strings which are absolute paths to the configuration files found </p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../c_api.html" class="btn btn-neutral float-left" title="C API Documentation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="core_api.html" class="btn btn-neutral float-right" title="Core" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Collabora.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

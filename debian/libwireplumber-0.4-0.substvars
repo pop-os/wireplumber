@@ -1,0 +1,3 @@
+shlibs:Depends=libc6 (>= 2.33), libglib2.0-0 (>= 2.62), liblua5.4-0 (>= 5.4.4), libpipewire-0.3-0 (>= 0.3.52), libsystemd0, libwireplumber-0.4-0 (>= 0.4.16)
+misc:Depends=
+misc:Pre-Depends=

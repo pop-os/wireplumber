@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WirePlumber &mdash; WirePlumber 0.4.16 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Installing WirePlumber" href="installing-wireplumber.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="#" class="icon icon-home"> WirePlumber
+          </a>
+              <div class="version">
+                0.4.16
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">The WirePlumber Daemon</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="installing-wireplumber.html">Installing WirePlumber</a></li>
+<li class="toctree-l1"><a class="reference internal" href="running-wireplumber-daemon.html">Running the WirePlumber daemon</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="daemon-logging.html">Debug Logging</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">The WirePlumber Library</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="c_api.html">C API Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lua_api.html">Lua API Documentation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Resources</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing to WirePlumber</a></li>
+<li class="toctree-l1"><a class="reference internal" href="testing.html">Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="community.html">Community Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="releases.html">Releases</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">WirePlumber</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="#" class="icon icon-home"></a> &raquo;</li>
+      <li>WirePlumber</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="installing-wireplumber.html" class="btn btn-neutral float-right" title="Installing WirePlumber" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+  </div>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="wireplumber">
+<h1>WirePlumber<a class="headerlink" href="#wireplumber" title="Permalink to this headline"></a></h1>
+<img alt="Pipeline status" src="https://gitlab.freedesktop.org/pipewire/wireplumber/badges/master/pipeline.svg" /><img alt="Coverity Scan Build Status" src="https://scan.coverity.com/projects/21488/badge.svg" /><img alt="Lines of code" src="https://img.shields.io/tokei/lines/gitlab.freedesktop.org/pipewire/wireplumber" />
+<img alt="License" src="https://img.shields.io/badge/license-MIT-green" />
+<img alt="Tag" src="https://img.shields.io/badge/dynamic/json?color=informational&amp;label=tag&amp;query=%24%5B0%5D.name&amp;url=https%3A%2F%2Fgitlab.freedesktop.org%2Fapi%2Fv4%2Fprojects%2F2941%2Frepository%2Ftags" />
+<p>WirePlumber is a modular session / policy manager for
+<a class="reference external" href="https://pipewire.org">PipeWire</a> and a GObject-based high-level library
+that wraps PipeWire’s API, providing convenience for writing the daemon’s
+modules as well as external tools for managing PipeWire.</p>
+<p>The WirePlumber daemon implements the session &amp; policy management service.
+It follows a modular design, having plugins that implement the actual
+management functionality.</p>
+<p>The WirePlumber Library provides API that allows you to extend the WirePlumber
+daemon, to write management or status tools for PipeWire
+(apps that don’t do actual media streaming) and to write custom session managers
+for embedded devices.</p>
+<section id="documentation">
+<h2>Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline"></a></h2>
+<p>The latest version of the documentation is available online
+<a class="reference external" href="https://pipewire.pages.freedesktop.org/wireplumber/">here</a></p>
+</section>
+</section>
+<section id="table-of-contents">
+<h1>Table of Contents<a class="headerlink" href="#table-of-contents" title="Permalink to this headline"></a></h1>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">The WirePlumber Daemon</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="installing-wireplumber.html">Installing WirePlumber</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="installing-wireplumber.html#dependencies">Dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installing-wireplumber.html#compilation">Compilation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installing-wireplumber.html#additional-options">Additional options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installing-wireplumber.html#installation">Installation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="running-wireplumber-daemon.html">Running the WirePlumber daemon</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="running-wireplumber-daemon.html#systemd">Systemd</a></li>
+<li class="toctree-l2"><a class="reference internal" href="running-wireplumber-daemon.html#run-from-the-pipewire-source-tree">Run from the PipeWire source tree</a></li>
+<li class="toctree-l2"><a class="reference internal" href="running-wireplumber-daemon.html#run-independently-or-without-installing">Run independently or without installing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="running-wireplumber-daemon.html#replacing-pipewire-media-session">Replacing pipewire-media-session</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="configuration/locations.html">Locations of files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="configuration/main.html">Main configuration file</a></li>
+<li class="toctree-l2"><a class="reference internal" href="configuration/config_lua.html">Lua Configuration Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="configuration/multi_instance.html">Running multiple instances</a></li>
+<li class="toctree-l2"><a class="reference internal" href="configuration/alsa.html">ALSA configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="configuration/bluetooth.html">Bluetooth configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="configuration/policy.html">Policy Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="configuration/access.html">Access configuration</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="daemon-logging.html">Debug Logging</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="daemon-logging.html#examples">Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="daemon-logging.html#relationship-with-the-glib-log-handler-g-messages-debug">Relationship with the GLib log handler &amp; G_MESSAGES_DEBUG</a></li>
+<li class="toctree-l2"><a class="reference internal" href="daemon-logging.html#relationship-with-the-pipewire-log-handler-pipewire-debug">Relationship with the PipeWire log handler &amp; PIPEWIRE_DEBUG</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">The WirePlumber Library</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="c_api.html">C API Documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="c_api/wp_api.html">Library Initialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="c_api/core_api.html">Core</a></li>
+<li class="toctree-l2"><a class="reference internal" href="c_api/object_api.html">WpObject</a></li>
+<li class="toctree-l2"><a class="reference internal" href="c_api/obj_manager_api.html">Object Manager</a></li>
+<li class="toctree-l2"><a class="reference internal" href="c_api/obj_interest_api.html">Object Interest</a></li>
+<li class="toctree-l2"><a class="reference internal" href="c_api/iterator_api.html">Iterator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="c_api/transitions_api.html">Transitions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="c_api/wperror_api.html">Error Codes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="c_api/log_api.html">Debug Logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="c_api/proxy_api.html">PipeWire Proxy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="c_api/pipewire_object_api.html">PipeWire Object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="c_api/global_proxy_api.html">PipeWire Global Object Proxy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="c_api/node_api.html">PipeWire Node</a></li>
+<li class="toctree-l2"><a class="reference internal" href="c_api/port_api.html">PipeWire Port</a></li>
+<li class="toctree-l2"><a class="reference internal" href="c_api/link_api.html">PipeWire Link</a></li>
+<li class="toctree-l2"><a class="reference internal" href="c_api/device_api.html">PipeWire Device</a></li>
+<li class="toctree-l2"><a class="reference internal" href="c_api/client_api.html">PipeWire Client</a></li>
+<li class="toctree-l2"><a class="reference internal" href="c_api/metadata_api.html">PipeWire Metadata</a></li>
+<li class="toctree-l2"><a class="reference internal" href="c_api/endpoint_api.html">PipeWire Endpoint</a></li>
+<li class="toctree-l2"><a class="reference internal" href="c_api/spa_device_api.html">Spa Device</a></li>
+<li class="toctree-l2"><a class="reference internal" href="c_api/impl_node_api.html">Local Nodes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="c_api/impl_module_api.html">Local Modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="c_api/properties_api.html">Properties Dictionary</a></li>
+<li class="toctree-l2"><a class="reference internal" href="c_api/spa_type_api.html">Spa Type Information</a></li>
+<li class="toctree-l2"><a class="reference internal" href="c_api/spa_json_api.html">Spa Json</a></li>
+<li class="toctree-l2"><a class="reference internal" href="c_api/spa_pod_api.html">Spa Pod (Plain Old Data)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="c_api/plugin_api.html">Plugins</a></li>
+<li class="toctree-l2"><a class="reference internal" href="c_api/component_loader_api.html">Component Loader</a></li>
+<li class="toctree-l2"><a class="reference internal" href="c_api/session_item_api.html">Session Items</a></li>
+<li class="toctree-l2"><a class="reference internal" href="c_api/si_interfaces_api.html">Session Items Interfaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="c_api/si_factory_api.html">Session Items Factory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="c_api/state_api.html">State Storage</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="lua_api.html">Lua API Documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="lua_api/lua_introduction.html">Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lua_api/lua_gobject.html">GObject Integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lua_api/lua_core_api.html">Core</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lua_api/lua_log_api.html">Debug Logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lua_api/lua_object_api.html">WpObject</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lua_api/lua_object_manager_api.html">Object Manager</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lua_api/lua_object_interest_api.html">Object Interest</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lua_api/lua_proxies_api.html">PipeWire Proxies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lua_api/lua_session_item_api.html">Session Item</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lua_api/lua_spa_device_api.html">Spa Device</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lua_api/lua_spa_pod.html">Spa Pod</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lua_api/lua_local_module_api.html">Local Modules</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Resources</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing to WirePlumber</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="contributing.html#coding-style">Coding style</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contributing.html#tests">Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contributing.html#running-in-gdb-valgrind-etc">Running in gdb / valgrind / etc…</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contributing.html#merge-requests">Merge requests</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="testing.html">Testing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="testing.html#automated-unit-tests">Automated unit tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="testing.html#wireplumber-examples">WirePlumber examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="testing.html#native-api-clients">Native API clients</a></li>
+<li class="toctree-l2"><a class="reference internal" href="testing.html#pulseaudio-compat-api-clients">PulseAudio compat API clients</a></li>
+<li class="toctree-l2"><a class="reference internal" href="testing.html#alsa-compat-api-clients">ALSA compat API clients</a></li>
+<li class="toctree-l2"><a class="reference internal" href="testing.html#jack-compat-api-clients">JACK compat API clients</a></li>
+<li class="toctree-l2"><a class="reference internal" href="testing.html#device-reservation">Device Reservation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="community.html">Community Resources</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="community.html#discussion-chat-room">Discussion chat room</a></li>
+<li class="toctree-l2"><a class="reference internal" href="community.html#mailing-list">Mailing list</a></li>
+<li class="toctree-l2"><a class="reference internal" href="community.html#reporting-issues">Reporting issues</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="releases.html">Releases</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="releases.html#wireplumber-0-4-16">WirePlumber 0.4.16</a></li>
+<li class="toctree-l2"><a class="reference internal" href="releases.html#past-releases">Past releases</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="installing-wireplumber.html" class="btn btn-neutral float-right" title="Installing WirePlumber" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Collabora.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

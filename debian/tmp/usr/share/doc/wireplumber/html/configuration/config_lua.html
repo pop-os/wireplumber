@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lua Configuration Files &mdash; WirePlumber 0.4.16 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Running multiple instances" href="multi_instance.html" />
+    <link rel="prev" title="Main configuration file" href="main.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> WirePlumber
+          </a>
+              <div class="version">
+                0.4.16
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">The WirePlumber Daemon</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installing-wireplumber.html">Installing WirePlumber</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../running-wireplumber-daemon.html">Running the WirePlumber daemon</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../configuration.html">Configuration</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="locations.html">Locations of files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="main.html">Main configuration file</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Lua Configuration Files</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#split-file-configuration">Split-File Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#multi-path-merging">Multi-Path Merging</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#functions">Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="multi_instance.html">Running multiple instances</a></li>
+<li class="toctree-l2"><a class="reference internal" href="alsa.html">ALSA configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bluetooth.html">Bluetooth configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="policy.html">Policy Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="access.html">Access configuration</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../daemon-logging.html">Debug Logging</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">The WirePlumber Library</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../c_api.html">C API Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../lua_api.html">Lua API Documentation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Resources</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing to WirePlumber</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../testing.html">Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../community.html">Community Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Releases</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">WirePlumber</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../configuration.html">Configuration</a> &raquo;</li>
+      <li>Lua Configuration Files</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/configuration/config_lua.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="main.html" class="btn btn-neutral float-left" title="Main configuration file" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="multi_instance.html" class="btn btn-neutral float-right" title="Running multiple instances" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+  </div>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="lua-configuration-files">
+<span id="config-lua"></span><h1>Lua Configuration Files<a class="headerlink" href="#lua-configuration-files" title="Permalink to this headline"></a></h1>
+<p>Lua configuration files are similar to the main configuration file, but they
+leverage the Lua language to enable advanced configuration of module arguments
+and allow split-file configuration.</p>
+<p>There is only one global section that WirePlumber reads from these files: the
+<strong>components</strong> table. This table is equivalent to the <strong>context.components</strong>
+object on the main configuration file. Its purpose is to list components that
+WirePlumber should load on startup.</p>
+<p>Every line on the <strong>components</strong> table should be another table that contains
+information about the loaded component:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="s2">&quot;component-name&quot;</span><span class="p">,</span>
+  <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;component-type&quot;</span><span class="p">,</span>
+  <span class="n">args</span> <span class="o">=</span> <span class="p">{</span> <span class="n">additional</span> <span class="n">arguments</span> <span class="p">},</span>
+  <span class="n">optional</span> <span class="o">=</span> <span class="n">true</span><span class="o">/</span><span class="n">false</span><span class="p">,</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><strong>component-name</strong>: Should be the name of the component to load
+(ex. <em>“libwireplumber-module-mixer-api”</em>).</p></li>
+<li><p><strong>component-type</strong>: Should be the type of the component.
+Valid component types include:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">module</span></code>: A WirePlumber shared object module.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">script/lua</span></code>: A WirePlumber Lua script.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pw_module</span></code>: A PipeWire shared object module (loaded on WirePlumber,
+not on the PipeWire daemon).</p></li>
+</ul>
+</li>
+<li><p><strong>args</strong>: Is an optional table that can contain additional arguments to be
+passed down to the module or script. Scripts can retrieve these arguments
+by declaring a line that reads <code class="docutils literal notranslate"><span class="pre">local</span> <span class="pre">config</span> <span class="pre">=</span> <span class="pre">...</span></code> at the top of the script.
+Modules receive these arguments as a GVariant <code class="docutils literal notranslate"><span class="pre">a{sv}</span></code> table.</p></li>
+<li><p><strong>optional</strong>: Is a boolean value that specifies whether loading of this
+component is optional. The default value is <code class="docutils literal notranslate"><span class="pre">false</span></code>. If set to <code class="docutils literal notranslate"><span class="pre">true</span></code>,
+then WirePlumber will not fail loading if the component is not found.</p></li>
+</ul>
+<section id="split-file-configuration">
+<h2>Split-File Configuration<a class="headerlink" href="#split-file-configuration" title="Permalink to this headline"></a></h2>
+<p>When a Lua configuration file is loaded, the engine also looks for additional
+files in a directory that has the same name as the configuration file and a
+<code class="docutils literal notranslate"><span class="pre">.d</span></code> suffix.</p>
+<p>A Lua directory can contain a list of Lua configuration files. Those files are
+loaded alphabetically by filename so that user can control the order in which
+Lua configuration files are executed.</p>
+<p>Lua files in the directory are always loaded <em>after</em> the configuration file
+that is out of the directory. However, it is perfectly valid to not have any
+configuration file out of the directory.</p>
+<p>Example hierarchy with files both in and out of the directory
+(in the order of loading):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">config</span><span class="o">.</span><span class="n">lua</span>
+<span class="n">config</span><span class="o">.</span><span class="n">lua</span><span class="o">.</span><span class="n">d</span><span class="o">/</span><span class="mi">00</span><span class="o">-</span><span class="n">functions</span><span class="o">.</span><span class="n">lua</span>
+<span class="n">config</span><span class="o">.</span><span class="n">lua</span><span class="o">.</span><span class="n">d</span><span class="o">/</span><span class="mi">01</span><span class="o">-</span><span class="n">alsa</span><span class="o">.</span><span class="n">lua</span>
+<span class="n">config</span><span class="o">.</span><span class="n">lua</span><span class="o">.</span><span class="n">d</span><span class="o">/</span><span class="mi">10</span><span class="o">-</span><span class="n">policy</span><span class="o">.</span><span class="n">lua</span>
+<span class="n">config</span><span class="o">.</span><span class="n">lua</span><span class="o">.</span><span class="n">d</span><span class="o">/</span><span class="mi">99</span><span class="o">-</span><span class="n">misc</span><span class="o">.</span><span class="n">lua</span>
+</pre></div>
+</div>
+<p>Example hierarchy with files only in the directory
+(in the order of loading):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">config</span><span class="o">.</span><span class="n">lua</span><span class="o">.</span><span class="n">d</span><span class="o">/</span><span class="mi">00</span><span class="o">-</span><span class="n">functions</span><span class="o">.</span><span class="n">lua</span>
+<span class="n">config</span><span class="o">.</span><span class="n">lua</span><span class="o">.</span><span class="n">d</span><span class="o">/</span><span class="mi">01</span><span class="o">-</span><span class="n">alsa</span><span class="o">.</span><span class="n">lua</span>
+<span class="n">config</span><span class="o">.</span><span class="n">lua</span><span class="o">.</span><span class="n">d</span><span class="o">/</span><span class="mi">10</span><span class="o">-</span><span class="n">policy</span><span class="o">.</span><span class="n">lua</span>
+<span class="n">config</span><span class="o">.</span><span class="n">lua</span><span class="o">.</span><span class="n">d</span><span class="o">/</span><span class="mi">99</span><span class="o">-</span><span class="n">misc</span><span class="o">.</span><span class="n">lua</span>
+</pre></div>
+</div>
+<p>Example of a file using alsa_monitor.rules in a split-file configuration:</p>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="nb">table.insert</span> <span class="p">(</span><span class="n">alsa_monitor</span><span class="p">.</span><span class="n">rules</span><span class="p">,</span> <span class="p">{</span>
+  <span class="n">matches</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="p">{</span>
+      <span class="p">{</span> <span class="s2">&quot;device.name&quot;</span><span class="p">,</span> <span class="s2">&quot;matches&quot;</span><span class="p">,</span> <span class="s2">&quot;alsa_card.*&quot;</span> <span class="p">},</span>
+    <span class="p">},</span>
+  <span class="p">},</span>
+  <span class="n">apply_properties</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="p">[</span><span class="s2">&quot;api.alsa.use-acp&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">true</span><span class="p">,</span>
+  <span class="p">}</span>
+<span class="p">})</span>
+</pre></div>
+</div>
+</section>
+<section id="multi-path-merging">
+<h2>Multi-Path Merging<a class="headerlink" href="#multi-path-merging" title="Permalink to this headline"></a></h2>
+<p>WirePlumber looks for configuration files in 3 different places, as described
+in the <a class="reference internal" href="locations.html#config-locations"><span class="std std-ref">Locations of files</span></a> section. When a split-file
+configuration scheme is used, files will be merged from these different locations.</p>
+<p>For example, consider these files exist on the filesystem:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">share</span><span class="o">/</span><span class="n">wireplumber</span><span class="o">/</span><span class="n">config</span><span class="o">.</span><span class="n">lua</span><span class="o">.</span><span class="n">d</span><span class="o">/</span><span class="mi">00</span><span class="o">-</span><span class="n">functions</span><span class="o">.</span><span class="n">lua</span>
+<span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">share</span><span class="o">/</span><span class="n">wireplumber</span><span class="o">/</span><span class="n">config</span><span class="o">.</span><span class="n">lua</span><span class="o">.</span><span class="n">d</span><span class="o">/</span><span class="mi">01</span><span class="o">-</span><span class="n">alsa</span><span class="o">.</span><span class="n">lua</span>
+<span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">share</span><span class="o">/</span><span class="n">wireplumber</span><span class="o">/</span><span class="n">config</span><span class="o">.</span><span class="n">lua</span><span class="o">.</span><span class="n">d</span><span class="o">/</span><span class="mi">10</span><span class="o">-</span><span class="n">policy</span><span class="o">.</span><span class="n">lua</span>
+<span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">share</span><span class="o">/</span><span class="n">wireplumber</span><span class="o">/</span><span class="n">config</span><span class="o">.</span><span class="n">lua</span><span class="o">.</span><span class="n">d</span><span class="o">/</span><span class="mi">99</span><span class="o">-</span><span class="n">misc</span><span class="o">.</span><span class="n">lua</span>
+<span class="o">...</span>
+<span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">wireplumber</span><span class="o">/</span><span class="n">config</span><span class="o">.</span><span class="n">lua</span><span class="o">.</span><span class="n">d</span><span class="o">/</span><span class="mi">01</span><span class="o">-</span><span class="n">alsa</span><span class="o">.</span><span class="n">lua</span>
+<span class="o">...</span>
+<span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">user</span><span class="o">/.</span><span class="n">config</span><span class="o">/</span><span class="n">wireplumber</span><span class="o">/</span><span class="n">config</span><span class="o">.</span><span class="n">lua</span><span class="o">.</span><span class="n">d</span><span class="o">/</span><span class="mi">11</span><span class="o">-</span><span class="n">policy</span><span class="o">-</span><span class="n">extras</span><span class="o">.</span><span class="n">lua</span>
+</pre></div>
+</div>
+<p>In this case, loading <code class="docutils literal notranslate"><span class="pre">config.lua</span></code> will result in loading these files
+(in this order):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">share</span><span class="o">/</span><span class="n">wireplumber</span><span class="o">/</span><span class="n">config</span><span class="o">.</span><span class="n">lua</span><span class="o">.</span><span class="n">d</span><span class="o">/</span><span class="mi">00</span><span class="o">-</span><span class="n">functions</span><span class="o">.</span><span class="n">lua</span>
+<span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">wireplumber</span><span class="o">/</span><span class="n">config</span><span class="o">.</span><span class="n">lua</span><span class="o">.</span><span class="n">d</span><span class="o">/</span><span class="mi">01</span><span class="o">-</span><span class="n">alsa</span><span class="o">.</span><span class="n">lua</span>
+<span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">share</span><span class="o">/</span><span class="n">wireplumber</span><span class="o">/</span><span class="n">config</span><span class="o">.</span><span class="n">lua</span><span class="o">.</span><span class="n">d</span><span class="o">/</span><span class="mi">10</span><span class="o">-</span><span class="n">policy</span><span class="o">.</span><span class="n">lua</span>
+<span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">user</span><span class="o">/.</span><span class="n">config</span><span class="o">/</span><span class="n">wireplumber</span><span class="o">/</span><span class="n">config</span><span class="o">.</span><span class="n">lua</span><span class="o">.</span><span class="n">d</span><span class="o">/</span><span class="mi">11</span><span class="o">-</span><span class="n">policy</span><span class="o">-</span><span class="n">extras</span><span class="o">.</span><span class="n">lua</span>
+<span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">share</span><span class="o">/</span><span class="n">wireplumber</span><span class="o">/</span><span class="n">config</span><span class="o">.</span><span class="n">lua</span><span class="o">.</span><span class="n">d</span><span class="o">/</span><span class="mi">99</span><span class="o">-</span><span class="n">misc</span><span class="o">.</span><span class="n">lua</span>
+</pre></div>
+</div>
+<p>This is useful to keep the default configuration in /usr and override it
+with host-specific and user-specific parts in /etc and /home respectively.</p>
+<p>As an exception to this rule, if the configuration path is overridden with
+the <code class="docutils literal notranslate"><span class="pre">WIREPLUMBER_CONFIG_DIR</span></code> environment variable, then configuration files
+will only be loaded from this path and no merging will happen.</p>
+</section>
+<section id="functions">
+<h2>Functions<a class="headerlink" href="#functions" title="Permalink to this headline"></a></h2>
+<p>Because of the nature of these files (they are scripts!), it is more convenient
+to manage the <strong>components</strong> table through functions. In the default
+configuration files shipped with WirePlumber, there is a file called
+<code class="docutils literal notranslate"><span class="pre">00-functions.lua</span></code> that defines some helper functions to load components.</p>
+<p>When loading components through these functions, <em>duplicate calls are ignored</em>,
+so it is possible to call a function to load a specific component multiple times
+and it will only be loaded once.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="load_module">
+<span class="sig-name descname"><span class="pre">load_module</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">module</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#load_module" title="Permalink to this definition"></a></dt>
+<dd><p>Loads a WirePlumber shared object module.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>module</strong> (<em>string</em>) – the module name, without the “libwireplumber-module-”
+prefix (ex specify “mixer-api” to load “libwireplumber-module-mixer-api”)</p></li>
+<li><p><strong>args</strong> (<em>table</em>) – optional module arguments table</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="load_optional_module">
+<span class="sig-name descname"><span class="pre">load_optional_module</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">module</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#load_optional_module" title="Permalink to this definition"></a></dt>
+<dd><p>Loads an optional WirePlumber shared object module. Optional in this case
+means that if the module is not present on the filesystem, it will be ignored.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>module</strong> (<em>string</em>) – the module name, without the “libwireplumber-module-”
+prefix (ex specify “mixer-api” to load “libwireplumber-module-mixer-api”)</p></li>
+<li><p><strong>args</strong> (<em>table</em>) – optional module arguments table</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="load_pw_module">
+<span class="sig-name descname"><span class="pre">load_pw_module</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">module</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#load_pw_module" title="Permalink to this definition"></a></dt>
+<dd><p>Loads a PipeWire shared object module</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>module</strong> (<em>string</em>) – the module name, without the “libpipewire-module-”
+prefix (ex specify “adapter” to load “libpipewire-module-adapter”)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="load_script">
+<span class="sig-name descname"><span class="pre">load_script</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">script</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#load_script" title="Permalink to this definition"></a></dt>
+<dd><p>Loads a Lua script (a functionality script, not a lua configuration file)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>script</strong> (<em>string</em>) – the script’s filename (ex. “policy-node.lua”)</p></li>
+<li><p><strong>args</strong> (<em>table</em>) – optional script arguments table</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="load_monitor">
+<span class="sig-name descname"><span class="pre">load_monitor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">monitor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#load_monitor" title="Permalink to this definition"></a></dt>
+<dd><p>Loads a Lua monitor script. Monitors are scripts found in the <code class="docutils literal notranslate"><span class="pre">monitors/</span></code>
+directory and their purpose is to monitor and load devices.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>monitor</strong> (<em>string</em>) – the scripts’s name without the directory or the .lua
+extension (ex. “alsa” will load “monitors/alsa.lua”)</p></li>
+<li><p><strong>args</strong> (<em>table</em>) – optional script arguments table</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="load_access">
+<span class="sig-name descname"><span class="pre">load_access</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">access</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#load_access" title="Permalink to this definition"></a></dt>
+<dd><p>Loads a Lua access script. Access scripts are ones found in the <code class="docutils literal notranslate"><span class="pre">access/</span></code>
+directory and their purpose is to manage application permissions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>access</strong> (<em>string</em>) – the scripts’s name without the directory or the .lua
+extension (ex. “flatpak” will load “access/access-flatpak.lua”)</p></li>
+<li><p><strong>args</strong> (<em>table</em>) – optional script arguments table</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="main.html" class="btn btn-neutral float-left" title="Main configuration file" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="multi_instance.html" class="btn btn-neutral float-right" title="Running multiple instances" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Collabora.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

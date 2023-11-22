@@ -1,0 +1,5 @@
+debian/tmp/usr/bin
+debian/tmp/usr/lib/systemd
+debian/tmp/usr/share/wireplumber
+debian/tmp/usr/share/locale
+debian/tmp/usr/share/zsh/site-functions/_wpctl

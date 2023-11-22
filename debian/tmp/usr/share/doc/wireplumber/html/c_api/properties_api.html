@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Properties Dictionary &mdash; WirePlumber 0.4.16 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Spa Type Information" href="spa_type_api.html" />
+    <link rel="prev" title="Local Modules" href="impl_module_api.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> WirePlumber
+          </a>
+              <div class="version">
+                0.4.16
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">The WirePlumber Daemon</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installing-wireplumber.html">Installing WirePlumber</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../running-wireplumber-daemon.html">Running the WirePlumber daemon</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../daemon-logging.html">Debug Logging</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">The WirePlumber Library</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../c_api.html">C API Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="wp_api.html">Library Initialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core_api.html">Core</a></li>
+<li class="toctree-l2"><a class="reference internal" href="object_api.html">WpObject</a></li>
+<li class="toctree-l2"><a class="reference internal" href="obj_manager_api.html">Object Manager</a></li>
+<li class="toctree-l2"><a class="reference internal" href="obj_interest_api.html">Object Interest</a></li>
+<li class="toctree-l2"><a class="reference internal" href="iterator_api.html">Iterator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="transitions_api.html">Transitions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wperror_api.html">Error Codes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="log_api.html">Debug Logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="proxy_api.html">PipeWire Proxy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipewire_object_api.html">PipeWire Object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="global_proxy_api.html">PipeWire Global Object Proxy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="node_api.html">PipeWire Node</a></li>
+<li class="toctree-l2"><a class="reference internal" href="port_api.html">PipeWire Port</a></li>
+<li class="toctree-l2"><a class="reference internal" href="link_api.html">PipeWire Link</a></li>
+<li class="toctree-l2"><a class="reference internal" href="device_api.html">PipeWire Device</a></li>
+<li class="toctree-l2"><a class="reference internal" href="client_api.html">PipeWire Client</a></li>
+<li class="toctree-l2"><a class="reference internal" href="metadata_api.html">PipeWire Metadata</a></li>
+<li class="toctree-l2"><a class="reference internal" href="endpoint_api.html">PipeWire Endpoint</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spa_device_api.html">Spa Device</a></li>
+<li class="toctree-l2"><a class="reference internal" href="impl_node_api.html">Local Nodes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="impl_module_api.html">Local Modules</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Properties Dictionary</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spa_type_api.html">Spa Type Information</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spa_json_api.html">Spa Json</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spa_pod_api.html">Spa Pod (Plain Old Data)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plugin_api.html">Plugins</a></li>
+<li class="toctree-l2"><a class="reference internal" href="component_loader_api.html">Component Loader</a></li>
+<li class="toctree-l2"><a class="reference internal" href="session_item_api.html">Session Items</a></li>
+<li class="toctree-l2"><a class="reference internal" href="si_interfaces_api.html">Session Items Interfaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="si_factory_api.html">Session Items Factory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="state_api.html">State Storage</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../lua_api.html">Lua API Documentation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Resources</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing to WirePlumber</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../testing.html">Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../community.html">Community Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Releases</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">WirePlumber</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../c_api.html">C API Documentation</a> &raquo;</li>
+      <li>Properties Dictionary</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/c_api/properties_api.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="impl_module_api.html" class="btn btn-neutral float-left" title="Local Modules" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="spa_type_api.html" class="btn btn-neutral float-right" title="Spa Type Information" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+  </div>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="properties-dictionary">
+<span id="properties-api"></span><h1>Properties Dictionary<a class="headerlink" href="#properties-dictionary" title="Permalink to this headline"></a></h1>
+<div align="center" class="align-center"><div class="graphviz"><object data="../_images/graphviz-f4c76c1a5a2b923adddb0735937725e20ef8f8ff.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph inheritance {
+    rankdir=LR;
+    GBoxed -&gt; WpProperties;
+ }</p></object></div>
+</div>
+<dl class="c struct">
+<dt class="sig sig-object c" id="c.WpProperties">
+<span class="target" id="structWpProperties"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">WpProperties</span></span></span><a class="headerlink" href="#c.WpProperties" title="Permalink to this definition"></a><br /></dt>
+<dd><p>WpProperties is a data structure that contains string key-value pairs, which are used to send/receive/attach arbitrary properties to PipeWire objects.</p>
+<p>This could be thought of as a hash table with strings as both keys and values. However, the reason that this class exists instead of using GHashTable directly is that in reality it wraps the PipeWire native <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">spa_dict</span></code> and <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">pw_properties</span></code> and therefore it can be easily passed to PipeWire function calls that require a <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">spa_dict</span> <span class="pre">*</span></code> or a <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">pw_properties</span> <span class="pre">*</span></code> as arguments. Or alternatively, it can easily wrap a <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">spa_dict</span> <span class="pre">*</span></code> or a <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">pw_properties</span> <span class="pre">*</span></code> that was given from the PipeWire API without necessarily doing an expensive copy operation.</p>
+<p>WpProperties normally wraps a <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">pw_properties</span></code>, unless it was created with <a class="reference internal" href="#group__wpproperties_1ga08e3d2d411c7570467559252dcf99e39"><span class="std std-ref">wp_properties_new_wrap_dict()</span></a>, in which case it wraps a <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">spa_dict</span></code> and it is immutable (you cannot add/remove/modify any key-value pair).</p>
+<p>In most cases, it actually owns the <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">pw_properties</span></code> internally and manages its lifetime. The exception to that rule is when WpProperties is constructed with <a class="reference internal" href="#group__wpproperties_1gafc1d1589898e7a39da00a181e454a152"><span class="std std-ref">wp_properties_new_wrap()</span></a>, in which case the ownership of the <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">pw_properties</span></code> remains outside. This must be used with care, as the <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">pw_properties</span></code> may be free’ed externally.</p>
+<p>WpProperties is reference-counted with <a class="reference internal" href="#group__wpproperties_1ga4d941f0c3b1cda14fbe285fa7e610425"><span class="std std-ref">wp_properties_ref()</span></a> and <a class="reference internal" href="#group__wpproperties_1ga56bc29460dd4f44bd825317d31e8668a"><span class="std std-ref">wp_properties_unref()</span></a>. </p>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_properties_new_empty">
+<span class="target" id="group__wpproperties_1gaac38697f1e45fb18c523e9048321a5ed"></span><a class="reference internal" href="#c.WpProperties" title="WpProperties"><span class="n"><span class="pre">WpProperties</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_properties_new_empty</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_properties_new_empty" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Creates a new empty properties set. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>(transfer full): the newly constructed properties set </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_properties_new">
+<span class="target" id="group__wpproperties_1ga5e99a8dd8dafae41c0ce4d58c580e174"></span><a class="reference internal" href="#c.WpProperties" title="WpProperties"><span class="n"><span class="pre">WpProperties</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_properties_new</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">gchar</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">key</span></span>, <span class="p"><span class="pre">...</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_properties_new" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Constructs a new properties set that contains the given properties. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key</strong> – a property name </p></li>
+<li><p><strong>...</strong> – a property value, followed by any number of further property key-value pairs, followed by NULL </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full): the newly constructed properties set </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_properties_new_valist">
+<span class="target" id="group__wpproperties_1gaa2a9a9b65d0398d5f51cbe458e4a673f"></span><a class="reference internal" href="#c.WpProperties" title="WpProperties"><span class="n"><span class="pre">WpProperties</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_properties_new_valist</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">gchar</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">key</span></span>, <span class="n"><span class="pre">va_list</span></span><span class="w"> </span><span class="n"><span class="pre">args</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_properties_new_valist" title="Permalink to this definition"></a><br /></dt>
+<dd><p>This is the <code class="docutils literal notranslate"><span class="pre">va_list</span></code> version of <a class="reference internal" href="#group__wpproperties_1ga5e99a8dd8dafae41c0ce4d58c580e174"><span class="std std-ref">wp_properties_new()</span></a> </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key</strong> – a property name </p></li>
+<li><p><strong>args</strong> – the variable arguments passed to <a class="reference internal" href="#group__wpproperties_1ga5e99a8dd8dafae41c0ce4d58c580e174"><span class="std std-ref">wp_properties_new()</span></a> </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full): the newly constructed properties set </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_properties_new_string">
+<span class="target" id="group__wpproperties_1ga3f8beda967b7f69f933fcfe0cfd9ad4f"></span><a class="reference internal" href="#c.WpProperties" title="WpProperties"><span class="n"><span class="pre">WpProperties</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_properties_new_string</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">gchar</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">str</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_properties_new_string" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Constructs a new properties set that contains the properties that can be parsed from the given string. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>str</strong> – a string containing either a whitespace separated list of key=value pairs (ex. “key1=value1 key2=value2”) or a JSON object (ex. ‘{“key1”:”value1”}’) </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full): the newly constructed properties set </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_properties_new_wrap">
+<span class="target" id="group__wpproperties_1gafc1d1589898e7a39da00a181e454a152"></span><a class="reference internal" href="#c.WpProperties" title="WpProperties"><span class="n"><span class="pre">WpProperties</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_properties_new_wrap</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">pw_properties</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">props</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_properties_new_wrap" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Constructs a new WpProperties that wraps the given <em>props</em> structure, allowing reading properties on that <em>props</em> structure through the WpProperties API. </p>
+<p>Care must be taken when using this function, since the returned WpProperties object does not own the <em>props</em> structure. Therefore, if the owner decides to free <em>props</em>, the returned WpProperties will crash when used. In addition, the returned WpProperties object will not try to free <em>props</em> when destroyed.</p>
+<p>Furthermore, note that the returned WpProperties object is immutable. That means that you cannot add or modify any properties on it, unless you make a copy first.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>props</strong> – a native <code class="docutils literal notranslate"><span class="pre">pw_properties</span></code> structure to wrap </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full): the newly constructed properties set </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_properties_new_take">
+<span class="target" id="group__wpproperties_1gaff78ccfd8d203f1b64ad21cb73788146"></span><a class="reference internal" href="#c.WpProperties" title="WpProperties"><span class="n"><span class="pre">WpProperties</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_properties_new_take</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">pw_properties</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">props</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_properties_new_take" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Constructs a new WpProperties that wraps the given <em>props</em> structure, allowing reading &amp; writing properties on that <em>props</em> structure through the WpProperties API. </p>
+<p>In constrast with <a class="reference internal" href="#group__wpproperties_1gafc1d1589898e7a39da00a181e454a152"><span class="std std-ref">wp_properties_new_wrap()</span></a>, this function assumes ownership of the <em>props</em> structure, so it will try to free <em>props</em> when it is destroyed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>props</strong> – a native <code class="docutils literal notranslate"><span class="pre">pw_properties</span></code> structure to wrap </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full): the newly constructed properties set </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_properties_new_copy">
+<span class="target" id="group__wpproperties_1ga7a58a46b44ee4e1a96857e6920baca1c"></span><a class="reference internal" href="#c.WpProperties" title="WpProperties"><span class="n"><span class="pre">WpProperties</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_properties_new_copy</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">pw_properties</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">props</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_properties_new_copy" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Constructs a new WpProperties that contains a copy of all the properties contained in the given <em>props</em> structure. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>props</strong> – a native <code class="docutils literal notranslate"><span class="pre">pw_properties</span></code> structure to copy </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full): the newly constructed properties set </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_properties_new_wrap_dict">
+<span class="target" id="group__wpproperties_1ga08e3d2d411c7570467559252dcf99e39"></span><a class="reference internal" href="#c.WpProperties" title="WpProperties"><span class="n"><span class="pre">WpProperties</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_properties_new_wrap_dict</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">spa_dict</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dict</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_properties_new_wrap_dict" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Constructs a new WpProperties that wraps the given <em>dict</em> structure, allowing reading properties from that <em>dict</em> through the WpProperties API. </p>
+<p>Note that the returned object does not own the <em>dict</em>, so care must be taken not to free it externally while this WpProperties object is alive.</p>
+<p>In addition, note that the returned WpProperties object is immutable. That means that you cannot add or modify any properties on it, since there is no defined method for modifying a <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">spa_dict</span></code>. If you need to change this properties set later, you should make a copy with <a class="reference internal" href="#group__wpproperties_1ga92b01e704d9302ee5be8019f38940b4e"><span class="std std-ref">wp_properties_copy()</span></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dict</strong> – a native <code class="docutils literal notranslate"><span class="pre">spa_dict</span></code> structure to wrap </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full): the newly constructed properties set </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_properties_new_copy_dict">
+<span class="target" id="group__wpproperties_1ga5f4deee73fb54dd47efb3f3bac9fff45"></span><a class="reference internal" href="#c.WpProperties" title="WpProperties"><span class="n"><span class="pre">WpProperties</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_properties_new_copy_dict</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">spa_dict</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dict</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_properties_new_copy_dict" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Constructs a new WpProperties that contains a copy of all the properties contained in the given <em>dict</em> structure. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dict</strong> – a native <code class="docutils literal notranslate"><span class="pre">spa_dict</span></code> structure to copy </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full): the newly constructed properties set </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_properties_copy">
+<span class="target" id="group__wpproperties_1ga92b01e704d9302ee5be8019f38940b4e"></span><a class="reference internal" href="#c.WpProperties" title="WpProperties"><span class="n"><span class="pre">WpProperties</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_properties_copy</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpProperties" title="WpProperties"><span class="n"><span class="pre">WpProperties</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">other</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_properties_copy" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Constructs and returns a new WpProperties object that contains a copy of all the properties contained in <em>other</em>. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>other</strong> – a properties object </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full): the newly constructed properties set </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_properties_ref">
+<span class="target" id="group__wpproperties_1ga4d941f0c3b1cda14fbe285fa7e610425"></span><a class="reference internal" href="#c.WpProperties" title="WpProperties"><span class="n"><span class="pre">WpProperties</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_properties_ref</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpProperties" title="WpProperties"><span class="n"><span class="pre">WpProperties</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_properties_ref" title="Permalink to this definition"></a><br /></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – a properties object </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full): <em>self</em> with an additional reference count on it </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_properties_unref">
+<span class="target" id="group__wpproperties_1ga56bc29460dd4f44bd825317d31e8668a"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_properties_unref</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpProperties" title="WpProperties"><span class="n"><span class="pre">WpProperties</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_properties_unref" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Decreases the reference count on <em>self</em> and frees it when the ref count reaches zero. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – (transfer full): a properties object </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_properties_ensure_unique_owner">
+<span class="target" id="group__wpproperties_1gad78a94dc439b11f2f550494fbbe774db"></span><a class="reference internal" href="#c.WpProperties" title="WpProperties"><span class="n"><span class="pre">WpProperties</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_properties_ensure_unique_owner</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpProperties" title="WpProperties"><span class="n"><span class="pre">WpProperties</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_properties_ensure_unique_owner" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Ensures that the given properties set is uniquely owned. </p>
+<p>“Uniquely owned” means that:<ul class="simple">
+<li><p>its reference count is 1</p></li>
+<li><p>it is not wrapping a native <code class="docutils literal notranslate"><span class="pre">spa_dict</span></code> or <code class="docutils literal notranslate"><span class="pre">pw_properties</span></code> object</p></li>
+</ul>
+</p>
+<p>If <em>self</em> is not uniquely owned already, then it is unrefed and a copy of it is returned instead. You should always consider <em>self</em> as unsafe to use after this call and you should use the returned object instead.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – (transfer full): a properties object </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full): the uniquely owned properties object </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_properties_update">
+<span class="target" id="group__wpproperties_1gadc0f11ded86da131fa03dd6eac6dfbc0"></span><span class="n"><span class="pre">gint</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_properties_update</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpProperties" title="WpProperties"><span class="n"><span class="pre">WpProperties</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <a class="reference internal" href="#c.WpProperties" title="WpProperties"><span class="n"><span class="pre">WpProperties</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">props</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_properties_update" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Updates (adds new or modifies existing) properties in <em>self</em>, using the given <em>props</em> as a source. </p>
+<p>Any properties that are not contained in <em>props</em> are left untouched.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – a properties object </p></li>
+<li><p><strong>props</strong> – a properties set that contains properties to update </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the number of properties that were changed </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_properties_update_from_dict">
+<span class="target" id="group__wpproperties_1ga473cd32da32e2a738d20f81d85234e36"></span><span class="n"><span class="pre">gint</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_properties_update_from_dict</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpProperties" title="WpProperties"><span class="n"><span class="pre">WpProperties</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">spa_dict</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dict</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_properties_update_from_dict" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Updates (adds new or modifies existing) properties in <em>self</em>, using the given <em>dict</em> as a source. </p>
+<p>Any properties that are not contained in <em>dict</em> are left untouched.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – a properties object </p></li>
+<li><p><strong>dict</strong> – a <code class="docutils literal notranslate"><span class="pre">spa_dict</span></code> that contains properties to update </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the number of properties that were changed </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_properties_add">
+<span class="target" id="group__wpproperties_1gaf7975c3be76161d6290e50a47ae9f8d6"></span><span class="n"><span class="pre">gint</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_properties_add</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpProperties" title="WpProperties"><span class="n"><span class="pre">WpProperties</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <a class="reference internal" href="#c.WpProperties" title="WpProperties"><span class="n"><span class="pre">WpProperties</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">props</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_properties_add" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Adds new properties in <em>self</em>, using the given <em>props</em> as a source. </p>
+<p>Properties (keys) from <em>props</em> that are already contained in <em>self</em> are not modified, unlike what happens with <a class="reference internal" href="#group__wpproperties_1gadc0f11ded86da131fa03dd6eac6dfbc0"><span class="std std-ref">wp_properties_update()</span></a>. Properties in <em>self</em> that are not contained in <em>props</em> are left untouched.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – a properties object </p></li>
+<li><p><strong>props</strong> – a properties set that contains properties to add </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the number of properties that were changed </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_properties_add_from_dict">
+<span class="target" id="group__wpproperties_1gad2c6137af4f4062bc720a5d95f7d5703"></span><span class="n"><span class="pre">gint</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_properties_add_from_dict</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpProperties" title="WpProperties"><span class="n"><span class="pre">WpProperties</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">spa_dict</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dict</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_properties_add_from_dict" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Adds new properties in <em>self</em>, using the given <em>dict</em> as a source. </p>
+<p>Properties (keys) from <em>dict</em> that are already contained in <em>self</em> are not modified, unlike what happens with <a class="reference internal" href="#group__wpproperties_1ga473cd32da32e2a738d20f81d85234e36"><span class="std std-ref">wp_properties_update_from_dict()</span></a>. Properties in <em>self</em> that are not contained in <em>dict</em> are left untouched.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – a properties object </p></li>
+<li><p><strong>dict</strong> – a <code class="docutils literal notranslate"><span class="pre">spa_dict</span></code> that contains properties to add </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the number of properties that were changed </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_properties_update_keys">
+<span class="target" id="group__wpproperties_1gaa969e2886a46deb8c91d8ad7826b94a9"></span><span class="n"><span class="pre">gint</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_properties_update_keys</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpProperties" title="WpProperties"><span class="n"><span class="pre">WpProperties</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <a class="reference internal" href="#c.WpProperties" title="WpProperties"><span class="n"><span class="pre">WpProperties</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">props</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">gchar</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">key1</span></span>, <span class="p"><span class="pre">...</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_properties_update_keys" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Updates (adds new or modifies existing) properties in <em>self</em>, using the given <em>props</em> as a source. </p>
+<p>Unlike <a class="reference internal" href="#group__wpproperties_1gadc0f11ded86da131fa03dd6eac6dfbc0"><span class="std std-ref">wp_properties_update()</span></a>, this function only updates properties that have one of the specified keys; the rest is left untouched.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – a properties set </p></li>
+<li><p><strong>props</strong> – a properties set that contains properties to update </p></li>
+<li><p><strong>key1</strong> – a property to update </p></li>
+<li><p><strong>...</strong> – a list of additional properties to update, followed by NULL </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the number of properties that were changed </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_properties_update_keys_from_dict">
+<span class="target" id="group__wpproperties_1ga0cc19f27be24d52ac2435f7ac225aa59"></span><span class="n"><span class="pre">gint</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_properties_update_keys_from_dict</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpProperties" title="WpProperties"><span class="n"><span class="pre">WpProperties</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">spa_dict</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dict</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">gchar</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">key1</span></span>, <span class="p"><span class="pre">...</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_properties_update_keys_from_dict" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Updates (adds new or modifies existing) properties in <em>self</em>, using the given <em>dict</em> as a source. </p>
+<p>Unlike <a class="reference internal" href="#group__wpproperties_1ga473cd32da32e2a738d20f81d85234e36"><span class="std std-ref">wp_properties_update_from_dict()</span></a>, this function only updates properties that have one of the specified keys; the rest is left untouched.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – a properties set </p></li>
+<li><p><strong>dict</strong> – a <code class="docutils literal notranslate"><span class="pre">spa_dict</span></code> that contains properties to update </p></li>
+<li><p><strong>key1</strong> – a property to update </p></li>
+<li><p><strong>...</strong> – a list of additional properties to update, followed by NULL </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the number of properties that were changed </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_properties_update_keys_array">
+<span class="target" id="group__wpproperties_1ga23ecc6e1f489a983c45372fb6d3bf424"></span><span class="n"><span class="pre">gint</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_properties_update_keys_array</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpProperties" title="WpProperties"><span class="n"><span class="pre">WpProperties</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <a class="reference internal" href="#c.WpProperties" title="WpProperties"><span class="n"><span class="pre">WpProperties</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">props</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">gchar</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">keys</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">]</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_properties_update_keys_array" title="Permalink to this definition"></a><br /></dt>
+<dd><p>The same as <a class="reference internal" href="#group__wpproperties_1gaa969e2886a46deb8c91d8ad7826b94a9"><span class="std std-ref">wp_properties_update_keys()</span></a>, using a NULL-terminated array for specifying the keys to update. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – a properties set </p></li>
+<li><p><strong>props</strong> – a properties set that contains properties to update </p></li>
+<li><p><strong>keys</strong> – (array zero-terminated=1): the properties to update </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the number of properties that were changed </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_properties_add_keys">
+<span class="target" id="group__wpproperties_1ga1c863c5ead8daea6ca9c94af2b1abd41"></span><span class="n"><span class="pre">gint</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_properties_add_keys</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpProperties" title="WpProperties"><span class="n"><span class="pre">WpProperties</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <a class="reference internal" href="#c.WpProperties" title="WpProperties"><span class="n"><span class="pre">WpProperties</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">props</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">gchar</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">key1</span></span>, <span class="p"><span class="pre">...</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_properties_add_keys" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Adds new properties in <em>self</em>, using the given <em>props</em> as a source. </p>
+<p>Unlike <a class="reference internal" href="#group__wpproperties_1gaf7975c3be76161d6290e50a47ae9f8d6"><span class="std std-ref">wp_properties_add()</span></a>, this function only adds properties that have one of the specified keys; the rest is left untouched.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – a properties set </p></li>
+<li><p><strong>props</strong> – a properties set that contains properties to add </p></li>
+<li><p><strong>key1</strong> – a property to add </p></li>
+<li><p><strong>...</strong> – a list of additional properties to add, followed by NULL </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the number of properties that were changed </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_properties_add_keys_from_dict">
+<span class="target" id="group__wpproperties_1gaf3c75a491d4885481ffbb88473f251ff"></span><span class="n"><span class="pre">gint</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_properties_add_keys_from_dict</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpProperties" title="WpProperties"><span class="n"><span class="pre">WpProperties</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">spa_dict</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dict</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">gchar</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">key1</span></span>, <span class="p"><span class="pre">...</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_properties_add_keys_from_dict" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Adds new properties in <em>self</em>, using the given <em>dict</em> as a source. </p>
+<p>Unlike <a class="reference internal" href="#group__wpproperties_1gad2c6137af4f4062bc720a5d95f7d5703"><span class="std std-ref">wp_properties_add_from_dict()</span></a>, this function only adds properties that have one of the specified keys; the rest is left untouched.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – a properties set </p></li>
+<li><p><strong>dict</strong> – a <code class="docutils literal notranslate"><span class="pre">spa_dict</span></code> that contains properties to add </p></li>
+<li><p><strong>key1</strong> – a property to add </p></li>
+<li><p><strong>...</strong> – a list of additional properties to add, followed by NULL </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the number of properties that were changed </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_properties_add_keys_array">
+<span class="target" id="group__wpproperties_1ga3f4ea72c760d0bedd96898ce2e26186b"></span><span class="n"><span class="pre">gint</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_properties_add_keys_array</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpProperties" title="WpProperties"><span class="n"><span class="pre">WpProperties</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <a class="reference internal" href="#c.WpProperties" title="WpProperties"><span class="n"><span class="pre">WpProperties</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">props</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">gchar</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">keys</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">]</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_properties_add_keys_array" title="Permalink to this definition"></a><br /></dt>
+<dd><p>The same as <a class="reference internal" href="#group__wpproperties_1ga1c863c5ead8daea6ca9c94af2b1abd41"><span class="std std-ref">wp_properties_add_keys()</span></a>, using a NULL-terminated array for specifying the keys to add. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – a properties set </p></li>
+<li><p><strong>props</strong> – a properties set that contains properties to add </p></li>
+<li><p><strong>keys</strong> – (array zero-terminated=1): the properties to add </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the number of properties that were changed </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_properties_get">
+<span class="target" id="group__wpproperties_1ga89dc57fc3b96b12249e43cb11b0d3f7b"></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">gchar</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_properties_get</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpProperties" title="WpProperties"><span class="n"><span class="pre">WpProperties</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">gchar</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">key</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_properties_get" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Looks up a given property value from a key. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – a properties object </p></li>
+<li><p><strong>key</strong> – a property key </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer none) (nullable): the value of the property identified with <em>key</em>, or NULL if this property is not contained in <em>self</em> </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_properties_set">
+<span class="target" id="group__wpproperties_1ga96fbf6c478f122e2ca989086a15a5693"></span><span class="n"><span class="pre">gint</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_properties_set</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpProperties" title="WpProperties"><span class="n"><span class="pre">WpProperties</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">gchar</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">key</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">gchar</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_properties_set" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Sets the given property <em>key</em> - <em>value</em> pair on <em>self</em>. </p>
+<p>If the property already existed, the value is overwritten with the new one.</p>
+<p>If the <em>value</em> is NULL, then the specified property is removed from <em>self</em> </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – a properties object </p></li>
+<li><p><strong>key</strong> – a property key </p></li>
+<li><p><strong>value</strong> – (nullable): a property value </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>1 if the property was changed. 0 if nothing was changed because the property already existed with the same value or because the key to remove did not exist. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_properties_setf">
+<span class="target" id="group__wpproperties_1gaec186cf92a94864aab5bdd73a69b416b"></span><span class="n"><span class="pre">gint</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_properties_setf</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpProperties" title="WpProperties"><span class="n"><span class="pre">WpProperties</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">gchar</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">key</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">gchar</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">format</span></span>, <span class="p"><span class="pre">...</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_properties_setf" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Formats the given <em>format</em> string with the specified arguments and sets the result as a value of the property specified with <em>key</em>. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – a properties object </p></li>
+<li><p><strong>key</strong> – a property key </p></li>
+<li><p><strong>format</strong> – a printf-style format to be formatted and set as a value for this property <em>key</em> </p></li>
+<li><p><strong>...</strong> – arguments for <em>format</em> </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>1 if the property was changed. 0 if nothing was changed because the property already existed with the same value </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_properties_setf_valist">
+<span class="target" id="group__wpproperties_1gaeda57a3d7c81422b07ea16d74b49418c"></span><span class="n"><span class="pre">gint</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_properties_setf_valist</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpProperties" title="WpProperties"><span class="n"><span class="pre">WpProperties</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">gchar</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">key</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">gchar</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">format</span></span>, <span class="n"><span class="pre">va_list</span></span><span class="w"> </span><span class="n"><span class="pre">args</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_properties_setf_valist" title="Permalink to this definition"></a><br /></dt>
+<dd><p>This is the <code class="docutils literal notranslate"><span class="pre">va_list</span></code> version of <a class="reference internal" href="#group__wpproperties_1gaec186cf92a94864aab5bdd73a69b416b"><span class="std std-ref">wp_properties_setf()</span></a> </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – a properties object </p></li>
+<li><p><strong>key</strong> – a property key </p></li>
+<li><p><strong>format</strong> – a printf-style format to be formatted and set as a value for this property <em>key</em> </p></li>
+<li><p><strong>args</strong> – the variable arguments passed to <a class="reference internal" href="#group__wpproperties_1gaec186cf92a94864aab5bdd73a69b416b"><span class="std std-ref">wp_properties_setf()</span></a> </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>1 if the property was changed. 0 if nothing was changed because the property already existed with the same value </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_properties_item_ref">
+<span class="target" id="group__wpproperties_1gacc4771ed16fc9d7fa8a5ab3728ea76ae"></span><span class="n"><span class="pre">WpPropertiesItem</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_properties_item_ref</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">WpPropertiesItem</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_properties_item_ref" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Increases the reference count of a properties item object. </p>
+<p><dl class="simple">
+<dt><strong>Since</strong></dt><dd><p>0.4.2 </p>
+</dd>
+</dl>
+</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – a properties item object </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full): <em>self</em> with an additional reference count on it </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_properties_item_unref">
+<span class="target" id="group__wpproperties_1ga7042532752fcdafe1b904011a5b82fb1"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_properties_item_unref</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">WpPropertiesItem</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_properties_item_unref" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Decreases the reference count on <em>self</em> and frees it when the ref count reaches zero. </p>
+<p><dl class="simple">
+<dt><strong>Since</strong></dt><dd><p>0.4.2 </p>
+</dd>
+</dl>
+</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – (transfer full): a properties item object </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_properties_item_get_key">
+<span class="target" id="group__wpproperties_1ga77b8d0a7fe33014920e50080467fd155"></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">gchar</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_properties_item_get_key</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">WpPropertiesItem</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_properties_item_get_key" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Gets the key from a properties item. </p>
+<p><dl class="simple">
+<dt><strong>Since</strong></dt><dd><p>0.4.2 </p>
+</dd>
+</dl>
+</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the item held by the GValue that was returned from the WpIterator of <a class="reference internal" href="#group__wpproperties_1ga93e6f697cf35aa01d4b9c1bac0de385c"><span class="std std-ref">wp_properties_new_iterator()</span></a> </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer none): the property key of the <em>item</em> </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_properties_item_get_value">
+<span class="target" id="group__wpproperties_1ga0f858277e4d5dd47a5146ac48e2e5c9d"></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">gchar</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_properties_item_get_value</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">WpPropertiesItem</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_properties_item_get_value" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Gets the value from a properties item. </p>
+<p><dl class="simple">
+<dt><strong>Since</strong></dt><dd><p>0.4.2 </p>
+</dd>
+</dl>
+</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the item held by the GValue that was returned from the WpIterator of <a class="reference internal" href="#group__wpproperties_1ga93e6f697cf35aa01d4b9c1bac0de385c"><span class="std std-ref">wp_properties_new_iterator()</span></a> </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer none): the property value of the <em>item</em> </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_properties_new_iterator">
+<span class="target" id="group__wpproperties_1ga93e6f697cf35aa01d4b9c1bac0de385c"></span><a class="reference internal" href="iterator_api.html#c.WpIterator" title="WpIterator"><span class="n"><span class="pre">WpIterator</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_properties_new_iterator</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpProperties" title="WpProperties"><span class="n"><span class="pre">WpProperties</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_properties_new_iterator" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Iterates through all the properties in the properties object. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – a properties object </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full): an iterator that iterates over the properties. The items in the iterator are of type WpPropertiesItem. Use <a class="reference internal" href="#group__wpproperties_1ga77b8d0a7fe33014920e50080467fd155"><span class="std std-ref">wp_properties_item_get_key()</span></a> and <a class="reference internal" href="#group__wpproperties_1ga0f858277e4d5dd47a5146ac48e2e5c9d"><span class="std std-ref">wp_properties_item_get_value()</span></a> to retrieve their contents. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_properties_iterator_item_get_key">
+<span class="target" id="group__wpproperties_1ga16d1f8fb5db2d504e672d9a3561493c0"></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">gchar</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_properties_iterator_item_get_key</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">GValue</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">item</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_properties_iterator_item_get_key" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Gets the key from a properties iterator item. </p>
+<p><dl>
+<dt class="sig sig-object cpp">
+<em><span class="pre">Deprecated:</span></em></dt>
+<dd><p>Use <a class="reference internal" href="#group__wpproperties_1ga77b8d0a7fe33014920e50080467fd155"><span class="std std-ref">wp_properties_item_get_key()</span></a> instead </p>
+</dd></dl>
+
+</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>item</strong> – a GValue that was returned from the WpIterator of <a class="reference internal" href="#group__wpproperties_1ga93e6f697cf35aa01d4b9c1bac0de385c"><span class="std std-ref">wp_properties_new_iterator()</span></a> </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer none): the property key of the <em>item</em> </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_properties_iterator_item_get_value">
+<span class="target" id="group__wpproperties_1ga543fe228b31c685d43ceaaa110e4f50e"></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">gchar</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_properties_iterator_item_get_value</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">GValue</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">item</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_properties_iterator_item_get_value" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Gets the value from a properties iterator item. </p>
+<p><dl>
+<dt class="sig sig-object cpp">
+<em><span class="pre">Deprecated:</span></em></dt>
+<dd><p>Use <a class="reference internal" href="#group__wpproperties_1ga0f858277e4d5dd47a5146ac48e2e5c9d"><span class="std std-ref">wp_properties_item_get_value()</span></a> instead </p>
+</dd></dl>
+
+</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>item</strong> – a GValue that was returned from the WpIterator of <a class="reference internal" href="#group__wpproperties_1ga93e6f697cf35aa01d4b9c1bac0de385c"><span class="std std-ref">wp_properties_new_iterator()</span></a> </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer none): the property value of the <em>item</em> </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_properties_get_count">
+<span class="target" id="group__wpproperties_1ga3e457a2640b75b0dbac75ec39d840607"></span><span class="n"><span class="pre">guint</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_properties_get_count</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpProperties" title="WpProperties"><span class="n"><span class="pre">WpProperties</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_properties_get_count" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Gets the number of properties contained in this object. </p>
+<p><dl class="simple">
+<dt><strong>Since</strong></dt><dd><p>0.4.10 </p>
+</dd>
+</dl>
+</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – a properties object </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the number of properties contained in this object </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_properties_sort">
+<span class="target" id="group__wpproperties_1ga30a5dfbc3cbd46c26e1bf641b4b27927"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_properties_sort</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpProperties" title="WpProperties"><span class="n"><span class="pre">WpProperties</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_properties_sort" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Sorts the keys in alphabetical order. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – a properties object </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_properties_peek_dict">
+<span class="target" id="group__wpproperties_1gab2a8acb07fa2a9ab9ed9ca08ec01c502"></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">spa_dict</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_properties_peek_dict</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpProperties" title="WpProperties"><span class="n"><span class="pre">WpProperties</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_properties_peek_dict" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Gets the dictionary wrapped by a properties object. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – a properties object </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer none): the internal properties set as a <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">spa_dict</span> <span class="pre">*</span></code> </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_properties_to_pw_properties">
+<span class="target" id="group__wpproperties_1gafe05d73cda5f8ba4a695b3548d753560"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">pw_properties</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_properties_to_pw_properties</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpProperties" title="WpProperties"><span class="n"><span class="pre">WpProperties</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_properties_to_pw_properties" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Gets a copy of the properties object as a <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">pw_properties</span></code> </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – a properties object </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full): a copy of the properties in <em>self</em> as a <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">pw_properties</span></code> </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_properties_unref_and_take_pw_properties">
+<span class="target" id="group__wpproperties_1ga72b84b2bec82ceb9156e3b8dea0e9ae2"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">pw_properties</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_properties_unref_and_take_pw_properties</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpProperties" title="WpProperties"><span class="n"><span class="pre">WpProperties</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_properties_unref_and_take_pw_properties" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Similar to <a class="reference internal" href="#group__wpproperties_1gafe05d73cda5f8ba4a695b3548d753560"><span class="std std-ref">wp_properties_to_pw_properties()</span></a>, but this method avoids making a copy of the properties by returning the <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">pw_properties</span></code> that is stored internally and then freeing the WpProperties wrapper. </p>
+<p>If <em>self</em> is not uniquely owned (see <a class="reference internal" href="#group__wpproperties_1gad78a94dc439b11f2f550494fbbe774db"><span class="std std-ref">wp_properties_ensure_unique_owner()</span></a>), then this method does make a copy and is the same as <a class="reference internal" href="#group__wpproperties_1gafe05d73cda5f8ba4a695b3548d753560"><span class="std std-ref">wp_properties_to_pw_properties()</span></a>, performance-wise.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – (transfer full): a properties object </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full): the properties in <em>self</em> as a <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">pw_properties</span></code> </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_properties_matches">
+<span class="target" id="group__wpproperties_1ga16fd68254ee350896a6d176f326a4188"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_properties_matches</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpProperties" title="WpProperties"><span class="n"><span class="pre">WpProperties</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <a class="reference internal" href="#c.WpProperties" title="WpProperties"><span class="n"><span class="pre">WpProperties</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">other</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_properties_matches" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Checks if all property values contained in <em>other</em> are matching with the values in <em>self</em>. </p>
+<p>If a property is contained in <em>other</em> and not in <em>self</em>, the result is not matched. If a property is contained in both sets, then the value of the property in <em>other</em> is interpreted as a glob-style pattern (using g_pattern_match_simple()) and the value in <em>self</em> is checked to see if it matches with this pattern.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – a properties object </p></li>
+<li><p><strong>other</strong> – a set of properties to match </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if all matches were successfull, FALSE if at least one property value did not match </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.WP_TYPE_PROPERTIES">
+<span class="target" id="group__wpproperties_1gac5abb737cafddc594d93eb2e93a09d6d"></span><span class="sig-name descname"><span class="n"><span class="pre">WP_TYPE_PROPERTIES</span></span></span> <span class="pre">(wp_properties_get_type</span> <span class="pre">())</span><a class="headerlink" href="#c.WP_TYPE_PROPERTIES" title="Permalink to this definition"></a><br /></dt>
+<dd><p>The WpProperties GType. </p>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="impl_module_api.html" class="btn btn-neutral float-left" title="Local Modules" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="spa_type_api.html" class="btn btn-neutral float-right" title="Spa Type Information" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Collabora.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

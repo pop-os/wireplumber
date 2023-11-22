@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PipeWire Proxies &mdash; WirePlumber 0.4.16 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Session Item" href="lua_session_item_api.html" />
+    <link rel="prev" title="Object Interest" href="lua_object_interest_api.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> WirePlumber
+          </a>
+              <div class="version">
+                0.4.16
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">The WirePlumber Daemon</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installing-wireplumber.html">Installing WirePlumber</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../running-wireplumber-daemon.html">Running the WirePlumber daemon</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../daemon-logging.html">Debug Logging</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">The WirePlumber Library</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../c_api.html">C API Documentation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../lua_api.html">Lua API Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="lua_introduction.html">Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lua_gobject.html">GObject Integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lua_core_api.html">Core</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lua_log_api.html">Debug Logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lua_object_api.html">WpObject</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lua_object_manager_api.html">Object Manager</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lua_object_interest_api.html">Object Interest</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">PipeWire Proxies</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#proxy">Proxy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pipewire-object">PipeWire Object</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#global-proxy">Global Proxy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pipewire-node">PipeWire Node</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pipewire-port">PipeWire Port</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pipewire-client">PipeWire Client</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pipewire-metadata">PipeWire Metadata</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="lua_session_item_api.html">Session Item</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lua_spa_device_api.html">Spa Device</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lua_spa_pod.html">Spa Pod</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lua_local_module_api.html">Local Modules</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Resources</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing to WirePlumber</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../testing.html">Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../community.html">Community Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Releases</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">WirePlumber</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../lua_api.html">Lua API Documentation</a> &raquo;</li>
+      <li>PipeWire Proxies</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/lua_api/lua_proxies_api.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="lua_object_interest_api.html" class="btn btn-neutral float-left" title="Object Interest" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="lua_session_item_api.html" class="btn btn-neutral float-right" title="Session Item" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+  </div>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <blockquote>
+<div></div></blockquote>
+<section id="pipewire-proxies">
+<span id="lua-proxies-api"></span><h1>PipeWire Proxies<a class="headerlink" href="#pipewire-proxies" title="Permalink to this headline"></a></h1>
+<section id="proxy">
+<h2>Proxy<a class="headerlink" href="#proxy" title="Permalink to this headline"></a></h2>
+<p>Lua objects that bind a <a class="reference internal" href="../c_api/proxy_api.html#proxy-api"><span class="std std-ref">WpProxy</span></a> contain the following methods:</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="Proxy.get_interface_type">
+<span class="sig-prename descclassname"><span class="pre">Proxy.</span></span><span class="sig-name descname"><span class="pre">get_interface_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#Proxy.get_interface_type" title="Permalink to this definition"></a></dt>
+<dd><p>Binds <a class="reference internal" href="../c_api/proxy_api.html#c.wp_proxy_get_interface_type" title="wp_proxy_get_interface_type"><code class="xref c c-func docutils literal notranslate"><span class="pre">wp_proxy_get_interface_type()</span></code></a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>self</strong> – the proxy</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the proxy type, the proxy type version</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>string, integer</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="pipewire-object">
+<h2>PipeWire Object<a class="headerlink" href="#pipewire-object" title="Permalink to this headline"></a></h2>
+<p>Lua objects that bind a <a class="reference internal" href="../c_api/pipewire_object_api.html#pipewire-object-api"><span class="std std-ref">WpPipewireObject</span></a>
+contain the following methods:</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="PipewireObject.iterate_params">
+<span class="sig-prename descclassname"><span class="pre">PipewireObject.</span></span><span class="sig-name descname"><span class="pre">iterate_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#PipewireObject.iterate_params" title="Permalink to this definition"></a></dt>
+<dd><p>Binds <a class="reference internal" href="../c_api/pipewire_object_api.html#c.wp_pipewire_object_enum_params_sync" title="wp_pipewire_object_enum_params_sync"><code class="xref c c-func docutils literal notranslate"><span class="pre">wp_pipewire_object_enum_params_sync()</span></code></a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the proxy</p></li>
+<li><p><strong>param_name</strong> (<em>string</em>) – the PipeWire param name to enumerate,
+ex “Props”, “Route”</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the available parameters</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Iterator; the iteration items are <a class="reference internal" href="lua_spa_pod.html#lua-spa-pod"><span class="std std-ref">Spa Pod</span></a> objects</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="PipewireObject.set_param">
+<span class="sig-prename descclassname"><span class="pre">PipewireObject.</span></span><span class="sig-name descname"><span class="pre">set_param</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pod</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#PipewireObject.set_param" title="Permalink to this definition"></a></dt>
+<dd><p>Binds <a class="reference internal" href="../c_api/pipewire_object_api.html#c.wp_pipewire_object_set_param" title="wp_pipewire_object_set_param"><code class="xref c c-func docutils literal notranslate"><span class="pre">wp_pipewire_object_set_param()</span></code></a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the proxy</p></li>
+<li><p><strong>param_name</strong> (<em>string</em>) – The PipeWire param name to set, ex “Props”, “Route”</p></li>
+<li><p><strong>pod</strong> (<em>Pod</em>) – A Spa Pod object containing the new params</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="global-proxy">
+<h2>Global Proxy<a class="headerlink" href="#global-proxy" title="Permalink to this headline"></a></h2>
+<p>Lua objects that bind a <a class="reference internal" href="../c_api/global_proxy_api.html#global-proxy-api"><span class="std std-ref">WpGlobalProxy</span></a>
+contain the following methods:</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="GlobalProxy.request_destroy">
+<span class="sig-prename descclassname"><span class="pre">GlobalProxy.</span></span><span class="sig-name descname"><span class="pre">request_destroy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GlobalProxy.request_destroy" title="Permalink to this definition"></a></dt>
+<dd><p>Binds <a class="reference internal" href="../c_api/global_proxy_api.html#c.wp_global_proxy_request_destroy" title="wp_global_proxy_request_destroy"><code class="xref c c-func docutils literal notranslate"><span class="pre">wp_global_proxy_request_destroy()</span></code></a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>self</strong> – the proxy</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="pipewire-node">
+<h2>PipeWire Node<a class="headerlink" href="#pipewire-node" title="Permalink to this headline"></a></h2>
+<p>Lua objects that bind a <a class="reference internal" href="../c_api/node_api.html#node-api"><span class="std std-ref">WpNode</span></a> contain the following methods:</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="Node.get_state">
+<span class="sig-prename descclassname"><span class="pre">Node.</span></span><span class="sig-name descname"><span class="pre">get_state</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#Node.get_state" title="Permalink to this definition"></a></dt>
+<dd><p>Binds <a class="reference internal" href="../c_api/node_api.html#c.wp_node_get_state" title="wp_node_get_state"><code class="xref c c-func docutils literal notranslate"><span class="pre">wp_node_get_state()</span></code></a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>self</strong> – the proxy</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the current state of the node and an error message, if any</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>string (<a class="reference internal" href="../c_api/node_api.html#c.WpNodeState" title="WpNodeState"><code class="xref c c-enum docutils literal notranslate"><span class="pre">WpNodeState</span></code></a>), string (error message)</p>
+</dd>
+<dt class="field-even">Since</dt>
+<dd class="field-even"><p>0.4.2</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="Node.get_n_input_ports">
+<span class="sig-prename descclassname"><span class="pre">Node.</span></span><span class="sig-name descname"><span class="pre">get_n_input_ports</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#Node.get_n_input_ports" title="Permalink to this definition"></a></dt>
+<dd><p>Binds <a class="reference internal" href="../c_api/node_api.html#c.wp_node_get_n_input_ports" title="wp_node_get_n_input_ports"><code class="xref c c-func docutils literal notranslate"><span class="pre">wp_node_get_n_input_ports()</span></code></a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>self</strong> – the proxy</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the current and max numbers of input ports on the node</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>integer (current), integer (max)</p>
+</dd>
+<dt class="field-even">Since</dt>
+<dd class="field-even"><p>0.4.2</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="Node.get_n_output_ports">
+<span class="sig-prename descclassname"><span class="pre">Node.</span></span><span class="sig-name descname"><span class="pre">get_n_output_ports</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#Node.get_n_output_ports" title="Permalink to this definition"></a></dt>
+<dd><p>Binds <a class="reference internal" href="../c_api/node_api.html#c.wp_node_get_n_output_ports" title="wp_node_get_n_output_ports"><code class="xref c c-func docutils literal notranslate"><span class="pre">wp_node_get_n_output_ports()</span></code></a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>self</strong> – the proxy</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the current and max numbers of output ports on the node</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>integer (current), integer (max)</p>
+</dd>
+<dt class="field-even">Since</dt>
+<dd class="field-even"><p>0.4.2</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="Node.get_n_ports">
+<span class="sig-prename descclassname"><span class="pre">Node.</span></span><span class="sig-name descname"><span class="pre">get_n_ports</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#Node.get_n_ports" title="Permalink to this definition"></a></dt>
+<dd><p>Binds <a class="reference internal" href="../c_api/node_api.html#c.wp_node_get_n_ports" title="wp_node_get_n_ports"><code class="xref c c-func docutils literal notranslate"><span class="pre">wp_node_get_n_ports()</span></code></a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>self</strong> – the proxy</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the number of ports on the node</p>
+</dd>
+<dt class="field-odd">Since</dt>
+<dd class="field-odd"><p>0.4.2</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="Node.iterate_ports">
+<span class="sig-prename descclassname"><span class="pre">Node.</span></span><span class="sig-name descname"><span class="pre">iterate_ports</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interest</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#Node.iterate_ports" title="Permalink to this definition"></a></dt>
+<dd><p>Binds <code class="xref c c-func docutils literal notranslate"><span class="pre">wp_node_iterate_ports()</span></code></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the proxy</p></li>
+<li><p><strong>interest</strong> (<a class="reference internal" href="lua_object_interest_api.html#lua-object-interest-api"><span class="std std-ref">Interest</span></a> or nil or none) – an interest to filter objects</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>all the ports of this node that that match the interest</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Iterator; the iteration items are of type <a class="reference internal" href="../c_api/port_api.html#port-api"><span class="std std-ref">WpPort</span></a></p>
+</dd>
+<dt class="field-even">Since</dt>
+<dd class="field-even"><p>0.4.2</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="Node.lookup_port">
+<span class="sig-prename descclassname"><span class="pre">Node.</span></span><span class="sig-name descname"><span class="pre">lookup_port</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interest</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#Node.lookup_port" title="Permalink to this definition"></a></dt>
+<dd><p>Binds <a class="reference internal" href="../c_api/node_api.html#c.wp_node_lookup_port" title="wp_node_lookup_port"><code class="xref c c-func docutils literal notranslate"><span class="pre">wp_node_lookup_port()</span></code></a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the proxy</p></li>
+<li><p><strong>interest</strong> (<a class="reference internal" href="lua_object_interest_api.html#lua-object-interest-api"><span class="std std-ref">Interest</span></a> or nil or none) – the interest to use for the lookup</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the first port of this node that matches the interest</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="../c_api/port_api.html#port-api"><span class="std std-ref">WpPort</span></a></p>
+</dd>
+<dt class="field-even">Since</dt>
+<dd class="field-even"><p>0.4.2</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="Node.send_command">
+<span class="sig-prename descclassname"><span class="pre">Node.</span></span><span class="sig-name descname"><span class="pre">send_command</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">command</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#Node.send_command" title="Permalink to this definition"></a></dt>
+<dd><p>Binds <a class="reference internal" href="../c_api/node_api.html#c.wp_node_send_command" title="wp_node_send_command"><code class="xref c c-func docutils literal notranslate"><span class="pre">wp_node_send_command()</span></code></a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the proxy</p></li>
+<li><p><strong>command</strong> (<em>string</em>) – the command to send to the node (ex “Suspend”)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="pipewire-port">
+<h2>PipeWire Port<a class="headerlink" href="#pipewire-port" title="Permalink to this headline"></a></h2>
+<p>Lua objects that bind a <a class="reference internal" href="../c_api/port_api.html#port-api"><span class="std std-ref">WpPort</span></a> contain the following methods:</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="Port.get_direction">
+<span class="sig-prename descclassname"><span class="pre">Port.</span></span><span class="sig-name descname"><span class="pre">get_direction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#Port.get_direction" title="Permalink to this definition"></a></dt>
+<dd><p>Binds <a class="reference internal" href="../c_api/port_api.html#c.wp_port_get_direction" title="wp_port_get_direction"><code class="xref c c-func docutils literal notranslate"><span class="pre">wp_port_get_direction()</span></code></a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>self</strong> – the port</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the direction of the Port</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>string (<a class="reference internal" href="../c_api/port_api.html#c.WpDirection" title="WpDirection"><code class="xref c c-enum docutils literal notranslate"><span class="pre">WpDirection</span></code></a>)</p>
+</dd>
+<dt class="field-even">Since</dt>
+<dd class="field-even"><p>0.4.2</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="pipewire-client">
+<h2>PipeWire Client<a class="headerlink" href="#pipewire-client" title="Permalink to this headline"></a></h2>
+<p>Lua objects that bind a <a class="reference internal" href="../c_api/client_api.html#client-api"><span class="std std-ref">WpClient</span></a>
+contain the following methods:</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="Client.update_permissions">
+<span class="sig-prename descclassname"><span class="pre">Client.</span></span><span class="sig-name descname"><span class="pre">update_permissions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">perms</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#Client.update_permissions" title="Permalink to this definition"></a></dt>
+<dd><p>Binds <a class="reference internal" href="../c_api/client_api.html#c.wp_client_update_permissions" title="wp_client_update_permissions"><code class="xref c c-func docutils literal notranslate"><span class="pre">wp_client_update_permissions()</span></code></a></p>
+<p>Takes a table where the keys are object identifiers and the values are
+permission strings.</p>
+<p>Valid object identifiers are:</p>
+<ul class="simple">
+<li><p>A number, meaning the bound ID of a proxy</p></li>
+<li><p>The string “any” or the string “all”, which sets the default permissions
+for this client</p></li>
+</ul>
+<p>The permission strings have a chmod-like syntax (ex. “rwx” or “r-xm”), where:</p>
+<ul class="simple">
+<li><p>“r” means permission to read the object</p></li>
+<li><p>“w” means permission to write data to the object</p></li>
+<li><p>“x” means permission to call methods on the object</p></li>
+<li><p>“m” means permission to set metadata for the object</p></li>
+<li><p>“-” is ignored and can be used to make the string more readable when
+a permission flag is omitted</p></li>
+</ul>
+<p><strong>Example:</strong></p>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="n">client</span><span class="p">:</span><span class="n">update_permissions</span> <span class="p">{</span>
+  <span class="p">[</span><span class="s2">&quot;all&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;r-x&quot;</span><span class="p">,</span>
+  <span class="p">[</span><span class="mi">35</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;rwxm&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the proxy</p></li>
+<li><p><strong>perms</strong> (<em>table</em>) – the permissions to update for this client</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="pipewire-metadata">
+<h2>PipeWire Metadata<a class="headerlink" href="#pipewire-metadata" title="Permalink to this headline"></a></h2>
+<p>Lua objects that bind a <a class="reference internal" href="../c_api/metadata_api.html#metadata-api"><span class="std std-ref">WpMetadata</span></a>
+contain the following methods:</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="Metadata.iterate">
+<span class="sig-prename descclassname"><span class="pre">Metadata.</span></span><span class="sig-name descname"><span class="pre">iterate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subject</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#Metadata.iterate" title="Permalink to this definition"></a></dt>
+<dd><p>Binds <a class="reference internal" href="../c_api/metadata_api.html#c.wp_metadata_new_iterator" title="wp_metadata_new_iterator"><code class="xref c c-func docutils literal notranslate"><span class="pre">wp_metadata_new_iterator()</span></code></a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the proxy</p></li>
+<li><p><strong>subject</strong> (<em>integer</em>) – the subject id</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>an iterator</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="Metadata.find">
+<span class="sig-prename descclassname"><span class="pre">Metadata.</span></span><span class="sig-name descname"><span class="pre">find</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subject</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#Metadata.find" title="Permalink to this definition"></a></dt>
+<dd><p>Binds <a class="reference internal" href="../c_api/metadata_api.html#c.wp_metadata_find" title="wp_metadata_find"><code class="xref c c-func docutils literal notranslate"><span class="pre">wp_metadata_find()</span></code></a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the proxy</p></li>
+<li><p><strong>subject</strong> (<em>string</em>) – the subject id</p></li>
+<li><p><strong>key</strong> (<em>string</em>) – the metadata key to find</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the value for this metadata key, the type of the value</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>string, string</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="lua_object_interest_api.html" class="btn btn-neutral float-left" title="Object Interest" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="lua_session_item_api.html" class="btn btn-neutral float-right" title="Session Item" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Collabora.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

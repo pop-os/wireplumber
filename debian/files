@@ -1,0 +1,8 @@
+gir1.2-wp-0.4_0.4.16_amd64.deb introspection optional
+libwireplumber-0.4-0-dbgsym_0.4.16_amd64.ddeb debug optional automatic=yes
+libwireplumber-0.4-0_0.4.16_amd64.deb libs optional
+libwireplumber-0.4-dev_0.4.16_amd64.deb libdevel optional
+wireplumber-dbgsym_0.4.16_amd64.ddeb debug optional automatic=yes
+wireplumber-doc_0.4.16_all.deb doc optional
+wireplumber_0.4.16_amd64.buildinfo libs optional
+wireplumber_0.4.16_amd64.deb video optional

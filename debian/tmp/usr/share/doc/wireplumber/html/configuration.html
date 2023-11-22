@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Configuration &mdash; WirePlumber 0.4.16 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Locations of files" href="configuration/locations.html" />
+    <link rel="prev" title="Running the WirePlumber daemon" href="running-wireplumber-daemon.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> WirePlumber
+          </a>
+              <div class="version">
+                0.4.16
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">The WirePlumber Daemon</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installing-wireplumber.html">Installing WirePlumber</a></li>
+<li class="toctree-l1"><a class="reference internal" href="running-wireplumber-daemon.html">Running the WirePlumber daemon</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="configuration/locations.html">Locations of files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="configuration/main.html">Main configuration file</a></li>
+<li class="toctree-l2"><a class="reference internal" href="configuration/config_lua.html">Lua Configuration Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="configuration/multi_instance.html">Running multiple instances</a></li>
+<li class="toctree-l2"><a class="reference internal" href="configuration/alsa.html">ALSA configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="configuration/bluetooth.html">Bluetooth configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="configuration/policy.html">Policy Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="configuration/access.html">Access configuration</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="daemon-logging.html">Debug Logging</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">The WirePlumber Library</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="c_api.html">C API Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lua_api.html">Lua API Documentation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Resources</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing to WirePlumber</a></li>
+<li class="toctree-l1"><a class="reference internal" href="testing.html">Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="community.html">Community Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="releases.html">Releases</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">WirePlumber</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Configuration</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/configuration.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="running-wireplumber-daemon.html" class="btn btn-neutral float-left" title="Running the WirePlumber daemon" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="configuration/locations.html" class="btn btn-neutral float-right" title="Locations of files" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+  </div>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <blockquote>
+<div></div></blockquote>
+<section id="configuration">
+<span id="id1"></span><h1>Configuration<a class="headerlink" href="#configuration" title="Permalink to this headline"></a></h1>
+<p>WirePlumber is a heavily modular daemon. By itself, it doesn’t do anything
+except load the configured modules. All the rest of the logic is implemented
+inside those modules.</p>
+<p>Modular design ensures that it is possible to swap the implementation of
+specific functionality without having to re-implement the rest of it, allowing
+flexibility on target-sensitive parts, such as policy management and
+making use of non-standard hardware.</p>
+<p>At startup, WirePlumber first reads its <strong>main</strong> configuration file.
+This file configures the operation context (properties of the daemon,
+modules to be loaded, etc). This file may also specify additional, secondary
+configuration files which will be loaded as well at the time of parsing the
+main file.</p>
+<p>All files and modules are specified relative to their standard search locations,
+which are documented later in this chapter.</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="configuration/locations.html">Locations of files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configuration/main.html">Main configuration file</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configuration/config_lua.html">Lua Configuration Files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configuration/multi_instance.html">Running multiple instances</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configuration/alsa.html">ALSA configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configuration/bluetooth.html">Bluetooth configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configuration/policy.html">Policy Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configuration/access.html">Access configuration</a></li>
+</ul>
+</div>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="running-wireplumber-daemon.html" class="btn btn-neutral float-left" title="Running the WirePlumber daemon" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="configuration/locations.html" class="btn btn-neutral float-right" title="Locations of files" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Collabora.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

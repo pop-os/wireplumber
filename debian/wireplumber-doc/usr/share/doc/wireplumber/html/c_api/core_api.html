@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Core &mdash; WirePlumber 0.4.16 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="WpObject" href="object_api.html" />
+    <link rel="prev" title="Library Initialization" href="wp_api.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> WirePlumber
+          </a>
+              <div class="version">
+                0.4.16
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">The WirePlumber Daemon</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installing-wireplumber.html">Installing WirePlumber</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../running-wireplumber-daemon.html">Running the WirePlumber daemon</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../daemon-logging.html">Debug Logging</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">The WirePlumber Library</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../c_api.html">C API Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="wp_api.html">Library Initialization</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Core</a></li>
+<li class="toctree-l2"><a class="reference internal" href="object_api.html">WpObject</a></li>
+<li class="toctree-l2"><a class="reference internal" href="obj_manager_api.html">Object Manager</a></li>
+<li class="toctree-l2"><a class="reference internal" href="obj_interest_api.html">Object Interest</a></li>
+<li class="toctree-l2"><a class="reference internal" href="iterator_api.html">Iterator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="transitions_api.html">Transitions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wperror_api.html">Error Codes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="log_api.html">Debug Logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="proxy_api.html">PipeWire Proxy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipewire_object_api.html">PipeWire Object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="global_proxy_api.html">PipeWire Global Object Proxy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="node_api.html">PipeWire Node</a></li>
+<li class="toctree-l2"><a class="reference internal" href="port_api.html">PipeWire Port</a></li>
+<li class="toctree-l2"><a class="reference internal" href="link_api.html">PipeWire Link</a></li>
+<li class="toctree-l2"><a class="reference internal" href="device_api.html">PipeWire Device</a></li>
+<li class="toctree-l2"><a class="reference internal" href="client_api.html">PipeWire Client</a></li>
+<li class="toctree-l2"><a class="reference internal" href="metadata_api.html">PipeWire Metadata</a></li>
+<li class="toctree-l2"><a class="reference internal" href="endpoint_api.html">PipeWire Endpoint</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spa_device_api.html">Spa Device</a></li>
+<li class="toctree-l2"><a class="reference internal" href="impl_node_api.html">Local Nodes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="impl_module_api.html">Local Modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="properties_api.html">Properties Dictionary</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spa_type_api.html">Spa Type Information</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spa_json_api.html">Spa Json</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spa_pod_api.html">Spa Pod (Plain Old Data)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plugin_api.html">Plugins</a></li>
+<li class="toctree-l2"><a class="reference internal" href="component_loader_api.html">Component Loader</a></li>
+<li class="toctree-l2"><a class="reference internal" href="session_item_api.html">Session Items</a></li>
+<li class="toctree-l2"><a class="reference internal" href="si_interfaces_api.html">Session Items Interfaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="si_factory_api.html">Session Items Factory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="state_api.html">State Storage</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../lua_api.html">Lua API Documentation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Resources</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing to WirePlumber</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../testing.html">Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../community.html">Community Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Releases</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">WirePlumber</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../c_api.html">C API Documentation</a> &raquo;</li>
+      <li>Core</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/c_api/core_api.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="wp_api.html" class="btn btn-neutral float-left" title="Library Initialization" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="object_api.html" class="btn btn-neutral float-right" title="WpObject" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+  </div>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="core">
+<span id="core-api"></span><h1>Core<a class="headerlink" href="#core" title="Permalink to this headline"></a></h1>
+<div align="center" class="align-center"><div class="graphviz"><object data="../_images/graphviz-6a3b59a3e4ecd5d2e34c12d0c8c6c17b80adb1a4.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph inheritance {
+    rankdir=LR;
+    GObject -&gt; WpCore;
+ }</p></object></div>
+</div>
+<dl class="c struct">
+<dt class="sig sig-object c" id="c.WpCore">
+<span class="target" id="structWpCore"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">WpCore</span></span></span><a class="headerlink" href="#c.WpCore" title="Permalink to this definition"></a><br /></dt>
+<dd><p>The core is the central object around which everything operates. It is essential to create a WpCore before using any other WirePlumber API.</p>
+<p>The core object has the following responsibilities:<ul class="simple">
+<li><p>it initializes the PipeWire library</p></li>
+<li><p>it creates a <code class="docutils literal notranslate"><span class="pre">pw_context</span></code> and allows connecting to the PipeWire server, creating a local <code class="docutils literal notranslate"><span class="pre">pw_core</span></code></p></li>
+<li><p>it glues the PipeWire library’s event loop system with GMainLoop</p></li>
+<li><p>it maintains a list of registered objects, which other classes use to keep objects loaded permanently into memory</p></li>
+<li><p>it watches the PipeWire registry and keeps track of remote and local objects that appear in the registry, making them accessible through the WpObjectManager API.</p></li>
+</ul>
+</p>
+<p><strong>GObject</strong> <strong>Properties</strong> </p>
+<p><dl>
+<dt class="sig sig-object cpp">
+<span class="pre">g-main-context</span></dt>
+<dd><p></p>
+<p>A GMainContext to attach to</p>
+<p><table class="colwidths-auto docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">GMainContext</span> <span class="pre">*</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">G_PARAM_READWRITE</span> <span class="pre">|</span> <span class="pre">G_PARAM_CONSTRUCT_ONLY</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</p>
+</dd></dl>
+
+</p>
+<p><dl>
+<dt class="sig sig-object cpp">
+<span class="pre">properties</span></dt>
+<dd><p></p>
+<p>The pipewire properties of the pw_core</p>
+<p><table class="colwidths-auto docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">WpProperties</span> <span class="pre">*</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">G_PARAM_READWRITE</span> <span class="pre">|</span> <span class="pre">G_PARAM_CONSTRUCT_ONLY</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</p>
+</dd></dl>
+
+</p>
+<p><dl>
+<dt class="sig sig-object cpp">
+<span class="pre">pw-context</span></dt>
+<dd><p></p>
+<p>The pipewire context</p>
+<p><table class="colwidths-auto docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">gpointer</span> <span class="pre">(struct</span> <span class="pre">pw_context</span> <span class="pre">*)</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">G_PARAM_READABLE</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</p>
+</dd></dl>
+
+</p>
+<p><dl>
+<dt class="sig sig-object cpp">
+<span class="pre">pw-core</span></dt>
+<dd><p></p>
+<p>The pipewire core</p>
+<p><table class="colwidths-auto docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">gpointer</span> <span class="pre">(struct</span> <span class="pre">pw_core</span> <span class="pre">*)</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">G_PARAM_READABLE</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</p>
+</dd></dl>
+
+</p>
+<p><strong>GObject</strong> <strong>Signals</strong> </p>
+<p><dl class="simple">
+<dt><strong>connected</strong></dt><dd><p><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">void</span>
+<span class="n">connected_callback</span> <span class="p">(</span><span class="n">WpCore</span> <span class="o">*</span> <span class="bp">self</span><span class="p">,</span>
+                    <span class="n">gpointer</span> <span class="n">user_data</span><span class="p">)</span>
+</pre></div>
+</div>
+ Emitted when the core is successfully connected to the PipeWire server </p>
+</dd>
+</dl>
+</p>
+<p><dl class="simple">
+<dt><strong>disconnected</strong></dt><dd><p><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">void</span>
+<span class="n">disconnected_callback</span> <span class="p">(</span><span class="n">WpCore</span> <span class="o">*</span> <span class="bp">self</span><span class="p">,</span>
+                       <span class="n">gpointer</span> <span class="n">user_data</span><span class="p">)</span>
+</pre></div>
+</div>
+ Emitted when the core is disconnected from the PipeWire server </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_core_new">
+<span class="target" id="group__wpcore_1gad741ecafe4e8d4fc851c7ec291e132b6"></span><a class="reference internal" href="#c.WpCore" title="WpCore"><span class="n"><span class="pre">WpCore</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_core_new</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">GMainContext</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">context</span></span>, <a class="reference internal" href="properties_api.html#c.WpProperties" title="WpProperties"><span class="n"><span class="pre">WpProperties</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">properties</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_core_new" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Creates a new core object. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>context</strong> – (transfer none) (nullable): the GMainContext to use for events </p></li>
+<li><p><strong>properties</strong> – (transfer full) (nullable): additional properties, which are passed to pw_context_new() and pw_context_connect() </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full): a new WpCore </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_core_clone">
+<span class="target" id="group__wpcore_1ga22e28d029db23c7ee9d300da17f35bd3"></span><a class="reference internal" href="#c.WpCore" title="WpCore"><span class="n"><span class="pre">WpCore</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_core_clone</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpCore" title="WpCore"><span class="n"><span class="pre">WpCore</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_core_clone" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Clones a core with the same context as <em>self</em>. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the core </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full): the clone WpCore </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_core_get_g_main_context">
+<span class="target" id="group__wpcore_1gac65ea25f025f639f7b98e220e3e3dac5"></span><span class="n"><span class="pre">GMainContext</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_core_get_g_main_context</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpCore" title="WpCore"><span class="n"><span class="pre">WpCore</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_core_get_g_main_context" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Gets the GMainContext of the core. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the core </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer none) (nullable): the GMainContext that is in use by this core for events </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_core_get_pw_context">
+<span class="target" id="group__wpcore_1ga4d00d920b191d5bc185773398a929305"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">pw_context</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_core_get_pw_context</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpCore" title="WpCore"><span class="n"><span class="pre">WpCore</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_core_get_pw_context" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Gets the internal PipeWire context of the core. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the core </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer none): the internal pw_context object </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_core_get_pw_core">
+<span class="target" id="group__wpcore_1ga17a108fdb0ebece9528521246730eb92"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">pw_core</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_core_get_pw_core</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpCore" title="WpCore"><span class="n"><span class="pre">WpCore</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_core_get_pw_core" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Gets the internal PipeWire core of the core. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the core </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer none) (nullable): the internal pw_core object, or NULL if the core is not connected to PipeWire </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_core_get_vm_type">
+<span class="target" id="group__wpcore_1gaf2ffb945d508f4e8b2931ba5d302cc0c"></span><span class="n"><span class="pre">gchar</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_core_get_vm_type</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpCore" title="WpCore"><span class="n"><span class="pre">WpCore</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_core_get_vm_type" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Gets the virtual machine type of the core. </p>
+<p><dl class="simple">
+<dt><strong>Since</strong></dt><dd><p>0.4.11 </p>
+</dd>
+</dl>
+</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the core </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full) (nullable): a comma separated string with all the virtual machine types that this core matches, or NULL if the core is not running in a virtual machine.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_core_connect">
+<span class="target" id="group__wpcore_1gaa6ff9297a1ffc7ddc16ba2039c828fdc"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_core_connect</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpCore" title="WpCore"><span class="n"><span class="pre">WpCore</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_core_connect" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Connects this core to the PipeWire server. </p>
+<p>When connection succeeds, the WpCore <code class="docutils literal notranslate"><span class="pre">&quot;connected&quot;</span></code> signal is emitted.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the core </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if the core is effectively connected or FALSE if connection failed </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_core_disconnect">
+<span class="target" id="group__wpcore_1gaad0881ec39861df1189f76e503ce60d2"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_core_disconnect</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpCore" title="WpCore"><span class="n"><span class="pre">WpCore</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_core_disconnect" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Disconnects this core from the PipeWire server. </p>
+<p>This also effectively destroys all WpCore objects that were created through the registry, destroys the pw_core and finally emits the WpCore <code class="docutils literal notranslate"><span class="pre">&quot;disconnected&quot;</span></code> signal.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the core </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_core_is_connected">
+<span class="target" id="group__wpcore_1gab1ba26b4957876b0f5d9ec85325efb06"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_core_is_connected</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpCore" title="WpCore"><span class="n"><span class="pre">WpCore</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_core_is_connected" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Checks if the core is connected to PipeWire. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the core </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if the core is connected to PipeWire, FALSE otherwise </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_core_get_own_bound_id">
+<span class="target" id="group__wpcore_1ga890deaccab04b72a87a7f15f25f38293"></span><span class="n"><span class="pre">guint32</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_core_get_own_bound_id</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpCore" title="WpCore"><span class="n"><span class="pre">WpCore</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_core_get_own_bound_id" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Gets the bound id of the client object that is created as a result of this core being connected to the PipeWire daemon. </p>
+<p><dl class="simple">
+<dt><strong>Since</strong></dt><dd><p>0.4.16 </p>
+</dd>
+</dl>
+</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the core </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the bound id of this client </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_core_get_remote_cookie">
+<span class="target" id="group__wpcore_1ga892f1b26e03138448e321577014d221b"></span><span class="n"><span class="pre">guint32</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_core_get_remote_cookie</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpCore" title="WpCore"><span class="n"><span class="pre">WpCore</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_core_get_remote_cookie" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Gets the cookie of the core’s connected PipeWire instance. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the core </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The cookie of the PipeWire instance that <em>self</em> is connected to. The cookie is a unique random number for identifying an instance of PipeWire </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_core_get_remote_name">
+<span class="target" id="group__wpcore_1ga84161b769bfb402cc4e9c9038bce7266"></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">gchar</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_core_get_remote_name</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpCore" title="WpCore"><span class="n"><span class="pre">WpCore</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_core_get_remote_name" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Gets the name of the core’s connected PipeWire instance. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the core </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The name of the PipeWire instance that <em>self</em> is connected to </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_core_get_remote_user_name">
+<span class="target" id="group__wpcore_1ga11450656845ae3fb76649bb0d5271680"></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">gchar</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_core_get_remote_user_name</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpCore" title="WpCore"><span class="n"><span class="pre">WpCore</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_core_get_remote_user_name" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Gets the user name of the core’s connected PipeWire instance. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the core </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The name of the user that started the PipeWire instance that <em>self</em> is connected to </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_core_get_remote_host_name">
+<span class="target" id="group__wpcore_1ga82de44efcb073a5202bb14849769073c"></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">gchar</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_core_get_remote_host_name</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpCore" title="WpCore"><span class="n"><span class="pre">WpCore</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_core_get_remote_host_name" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Gets the host name of the core’s connected PipeWire instance. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the core </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The name of the host where the PipeWire instance that <em>self</em> is connected to is running on </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_core_get_remote_version">
+<span class="target" id="group__wpcore_1ga48944493a046347c797d986347d6fc6a"></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">gchar</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_core_get_remote_version</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpCore" title="WpCore"><span class="n"><span class="pre">WpCore</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_core_get_remote_version" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Gets the version of the core’s connected PipeWire instance. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the core </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The version of the PipeWire instance that <em>self</em> is connected to </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_core_get_remote_properties">
+<span class="target" id="group__wpcore_1gae8a290868ffad51e8d7714116286b2f4"></span><a class="reference internal" href="properties_api.html#c.WpProperties" title="WpProperties"><span class="n"><span class="pre">WpProperties</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_core_get_remote_properties</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpCore" title="WpCore"><span class="n"><span class="pre">WpCore</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_core_get_remote_properties" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Gets the properties of the core’s connected PipeWire instance. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the core </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full): the properties of the PipeWire instance that <em>self</em> is connected to </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_core_get_properties">
+<span class="target" id="group__wpcore_1ga9431cc1475e6ca476c04ae365015c91a"></span><a class="reference internal" href="properties_api.html#c.WpProperties" title="WpProperties"><span class="n"><span class="pre">WpProperties</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_core_get_properties</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpCore" title="WpCore"><span class="n"><span class="pre">WpCore</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_core_get_properties" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Gets the properties of the core. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the core </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full): the properties of <em>self</em> </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_core_update_properties">
+<span class="target" id="group__wpcore_1ga0725a74724a327a52670e0a80d2931a4"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_core_update_properties</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpCore" title="WpCore"><span class="n"><span class="pre">WpCore</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <a class="reference internal" href="properties_api.html#c.WpProperties" title="WpProperties"><span class="n"><span class="pre">WpProperties</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">updates</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_core_update_properties" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Updates the properties of <em>self</em> on the connection, making them appear on the client object that represents this connection. </p>
+<p>If <em>self</em> is not connected yet, these properties are stored and passed to pw_context_connect() when connecting.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the core </p></li>
+<li><p><strong>updates</strong> – (transfer full): updates to apply to the properties of <em>self</em>; this does not need to include properties that have not changed </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_core_idle_add">
+<span class="target" id="group__wpcore_1ga04d7b52144f0ae3355899fa481ce0f0c"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_core_idle_add</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpCore" title="WpCore"><span class="n"><span class="pre">WpCore</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="n"><span class="pre">GSource</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">source</span></span>, <span class="n"><span class="pre">GSourceFunc</span></span><span class="w"> </span><span class="n"><span class="pre">function</span></span>, <span class="n"><span class="pre">gpointer</span></span><span class="w"> </span><span class="n"><span class="pre">data</span></span>, <span class="n"><span class="pre">GDestroyNotify</span></span><span class="w"> </span><span class="n"><span class="pre">destroy</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_core_idle_add" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Adds an idle callback to be called in the same GMainContext as the one used by this core. </p>
+<p>This is essentially the same as g_idle_add_full(), but it adds the created GSource on the GMainContext used by this core instead of the default context.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the core </p></li>
+<li><p><strong>source</strong> – (out) (optional): the source </p></li>
+<li><p><strong>function</strong> – (scope notified): the function to call </p></li>
+<li><p><strong>data</strong> – (closure): data to pass to <em>function</em> </p></li>
+<li><p><strong>destroy</strong> – (nullable): a function to destroy <em>data</em> </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_core_idle_add_closure">
+<span class="target" id="group__wpcore_1ga3ff551cc6072863e5b4c3f6a6ab8b84b"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_core_idle_add_closure</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpCore" title="WpCore"><span class="n"><span class="pre">WpCore</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="n"><span class="pre">GSource</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">source</span></span>, <span class="n"><span class="pre">GClosure</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">closure</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_core_idle_add_closure" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Adds an idle callback to be called in the same GMainContext as the one used by this core. </p>
+<p>This is the same as <a class="reference internal" href="#group__wpcore_1ga04d7b52144f0ae3355899fa481ce0f0c"><span class="std std-ref">wp_core_idle_add()</span></a>, but it allows you to specify a GClosure instead of a C callback.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the core </p></li>
+<li><p><strong>source</strong> – (out) (optional): the source </p></li>
+<li><p><strong>closure</strong> – the closure to invoke </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_core_timeout_add">
+<span class="target" id="group__wpcore_1ga29ad04c1f17265f8c8a45b0bddc4b2ac"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_core_timeout_add</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpCore" title="WpCore"><span class="n"><span class="pre">WpCore</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="n"><span class="pre">GSource</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">source</span></span>, <span class="n"><span class="pre">guint</span></span><span class="w"> </span><span class="n"><span class="pre">timeout_ms</span></span>, <span class="n"><span class="pre">GSourceFunc</span></span><span class="w"> </span><span class="n"><span class="pre">function</span></span>, <span class="n"><span class="pre">gpointer</span></span><span class="w"> </span><span class="n"><span class="pre">data</span></span>, <span class="n"><span class="pre">GDestroyNotify</span></span><span class="w"> </span><span class="n"><span class="pre">destroy</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_core_timeout_add" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Adds a timeout callback to be called at regular intervals in the same GMainContext as the one used by this core. </p>
+<p>The function is called repeatedly until it returns FALSE, at which point the timeout is automatically destroyed and the function will not be called again. The first call to the function will be at the end of the first interval.</p>
+<p>This is essentially the same as g_timeout_add_full(), but it adds the created GSource on the GMainContext used by this core instead of the default context.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the core </p></li>
+<li><p><strong>source</strong> – (out) (optional): the source </p></li>
+<li><p><strong>timeout_ms</strong> – the timeout in milliseconds </p></li>
+<li><p><strong>function</strong> – (scope notified): the function to call </p></li>
+<li><p><strong>data</strong> – (closure): data to pass to <em>function</em> </p></li>
+<li><p><strong>destroy</strong> – (nullable): a function to destroy <em>data</em> </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_core_timeout_add_closure">
+<span class="target" id="group__wpcore_1gab05e6192f0dbe4196fe8e191381e5a39"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_core_timeout_add_closure</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpCore" title="WpCore"><span class="n"><span class="pre">WpCore</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="n"><span class="pre">GSource</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">source</span></span>, <span class="n"><span class="pre">guint</span></span><span class="w"> </span><span class="n"><span class="pre">timeout_ms</span></span>, <span class="n"><span class="pre">GClosure</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">closure</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_core_timeout_add_closure" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Adds a timeout callback to be called at regular intervals in the same GMainContext as the one used by this core. </p>
+<p>This is the same as <a class="reference internal" href="#group__wpcore_1ga29ad04c1f17265f8c8a45b0bddc4b2ac"><span class="std std-ref">wp_core_timeout_add()</span></a>, but it allows you to specify a GClosure instead of a C callback.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the core </p></li>
+<li><p><strong>source</strong> – (out) (optional): the source </p></li>
+<li><p><strong>timeout_ms</strong> – the timeout in milliseconds </p></li>
+<li><p><strong>closure</strong> – the closure to invoke </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_core_sync">
+<span class="target" id="group__wpcore_1gafe1bac3617d96493c972cb49f2a9fc7d"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_core_sync</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpCore" title="WpCore"><span class="n"><span class="pre">WpCore</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="n"><span class="pre">GCancellable</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">cancellable</span></span>, <span class="n"><span class="pre">GAsyncReadyCallback</span></span><span class="w"> </span><span class="n"><span class="pre">callback</span></span>, <span class="n"><span class="pre">gpointer</span></span><span class="w"> </span><span class="n"><span class="pre">user_data</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_core_sync" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Asks the PipeWire server to call the <em>callback</em> via an event. </p>
+<p>Since methods are handled in-order and events are delivered in-order, this can be used as a barrier to ensure all previous methods and the resulting events have been handled.</p>
+<p>In both success and error cases, <em>callback</em> is always called. Use <a class="reference internal" href="#group__wpcore_1gac1af83f912f5709805cab18aba66b87c"><span class="std std-ref">wp_core_sync_finish()</span></a> from within the <em>callback</em> to determine whether the operation completed successfully or if an error occurred.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the core </p></li>
+<li><p><strong>cancellable</strong> – (nullable): a GCancellable to cancel the operation </p></li>
+<li><p><strong>callback</strong> – (scope async): a function to call when the operation is done </p></li>
+<li><p><strong>user_data</strong> – (closure): data to pass to <em>callback</em> </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if the sync operation was started, FALSE if an error occurred before returning from this function </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_core_sync_closure">
+<span class="target" id="group__wpcore_1ga2f1f748462210feb703e48409959e729"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_core_sync_closure</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpCore" title="WpCore"><span class="n"><span class="pre">WpCore</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="n"><span class="pre">GCancellable</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">cancellable</span></span>, <span class="n"><span class="pre">GClosure</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">closure</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_core_sync_closure" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Asks the PipeWire server to invoke the <em>closure</em> via an event. </p>
+<p>Since methods are handled in-order and events are delivered in-order, this can be used as a barrier to ensure all previous methods and the resulting events have been handled.</p>
+<p>In both success and error cases, <em>closure</em> is always invoked. Use <a class="reference internal" href="#group__wpcore_1gac1af83f912f5709805cab18aba66b87c"><span class="std std-ref">wp_core_sync_finish()</span></a> from within the <em>closure</em> to determine whether the operation completed successfully or if an error occurred.</p>
+<p><dl class="simple">
+<dt><strong>Since</strong></dt><dd><p>0.4.6 </p>
+</dd>
+</dl>
+</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the core </p></li>
+<li><p><strong>cancellable</strong> – (nullable): a GCancellable to cancel the operation </p></li>
+<li><p><strong>closure</strong> – (transfer floating): a closure to invoke when the operation is done </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if the sync operation was started, FALSE if an error occurred before returning from this function </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_core_sync_finish">
+<span class="target" id="group__wpcore_1gac1af83f912f5709805cab18aba66b87c"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_core_sync_finish</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpCore" title="WpCore"><span class="n"><span class="pre">WpCore</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="n"><span class="pre">GAsyncResult</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">res</span></span>, <span class="n"><span class="pre">GError</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">error</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_core_sync_finish" title="Permalink to this definition"></a><br /></dt>
+<dd><p>This function is meant to be called from within the callback of <a class="reference internal" href="#group__wpcore_1gafe1bac3617d96493c972cb49f2a9fc7d"><span class="std std-ref">wp_core_sync()</span></a> in order to determine the success or failure of the operation. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the core </p></li>
+<li><p><strong>res</strong> – a GAsyncResult </p></li>
+<li><p><strong>error</strong> – (out) (optional): the error that occurred, if any </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if the operation succeeded, FALSE otherwise </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.WP_TYPE_CORE">
+<span class="target" id="group__wpcore_1ga1eda208ab416411995ae14e908b57d33"></span><span class="sig-name descname"><span class="n"><span class="pre">WP_TYPE_CORE</span></span></span> <span class="pre">(wp_core_get_type</span> <span class="pre">())</span><a class="headerlink" href="#c.WP_TYPE_CORE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>The WpCore GType. </p>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="wp_api.html" class="btn btn-neutral float-left" title="Library Initialization" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="object_api.html" class="btn btn-neutral float-right" title="WpObject" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Collabora.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

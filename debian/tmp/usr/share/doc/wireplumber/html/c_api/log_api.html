@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Debug Logging &mdash; WirePlumber 0.4.16 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="PipeWire Proxy" href="proxy_api.html" />
+    <link rel="prev" title="Error Codes" href="wperror_api.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> WirePlumber
+          </a>
+              <div class="version">
+                0.4.16
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">The WirePlumber Daemon</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installing-wireplumber.html">Installing WirePlumber</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../running-wireplumber-daemon.html">Running the WirePlumber daemon</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../daemon-logging.html">Debug Logging</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">The WirePlumber Library</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../c_api.html">C API Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="wp_api.html">Library Initialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core_api.html">Core</a></li>
+<li class="toctree-l2"><a class="reference internal" href="object_api.html">WpObject</a></li>
+<li class="toctree-l2"><a class="reference internal" href="obj_manager_api.html">Object Manager</a></li>
+<li class="toctree-l2"><a class="reference internal" href="obj_interest_api.html">Object Interest</a></li>
+<li class="toctree-l2"><a class="reference internal" href="iterator_api.html">Iterator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="transitions_api.html">Transitions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wperror_api.html">Error Codes</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Debug Logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="proxy_api.html">PipeWire Proxy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipewire_object_api.html">PipeWire Object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="global_proxy_api.html">PipeWire Global Object Proxy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="node_api.html">PipeWire Node</a></li>
+<li class="toctree-l2"><a class="reference internal" href="port_api.html">PipeWire Port</a></li>
+<li class="toctree-l2"><a class="reference internal" href="link_api.html">PipeWire Link</a></li>
+<li class="toctree-l2"><a class="reference internal" href="device_api.html">PipeWire Device</a></li>
+<li class="toctree-l2"><a class="reference internal" href="client_api.html">PipeWire Client</a></li>
+<li class="toctree-l2"><a class="reference internal" href="metadata_api.html">PipeWire Metadata</a></li>
+<li class="toctree-l2"><a class="reference internal" href="endpoint_api.html">PipeWire Endpoint</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spa_device_api.html">Spa Device</a></li>
+<li class="toctree-l2"><a class="reference internal" href="impl_node_api.html">Local Nodes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="impl_module_api.html">Local Modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="properties_api.html">Properties Dictionary</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spa_type_api.html">Spa Type Information</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spa_json_api.html">Spa Json</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spa_pod_api.html">Spa Pod (Plain Old Data)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plugin_api.html">Plugins</a></li>
+<li class="toctree-l2"><a class="reference internal" href="component_loader_api.html">Component Loader</a></li>
+<li class="toctree-l2"><a class="reference internal" href="session_item_api.html">Session Items</a></li>
+<li class="toctree-l2"><a class="reference internal" href="si_interfaces_api.html">Session Items Interfaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="si_factory_api.html">Session Items Factory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="state_api.html">State Storage</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../lua_api.html">Lua API Documentation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Resources</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing to WirePlumber</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../testing.html">Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../community.html">Community Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Releases</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">WirePlumber</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../c_api.html">C API Documentation</a> &raquo;</li>
+      <li>Debug Logging</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/c_api/log_api.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="wperror_api.html" class="btn btn-neutral float-left" title="Error Codes" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="proxy_api.html" class="btn btn-neutral float-right" title="PipeWire Proxy" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+  </div>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="debug-logging">
+<span id="log-api"></span><h1>Debug Logging<a class="headerlink" href="#debug-logging" title="Permalink to this headline"></a></h1>
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_log_level_is_enabled">
+<span class="target" id="group__wplog_1ga6fc3e1c7a8278ae84a82d536d9468bd0"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_log_level_is_enabled</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">GLogLevelFlags</span></span><span class="w"> </span><span class="n"><span class="pre">log_level</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_log_level_is_enabled" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Use this to figure out if a debug message is going to be printed or not, so that you can avoid allocating resources just for debug logging purposes. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>log_level</strong> – a log level </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>whether the log level is currently enabled </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_log_set_level">
+<span class="target" id="group__wplog_1ga87cd3d36cd46c511a9bc4e004c7be0c2"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_log_set_level</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">gchar</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">level_str</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_log_set_level" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Configures the log level and enabled categories. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>level_str</strong> – a log level description string as it would appear in the WIREPLUMBER_DEBUG environment variable “level:category1,category2” </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_log_writer_default">
+<span class="target" id="group__wplog_1ga15cbc6e3faad3898ed750dd2e8e0b54b"></span><span class="n"><span class="pre">GLogWriterOutput</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_log_writer_default</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">GLogLevelFlags</span></span><span class="w"> </span><span class="n"><span class="pre">log_level</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">GLogField</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">fields</span></span>, <span class="n"><span class="pre">gsize</span></span><span class="w"> </span><span class="n"><span class="pre">n_fields</span></span>, <span class="n"><span class="pre">gpointer</span></span><span class="w"> </span><span class="n"><span class="pre">user_data</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_log_writer_default" title="Permalink to this definition"></a><br /></dt>
+<dd><p>WirePlumber’s GLogWriterFunc. </p>
+<p>This is installed automatically when you call <a class="reference internal" href="wp_api.html#group__wp_1gad7843f7640e3cc4775b71c8ada235556"><span class="std std-ref">wp_init()</span></a> with WP_INIT_SET_GLIB_LOG set in the flags </p>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_log_structured_standard">
+<span class="target" id="group__wplog_1ga9a24b05f2bfa71f853b7a0ba18644d66"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_log_structured_standard</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">gchar</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">log_domain</span></span>, <span class="n"><span class="pre">GLogLevelFlags</span></span><span class="w"> </span><span class="n"><span class="pre">log_level</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">gchar</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">file</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">gchar</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">line</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">gchar</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">func</span></span>, <span class="n"><span class="pre">GType</span></span><span class="w"> </span><span class="n"><span class="pre">object_type</span></span>, <span class="n"><span class="pre">gconstpointer</span></span><span class="w"> </span><span class="n"><span class="pre">object</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">gchar</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">message_format</span></span>, <span class="p"><span class="pre">...</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_log_structured_standard" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Used internally by the debug logging macros. Avoid using it directly. </p>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_spa_log_get_instance">
+<span class="target" id="group__wplog_1ga3a677bf6c7e5dc76c71a717cbf5389a8"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">spa_log</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_spa_log_get_instance</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_spa_log_get_instance" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Gets WirePlumber’s instance of <code class="docutils literal notranslate"><span class="pre">spa_log</span></code> </p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>WirePlumber’s instance of <code class="docutils literal notranslate"><span class="pre">spa_log</span></code>, which can be used to redirect PipeWire’s log messages to the currently installed GLogWriterFunc. This is installed automatically when you call <a class="reference internal" href="wp_api.html#group__wp_1gad7843f7640e3cc4775b71c8ada235556"><span class="std std-ref">wp_init()</span></a> with WP_INIT_SET_PW_LOG set in the flags </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.WP_LOG_LEVEL_TRACE">
+<span class="target" id="group__wplog_1gaaec41d6975c723afb61f6961a9fe1a81"></span><span class="sig-name descname"><span class="n"><span class="pre">WP_LOG_LEVEL_TRACE</span></span></span> <span class="pre">(1</span> <span class="pre">&lt;&lt;</span> <span class="pre">G_LOG_LEVEL_USER_SHIFT)</span><a class="headerlink" href="#c.WP_LOG_LEVEL_TRACE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>A custom GLib log level for trace messages (see GLogLevelFlags) </p>
+</dd></dl>
+
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.WP_OBJECT_FORMAT">
+<span class="target" id="group__wplog_1ga5185a22f32dd88ca2fd869ff1811ac34"></span><span class="sig-name descname"><span class="n"><span class="pre">WP_OBJECT_FORMAT</span></span></span> <span class="pre">&quot;&lt;%s:%p&gt;&quot;</span><a class="headerlink" href="#c.WP_OBJECT_FORMAT" title="Permalink to this definition"></a><br /></dt>
+<dd><p>A format string to print GObjects with <a class="reference internal" href="#group__wplog_1ga634185fa136a41e2c286b519bacc69d6"><span class="std std-ref">WP_OBJECT_ARGS()</span></a> For example: </p>
+<p><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">GObject</span> <span class="o">*</span><span class="n">myobj</span> <span class="o">=</span> <span class="o">...</span><span class="p">;</span>
+<span class="n">wp_debug</span> <span class="p">(</span><span class="s2">&quot;This: &quot;</span> <span class="n">WP_OBJECT_FORMAT</span> <span class="s2">&quot; is an object&quot;</span><span class="p">,</span> <span class="n">WP_OBJECT_ARGS</span> <span class="p">(</span><span class="n">myobj</span><span class="p">));</span>
+</pre></div>
+</div>
+ </p>
+</dd></dl>
+
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.WP_OBJECT_ARGS">
+<span class="target" id="group__wplog_1ga634185fa136a41e2c286b519bacc69d6"></span><span class="sig-name descname"><span class="n"><span class="pre">WP_OBJECT_ARGS</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">object</span></span><span class="sig-paren">)</span> &#160;&#160;&#160; <span class="pre">(object</span> <span class="pre">?</span> <span class="pre">G_OBJECT_TYPE_NAME(object)</span> <span class="pre">:</span> <span class="pre">&quot;invalid&quot;),</span> <span class="pre">object</span><a class="headerlink" href="#c.WP_OBJECT_ARGS" title="Permalink to this definition"></a><br /></dt>
+<dd><p>A macro to format an object for printing with WP_OBJECT_FORMAT. </p>
+</dd></dl>
+
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.wp_critical">
+<span class="target" id="group__wplog_1ga8b18b8e4d67d618a279b9e601775403f"></span><span class="sig-name descname"><span class="n"><span class="pre">wp_critical</span></span></span><span class="sig-paren">(</span><span class="p"><span class="pre">...</span></span><span class="sig-paren">)</span> <a class="reference internal" href="#group__wplog_1ga7db1d87d1c0cb2613ecab8a34d5e01f6"><span class="std std-ref"><span class="pre">wp_log</span></span></a> <span class="pre">(G_LOG_LEVEL_CRITICAL,</span> <span class="pre">0,</span> <span class="pre">NULL,</span> <span class="pre">__VA_ARGS__)</span><a class="headerlink" href="#c.wp_critical" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Logs a critical message to the standard log via GLib’s logging system. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>...</strong> – A format string, followed by format arguments in printf() style </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.wp_critical_object">
+<span class="target" id="group__wplog_1ga66d10a622bdac41661795948ba196aa2"></span><span class="sig-name descname"><span class="n"><span class="pre">wp_critical_object</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">object</span></span>, <span class="p"><span class="pre">...</span></span><span class="sig-paren">)</span> <a class="reference internal" href="#group__wplog_1ga7db1d87d1c0cb2613ecab8a34d5e01f6"><span class="std std-ref"><span class="pre">wp_log</span></span></a> <span class="pre">(G_LOG_LEVEL_CRITICAL,</span> <span class="pre">(object)</span> <span class="pre">?</span> <span class="pre">G_TYPE_FROM_INSTANCE</span> <span class="pre">(object)</span> <span class="pre">:</span> <span class="pre">G_TYPE_NONE,</span> <span class="pre">object,</span> <span class="pre">__VA_ARGS__)</span><a class="headerlink" href="#c.wp_critical_object" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Logs a critical message to the standard log via GLib’s logging system. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>object</strong> – A GObject associated with the log; this is printed in a special way to make it easier to track messages from a specific object </p></li>
+<li><p><strong>...</strong> – A format string, followed by format arguments in printf() style </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.wp_critical_boxed">
+<span class="target" id="group__wplog_1ga8dfde81cc3a925aabaa2f1529f7dec03"></span><span class="sig-name descname"><span class="n"><span class="pre">wp_critical_boxed</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">type</span></span>, <span class="n"><span class="pre">object</span></span>, <span class="p"><span class="pre">...</span></span><span class="sig-paren">)</span> <a class="reference internal" href="#group__wplog_1ga7db1d87d1c0cb2613ecab8a34d5e01f6"><span class="std std-ref"><span class="pre">wp_log</span></span></a> <span class="pre">(G_LOG_LEVEL_CRITICAL,</span> <span class="pre">type,</span> <span class="pre">object,</span> <span class="pre">__VA_ARGS__)</span><a class="headerlink" href="#c.wp_critical_boxed" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Logs a critical message to the standard log via GLib’s logging system. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>type</strong> – The type of <em>object</em> </p></li>
+<li><p><strong>object</strong> – A boxed object associated with the log; this is printed in a special way to make it easier to track messages from a specific object. For some object types, contents from the object are also printed (ex WpSpaPod) </p></li>
+<li><p><strong>...</strong> – A format string, followed by format arguments in printf() style </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.wp_warning">
+<span class="target" id="group__wplog_1ga9d77471f71e24496131de918ee780209"></span><span class="sig-name descname"><span class="n"><span class="pre">wp_warning</span></span></span><span class="sig-paren">(</span><span class="p"><span class="pre">...</span></span><span class="sig-paren">)</span> <a class="reference internal" href="#group__wplog_1ga7db1d87d1c0cb2613ecab8a34d5e01f6"><span class="std std-ref"><span class="pre">wp_log</span></span></a> <span class="pre">(G_LOG_LEVEL_WARNING,</span> <span class="pre">0,</span> <span class="pre">NULL,</span> <span class="pre">__VA_ARGS__)</span><a class="headerlink" href="#c.wp_warning" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Logs a warning message to the standard log via GLib’s logging system. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>...</strong> – A format string, followed by format arguments in printf() style </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.wp_warning_object">
+<span class="target" id="group__wplog_1ga3961b8d9dac0858e7bc81c24ef9d8ec6"></span><span class="sig-name descname"><span class="n"><span class="pre">wp_warning_object</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">object</span></span>, <span class="p"><span class="pre">...</span></span><span class="sig-paren">)</span> <a class="reference internal" href="#group__wplog_1ga7db1d87d1c0cb2613ecab8a34d5e01f6"><span class="std std-ref"><span class="pre">wp_log</span></span></a> <span class="pre">(G_LOG_LEVEL_WARNING,</span> <span class="pre">(object)</span> <span class="pre">?</span> <span class="pre">G_TYPE_FROM_INSTANCE</span> <span class="pre">(object)</span> <span class="pre">:</span> <span class="pre">G_TYPE_NONE,</span> <span class="pre">object,</span> <span class="pre">__VA_ARGS__)</span><a class="headerlink" href="#c.wp_warning_object" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Logs a warning message to the standard log via GLib’s logging system. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>object</strong> – A GObject associated with the log; this is printed in a special way to make it easier to track messages from a specific object </p></li>
+<li><p><strong>...</strong> – A format string, followed by format arguments in printf() style </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.wp_warning_boxed">
+<span class="target" id="group__wplog_1gacab250dc2278bb96fd6b26f61d8abcd6"></span><span class="sig-name descname"><span class="n"><span class="pre">wp_warning_boxed</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">type</span></span>, <span class="n"><span class="pre">object</span></span>, <span class="p"><span class="pre">...</span></span><span class="sig-paren">)</span> <a class="reference internal" href="#group__wplog_1ga7db1d87d1c0cb2613ecab8a34d5e01f6"><span class="std std-ref"><span class="pre">wp_log</span></span></a> <span class="pre">(G_LOG_LEVEL_WARNING,</span> <span class="pre">type,</span> <span class="pre">object,</span> <span class="pre">__VA_ARGS__)</span><a class="headerlink" href="#c.wp_warning_boxed" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Logs a warning message to the standard log via GLib’s logging system. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>type</strong> – The type of <em>object</em> </p></li>
+<li><p><strong>object</strong> – A boxed object associated with the log; this is printed in a special way to make it easier to track messages from a specific object. For some object types, contents from the object are also printed (ex WpSpaPod) </p></li>
+<li><p><strong>...</strong> – A format string, followed by format arguments in printf() style </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.wp_message">
+<span class="target" id="group__wplog_1ga5ec7c82f0c4ece004bdc2da7f9980ad0"></span><span class="sig-name descname"><span class="n"><span class="pre">wp_message</span></span></span><span class="sig-paren">(</span><span class="p"><span class="pre">...</span></span><span class="sig-paren">)</span> <a class="reference internal" href="#group__wplog_1ga7db1d87d1c0cb2613ecab8a34d5e01f6"><span class="std std-ref"><span class="pre">wp_log</span></span></a> <span class="pre">(G_LOG_LEVEL_MESSAGE,</span> <span class="pre">0,</span> <span class="pre">NULL,</span> <span class="pre">__VA_ARGS__)</span><a class="headerlink" href="#c.wp_message" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Logs a standard message to the standard log via GLib’s logging system. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>...</strong> – A format string, followed by format arguments in printf() style </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.wp_message_object">
+<span class="target" id="group__wplog_1ga118d7af14dd0424bde0bdc037df7c89b"></span><span class="sig-name descname"><span class="n"><span class="pre">wp_message_object</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">object</span></span>, <span class="p"><span class="pre">...</span></span><span class="sig-paren">)</span> <a class="reference internal" href="#group__wplog_1ga7db1d87d1c0cb2613ecab8a34d5e01f6"><span class="std std-ref"><span class="pre">wp_log</span></span></a> <span class="pre">(G_LOG_LEVEL_MESSAGE,</span> <span class="pre">(object)</span> <span class="pre">?</span> <span class="pre">G_TYPE_FROM_INSTANCE</span> <span class="pre">(object)</span> <span class="pre">:</span> <span class="pre">G_TYPE_NONE,</span> <span class="pre">object,</span> <span class="pre">__VA_ARGS__)</span><a class="headerlink" href="#c.wp_message_object" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Logs a standard message to the standard log via GLib’s logging system. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>object</strong> – A GObject associated with the log; this is printed in a special way to make it easier to track messages from a specific object </p></li>
+<li><p><strong>...</strong> – A format string, followed by format arguments in printf() style </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.wp_message_boxed">
+<span class="target" id="group__wplog_1gabf7267f2252c32b84f40bd9e6e0f88c8"></span><span class="sig-name descname"><span class="n"><span class="pre">wp_message_boxed</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">type</span></span>, <span class="n"><span class="pre">object</span></span>, <span class="p"><span class="pre">...</span></span><span class="sig-paren">)</span> <a class="reference internal" href="#group__wplog_1ga7db1d87d1c0cb2613ecab8a34d5e01f6"><span class="std std-ref"><span class="pre">wp_log</span></span></a> <span class="pre">(G_LOG_LEVEL_MESSAGE,</span> <span class="pre">type,</span> <span class="pre">object,</span> <span class="pre">__VA_ARGS__)</span><a class="headerlink" href="#c.wp_message_boxed" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Logs a standard message to the standard log via GLib’s logging system. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>type</strong> – The type of <em>object</em> </p></li>
+<li><p><strong>object</strong> – A boxed object associated with the log; this is printed in a special way to make it easier to track messages from a specific object. For some object types, contents from the object are also printed (ex WpSpaPod) </p></li>
+<li><p><strong>...</strong> – A format string, followed by format arguments in printf() style </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.wp_info">
+<span class="target" id="group__wplog_1gaf2fd7f5a7fa06fee0f13ae05a69b43c6"></span><span class="sig-name descname"><span class="n"><span class="pre">wp_info</span></span></span><span class="sig-paren">(</span><span class="p"><span class="pre">...</span></span><span class="sig-paren">)</span> <a class="reference internal" href="#group__wplog_1ga7db1d87d1c0cb2613ecab8a34d5e01f6"><span class="std std-ref"><span class="pre">wp_log</span></span></a> <span class="pre">(G_LOG_LEVEL_INFO,</span> <span class="pre">0,</span> <span class="pre">NULL,</span> <span class="pre">__VA_ARGS__)</span><a class="headerlink" href="#c.wp_info" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Logs a info message to the standard log via GLib’s logging system. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>...</strong> – A format string, followed by format arguments in printf() style </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.wp_info_object">
+<span class="target" id="group__wplog_1ga61f17b3dec4a9f545bf4871b18ad532b"></span><span class="sig-name descname"><span class="n"><span class="pre">wp_info_object</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">object</span></span>, <span class="p"><span class="pre">...</span></span><span class="sig-paren">)</span> <a class="reference internal" href="#group__wplog_1ga7db1d87d1c0cb2613ecab8a34d5e01f6"><span class="std std-ref"><span class="pre">wp_log</span></span></a> <span class="pre">(G_LOG_LEVEL_INFO,</span> <span class="pre">(object)</span> <span class="pre">?</span> <span class="pre">G_TYPE_FROM_INSTANCE</span> <span class="pre">(object)</span> <span class="pre">:</span> <span class="pre">G_TYPE_NONE,</span> <span class="pre">object,</span> <span class="pre">__VA_ARGS__)</span><a class="headerlink" href="#c.wp_info_object" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Logs a info message to the standard log via GLib’s logging system. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>object</strong> – A GObject associated with the log; this is printed in a special way to make it easier to track messages from a specific object </p></li>
+<li><p><strong>...</strong> – A format string, followed by format arguments in printf() style </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.wp_info_boxed">
+<span class="target" id="group__wplog_1gaf47aee22920fa1ef2ff841a0dda44a2a"></span><span class="sig-name descname"><span class="n"><span class="pre">wp_info_boxed</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">type</span></span>, <span class="n"><span class="pre">object</span></span>, <span class="p"><span class="pre">...</span></span><span class="sig-paren">)</span> <a class="reference internal" href="#group__wplog_1ga7db1d87d1c0cb2613ecab8a34d5e01f6"><span class="std std-ref"><span class="pre">wp_log</span></span></a> <span class="pre">(G_LOG_LEVEL_INFO,</span> <span class="pre">type,</span> <span class="pre">object,</span> <span class="pre">__VA_ARGS__)</span><a class="headerlink" href="#c.wp_info_boxed" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Logs a info message to the standard log via GLib’s logging system. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>type</strong> – The type of <em>object</em> </p></li>
+<li><p><strong>object</strong> – A boxed object associated with the log; this is printed in a special way to make it easier to track messages from a specific object. For some object types, contents from the object are also printed (ex WpSpaPod) </p></li>
+<li><p><strong>...</strong> – A format string, followed by format arguments in printf() style </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.wp_debug">
+<span class="target" id="group__wplog_1ga18c600d4af28d10850b03eeb54cb7f08"></span><span class="sig-name descname"><span class="n"><span class="pre">wp_debug</span></span></span><span class="sig-paren">(</span><span class="p"><span class="pre">...</span></span><span class="sig-paren">)</span> <a class="reference internal" href="#group__wplog_1ga7db1d87d1c0cb2613ecab8a34d5e01f6"><span class="std std-ref"><span class="pre">wp_log</span></span></a> <span class="pre">(G_LOG_LEVEL_DEBUG,</span> <span class="pre">0,</span> <span class="pre">NULL,</span> <span class="pre">__VA_ARGS__)</span><a class="headerlink" href="#c.wp_debug" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Logs a debug message to the standard log via GLib’s logging system. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>...</strong> – A format string, followed by format arguments in printf() style </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.wp_debug_object">
+<span class="target" id="group__wplog_1gab09a5219048a881f8c1c310b3400f9fb"></span><span class="sig-name descname"><span class="n"><span class="pre">wp_debug_object</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">object</span></span>, <span class="p"><span class="pre">...</span></span><span class="sig-paren">)</span> <a class="reference internal" href="#group__wplog_1ga7db1d87d1c0cb2613ecab8a34d5e01f6"><span class="std std-ref"><span class="pre">wp_log</span></span></a> <span class="pre">(G_LOG_LEVEL_DEBUG,</span> <span class="pre">(object)</span> <span class="pre">?</span> <span class="pre">G_TYPE_FROM_INSTANCE</span> <span class="pre">(object)</span> <span class="pre">:</span> <span class="pre">G_TYPE_NONE,</span> <span class="pre">object,</span> <span class="pre">__VA_ARGS__)</span><a class="headerlink" href="#c.wp_debug_object" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Logs a debug message to the standard log via GLib’s logging system. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>object</strong> – A GObject associated with the log; this is printed in a special way to make it easier to track messages from a specific object </p></li>
+<li><p><strong>...</strong> – A format string, followed by format arguments in printf() style </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.wp_debug_boxed">
+<span class="target" id="group__wplog_1ga850aa573f023cec62f14438c2f94d846"></span><span class="sig-name descname"><span class="n"><span class="pre">wp_debug_boxed</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">type</span></span>, <span class="n"><span class="pre">object</span></span>, <span class="p"><span class="pre">...</span></span><span class="sig-paren">)</span> <a class="reference internal" href="#group__wplog_1ga7db1d87d1c0cb2613ecab8a34d5e01f6"><span class="std std-ref"><span class="pre">wp_log</span></span></a> <span class="pre">(G_LOG_LEVEL_DEBUG,</span> <span class="pre">type,</span> <span class="pre">object,</span> <span class="pre">__VA_ARGS__)</span><a class="headerlink" href="#c.wp_debug_boxed" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Logs a debug message to the standard log via GLib’s logging system. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>type</strong> – The type of <em>object</em> </p></li>
+<li><p><strong>object</strong> – A boxed object associated with the log; this is printed in a special way to make it easier to track messages from a specific object. For some object types, contents from the object are also printed (ex WpSpaPod) </p></li>
+<li><p><strong>...</strong> – A format string, followed by format arguments in printf() style </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.wp_trace">
+<span class="target" id="group__wplog_1ga03a793a93a69f394e822bab505ca78d3"></span><span class="sig-name descname"><span class="n"><span class="pre">wp_trace</span></span></span><span class="sig-paren">(</span><span class="p"><span class="pre">...</span></span><span class="sig-paren">)</span> <a class="reference internal" href="#group__wplog_1ga7db1d87d1c0cb2613ecab8a34d5e01f6"><span class="std std-ref"><span class="pre">wp_log</span></span></a> <span class="pre">(</span><a class="reference internal" href="#group__wplog_1gaaec41d6975c723afb61f6961a9fe1a81"><span class="std std-ref"><span class="pre">WP_LOG_LEVEL_TRACE</span></span></a><span class="pre">,</span> <span class="pre">0,</span> <span class="pre">NULL,</span> <span class="pre">__VA_ARGS__)</span><a class="headerlink" href="#c.wp_trace" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Logs a trace message to the standard log via GLib’s logging system. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>...</strong> – A format string, followed by format arguments in printf() style </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.wp_trace_object">
+<span class="target" id="group__wplog_1ga95f25372c2af3102274a6849313db2bb"></span><span class="sig-name descname"><span class="n"><span class="pre">wp_trace_object</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">object</span></span>, <span class="p"><span class="pre">...</span></span><span class="sig-paren">)</span> <a class="reference internal" href="#group__wplog_1ga7db1d87d1c0cb2613ecab8a34d5e01f6"><span class="std std-ref"><span class="pre">wp_log</span></span></a> <span class="pre">(</span><a class="reference internal" href="#group__wplog_1gaaec41d6975c723afb61f6961a9fe1a81"><span class="std std-ref"><span class="pre">WP_LOG_LEVEL_TRACE</span></span></a><span class="pre">,</span> <span class="pre">(object)</span> <span class="pre">?</span> <span class="pre">G_TYPE_FROM_INSTANCE</span> <span class="pre">(object)</span> <span class="pre">:</span> <span class="pre">G_TYPE_NONE,</span> <span class="pre">object,</span> <span class="pre">__VA_ARGS__)</span><a class="headerlink" href="#c.wp_trace_object" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Logs a trace message to the standard log via GLib’s logging system. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>object</strong> – A GObject associated with the log; this is printed in a special way to make it easier to track messages from a specific object </p></li>
+<li><p><strong>...</strong> – A format string, followed by format arguments in printf() style </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.wp_trace_boxed">
+<span class="target" id="group__wplog_1gaa2277cfa9cfeb7746d8c318663035b81"></span><span class="sig-name descname"><span class="n"><span class="pre">wp_trace_boxed</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">type</span></span>, <span class="n"><span class="pre">object</span></span>, <span class="p"><span class="pre">...</span></span><span class="sig-paren">)</span> <a class="reference internal" href="#group__wplog_1ga7db1d87d1c0cb2613ecab8a34d5e01f6"><span class="std std-ref"><span class="pre">wp_log</span></span></a> <span class="pre">(</span><a class="reference internal" href="#group__wplog_1gaaec41d6975c723afb61f6961a9fe1a81"><span class="std std-ref"><span class="pre">WP_LOG_LEVEL_TRACE</span></span></a><span class="pre">,</span> <span class="pre">type,</span> <span class="pre">object,</span> <span class="pre">__VA_ARGS__)</span><a class="headerlink" href="#c.wp_trace_boxed" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Logs a trace message to the standard log via GLib’s logging system. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>type</strong> – The type of <em>object</em> </p></li>
+<li><p><strong>object</strong> – A boxed object associated with the log; this is printed in a special way to make it easier to track messages from a specific object. For some object types, contents from the object are also printed (ex WpSpaPod) </p></li>
+<li><p><strong>...</strong> – A format string, followed by format arguments in printf() style </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.wp_log">
+<span class="target" id="group__wplog_1ga7db1d87d1c0cb2613ecab8a34d5e01f6"></span><span class="sig-name descname"><span class="n"><span class="pre">wp_log</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">level</span></span>, <span class="n"><span class="pre">type</span></span>, <span class="n"><span class="pre">object</span></span>, <span class="p"><span class="pre">...</span></span><span class="sig-paren">)</span> <p><span class="pre">({</span> <span class="pre">\</span></p>
+<p><span class="pre">if</span> <span class="pre">(G_UNLIKELY</span> <span class="pre">(</span></p>
+<a class="reference internal" href="#group__wplog_1ga6fc3e1c7a8278ae84a82d536d9468bd0"><span class="std std-ref"><span class="pre">wp_log_level_is_enabled</span></span></a> <span class="pre">(level)))</span> <span class="pre">\</span>
+&#160;&#160;&#160; <a class="reference internal" href="#group__wplog_1ga9a24b05f2bfa71f853b7a0ba18644d66"><span class="std std-ref"><span class="pre">wp_log_structured_standard</span></span></a><p><span class="pre">(G_LOG_DOMAIN,</span> <span class="pre">level,</span> <span class="pre">__FILE__,</span> <span class="pre">\</span></p>
+<p><span class="pre">G_STRINGIFY</span> <span class="pre">(__LINE__),</span> <span class="pre">G_STRFUNC,</span> <span class="pre">type,</span> <span class="pre">object,</span> <span class="pre">__VA_ARGS__);</span> <span class="pre">\</span></p>
+<p><span class="pre">})</span></p>
+<a class="headerlink" href="#c.wp_log" title="Permalink to this definition"></a><br /></dt>
+<dd><p>The generic form of all the logging macros. </p>
+<p><div class="remark admonition">
+<p class="admonition-title">Remark</p>
+<p>Don’t use this directly, use one of the other logging macros </p>
+</div>
+</p>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="wperror_api.html" class="btn btn-neutral float-left" title="Error Codes" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="proxy_api.html" class="btn btn-neutral float-right" title="PipeWire Proxy" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Collabora.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

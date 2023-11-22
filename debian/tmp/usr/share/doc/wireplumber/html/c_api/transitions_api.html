@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Transitions &mdash; WirePlumber 0.4.16 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Error Codes" href="wperror_api.html" />
+    <link rel="prev" title="Iterator" href="iterator_api.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> WirePlumber
+          </a>
+              <div class="version">
+                0.4.16
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">The WirePlumber Daemon</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installing-wireplumber.html">Installing WirePlumber</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../running-wireplumber-daemon.html">Running the WirePlumber daemon</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../daemon-logging.html">Debug Logging</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">The WirePlumber Library</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../c_api.html">C API Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="wp_api.html">Library Initialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core_api.html">Core</a></li>
+<li class="toctree-l2"><a class="reference internal" href="object_api.html">WpObject</a></li>
+<li class="toctree-l2"><a class="reference internal" href="obj_manager_api.html">Object Manager</a></li>
+<li class="toctree-l2"><a class="reference internal" href="obj_interest_api.html">Object Interest</a></li>
+<li class="toctree-l2"><a class="reference internal" href="iterator_api.html">Iterator</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Transitions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wperror_api.html">Error Codes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="log_api.html">Debug Logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="proxy_api.html">PipeWire Proxy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipewire_object_api.html">PipeWire Object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="global_proxy_api.html">PipeWire Global Object Proxy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="node_api.html">PipeWire Node</a></li>
+<li class="toctree-l2"><a class="reference internal" href="port_api.html">PipeWire Port</a></li>
+<li class="toctree-l2"><a class="reference internal" href="link_api.html">PipeWire Link</a></li>
+<li class="toctree-l2"><a class="reference internal" href="device_api.html">PipeWire Device</a></li>
+<li class="toctree-l2"><a class="reference internal" href="client_api.html">PipeWire Client</a></li>
+<li class="toctree-l2"><a class="reference internal" href="metadata_api.html">PipeWire Metadata</a></li>
+<li class="toctree-l2"><a class="reference internal" href="endpoint_api.html">PipeWire Endpoint</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spa_device_api.html">Spa Device</a></li>
+<li class="toctree-l2"><a class="reference internal" href="impl_node_api.html">Local Nodes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="impl_module_api.html">Local Modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="properties_api.html">Properties Dictionary</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spa_type_api.html">Spa Type Information</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spa_json_api.html">Spa Json</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spa_pod_api.html">Spa Pod (Plain Old Data)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plugin_api.html">Plugins</a></li>
+<li class="toctree-l2"><a class="reference internal" href="component_loader_api.html">Component Loader</a></li>
+<li class="toctree-l2"><a class="reference internal" href="session_item_api.html">Session Items</a></li>
+<li class="toctree-l2"><a class="reference internal" href="si_interfaces_api.html">Session Items Interfaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="si_factory_api.html">Session Items Factory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="state_api.html">State Storage</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../lua_api.html">Lua API Documentation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Resources</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing to WirePlumber</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../testing.html">Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../community.html">Community Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Releases</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">WirePlumber</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../c_api.html">C API Documentation</a> &raquo;</li>
+      <li>Transitions</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/c_api/transitions_api.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="iterator_api.html" class="btn btn-neutral float-left" title="Iterator" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="wperror_api.html" class="btn btn-neutral float-right" title="Error Codes" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+  </div>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="transitions">
+<span id="transitions-api"></span><h1>Transitions<a class="headerlink" href="#transitions" title="Permalink to this headline"></a></h1>
+<div align="center" class="align-center"><div class="graphviz"><object data="../_images/graphviz-7075bda217a00c02f4c73701133f521bd9b66fce.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph inheritance {
+    rankdir=LR;
+    GObject -&gt; WpTransition;
+    GInterface -&gt; GAsyncResult;
+    GAsyncResult -&gt; WpTransition;
+    WpTransition -&gt; WpFeatureActivationTransition;
+ }</p></object></div>
+</div>
+<dl class="c struct">
+<dt class="sig sig-object c" id="c.WpTransition">
+<span class="target" id="structWpTransition"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">WpTransition</span></span></span><a class="headerlink" href="#c.WpTransition" title="Permalink to this definition"></a><br /></dt>
+<dd><p>A transition is an asynchronous operation, like GTask, that contains an internal state machine, where a series of ‘steps’ are executed in order to complete the operation.</p>
+<p>For every step, _WpTransitionClass::get_next_step() is called in order to determine the next step to execute. Afterwards, _WpTransitionClass::execute_step() is called to perform any actions necessary to complete this step. When execution of the step is done, the operation’s code must call <a class="reference internal" href="#group__wptransition_1gaca71649ad05e99441f54576d4fb8d3de"><span class="std std-ref">wp_transition_advance()</span></a> in order to continue to the next step. If an error occurs, the operation’s code must call <a class="reference internal" href="#group__wptransition_1gaa6f8e92a0a96281ef0d312437f3bb2a4"><span class="std std-ref">wp_transition_return_error()</span></a> instead, in which case the transition completes immediately and <a class="reference internal" href="#group__wptransition_1gacd7b8a7661c395bfcb6185a3393fd75d"><span class="std std-ref">wp_transition_had_error()</span></a> returns TRUE.</p>
+<p>Typically, every step will start an asynchronous operation. Although is is possible, the WpTransition base class does not expect _WpTransitionClass::execute_step() to call <a class="reference internal" href="#group__wptransition_1gaca71649ad05e99441f54576d4fb8d3de"><span class="std std-ref">wp_transition_advance()</span></a> directly. Instead, it is expected that <a class="reference internal" href="#group__wptransition_1gaca71649ad05e99441f54576d4fb8d3de"><span class="std std-ref">wp_transition_advance()</span></a> will be called from the callback that the step’s asynchronous operation will call when it is completed.</p>
+<p><strong>GObject</strong> <strong>Properties</strong> </p>
+<p><dl>
+<dt class="sig sig-object cpp">
+<span class="pre">completed</span></dt>
+<dd><p></p>
+<p>Whether the transition has completed, meaning its callback (if set) has been invoked. This can only happen after the final step has been reached or <a class="reference internal" href="#group__wptransition_1gaa6f8e92a0a96281ef0d312437f3bb2a4"><span class="std std-ref">wp_transition_return_error()</span></a><p>has been called.</p>
+<p>This property is guaranteed to change from FALSE to TRUE exactly once.</p>
+
+ The GObject <code class="docutils literal notranslate"><span class="pre">notify</span></code> signal for this change is emitted in the same context as the transition’s callback, immediately after that callback is invoked.</p>
+<p><table class="colwidths-auto docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">gboolean</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">G_PARAM_READABLE</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</p>
+</dd></dl>
+
+</p>
+</dd></dl>
+
+<dl class="c struct">
+<dt class="sig sig-object c" id="c._WpTransitionClass">
+<span class="target" id="struct__WpTransitionClass"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">_WpTransitionClass</span></span></span><a class="headerlink" href="#c._WpTransitionClass" title="Permalink to this definition"></a><br /></dt>
+<dd><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
+<dl class="c var">
+<dt class="sig sig-object c" id="c._WpTransitionClass.parent_class">
+<span class="target" id="struct__WpTransitionClass_1a2909d4a3525c449308a90a4ab0cd4cfd"></span><span class="n"><span class="pre">GObjectClass</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">parent_class</span></span></span><a class="headerlink" href="#c._WpTransitionClass.parent_class" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c._WpTransitionClass.get_next_step">
+<span class="target" id="struct__WpTransitionClass_1a74e7cc9315c097bab5558f40182dc425"></span><span class="n"><span class="pre">guint</span></span><span class="w"> </span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">get_next_step</span></span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">(</span></span><a class="reference internal" href="#c.WpTransition" title="WpTransition"><span class="n"><span class="pre">WpTransition</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">transition</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">guint</span></span><span class="w"> </span><span class="n"><span class="pre">step</span></span><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#c._WpTransitionClass.get_next_step" title="Permalink to this definition"></a><br /></dt>
+<dd><p>See <a class="reference internal" href="#group__wptransition_1gaca71649ad05e99441f54576d4fb8d3de"><span class="std std-ref">wp_transition_advance()</span></a> </p>
+</dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c._WpTransitionClass.execute_step">
+<span class="target" id="struct__WpTransitionClass_1a80291d70af40aa9d51f473e807402b04"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">execute_step</span></span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">(</span></span><a class="reference internal" href="#c.WpTransition" title="WpTransition"><span class="n"><span class="pre">WpTransition</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">transition</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">guint</span></span><span class="w"> </span><span class="n"><span class="pre">step</span></span><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#c._WpTransitionClass.execute_step" title="Permalink to this definition"></a><br /></dt>
+<dd><p>See <a class="reference internal" href="#group__wptransition_1gaca71649ad05e99441f54576d4fb8d3de"><span class="std std-ref">wp_transition_advance()</span></a> </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="c enum">
+<dt class="sig sig-object c" id="c.WpTransitionStep">
+<span class="target" id="group__wptransition_1gaf1252c1cf49f64f8bfecec2e4db6a814"></span><span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">WpTransitionStep</span></span></span><a class="headerlink" href="#c.WpTransitionStep" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Values for the <em>steps</em> of the implemented state machine. </p>
+<p><em>Values:</em></p>
+<dl class="c enumerator">
+<dt class="sig sig-object c" id="c.WpTransitionStep.WP_TRANSITION_STEP_NONE">
+<span class="target" id="group__wptransition_1ggaf1252c1cf49f64f8bfecec2e4db6a814aed371f7bb88ad0c65539c7a326af6fb3"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">WP_TRANSITION_STEP_NONE</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">0</span></span><a class="headerlink" href="#c.WpTransitionStep.WP_TRANSITION_STEP_NONE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>the initial and final step of the transition </p>
+</dd></dl>
+
+<dl class="c enumerator">
+<dt class="sig sig-object c" id="c.WpTransitionStep.WP_TRANSITION_STEP_ERROR">
+<span class="target" id="group__wptransition_1ggaf1252c1cf49f64f8bfecec2e4db6a814a3dd1baf1d127224f113f5bff01f9e088"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">WP_TRANSITION_STEP_ERROR</span></span></span><a class="headerlink" href="#c.WpTransitionStep.WP_TRANSITION_STEP_ERROR" title="Permalink to this definition"></a><br /></dt>
+<dd><p>returned by _WpTransitionClass::get_next_step() in case of an error </p>
+</dd></dl>
+
+<dl class="c enumerator">
+<dt class="sig sig-object c" id="c.WpTransitionStep.WP_TRANSITION_STEP_CUSTOM_START">
+<span class="target" id="group__wptransition_1ggaf1252c1cf49f64f8bfecec2e4db6a814aa0a67a3bdcf0bbf3bef1ca7a028048c4"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">WP_TRANSITION_STEP_CUSTOM_START</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">0x10</span></span><a class="headerlink" href="#c.WpTransitionStep.WP_TRANSITION_STEP_CUSTOM_START" title="Permalink to this definition"></a><br /></dt>
+<dd><p>starting value for steps defined in subclasses </p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_transition_new">
+<span class="target" id="group__wptransition_1gacc03fe4334ee4b64832e9d52529253ab"></span><a class="reference internal" href="#c.WpTransition" title="WpTransition"><span class="n"><span class="pre">WpTransition</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_transition_new</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">GType</span></span><span class="w"> </span><span class="n"><span class="pre">type</span></span>, <span class="n"><span class="pre">gpointer</span></span><span class="w"> </span><span class="n"><span class="pre">source_object</span></span>, <span class="n"><span class="pre">GCancellable</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">cancellable</span></span>, <span class="n"><span class="pre">GAsyncReadyCallback</span></span><span class="w"> </span><span class="n"><span class="pre">callback</span></span>, <span class="n"><span class="pre">gpointer</span></span><span class="w"> </span><span class="n"><span class="pre">callback_data</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_transition_new" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Creates a WpTransition acting on <em>source_object</em>. </p>
+<p>When the transition is done, <em>callback</em> will be invoked.</p>
+<p>The transition does not automatically start executing steps. You must call <a class="reference internal" href="#group__wptransition_1gaca71649ad05e99441f54576d4fb8d3de"><span class="std std-ref">wp_transition_advance()</span></a> after creating it in order to start it.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The transition is automatically unref’ed after the <em>callback</em> has been executed. If you wish to keep an additional reference on it, you need to ref it explicitly.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>type</strong> – the GType of the WpTransition subclass to instantiate </p></li>
+<li><p><strong>source_object</strong> – (nullable) (type GObject): the GObject that owns this task, or NULL </p></li>
+<li><p><strong>cancellable</strong> – (nullable): optional GCancellable </p></li>
+<li><p><strong>callback</strong> – (scope async): a GAsyncReadyCallback </p></li>
+<li><p><strong>callback_data</strong> – (closure): user data passed to <em>callback</em> </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer none): the new transition </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_transition_new_closure">
+<span class="target" id="group__wptransition_1gac6b70fc2c79a17a9882ceac7aa47e46b"></span><a class="reference internal" href="#c.WpTransition" title="WpTransition"><span class="n"><span class="pre">WpTransition</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_transition_new_closure</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">GType</span></span><span class="w"> </span><span class="n"><span class="pre">type</span></span>, <span class="n"><span class="pre">gpointer</span></span><span class="w"> </span><span class="n"><span class="pre">source_object</span></span>, <span class="n"><span class="pre">GCancellable</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">cancellable</span></span>, <span class="n"><span class="pre">GClosure</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">closure</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_transition_new_closure" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Creates a WpTransition acting on <em>source_object</em>. When the transition is done, <em>closure</em> will be invoked. </p>
+<p>The transition does not automatically start executing steps. You must call <a class="reference internal" href="#group__wptransition_1gaca71649ad05e99441f54576d4fb8d3de"><span class="std std-ref">wp_transition_advance()</span></a> after creating it in order to start it.</p>
+<p>Note that the transition is automatically unref’ed after the <em>closure</em> has been executed. If you wish to keep an additional reference on it, you need to ref it explicitly.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>type</strong> – the GType of the WpTransition subclass to instantiate </p></li>
+<li><p><strong>source_object</strong> – (nullable) (type GObject): the GObject that owns this task, or NULL </p></li>
+<li><p><strong>cancellable</strong> – (nullable): optional GCancellable </p></li>
+<li><p><strong>closure</strong> – (nullable): a GAsyncReadyCallback wrapped in a GClosure </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer none): the new transition </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_transition_get_source_object">
+<span class="target" id="group__wptransition_1gad3076a25ae09902ca2d2eeb8d767d218"></span><span class="n"><span class="pre">gpointer</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_transition_get_source_object</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpTransition" title="WpTransition"><span class="n"><span class="pre">WpTransition</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_transition_get_source_object" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Gets the source object from the transition. </p>
+<p>Like g_async_result_get_source_object(), but does not ref the object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the transition </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer none) (type GObject): the source object </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_transition_is_tagged">
+<span class="target" id="group__wptransition_1ga562b51744b384ebf8206d6d9a1dfb025"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_transition_is_tagged</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpTransition" title="WpTransition"><span class="n"><span class="pre">WpTransition</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="n"><span class="pre">gpointer</span></span><span class="w"> </span><span class="n"><span class="pre">tag</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_transition_is_tagged" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Checks if <em>self</em> has the given <em>tag</em> (generally a function pointer indicating the function <em>self</em> was created by). </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the transition </p></li>
+<li><p><strong>tag</strong> – a tag </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if <em>self</em> has the indicated <em>tag</em> , FALSE if not. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_transition_get_source_tag">
+<span class="target" id="group__wptransition_1ga2e9875c1de1895881cb43f5031e0cdd4"></span><span class="n"><span class="pre">gpointer</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_transition_get_source_tag</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpTransition" title="WpTransition"><span class="n"><span class="pre">WpTransition</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_transition_get_source_tag" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Gets <em>self</em> ‘s source tag. </p>
+<p><div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#group__wptransition_1gaf5792e247d2edfe60ddee9b2fd1f4f95"><span class="std std-ref">wp_transition_set_source_tag()</span></a>.</p>
+</div>
+</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the transition </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer none): the transition’s source tag </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_transition_set_source_tag">
+<span class="target" id="group__wptransition_1gaf5792e247d2edfe60ddee9b2fd1f4f95"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_transition_set_source_tag</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpTransition" title="WpTransition"><span class="n"><span class="pre">WpTransition</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="n"><span class="pre">gpointer</span></span><span class="w"> </span><span class="n"><span class="pre">tag</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_transition_set_source_tag" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Sets <em>self</em> ‘s source tag. </p>
+<p>You can use this to tag a transition’s return value with a particular pointer (usually a pointer to the function doing the tagging) and then later check it using <a class="reference internal" href="#group__wptransition_1ga2e9875c1de1895881cb43f5031e0cdd4"><span class="std std-ref">wp_transition_get_source_tag()</span></a> (or g_async_result_is_tagged()) in the transition’s “finish” function, to figure out if the response came from a particular place.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the transition </p></li>
+<li><p><strong>tag</strong> – an opaque pointer indicating the source of this transition </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_transition_get_data">
+<span class="target" id="group__wptransition_1ga89c5f9a2338e8c2c30d2c54d5271c043"></span><span class="n"><span class="pre">gpointer</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_transition_get_data</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpTransition" title="WpTransition"><span class="n"><span class="pre">WpTransition</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_transition_get_data" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Gets <em>self</em> ‘s data. </p>
+<p><div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#group__wptransition_1ga36282d510aada03bd692d55cf4d5836b"><span class="std std-ref">wp_transition_set_data()</span></a>.</p>
+</div>
+</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the transition </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer none): the transition’s data </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_transition_set_data">
+<span class="target" id="group__wptransition_1ga36282d510aada03bd692d55cf4d5836b"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_transition_set_data</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpTransition" title="WpTransition"><span class="n"><span class="pre">WpTransition</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="n"><span class="pre">gpointer</span></span><span class="w"> </span><span class="n"><span class="pre">data</span></span>, <span class="n"><span class="pre">GDestroyNotify</span></span><span class="w"> </span><span class="n"><span class="pre">data_destroy</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_transition_set_data" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Sets <em>self</em> ‘s data (freeing the existing data, if any). This can be an arbitrary user structure that holds data associated with this transition. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the transition </p></li>
+<li><p><strong>data</strong> – (nullable): transition-specific user data </p></li>
+<li><p><strong>data_destroy</strong> – (nullable): GDestroyNotify for <em>data</em> </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_transition_get_completed">
+<span class="target" id="group__wptransition_1gaeb9789eafc6bcb762f22b19905c30203"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_transition_get_completed</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpTransition" title="WpTransition"><span class="n"><span class="pre">WpTransition</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_transition_get_completed" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Checks if the transition completed. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the transition </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if the transition has completed (with or without an error), FALSE otherwise </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_transition_had_error">
+<span class="target" id="group__wptransition_1gacd7b8a7661c395bfcb6185a3393fd75d"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_transition_had_error</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpTransition" title="WpTransition"><span class="n"><span class="pre">WpTransition</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_transition_had_error" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Checks if the transition completed with an error. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the transition </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if the transition completed with an error, FALSE otherwise </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_transition_advance">
+<span class="target" id="group__wptransition_1gaca71649ad05e99441f54576d4fb8d3de"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_transition_advance</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpTransition" title="WpTransition"><span class="n"><span class="pre">WpTransition</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_transition_advance" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Advances the transition to the next step. </p>
+<p>This initially calls _WpTransitionClass::get_next_step() in order to determine what the next step is. If _WpTransitionClass::get_next_step() returns a step different than the previous one, it calls _WpTransitionClass::execute_step() to execute it.</p>
+<p>The very first time that _WpTransitionClass::get_next_step() is called, its <em>step</em> parameter equals WP_TRANSITION_STEP_NONE.</p>
+<p>When _WpTransitionClass::get_next_step() returns WP_TRANSITION_STEP_NONE this function completes the transition, calling the transition’s callback and then unref-ing the transition.</p>
+<p>When _WpTransitionClass::get_next_step() returns WP_TRANSITION_STEP_ERROR, this function calls <a class="reference internal" href="#group__wptransition_1gaa6f8e92a0a96281ef0d312437f3bb2a4"><span class="std std-ref">wp_transition_return_error()</span></a>, unless it has already been called directly by _WpTransitionClass::get_next_step().</p>
+<p>In error conditions, _WpTransitionClass::execute_step() is called once with <em>step</em> being WP_TRANSITION_STEP_ERROR, allowing the implementation to rollback any changes or cancel underlying jobs, if necessary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the transition </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_transition_return_error">
+<span class="target" id="group__wptransition_1gaa6f8e92a0a96281ef0d312437f3bb2a4"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_transition_return_error</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpTransition" title="WpTransition"><span class="n"><span class="pre">WpTransition</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="n"><span class="pre">GError</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">error</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_transition_return_error" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Completes the transition with an error. </p>
+<p>This can be called anytime from within any virtual function or an async job handler.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>In most cases this will also unref the transition, so it is not safe to access it after this function has been called.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the transition </p></li>
+<li><p><strong>error</strong> – (transfer full): a GError </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_transition_finish">
+<span class="target" id="group__wptransition_1gae764d739afcc07df48cf932d79540833"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_transition_finish</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">GAsyncResult</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">res</span></span>, <span class="n"><span class="pre">GError</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">error</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_transition_finish" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Returns the final return status of the transition and its error, if there was one. </p>
+<p>This is meant to be called from within the GAsyncReadyCallback that was specified in <a class="reference internal" href="#group__wptransition_1gacc03fe4334ee4b64832e9d52529253ab"><span class="std std-ref">wp_transition_new()</span></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>res</strong> – a transition, as a GAsyncResult </p></li>
+<li><p><strong>error</strong> – (out) (optional): a location to return the transition’s error, if any </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if the transition completed successfully, FALSE if there was an error </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.WP_TYPE_TRANSITION">
+<span class="target" id="group__wptransition_1ga0c59b00be21f7c3840cab7f948cabe62"></span><span class="sig-name descname"><span class="n"><span class="pre">WP_TYPE_TRANSITION</span></span></span> <span class="pre">(wp_transition_get_type</span> <span class="pre">())</span><a class="headerlink" href="#c.WP_TYPE_TRANSITION" title="Permalink to this definition"></a><br /></dt>
+<dd><p>The WpTransition GType. </p>
+</dd></dl>
+
+<dl class="c struct">
+<dt class="sig sig-object c" id="c.WpFeatureActivationTransition">
+<span class="target" id="structWpFeatureActivationTransition"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">WpFeatureActivationTransition</span></span></span><a class="headerlink" href="#c.WpFeatureActivationTransition" title="Permalink to this definition"></a><br /></dt>
+<dd><p>A WpTransition that is used by WpObject to implement feature activation. </p>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_feature_activation_transition_get_requested_features">
+<span class="target" id="group__wpfeatureactivationtransition_1ga0ca729b0deb309b7c6f010a1a14e1326"></span><a class="reference internal" href="object_api.html#c.WpObjectFeatures" title="WpObjectFeatures"><span class="n"><span class="pre">WpObjectFeatures</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_feature_activation_transition_get_requested_features</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpFeatureActivationTransition" title="WpFeatureActivationTransition"><span class="n"><span class="pre">WpFeatureActivationTransition</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_feature_activation_transition_get_requested_features" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Gets the features requested to be activated in this transition. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the transition </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the features that were requested to be activated in this transition; this contains the features as they were passed in <a class="reference internal" href="object_api.html#group__wpobject_1ga0a2bbc62e3a198cee10c74f97d52fe39"><span class="std std-ref">wp_object_activate()</span></a> and therefore it may contain unsupported or already active features </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.WP_TYPE_FEATURE_ACTIVATION_TRANSITION">
+<span class="target" id="group__wpfeatureactivationtransition_1ga8666577f00e4a5b22d36acd258b8bcfd"></span><span class="sig-name descname"><span class="n"><span class="pre">WP_TYPE_FEATURE_ACTIVATION_TRANSITION</span></span></span> &#160;&#160;&#160; <span class="pre">(wp_feature_activation_transition_get_type</span> <span class="pre">())</span><a class="headerlink" href="#c.WP_TYPE_FEATURE_ACTIVATION_TRANSITION" title="Permalink to this definition"></a><br /></dt>
+<dd><p>The WpFeatureActivationTransition GType. </p>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="iterator_api.html" class="btn btn-neutral float-left" title="Iterator" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="wperror_api.html" class="btn btn-neutral float-right" title="Error Codes" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Collabora.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

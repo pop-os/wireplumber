@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Session Items &mdash; WirePlumber 0.4.16 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Session Items Interfaces" href="si_interfaces_api.html" />
+    <link rel="prev" title="Component Loader" href="component_loader_api.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> WirePlumber
+          </a>
+              <div class="version">
+                0.4.16
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">The WirePlumber Daemon</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installing-wireplumber.html">Installing WirePlumber</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../running-wireplumber-daemon.html">Running the WirePlumber daemon</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../daemon-logging.html">Debug Logging</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">The WirePlumber Library</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../c_api.html">C API Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="wp_api.html">Library Initialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core_api.html">Core</a></li>
+<li class="toctree-l2"><a class="reference internal" href="object_api.html">WpObject</a></li>
+<li class="toctree-l2"><a class="reference internal" href="obj_manager_api.html">Object Manager</a></li>
+<li class="toctree-l2"><a class="reference internal" href="obj_interest_api.html">Object Interest</a></li>
+<li class="toctree-l2"><a class="reference internal" href="iterator_api.html">Iterator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="transitions_api.html">Transitions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wperror_api.html">Error Codes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="log_api.html">Debug Logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="proxy_api.html">PipeWire Proxy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipewire_object_api.html">PipeWire Object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="global_proxy_api.html">PipeWire Global Object Proxy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="node_api.html">PipeWire Node</a></li>
+<li class="toctree-l2"><a class="reference internal" href="port_api.html">PipeWire Port</a></li>
+<li class="toctree-l2"><a class="reference internal" href="link_api.html">PipeWire Link</a></li>
+<li class="toctree-l2"><a class="reference internal" href="device_api.html">PipeWire Device</a></li>
+<li class="toctree-l2"><a class="reference internal" href="client_api.html">PipeWire Client</a></li>
+<li class="toctree-l2"><a class="reference internal" href="metadata_api.html">PipeWire Metadata</a></li>
+<li class="toctree-l2"><a class="reference internal" href="endpoint_api.html">PipeWire Endpoint</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spa_device_api.html">Spa Device</a></li>
+<li class="toctree-l2"><a class="reference internal" href="impl_node_api.html">Local Nodes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="impl_module_api.html">Local Modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="properties_api.html">Properties Dictionary</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spa_type_api.html">Spa Type Information</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spa_json_api.html">Spa Json</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spa_pod_api.html">Spa Pod (Plain Old Data)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plugin_api.html">Plugins</a></li>
+<li class="toctree-l2"><a class="reference internal" href="component_loader_api.html">Component Loader</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Session Items</a></li>
+<li class="toctree-l2"><a class="reference internal" href="si_interfaces_api.html">Session Items Interfaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="si_factory_api.html">Session Items Factory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="state_api.html">State Storage</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../lua_api.html">Lua API Documentation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Resources</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing to WirePlumber</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../testing.html">Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../community.html">Community Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Releases</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">WirePlumber</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../c_api.html">C API Documentation</a> &raquo;</li>
+      <li>Session Items</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/c_api/session_item_api.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="component_loader_api.html" class="btn btn-neutral float-left" title="Component Loader" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="si_interfaces_api.html" class="btn btn-neutral float-right" title="Session Items Interfaces" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+  </div>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="session-items">
+<span id="session-item-api"></span><h1>Session Items<a class="headerlink" href="#session-items" title="Permalink to this headline"></a></h1>
+<div align="center" class="align-center"><div class="graphviz"><object data="../_images/graphviz-66589eeeb258275e07fba5a24f851de52ffd29b5.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph inheritance {
+    rankdir=LR;
+    GObject -&gt; WpObject;
+    WpObject -&gt; WpSessionItem;
+ }</p></object></div>
+</div>
+<dl class="c struct">
+<dt class="sig sig-object c" id="c.WpSessionItem">
+<span class="target" id="structWpSessionItem"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">WpSessionItem</span></span></span><a class="headerlink" href="#c.WpSessionItem" title="Permalink to this definition"></a><br /></dt>
+<dd><p><strong>GObject</strong> <strong>Properties</strong> </p>
+<p><dl>
+<dt class="sig sig-object cpp">
+<span class="pre">id</span></dt>
+<dd><p></p>
+<p>The session item unique id</p>
+<p><table class="colwidths-auto docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">guint</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">G_PARAM_READABLE</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</p>
+</dd></dl>
+
+</p>
+<p><dl>
+<dt class="sig sig-object cpp">
+<span class="pre">properties</span></dt>
+<dd><p></p>
+<p>The session item properties</p>
+<p><table class="colwidths-auto docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">WpProperties</span> <span class="pre">*</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">G_PARAM_READABLE</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</p>
+</dd></dl>
+
+</p>
+</dd></dl>
+
+<dl class="c struct">
+<dt class="sig sig-object c" id="c._WpSessionItemClass">
+<span class="target" id="struct__WpSessionItemClass"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">_WpSessionItemClass</span></span></span><a class="headerlink" href="#c._WpSessionItemClass" title="Permalink to this definition"></a><br /></dt>
+<dd><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
+<dl class="c var">
+<dt class="sig sig-object c" id="c._WpSessionItemClass.parent_class">
+<span class="target" id="struct__WpSessionItemClass_1a7d65ce2b5dd3af2468b599e21cd96c4b"></span><span class="n"><span class="pre">WpObjectClass</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">parent_class</span></span></span><a class="headerlink" href="#c._WpSessionItemClass.parent_class" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c._WpSessionItemClass.reset">
+<span class="target" id="struct__WpSessionItemClass_1add602ed7fcffb4e4296cabc0194bd68e"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">reset</span></span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">(</span></span><a class="reference internal" href="#c.WpSessionItem" title="WpSessionItem"><span class="n"><span class="pre">WpSessionItem</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#c._WpSessionItemClass.reset" title="Permalink to this definition"></a><br /></dt>
+<dd><p>See <a class="reference internal" href="#group__wpsessionitem_1ga265ff5b3a2362eb8ab7416a1c7296c26"><span class="std std-ref">wp_session_item_reset()</span></a> </p>
+</dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c._WpSessionItemClass.configure">
+<span class="target" id="struct__WpSessionItemClass_1a9fd253f5f9411bcf90910a15be6bd031"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">configure</span></span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">(</span></span><a class="reference internal" href="#c.WpSessionItem" title="WpSessionItem"><span class="n"><span class="pre">WpSessionItem</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="properties_api.html#c.WpProperties" title="WpProperties"><span class="n"><span class="pre">WpProperties</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">props</span></span><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#c._WpSessionItemClass.configure" title="Permalink to this definition"></a><br /></dt>
+<dd><p>See <a class="reference internal" href="#group__wpsessionitem_1gaee6508fd986db41c39c7ea67d575075e"><span class="std std-ref">wp_session_item_configure()</span></a> </p>
+</dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c._WpSessionItemClass.get_associated_proxy">
+<span class="target" id="struct__WpSessionItemClass_1abec4e670f4d9b8b07aa6e0785194fee1"></span><span class="n"><span class="pre">gpointer</span></span><span class="w"> </span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">get_associated_proxy</span></span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">(</span></span><a class="reference internal" href="#c.WpSessionItem" title="WpSessionItem"><span class="n"><span class="pre">WpSessionItem</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">GType</span></span><span class="w"> </span><span class="n"><span class="pre">proxy_type</span></span><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#c._WpSessionItemClass.get_associated_proxy" title="Permalink to this definition"></a><br /></dt>
+<dd><p>See <a class="reference internal" href="#group__wpsessionitem_1gaab598f9867bd614a7b0eaeaeae00b14e"><span class="std std-ref">wp_session_item_get_associated_proxy()</span></a> </p>
+</dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c._WpSessionItemClass.disable_active">
+<span class="target" id="struct__WpSessionItemClass_1ae660aed3b7f9fea8b995ecb3d169dc1a"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">disable_active</span></span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">(</span></span><a class="reference internal" href="#c.WpSessionItem" title="WpSessionItem"><span class="n"><span class="pre">WpSessionItem</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#c._WpSessionItemClass.disable_active" title="Permalink to this definition"></a><br /></dt>
+<dd><p>disables the active feature of the session item </p>
+</dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c._WpSessionItemClass.disable_exported">
+<span class="target" id="struct__WpSessionItemClass_1a5ec6e54dbb397257c9e33cf919554dd7"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">disable_exported</span></span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">(</span></span><a class="reference internal" href="#c.WpSessionItem" title="WpSessionItem"><span class="n"><span class="pre">WpSessionItem</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#c._WpSessionItemClass.disable_exported" title="Permalink to this definition"></a><br /></dt>
+<dd><p>disables the exported feature of the session item </p>
+</dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c._WpSessionItemClass.enable_active">
+<span class="target" id="struct__WpSessionItemClass_1a6ff68bd12496b9c51ee2f407dd2a496c"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">enable_active</span></span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">(</span></span><a class="reference internal" href="#c.WpSessionItem" title="WpSessionItem"><span class="n"><span class="pre">WpSessionItem</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="transitions_api.html#c.WpTransition" title="WpTransition"><span class="n"><span class="pre">WpTransition</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">transition</span></span><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#c._WpSessionItemClass.enable_active" title="Permalink to this definition"></a><br /></dt>
+<dd><p>enables the active feature of the session item </p>
+</dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c._WpSessionItemClass.enable_exported">
+<span class="target" id="struct__WpSessionItemClass_1af1aa325dc768c3014f789e161a06b0bf"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">enable_exported</span></span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">(</span></span><a class="reference internal" href="#c.WpSessionItem" title="WpSessionItem"><span class="n"><span class="pre">WpSessionItem</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="transitions_api.html#c.WpTransition" title="WpTransition"><span class="n"><span class="pre">WpTransition</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">transition</span></span><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#c._WpSessionItemClass.enable_exported" title="Permalink to this definition"></a><br /></dt>
+<dd><p>enables the exported feature of the session item </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="c enum">
+<dt class="sig sig-object c" id="c.WpSessionItemFeatures">
+<span class="target" id="group__wpsessionitem_1gafe72967aa92ada9966f3c357770e384b"></span><span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">WpSessionItemFeatures</span></span></span><a class="headerlink" href="#c.WpSessionItemFeatures" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Flags to be used as WpObjectFeatures for WpSessionItem subclasses. </p>
+<p><em>Values:</em></p>
+<dl class="c enumerator">
+<dt class="sig sig-object c" id="c.WpSessionItemFeatures.WP_SESSION_ITEM_FEATURE_ACTIVE">
+<span class="target" id="group__wpsessionitem_1ggafe72967aa92ada9966f3c357770e384ba2008ff9244833e2656b24fdde8ffdc92"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">WP_SESSION_ITEM_FEATURE_ACTIVE</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="p"><span class="pre">(</span></span><span class="m"><span class="pre">1</span></span><span class="w"> </span><span class="o"><span class="pre">&lt;&lt;</span></span><span class="w"> </span><span class="m"><span class="pre">0</span></span><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#c.WpSessionItemFeatures.WP_SESSION_ITEM_FEATURE_ACTIVE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c enumerator">
+<dt class="sig sig-object c" id="c.WpSessionItemFeatures.WP_SESSION_ITEM_FEATURE_EXPORTED">
+<span class="target" id="group__wpsessionitem_1ggafe72967aa92ada9966f3c357770e384ba0a61fa5b14a45b26be212680b2eeb46c"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">WP_SESSION_ITEM_FEATURE_EXPORTED</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="p"><span class="pre">(</span></span><span class="m"><span class="pre">1</span></span><span class="w"> </span><span class="o"><span class="pre">&lt;&lt;</span></span><span class="w"> </span><span class="m"><span class="pre">1</span></span><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#c.WpSessionItemFeatures.WP_SESSION_ITEM_FEATURE_EXPORTED" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c enumerator">
+<dt class="sig sig-object c" id="c.WpSessionItemFeatures.WP_SESSION_ITEM_FEATURE_CUSTOM_START">
+<span class="target" id="group__wpsessionitem_1ggafe72967aa92ada9966f3c357770e384ba224fa6cba198052d424c104732ee4fd2"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">WP_SESSION_ITEM_FEATURE_CUSTOM_START</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="p"><span class="pre">(</span></span><span class="m"><span class="pre">1</span></span><span class="w"> </span><span class="o"><span class="pre">&lt;&lt;</span></span><span class="w"> </span><span class="m"><span class="pre">16</span></span><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#c.WpSessionItemFeatures.WP_SESSION_ITEM_FEATURE_CUSTOM_START" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_session_item_get_id">
+<span class="target" id="group__wpsessionitem_1gafb66269e3b1f869cdebecfc72b74845e"></span><span class="n"><span class="pre">guint</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_session_item_get_id</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSessionItem" title="WpSessionItem"><span class="n"><span class="pre">WpSessionItem</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_session_item_get_id" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Gets the unique Id of the session item. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the session item </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_session_item_reset">
+<span class="target" id="group__wpsessionitem_1ga265ff5b3a2362eb8ab7416a1c7296c26"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_session_item_reset</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSessionItem" title="WpSessionItem"><span class="n"><span class="pre">WpSessionItem</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_session_item_reset" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Resets the session item. </p>
+<p>This essentially removes the configuration and deactivates all active features.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the session item </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_session_item_configure">
+<span class="target" id="group__wpsessionitem_1gaee6508fd986db41c39c7ea67d575075e"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_session_item_configure</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSessionItem" title="WpSessionItem"><span class="n"><span class="pre">WpSessionItem</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <a class="reference internal" href="properties_api.html#c.WpProperties" title="WpProperties"><span class="n"><span class="pre">WpProperties</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">props</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_session_item_configure" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Configures the session item with a set of properties. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the session item </p></li>
+<li><p><strong>props</strong> – (transfer full): the properties used to configure the item </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE on success, FALSE if the item could not be configured </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_session_item_is_configured">
+<span class="target" id="group__wpsessionitem_1ga575ff02cf932880d3152f922be5dbaf2"></span><span class="n"><span class="pre">gboolean</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_session_item_is_configured</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSessionItem" title="WpSessionItem"><span class="n"><span class="pre">WpSessionItem</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_session_item_is_configured" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Checks if the session item is configured. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the session item </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>TRUE if the item is configured, FALSE otherwise </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_session_item_get_associated_proxy">
+<span class="target" id="group__wpsessionitem_1gaab598f9867bd614a7b0eaeaeae00b14e"></span><span class="n"><span class="pre">gpointer</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_session_item_get_associated_proxy</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSessionItem" title="WpSessionItem"><span class="n"><span class="pre">WpSessionItem</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="n"><span class="pre">GType</span></span><span class="w"> </span><span class="n"><span class="pre">proxy_type</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_session_item_get_associated_proxy" title="Permalink to this definition"></a><br /></dt>
+<dd><p>An associated proxy is a WpProxy subclass instance that is somehow related to this item. For example: </p>
+<p><ul class="simple">
+<li><p>An exported WpSiEndpoint should have at least:<ul>
+<li><p>an associated WpSiEndpoint</p></li>
+<li><p>an associated WpSession</p></li>
+</ul>
+</p></li>
+<li><p>In cases where the item wraps a single PipeWire node, it should also have an associated WpNode</p></li>
+</ul>
+</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the session item </p></li>
+<li><p><strong>proxy_type</strong> – a WpProxy subclass GType </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(nullable) (transfer full) (type WpProxy): the associated proxy of the specified <em>proxy_type</em>, or NULL if there is no association to such a proxy </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_session_item_get_associated_proxy_id">
+<span class="target" id="group__wpsessionitem_1ga7de60cd700a163503fa085dc6b4debb1"></span><span class="n"><span class="pre">guint32</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_session_item_get_associated_proxy_id</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSessionItem" title="WpSessionItem"><span class="n"><span class="pre">WpSessionItem</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="n"><span class="pre">GType</span></span><span class="w"> </span><span class="n"><span class="pre">proxy_type</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_session_item_get_associated_proxy_id" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Gets the bound id of a proxy associated with the session item. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the session item </p></li>
+<li><p><strong>proxy_type</strong> – a WpProxy subclass GType </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the bound id of the associated proxy of the specified <em>proxy_type</em>, or <code class="docutils literal notranslate"><span class="pre">SPA_ID_INVALID</span></code> if there is no association to such a proxy </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_session_item_register">
+<span class="target" id="group__wpsessionitem_1ga7df149860b51449f6636ccf858073340"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_session_item_register</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSessionItem" title="WpSessionItem"><span class="n"><span class="pre">WpSessionItem</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_session_item_register" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Registers the session item to its associated core. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – (transfer full): the session item </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_session_item_remove">
+<span class="target" id="group__wpsessionitem_1gaa85bebb149417d4cbba54a21143ad36e"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_session_item_remove</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSessionItem" title="WpSessionItem"><span class="n"><span class="pre">WpSessionItem</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_session_item_remove" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Removes the session item from the registry. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – (transfer none): the session item </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_session_item_get_properties">
+<span class="target" id="group__wpsessionitem_1gac2727aeed169d792c0eb6cf59a33d7cd"></span><a class="reference internal" href="properties_api.html#c.WpProperties" title="WpProperties"><span class="n"><span class="pre">WpProperties</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_session_item_get_properties</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSessionItem" title="WpSessionItem"><span class="n"><span class="pre">WpSessionItem</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_session_item_get_properties" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Gets the properties of a session item. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the session item </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full): the item’s properties. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_session_item_get_property">
+<span class="target" id="group__wpsessionitem_1ga135572d1b194bc89e245b78f1fbf5ef0"></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">gchar</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_session_item_get_property</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSessionItem" title="WpSessionItem"><span class="n"><span class="pre">WpSessionItem</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">gchar</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">key</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_session_item_get_property" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Looks up a named session item property value for a given key. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the session item </p></li>
+<li><p><strong>key</strong> – the property key </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the item property value for the given key. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_session_item_set_properties">
+<span class="target" id="group__wpsessionitem_1ga6cdb6241858cb1d713820e5929880efb"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_session_item_set_properties</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpSessionItem" title="WpSessionItem"><span class="n"><span class="pre">WpSessionItem</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <a class="reference internal" href="properties_api.html#c.WpProperties" title="WpProperties"><span class="n"><span class="pre">WpProperties</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">props</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_session_item_set_properties" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Sets the item’s properties. </p>
+<p>This should only be done by sub-classes after the configuration has been done.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the session item </p></li>
+<li><p><strong>props</strong> – (transfer full): the new properties to set </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_session_item_handle_proxy_destroyed">
+<span class="target" id="group__wpsessionitem_1gad46c751e736d58d5884b801d8cda0bc5"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_session_item_handle_proxy_destroyed</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="proxy_api.html#c.WpProxy" title="WpProxy"><span class="n"><span class="pre">WpProxy</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">proxy</span></span>, <a class="reference internal" href="#c.WpSessionItem" title="WpSessionItem"><span class="n"><span class="pre">WpSessionItem</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">item</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_session_item_handle_proxy_destroyed" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Helper callback for sub-classes that deffers and unexports the session item. </p>
+<p>Only meant to be used when the pipewire proxy destroyed signal is triggered.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>proxy</strong> – the proxy that was destroyed by the server </p></li>
+<li><p><strong>item</strong> – the associated session item </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.WP_TYPE_SESSION_ITEM">
+<span class="target" id="group__wpsessionitem_1ga6d51df5f9ed9e46b7bbadaf01c1d85e4"></span><span class="sig-name descname"><span class="n"><span class="pre">WP_TYPE_SESSION_ITEM</span></span></span> <span class="pre">(wp_session_item_get_type</span> <span class="pre">())</span><a class="headerlink" href="#c.WP_TYPE_SESSION_ITEM" title="Permalink to this definition"></a><br /></dt>
+<dd><p>The WpSessionItem GType. </p>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="component_loader_api.html" class="btn btn-neutral float-left" title="Component Loader" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="si_interfaces_api.html" class="btn btn-neutral float-right" title="Session Items Interfaces" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Collabora.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

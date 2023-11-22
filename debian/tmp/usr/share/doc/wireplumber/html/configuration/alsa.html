@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ALSA configuration &mdash; WirePlumber 0.4.16 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Bluetooth configuration" href="bluetooth.html" />
+    <link rel="prev" title="Running multiple instances" href="multi_instance.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> WirePlumber
+          </a>
+              <div class="version">
+                0.4.16
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">The WirePlumber Daemon</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installing-wireplumber.html">Installing WirePlumber</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../running-wireplumber-daemon.html">Running the WirePlumber daemon</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../configuration.html">Configuration</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="locations.html">Locations of files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="main.html">Main configuration file</a></li>
+<li class="toctree-l2"><a class="reference internal" href="config_lua.html">Lua Configuration Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multi_instance.html">Running multiple instances</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">ALSA configuration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#modifying-the-default-configuration">Modifying the default configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#device-properties">Device properties</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#node-properties">Node Properties</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#alsa-buffer-properties">ALSA buffer properties</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#alsa-extra-latency-properties">ALSA extra latency properties</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#startup-tweaks">Startup tweaks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#iec958-s-pdif-passthrough">IEC958 (S/PDIF) passthrough</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="bluetooth.html">Bluetooth configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="policy.html">Policy Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="access.html">Access configuration</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../daemon-logging.html">Debug Logging</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">The WirePlumber Library</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../c_api.html">C API Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../lua_api.html">Lua API Documentation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Resources</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing to WirePlumber</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../testing.html">Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../community.html">Community Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Releases</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">WirePlumber</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../configuration.html">Configuration</a> &raquo;</li>
+      <li>ALSA configuration</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/configuration/alsa.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="multi_instance.html" class="btn btn-neutral float-left" title="Running multiple instances" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="bluetooth.html" class="btn btn-neutral float-right" title="Bluetooth configuration" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+  </div>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="alsa-configuration">
+<span id="config-alsa"></span><h1>ALSA configuration<a class="headerlink" href="#alsa-configuration" title="Permalink to this headline"></a></h1>
+<section id="modifying-the-default-configuration">
+<h2>Modifying the default configuration<a class="headerlink" href="#modifying-the-default-configuration" title="Permalink to this headline"></a></h2>
+<p>ALSA devices are created and managed by the session manager with the <em>alsa.lua</em>
+monitor script. In the default configuration, this script is loaded by
+<code class="docutils literal notranslate"><span class="pre">main.lua.d/30-alsa-monitor.lua</span></code>, which also specifies an <code class="docutils literal notranslate"><span class="pre">alsa_monitor</span></code>
+global table that can be filled in with properties and rules in subsequent
+config files. By default, these are filled in <code class="docutils literal notranslate"><span class="pre">main.lua.d/50-alsa-config.lua</span></code>.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">alsa_monitor</span></code> global table has 2 sub-tables:</p>
+<ul>
+<li><p><em>alsa_monitor.properties</em></p>
+<p>This is a simple Lua table that has key value pairs used as properties.</p>
+<p>Example:</p>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="n">alsa_monitor</span><span class="p">.</span><span class="n">properties</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="p">[</span><span class="s2">&quot;alsa.jack-device&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">false</span><span class="p">,</span>
+  <span class="p">[</span><span class="s2">&quot;alsa.reserve&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">true</span><span class="p">,</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>The above example will configure the ALSA monitor to not enable the JACK
+device, and do ALSA device reservation using the mentioned DBus interface.</p>
+<p>A list of valid properties are:</p>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="s2">&quot;alsa.jack-device&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">false</span>
+</pre></div>
+</div>
+<p>Creates a JACK device if set to <code class="docutils literal notranslate"><span class="pre">true</span></code>. This is not enabled by default because
+it requires that the PipeWire JACK replacement libraries are not used by the
+session manager, in order to be able to connect to the real JACK server.</p>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="s2">&quot;alsa.reserve&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">true</span>
+</pre></div>
+</div>
+<p>Reserve ALSA devices via <em>org.freedesktop.ReserveDevice1</em> on D-Bus.</p>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="s2">&quot;alsa.reserve.priority&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">20</span>
+</pre></div>
+</div>
+<p>The used ALSA device reservation priority.</p>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="s2">&quot;alsa.reserve.application-name&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;WirePlumber&quot;</span>
+</pre></div>
+</div>
+<p>The used ALSA device reservation application name.</p>
+</li>
+<li><p><em>alsa_monitor.rules</em></p>
+<p>This is a Lua array that can contain objects with rules for a device or node.
+Those objects have 2 properties. The first one is <code class="docutils literal notranslate"><span class="pre">matches</span></code>, which allow
+users to define rules to match a device or node. The second property is
+<code class="docutils literal notranslate"><span class="pre">apply_properties</span></code>, and it is used to apply properties on the matched object.</p>
+<p>Example:</p>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="n">alsa_monitor</span><span class="p">.</span><span class="n">rules</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">matches</span> <span class="o">=</span> <span class="p">{</span>
+      <span class="p">{</span>
+        <span class="p">{</span> <span class="s2">&quot;device.name&quot;</span><span class="p">,</span> <span class="s2">&quot;matches&quot;</span><span class="p">,</span> <span class="s2">&quot;alsa_card.*&quot;</span> <span class="p">},</span>
+      <span class="p">},</span>
+    <span class="p">},</span>
+    <span class="n">apply_properties</span> <span class="o">=</span> <span class="p">{</span>
+      <span class="p">[</span><span class="s2">&quot;api.alsa.use-acp&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">true</span><span class="p">,</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>This sets the API ALSA use ACP property to all devices with a name that
+matches the <code class="docutils literal notranslate"><span class="pre">alsa_card.*</span></code> pattern.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">matches</span></code> section is an array of arrays. On the first level, the rules
+are ORed together, so any rule match is going to apply the properties. On
+the second level, the rules are merged with AND, so they must all match.</p>
+<p>Example:</p>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="n">matches</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="p">{</span>
+    <span class="p">{</span> <span class="s2">&quot;node.name&quot;</span><span class="p">,</span> <span class="s2">&quot;matches&quot;</span><span class="p">,</span> <span class="s2">&quot;alsa_input.*&quot;</span> <span class="p">},</span>
+    <span class="p">{</span> <span class="s2">&quot;alsa.driver_name&quot;</span><span class="p">,</span> <span class="s2">&quot;equals&quot;</span><span class="p">,</span> <span class="s2">&quot;snd_hda_intel&quot;</span> <span class="p">},</span>
+  <span class="p">},</span>
+  <span class="p">{</span>
+    <span class="p">{</span> <span class="s2">&quot;node.name&quot;</span><span class="p">,</span> <span class="s2">&quot;matches&quot;</span><span class="p">,</span> <span class="s2">&quot;alsa_output.*&quot;</span> <span class="p">},</span>
+  <span class="p">},</span>
+<span class="p">},</span>
+</pre></div>
+</div>
+<p>This is equivalent to the following logic, in pseudocode:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="p">(</span><span class="s2">&quot;node.name&quot;</span> <span class="n">MATCHES</span> <span class="s2">&quot;alsa_input.*&quot;</span> <span class="n">AND</span> <span class="s2">&quot;alsa.driver_name&quot;</span> <span class="n">EQUALS</span> <span class="s2">&quot;snd_hda_intel&quot;</span> <span class="p">)</span>
+   <span class="n">OR</span>
+   <span class="p">(</span><span class="s2">&quot;node.name&quot;</span> <span class="n">MATCHES</span> <span class="s2">&quot;alsa_output.*&quot;</span><span class="p">)</span>
+<span class="n">then</span>
+   <span class="o">...</span> <span class="n">apply</span> <span class="n">the</span> <span class="n">properties</span> <span class="o">...</span>
+<span class="n">end</span>
+</pre></div>
+</div>
+<p>As you can notice, the individual rules are themselves also lua arrays. The
+first element is a property name (ex “node.name”), the second element is a
+verb and the third element is an expected value, which depends on the verb.
+Internally, this uses the <code class="docutils literal notranslate"><span class="pre">Constraint</span></code> API, which is documented in the
+<a class="reference internal" href="../lua_api/lua_object_interest_api.html#lua-object-interest-api"><span class="std std-ref">Object Interet API</span></a> section. All the verbs
+that you can use on <code class="docutils literal notranslate"><span class="pre">Constraint</span></code> are also allowed here.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>When using the “matches” verb, the values are not complete regular expressions.
+They are wildcard patterns, which means that ‘*’ matches an arbitrary,
+possibly empty, string and ‘?’ matches an arbitrary character.</p>
+</div>
+<p>All the possible properties that you can apply to devices and nodes of the
+ALSA monitor are described in the sections below.</p>
+</li>
+</ul>
+</section>
+<section id="device-properties">
+<h2>Device properties<a class="headerlink" href="#device-properties" title="Permalink to this headline"></a></h2>
+<p>PipeWire devices correspond to the ALSA cards.
+The following properties can be configured on devices created by the monitor:</p>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="s2">&quot;api.alsa.use-acp&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">true</span>
+</pre></div>
+</div>
+<p>Use the ACP (alsa card profile) code to manage the device. This will probe the
+device and configure the available profiles, ports and mixer settings. The
+code to do this is taken directly from PulseAudio and provides devices that
+look and feel exactly like the PulseAudio devices.</p>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="s2">&quot;api.alsa.use-ucm&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">true</span>
+</pre></div>
+</div>
+<p>By default, the UCM configuration is used when it is available for your device.
+With this option you can disable this and use the ACP profiles instead.</p>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="s2">&quot;api.alsa.soft-mixer&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">false</span>
+</pre></div>
+</div>
+<p>Setting this option to true will disable the hardware mixer for volume control
+and mute. All volume handling will then use software volume and mute, leaving
+the hardware mixer untouched. The hardware mixer will still be used to mute
+unused audio paths in the device.</p>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="s2">&quot;api.alsa.ignore-dB&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">false</span>
+</pre></div>
+</div>
+<p>Setting this option to true will ignore the decibel setting configured by the
+driver. Use this when the driver reports wrong settings.</p>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="s2">&quot;device.profile-set&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;profileset-name&quot;</span>
+</pre></div>
+</div>
+<p>This option can be used to select a custom profile set name for the device.
+Usually this is configured in Udev rules but it can also be specified here.</p>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="s2">&quot;device.profile&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;default profile name&quot;</span>
+</pre></div>
+</div>
+<p>The default active profile name.</p>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="s2">&quot;api.acp.auto-profile&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">false</span>
+</pre></div>
+</div>
+<p>Automatically select the best profile for the device. Normally this option is
+disabled because the session manager will manage the profile of the device.
+The session manager can save and load previously selected profiles. Enable
+this if your session manager does not handle this feature.</p>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="s2">&quot;api.acp.auto-port&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">false</span>
+</pre></div>
+</div>
+<p>Automatically select the highest priority port that is available. This is by
+default disabled because the session manager handles the task of selecting and
+restoring ports. It can, for example, restore previously saved volumes. Enable
+this here when the session manager does not handle port restore.</p>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="s2">&quot;api.acp.probe-rate&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">48000</span>
+</pre></div>
+</div>
+<p>Sets the samplerate used for probing the ALSA devices and collecting the profiles
+and ports.</p>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="s2">&quot;api.acp.pro-channels&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">64</span>
+</pre></div>
+</div>
+<p>Sets the number of channels to use when probing the Pro Audio profile. Normally,
+the maximum amount of channels will be used but with this setting this can be
+reduced, which can make it possible to use other samplerates on some devices.</p>
+<p>Some of the other properties that might be configured on devices:</p>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="s2">&quot;device.nick&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;My Device&quot;</span><span class="p">,</span>
+<span class="p">[</span><span class="s2">&quot;device.description&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;My Device&quot;</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">device.description</span></code> will show up in most apps when a device name is shown.</p>
+</section>
+<section id="node-properties">
+<h2>Node Properties<a class="headerlink" href="#node-properties" title="Permalink to this headline"></a></h2>
+<p>Nodes are sinks or sources in the PipeWire graph. They correspond to the ALSA
+devices. In addition to the generic stream node configuration options, there are
+some alsa specific options as well:</p>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="s2">&quot;priority.driver&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2000</span>
+</pre></div>
+</div>
+<p>This configures the node driver priority. Nodes with higher priority will be
+used as a driver in the graph. Other nodes with lower priority will have to
+resample to the driver node when they are joined in the same graph. The default
+value is set based on some heuristics.</p>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="s2">&quot;priority.session&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1200</span>
+</pre></div>
+</div>
+<p>This configures the priority of the node when selecting a default node.
+Higher priority nodes will be more likely candidates as a default node.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>By default, sources have a <code class="docutils literal notranslate"><span class="pre">priority.session</span></code> value around 1600-2000 and
+sinks have a value around 600-1000. If you are increasing the priority of a
+sink, it is <strong>not advised</strong> to use a value higher than 1500, as it may cause
+a sink’s monitor to be selected as a default source.</p>
+</div>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="s2">&quot;node.pause-on-idle&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">false</span>
+</pre></div>
+</div>
+<p>Pause-on-idle will stop the node when nothing is linked to it anymore.
+This is by default false because some devices cause a pop when they are
+opened/closed. The node will, normally, pause and suspend after a timeout
+(see suspend-node.lua).</p>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="s2">&quot;session.suspend-timeout-seconds&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">5</span>  <span class="c1">-- 0 disables suspend</span>
+</pre></div>
+</div>
+<p>This option configures a different suspend timeout on the node.
+By default this is 5 seconds. For some devices (HiFi amplifiers, for example)
+it might make sense to set a higher timeout because they might require some
+time to restart after being idle.</p>
+<p>A value of 0 disables suspend for a node and will leave the ALSA device busy.
+The device can then manually be suspended with <code class="docutils literal notranslate"><span class="pre">pactl</span> <span class="pre">suspend-sink|source</span></code>.</p>
+<p><strong>The following properties can be used to configure the format used by the
+ALSA device:</strong></p>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="s2">&quot;audio.format&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;S16LE&quot;</span>
+</pre></div>
+</div>
+<p>By default, PipeWire will use a 32 bits sample format but a different format
+can be set here.</p>
+<p>The Audio rate of a device can be set here:</p>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="s2">&quot;audio.rate&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">44100</span>
+</pre></div>
+</div>
+<p>By default, the ALSA device will be configured with the same samplerate as the
+global graph. If this is not supported, or a custom values is set here,
+resampling will be used to match the graph rate.</p>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="s2">&quot;audio.channels&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="p">[</span><span class="s2">&quot;audio.position&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;FL,FR&quot;</span>
+</pre></div>
+</div>
+<p>By default the channels and their position are determined by the selected
+Device profile. You can override this setting here and optionally swap or
+reconfigure the channel positions.</p>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="s2">&quot;api.alsa.use-chmap&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">false</span>
+</pre></div>
+</div>
+<p>Use the channel map as reported by the driver. This is disabled by default
+because it is often wrong and the ACP code handles this better.</p>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="s2">&quot;api.alsa.disable-mmap&quot;</span><span class="p">]</span>  <span class="o">=</span> <span class="kc">true</span>
+</pre></div>
+</div>
+<p>PipeWire will by default access the memory of the device using mmap.
+This can be disabled and force the usage of the slower read and write access
+modes in case the mmap support of the device is not working properly.</p>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="s2">&quot;channelmix.normalize&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">true</span>
+</pre></div>
+</div>
+<p>Makes sure that during such mixing &amp; resampling original 0 dB level is
+preserved, so nothing sounds wildly quieter/louder.</p>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="s2">&quot;channelmix.mix-lfe&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">true</span>
+</pre></div>
+</div>
+<p>Creates “center” channel for X.0 recordings from front stereo on X.1 setups and
+pushes some low-frequency/bass from “center” from X.1 recordings into front
+stereo on X.0 setups.</p>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="s2">&quot;monitor.channel-volumes&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">false</span>
+</pre></div>
+</div>
+<p>By default, the volume of the sink/source does not influence the volume on the
+monitor ports. Set this option to true to change this. PulseAudio has
+inconsistent behaviour regarding this option, it applies channel-volumes only
+when the sink/source is using software volumes.</p>
+</section>
+<section id="alsa-buffer-properties">
+<h2>ALSA buffer properties<a class="headerlink" href="#alsa-buffer-properties" title="Permalink to this headline"></a></h2>
+<p>PipeWire uses a timer to consume and produce samples to/from ALSA devices.
+After every timeout, it queries the device hardware pointers of the device and
+uses this information to set a new timeout. See also this example program.</p>
+<p>By default, PipeWire handles ALSA batch devices differently from non-batch
+devices. Batch devices only get their hardware pointers updated after each
+hardware interrupt. Non-batch devices get updates independent of the interrupt.
+This means that for batch devices we need to set the interrupt at a sufficiently
+high frequency (at the cost of CPU usage) while for non-batch devices we want to
+set the interrupt frequency as low as possible (to save CPU).</p>
+<p>For batch devices we also need to take the extra buffering into account caused
+by the delayed updates of the hardware pointers.</p>
+<p>Most USB devices are batch devices and will be handled as such by PipeWire by
+default.</p>
+<p>There are 2 tunable parameters to control the buffering and timeouts in a
+device</p>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="s2">&quot;api.alsa.period-size&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1024</span>
+</pre></div>
+</div>
+<p>This sets the device interrupt to every period-size samples for non-batch
+devices and to half of this for batch devices. For batch devices, the other
+half of the period-size is used as extra buffering to compensate for the delayed
+update. So, for batch devices, there is an additional period-size/2 delay.
+It makes sense to lower the period-size for batch devices to reduce this delay.</p>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="s2">&quot;api.alsa.headroom&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+</pre></div>
+</div>
+<p>This adds extra delay between the hardware pointers and software pointers.
+In most cases this can be set to 0. For very bad devices or emulated devices
+(like in a VM) it might be necessary to increase the headroom value.
+In summary, this is the overview of buffering and timings:</p>
+<blockquote>
+<div><table class="docutils align-default">
+<colgroup>
+<col style="width: 18%" />
+<col style="width: 55%" />
+<col style="width: 26%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Property</p></th>
+<th class="head"><p>Batch</p></th>
+<th class="head"><p>Non-Batch</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>IRQ Frequency</p></td>
+<td><p>api.alsa.period-size/2</p></td>
+<td><p>api.alsa.period-size</p></td>
+</tr>
+<tr class="row-odd"><td><p>Extra Delay</p></td>
+<td><p>api.alsa.headroom + api.alsa.period-size/2</p></td>
+<td><p>api.alsa.headroom</p></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p>It is possible to disable the batch device tweaks with:</p>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="s2">&quot;api.alsa.disable-batch&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">true</span>
+</pre></div>
+</div>
+<p>It removes the extra delay added of period-size/2 if the device can support this.
+For batch devices it is also a good idea to lower the period-size
+(and increase the IRQ frequency) to get smaller batch updates and lower latency.</p>
+</section>
+<section id="alsa-extra-latency-properties">
+<h2>ALSA extra latency properties<a class="headerlink" href="#alsa-extra-latency-properties" title="Permalink to this headline"></a></h2>
+<p>Extra internal delay in the DAC and ADC converters of the device itself can be
+set with the <code class="docutils literal notranslate"><span class="pre">latency.internal.*</span></code> properties:</p>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="s2">&quot;latency.internal.rate&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">256</span>
+<span class="p">[</span><span class="s2">&quot;latency.internal.ns&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+</pre></div>
+</div>
+<p>You can configure a latency in samples (relative to rate with
+<code class="docutils literal notranslate"><span class="pre">latency.internal.rate</span></code>) or in nanoseconds (<code class="docutils literal notranslate"><span class="pre">latency.internal.ns</span></code>).
+This value will be added to the total reported latency by the node of the device.</p>
+<p>You can use a tool like <code class="docutils literal notranslate"><span class="pre">jack_iodelay</span></code> to get the number of samples of
+internal latency of your device.</p>
+<p>This property is also adjustable at runtime with the <code class="docutils literal notranslate"><span class="pre">ProcessLatency</span></code> param.
+You will need to find the id of the Node you want to change. For example:
+Query the current internal latency of an ALSA node with id 58:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>pw-cli e <span class="m">58</span> ProcessLatency
+<span class="go">Object: size 80, type Spa:Pod:Object:Param:ProcessLatency (262156), id Spa:Enum:ParamId:ProcessLatency (16)</span>
+<span class="go">  Prop: key Spa:Pod:Object:Param:ProcessLatency:quantum (1), flags 00000000</span>
+<span class="go">    Float 0.000000</span>
+<span class="go">  Prop: key Spa:Pod:Object:Param:ProcessLatency:rate (2), flags 00000000</span>
+<span class="go">    Int 0</span>
+<span class="go">  Prop: key Spa:Pod:Object:Param:ProcessLatency:ns (3), flags 00000000</span>
+<span class="go">    Long 0</span>
+</pre></div>
+</div>
+<p>Set the internal latency to 256 samples:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>pw-cli s <span class="m">58</span> ProcessLatency <span class="s1">&#39;{ rate = 256 }&#39;</span>
+<span class="go">Object: size 32, type Spa:Pod:Object:Param:ProcessLatency (262156), id Spa:Enum:ParamId:ProcessLatency (16)</span>
+<span class="go">  Prop: key Spa:Pod:Object:Param:ProcessLatency:rate (2), flags 00000000</span>
+<span class="go">    Int 256</span>
+<span class="go">remote 0 node 58 changed</span>
+<span class="go">remote 0 port 70 changed</span>
+<span class="go">remote 0 port 72 changed</span>
+<span class="go">remote 0 port 74 changed</span>
+<span class="go">remote 0 port 76 changed</span>
+</pre></div>
+</div>
+</section>
+<section id="startup-tweaks">
+<h2>Startup tweaks<a class="headerlink" href="#startup-tweaks" title="Permalink to this headline"></a></h2>
+<p>Some devices need some time before they can report accurate hardware pointer
+positions. In those cases, an extra start delay can be added that is used to
+compensate for this startup delay:</p>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="s2">&quot;api.alsa.start-delay&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+</pre></div>
+</div>
+<p>It is unsure when this tunable should be used.</p>
+</section>
+<section id="iec958-s-pdif-passthrough">
+<h2>IEC958 (S/PDIF) passthrough<a class="headerlink" href="#iec958-s-pdif-passthrough" title="Permalink to this headline"></a></h2>
+<p>S/PDIF passthrough will only be enabled when the accepted codecs are configured
+on the ALSA device.</p>
+<p>This can be done in 3 different ways:</p>
+<blockquote>
+<div><ol class="arabic">
+<li><p>Use pavucontrol and toggle the codecs in the output advanced section.</p></li>
+<li><p>Modify the <code class="docutils literal notranslate"><span class="pre">[&quot;iec958.codecs&quot;]</span></code> node property to contain supported codecs.</p>
+<p>Example <code class="docutils literal notranslate"><span class="pre">~/.config/wireplumber/main.lua.d/51-alsa-spdif.lua</span></code>:</p>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="nb">table.insert</span> <span class="p">(</span><span class="n">alsa_monitor</span><span class="p">.</span><span class="n">rules</span><span class="p">,</span> <span class="p">{</span>
+  <span class="n">matches</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="p">{</span>
+      <span class="p">{</span> <span class="s2">&quot;node.name&quot;</span><span class="p">,</span> <span class="s2">&quot;matches&quot;</span><span class="p">,</span> <span class="s2">&quot;alsa_output.*&quot;</span> <span class="p">},</span>
+    <span class="p">},</span>
+  <span class="p">},</span>
+  <span class="n">apply_properties</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="p">[</span><span class="s2">&quot;iec958.codecs&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;[ PCM DTS AC3 EAC3 TrueHD DTS-HD ]&quot;</span><span class="p">,</span>
+  <span class="p">}</span>
+<span class="p">})</span>
+</pre></div>
+</div>
+</li>
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">pw-cli</span> <span class="pre">s</span> <span class="pre">&lt;node-id&gt;</span> <span class="pre">Props</span> <span class="pre">'{</span> <span class="pre">iec958Codecs</span> <span class="pre">:</span> <span class="pre">[</span> <span class="pre">PCM</span> <span class="pre">]</span> <span class="pre">}'</span></code> to modify
+the codecs at runtime.</p></li>
+</ol>
+</div></blockquote>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="multi_instance.html" class="btn btn-neutral float-left" title="Running multiple instances" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="bluetooth.html" class="btn btn-neutral float-right" title="Bluetooth configuration" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Collabora.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

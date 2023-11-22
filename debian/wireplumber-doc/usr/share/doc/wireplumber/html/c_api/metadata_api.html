@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PipeWire Metadata &mdash; WirePlumber 0.4.16 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="PipeWire Endpoint" href="endpoint_api.html" />
+    <link rel="prev" title="PipeWire Client" href="client_api.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> WirePlumber
+          </a>
+              <div class="version">
+                0.4.16
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">The WirePlumber Daemon</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installing-wireplumber.html">Installing WirePlumber</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../running-wireplumber-daemon.html">Running the WirePlumber daemon</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../daemon-logging.html">Debug Logging</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">The WirePlumber Library</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../c_api.html">C API Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="wp_api.html">Library Initialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core_api.html">Core</a></li>
+<li class="toctree-l2"><a class="reference internal" href="object_api.html">WpObject</a></li>
+<li class="toctree-l2"><a class="reference internal" href="obj_manager_api.html">Object Manager</a></li>
+<li class="toctree-l2"><a class="reference internal" href="obj_interest_api.html">Object Interest</a></li>
+<li class="toctree-l2"><a class="reference internal" href="iterator_api.html">Iterator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="transitions_api.html">Transitions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wperror_api.html">Error Codes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="log_api.html">Debug Logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="proxy_api.html">PipeWire Proxy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipewire_object_api.html">PipeWire Object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="global_proxy_api.html">PipeWire Global Object Proxy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="node_api.html">PipeWire Node</a></li>
+<li class="toctree-l2"><a class="reference internal" href="port_api.html">PipeWire Port</a></li>
+<li class="toctree-l2"><a class="reference internal" href="link_api.html">PipeWire Link</a></li>
+<li class="toctree-l2"><a class="reference internal" href="device_api.html">PipeWire Device</a></li>
+<li class="toctree-l2"><a class="reference internal" href="client_api.html">PipeWire Client</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">PipeWire Metadata</a></li>
+<li class="toctree-l2"><a class="reference internal" href="endpoint_api.html">PipeWire Endpoint</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spa_device_api.html">Spa Device</a></li>
+<li class="toctree-l2"><a class="reference internal" href="impl_node_api.html">Local Nodes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="impl_module_api.html">Local Modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="properties_api.html">Properties Dictionary</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spa_type_api.html">Spa Type Information</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spa_json_api.html">Spa Json</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spa_pod_api.html">Spa Pod (Plain Old Data)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plugin_api.html">Plugins</a></li>
+<li class="toctree-l2"><a class="reference internal" href="component_loader_api.html">Component Loader</a></li>
+<li class="toctree-l2"><a class="reference internal" href="session_item_api.html">Session Items</a></li>
+<li class="toctree-l2"><a class="reference internal" href="si_interfaces_api.html">Session Items Interfaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="si_factory_api.html">Session Items Factory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="state_api.html">State Storage</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../lua_api.html">Lua API Documentation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Resources</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing to WirePlumber</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../testing.html">Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../community.html">Community Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Releases</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">WirePlumber</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../c_api.html">C API Documentation</a> &raquo;</li>
+      <li>PipeWire Metadata</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/c_api/metadata_api.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="client_api.html" class="btn btn-neutral float-left" title="PipeWire Client" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="endpoint_api.html" class="btn btn-neutral float-right" title="PipeWire Endpoint" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+  </div>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="pipewire-metadata">
+<span id="metadata-api"></span><h1>PipeWire Metadata<a class="headerlink" href="#pipewire-metadata" title="Permalink to this headline"></a></h1>
+<div align="center" class="align-center"><div class="graphviz"><object data="../_images/graphviz-f19d5549bfaa513d7c834ad6e7d2cdda953b112b.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph inheritance {
+    rankdir=LR;
+    GObject -&gt; WpObject;
+    WpObject -&gt; WpProxy;
+    WpProxy -&gt; WpGlobalProxy;
+    WpGlobalProxy -&gt; WpMetadata;
+    WpMetadata-&gt; WpImplMetadata;
+ }</p></object></div>
+</div>
+<dl class="c struct">
+<dt class="sig sig-object c" id="c.WpMetadata">
+<span class="target" id="structWpMetadata"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">WpMetadata</span></span></span><a class="headerlink" href="#c.WpMetadata" title="Permalink to this definition"></a><br /></dt>
+<dd><p>The WpMetadata class allows accessing the properties and methods of PipeWire metadata object (<code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">pw_metadata</span></code>).</p>
+<p>A WpMetadata is constructed internally when a new metadata object appears on the PipeWire registry and it is made available through the WpObjectManager API.</p>
+<p><strong>GObject</strong> <strong>Signals</strong> </p>
+<p><dl class="simple">
+<dt><strong>changed</strong></dt><dd><p><p><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">void</span>
+<span class="n">changed_callback</span> <span class="p">(</span><span class="n">WpMetadata</span> <span class="o">*</span> <span class="bp">self</span><span class="p">,</span>
+                  <span class="n">guint</span> <span class="n">subject</span><span class="p">,</span>
+                  <span class="n">gchar</span> <span class="o">*</span> <span class="n">key</span><span class="p">,</span>
+                  <span class="n">gchar</span> <span class="o">*</span> <span class="nb">type</span><span class="p">,</span>
+                  <span class="n">gchar</span> <span class="o">*</span> <span class="n">value</span><span class="p">,</span>
+                  <span class="n">gpointer</span> <span class="n">user_data</span><span class="p">)</span>
+</pre></div>
+</div>
+ Emited when metadata change</p>
+<p>Parameters:<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">subject</span></code> - the metadata subject id</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">key</span></code> - the metadata key</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">type</span></code> - the value type</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">value</span></code> - the metadata value</p></li>
+</ul>
+</p>
+<p>Flags: G_SIGNAL_RUN_LAST </p>
+</p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="c struct">
+<dt class="sig sig-object c" id="c.WpImplMetadata">
+<span class="target" id="structWpImplMetadata"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">WpImplMetadata</span></span></span><a class="headerlink" href="#c.WpImplMetadata" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Implementation of the metadata object.</p>
+<p>Activate this object with at least WP_PROXY_FEATURE_BOUND to export it to PipeWire. </p>
+</dd></dl>
+
+<dl class="c enum">
+<dt class="sig sig-object c" id="c.WpMetadataFeatures">
+<span class="target" id="group__wpmetadata_1gaba908e78bbb07452a24f66956a4dde29"></span><span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">WpMetadataFeatures</span></span></span><a class="headerlink" href="#c.WpMetadataFeatures" title="Permalink to this definition"></a><br /></dt>
+<dd><p>An extension of WpProxyFeatures for WpMetadata objects. </p>
+<p><em>Values:</em></p>
+<dl class="c enumerator">
+<dt class="sig sig-object c" id="c.WpMetadataFeatures.WP_METADATA_FEATURE_DATA">
+<span class="target" id="group__wpmetadata_1ggaba908e78bbb07452a24f66956a4dde29a7d6ea3a49606e98254251ecf94aa42fb"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">WP_METADATA_FEATURE_DATA</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="p"><span class="pre">(</span></span><a class="reference internal" href="proxy_api.html#c.WpProxyFeatures.WP_PROXY_FEATURE_CUSTOM_START" title="WP_PROXY_FEATURE_CUSTOM_START"><span class="n"><span class="pre">WP_PROXY_FEATURE_CUSTOM_START</span></span></a><span class="w"> </span><span class="o"><span class="pre">&lt;&lt;</span></span><span class="w"> </span><span class="m"><span class="pre">0</span></span><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#c.WpMetadataFeatures.WP_METADATA_FEATURE_DATA" title="Permalink to this definition"></a><br /></dt>
+<dd><p>caches metadata locally </p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_metadata_new_iterator">
+<span class="target" id="group__wpmetadata_1gaf35b6b38f2aaf47cceb078b483920d8e"></span><a class="reference internal" href="iterator_api.html#c.WpIterator" title="WpIterator"><span class="n"><span class="pre">WpIterator</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_metadata_new_iterator</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpMetadata" title="WpMetadata"><span class="n"><span class="pre">WpMetadata</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="n"><span class="pre">guint32</span></span><span class="w"> </span><span class="n"><span class="pre">subject</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_metadata_new_iterator" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Iterates over metadata items that matches the given <em>subject</em>. </p>
+<p>If no constraints are specified, the returned iterator iterates over all the stored metadata.</p>
+<p>Note that this method works on cached metadata. When you change metadata with <a class="reference internal" href="#group__wpmetadata_1ga80f7cf2c8a236f42f73249026f7f2b5d"><span class="std std-ref">wp_metadata_set()</span></a>, this cache will be updated on the next round-trip with the pipewire server.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – a metadata object </p></li>
+<li><p><strong>subject</strong> – the metadata subject id, or -1 (PW_ID_ANY) </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full): an iterator that iterates over the found metadata. Use <a class="reference internal" href="#group__wpmetadata_1gaafb8b196abf32b3acfdd5993c59e340b"><span class="std std-ref">wp_metadata_iterator_item_extract()</span></a> to parse the items returned by this iterator. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_metadata_iterator_item_extract">
+<span class="target" id="group__wpmetadata_1gaafb8b196abf32b3acfdd5993c59e340b"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_metadata_iterator_item_extract</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">GValue</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">item</span></span>, <span class="n"><span class="pre">guint32</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">subject</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">gchar</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">key</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">gchar</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">type</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">gchar</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_metadata_iterator_item_extract" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Extracts the metadata subject, key, type and value out of a GValue that was returned from the WpIterator of <a class="reference internal" href="#group__wpmetadata_1gaaadfaebd50ae7d0f258ba378e0acc44e"><span class="std std-ref">wp_metadata_find()</span></a> </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>item</strong> – a GValue that was returned from the WpIterator of <a class="reference internal" href="#group__wpmetadata_1gaaadfaebd50ae7d0f258ba378e0acc44e"><span class="std std-ref">wp_metadata_find()</span></a> </p></li>
+<li><p><strong>subject</strong> – (out)(optional): the subject id of the current item </p></li>
+<li><p><strong>key</strong> – (out)(optional)(transfer none): the key of the current item </p></li>
+<li><p><strong>type</strong> – (out)(optional)(transfer none): the type of the current item </p></li>
+<li><p><strong>value</strong> – (out)(optional)(transfer none): the value of the current item </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_metadata_find">
+<span class="target" id="group__wpmetadata_1gaaadfaebd50ae7d0f258ba378e0acc44e"></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">gchar</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_metadata_find</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpMetadata" title="WpMetadata"><span class="n"><span class="pre">WpMetadata</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="n"><span class="pre">guint32</span></span><span class="w"> </span><span class="n"><span class="pre">subject</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">gchar</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">key</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">gchar</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">type</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_metadata_find" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Finds the metadata value given its <em>subject</em> and <em>key</em>. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – a metadata object </p></li>
+<li><p><strong>subject</strong> – the metadata subject id </p></li>
+<li><p><strong>key</strong> – the metadata key name </p></li>
+<li><p><strong>type</strong> – (out)(optional): the metadata type name </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the metadata string value, or NULL if not found. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_metadata_set">
+<span class="target" id="group__wpmetadata_1ga80f7cf2c8a236f42f73249026f7f2b5d"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_metadata_set</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpMetadata" title="WpMetadata"><span class="n"><span class="pre">WpMetadata</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span>, <span class="n"><span class="pre">guint32</span></span><span class="w"> </span><span class="n"><span class="pre">subject</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">gchar</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">key</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">gchar</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">type</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">gchar</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_metadata_set" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Sets the metadata associated with the given <em>subject</em> and <em>key</em>. Use NULL as a value to unset the given <em>key</em> and use NULL in both <em>key</em> and <em>value</em> to remove all metadata associated with the given <em>subject</em>. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the metadata object </p></li>
+<li><p><strong>subject</strong> – the subject id for which this metadata property is being set </p></li>
+<li><p><strong>key</strong> – (nullable): the key to set, or NULL to remove all metadata for <em>subject</em> </p></li>
+<li><p><strong>type</strong> – (nullable): the type of the value; NULL is synonymous to “string” </p></li>
+<li><p><strong>value</strong> – (nullable): the value to set, or NULL to unset the given <em>key</em> </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_metadata_clear">
+<span class="target" id="group__wpmetadata_1ga927de9da823ab65ed4834b0fea7985c1"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wp_metadata_clear</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.WpMetadata" title="WpMetadata"><span class="n"><span class="pre">WpMetadata</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_metadata_clear" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Clears permanently all stored metadata. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the metadata object </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_impl_metadata_new">
+<span class="target" id="group__wpmetadata_1ga2d010f4dba5783acf0da4a0afbc95093"></span><a class="reference internal" href="#c.WpImplMetadata" title="WpImplMetadata"><span class="n"><span class="pre">WpImplMetadata</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_impl_metadata_new</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="core_api.html#c.WpCore" title="WpCore"><span class="n"><span class="pre">WpCore</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">core</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_impl_metadata_new" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Creates a new metadata implementation. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>core</strong> – the core </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full): a new WpImplMetadata </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.wp_impl_metadata_new_full">
+<span class="target" id="group__wpmetadata_1ga74d0fbf52607d99aa1e587a68712564b"></span><a class="reference internal" href="#c.WpImplMetadata" title="WpImplMetadata"><span class="n"><span class="pre">WpImplMetadata</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">wp_impl_metadata_new_full</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="core_api.html#c.WpCore" title="WpCore"><span class="n"><span class="pre">WpCore</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">core</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">gchar</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">name</span></span>, <a class="reference internal" href="properties_api.html#c.WpProperties" title="WpProperties"><span class="n"><span class="pre">WpProperties</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">properties</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wp_impl_metadata_new_full" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Creates a new metadata implementation with name and properties. </p>
+<p><dl class="simple">
+<dt><strong>Since</strong></dt><dd><p>0.4.3 </p>
+</dd>
+</dl>
+</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>core</strong> – the core </p></li>
+<li><p><strong>name</strong> – (nullable): the metadata name </p></li>
+<li><p><strong>properties</strong> – (nullable) (transfer full): the metadata properties </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(transfer full): a new WpImplMetadata </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.WP_TYPE_METADATA">
+<span class="target" id="group__wpmetadata_1gad1dd74378b92893e09682b411967468f"></span><span class="sig-name descname"><span class="n"><span class="pre">WP_TYPE_METADATA</span></span></span> <span class="pre">(wp_metadata_get_type</span> <span class="pre">())</span><a class="headerlink" href="#c.WP_TYPE_METADATA" title="Permalink to this definition"></a><br /></dt>
+<dd><p>The WpMetadata GType. </p>
+</dd></dl>
+
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.WP_TYPE_IMPL_METADATA">
+<span class="target" id="group__wpmetadata_1gac2d1b24610ba8f15d869203a00559a65"></span><span class="sig-name descname"><span class="n"><span class="pre">WP_TYPE_IMPL_METADATA</span></span></span> <span class="pre">(wp_impl_metadata_get_type</span> <span class="pre">())</span><a class="headerlink" href="#c.WP_TYPE_IMPL_METADATA" title="Permalink to this definition"></a><br /></dt>
+<dd><p>The WpImplMetadata GType. </p>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="client_api.html" class="btn btn-neutral float-left" title="PipeWire Client" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="endpoint_api.html" class="btn btn-neutral float-right" title="PipeWire Endpoint" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Collabora.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

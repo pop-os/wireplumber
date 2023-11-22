@@ -1,0 +1,25 @@
+# Service file to run WirePlumber in split mode, i.e. run multiple
+# WirePlumber instances with different module sets.
+# The template argument is used to load the configuration file, e.g.
+# wireplumber@main.service loads main.conf,
+# wireplumber@policy.service loads policy.conf, etc.
+[Unit]
+Description=Multimedia Service Session Manager (%i)
+After=pipewire.service
+BindsTo=pipewire.service
+Conflicts=pipewire-media-session.service
+
+[Service]
+LockPersonality=yes
+MemoryDenyWriteExecute=yes
+NoNewPrivileges=yes
+SystemCallArchitectures=native
+SystemCallFilter=@system-service
+Type=simple
+ExecStart=/usr/bin/wireplumber -c %i.conf
+Restart=on-failure
+Slice=session.slice
+Environment=GIO_USE_VFS=local
+
+[Install]
+WantedBy=pipewire.service

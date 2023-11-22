@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bluetooth configuration &mdash; WirePlumber 0.4.16 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Policy Configuration" href="policy.html" />
+    <link rel="prev" title="ALSA configuration" href="alsa.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> WirePlumber
+          </a>
+              <div class="version">
+                0.4.16
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">The WirePlumber Daemon</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installing-wireplumber.html">Installing WirePlumber</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../running-wireplumber-daemon.html">Running the WirePlumber daemon</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../configuration.html">Configuration</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="locations.html">Locations of files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="main.html">Main configuration file</a></li>
+<li class="toctree-l2"><a class="reference internal" href="config_lua.html">Lua Configuration Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multi_instance.html">Running multiple instances</a></li>
+<li class="toctree-l2"><a class="reference internal" href="alsa.html">ALSA configuration</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Bluetooth configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="policy.html">Policy Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="access.html">Access configuration</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../daemon-logging.html">Debug Logging</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">The WirePlumber Library</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../c_api.html">C API Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../lua_api.html">Lua API Documentation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Resources</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing to WirePlumber</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../testing.html">Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../community.html">Community Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Releases</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">WirePlumber</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../configuration.html">Configuration</a> &raquo;</li>
+      <li>Bluetooth configuration</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/configuration/bluetooth.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="alsa.html" class="btn btn-neutral float-left" title="ALSA configuration" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="policy.html" class="btn btn-neutral float-right" title="Policy Configuration" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+  </div>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="bluetooth-configuration">
+<span id="config-bluetooth"></span><h1>Bluetooth configuration<a class="headerlink" href="#bluetooth-configuration" title="Permalink to this headline"></a></h1>
+<p>Using the same format as the <a class="reference internal" href="alsa.html#config-alsa"><span class="std std-ref">ALSA monitor</span></a>, the
+configuration file <code class="docutils literal notranslate"><span class="pre">bluetooth.lua.d/50-bluez-config.lua</span></code> is charged
+to configure the Bluetooth devices and nodes created by WirePlumber.</p>
+<ul>
+<li><p><em>bluez_monitor.properties</em></p>
+<p>A Lua object that contains generic client configuration properties in the
+for of key pairs.</p>
+<p>Example:</p>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="n">bluez_monitor</span><span class="p">.</span><span class="n">properties</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="p">[</span><span class="s2">&quot;bluez5.enable-msbc&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">true</span><span class="p">,</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>This example will enable the MSBC codec in connected Bluetooth devices that
+support it.</p>
+<p>The list of valid properties are:</p>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="s2">&quot;bluez5.enable-sbc-xq&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">true</span>
+</pre></div>
+</div>
+<p>Enables the SBC-XQ codec in connected Blueooth devices that support it</p>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="s2">&quot;bluez5.enable-msbc&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">true</span>
+</pre></div>
+</div>
+<p>Enables the MSBC codec in connected Blueooth devices that support it</p>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="s2">&quot;bluez5.enable-hw-volume&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">true</span>
+</pre></div>
+</div>
+<p>Enables hardware volume controls in Bluetooth devices that support it</p>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="s2">&quot;bluez5.headset-roles&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;[ hsp_hs hsp_ag hfp_hf hfp_ag ]&quot;</span>
+</pre></div>
+</div>
+<p>Enabled headset roles (default: [ hsp_hs hfp_ag ]), this property only applies
+to native backend. Currently some headsets (Sony WH-1000XM3) are not working
+with both hsp_ag and hfp_ag enabled, disable either hsp_ag or hfp_ag to work
+around it.</p>
+<p>Supported headset roles: <code class="docutils literal notranslate"><span class="pre">hsp_hs</span></code> (HSP Headset), <code class="docutils literal notranslate"><span class="pre">hsp_ag</span></code> (HSP Audio Gateway),
+<code class="docutils literal notranslate"><span class="pre">hfp_hf</span></code> (HFP Hands-Free) and <code class="docutils literal notranslate"><span class="pre">hfp_ag</span></code> (HFP Audio Gateway)</p>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="s2">&quot;bluez5.codecs&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;[ sbc sbc_xq aac ]&quot;</span>
+</pre></div>
+</div>
+<p>Enables <code class="docutils literal notranslate"><span class="pre">sbc</span></code>, <code class="docutils literal notranslate"><span class="pre">sbc_zq</span></code> and <code class="docutils literal notranslate"><span class="pre">aac</span></code> A2DP codecs.</p>
+<p>Supported codecs: <code class="docutils literal notranslate"><span class="pre">sbc</span></code>, <code class="docutils literal notranslate"><span class="pre">sbc_xq</span></code>, <code class="docutils literal notranslate"><span class="pre">aac</span></code>, <code class="docutils literal notranslate"><span class="pre">ldac</span></code>, <code class="docutils literal notranslate"><span class="pre">aptx</span></code>,
+<code class="docutils literal notranslate"><span class="pre">aptx_hd</span></code>, <code class="docutils literal notranslate"><span class="pre">aptx_ll</span></code>, <code class="docutils literal notranslate"><span class="pre">aptx_ll_duplex</span></code>, <code class="docutils literal notranslate"><span class="pre">faststream</span></code>, <code class="docutils literal notranslate"><span class="pre">faststream_duplex</span></code>.</p>
+<p>All codecs are supported by default.</p>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="s2">&quot;bluez5.hfphsp-backend&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;native&quot;</span>
+</pre></div>
+</div>
+<p>HFP/HSP backend (default: native). Available values: <code class="docutils literal notranslate"><span class="pre">any</span></code>, <code class="docutils literal notranslate"><span class="pre">none</span></code>,
+<code class="docutils literal notranslate"><span class="pre">hsphfpd</span></code>, <code class="docutils literal notranslate"><span class="pre">ofono</span></code> or <code class="docutils literal notranslate"><span class="pre">native</span></code>.</p>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="s2">&quot;bluez5.default.rate&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">48000</span>
+</pre></div>
+</div>
+<p>The bluetooth default audio rate.</p>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="s2">&quot;bluez5.default.channels&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span>
+</pre></div>
+</div>
+<p>The bluetooth default number of channels.</p>
+</li>
+<li><p><em>bluez_monitor.rules</em></p>
+<p>Like in the <a class="reference internal" href="alsa.html#config-alsa"><span class="std std-ref">ALSA configuration</span></a>, this is a Lua array that
+can contain objects with rules for a Bluetooth device or node.
+Those objects have 2 properties. The first one is <code class="docutils literal notranslate"><span class="pre">matches</span></code>, which allows
+users to define rules to match a Bluetooth device or node.
+The second property is <code class="docutils literal notranslate"><span class="pre">apply_properties</span></code>, and it is used to apply
+properties on the matched Bluetooth device or node.</p>
+<p>Example:</p>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="n">matches</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="p">{</span>
+      <span class="p">{</span> <span class="s2">&quot;device.name&quot;</span><span class="p">,</span> <span class="s2">&quot;matches&quot;</span><span class="p">,</span> <span class="s2">&quot;bluez_card.*&quot;</span> <span class="p">},</span>
+    <span class="p">},</span>
+  <span class="p">},</span>
+  <span class="n">apply_properties</span> <span class="o">=</span> <span class="p">{</span>
+     <span class="p">[</span><span class="s2">&quot;bluez5.auto-connect&quot;</span><span class="p">]</span>  <span class="o">=</span> <span class="s2">&quot;[ hfp_hf hsp_hs a2dp_sink ]&quot;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>This will set the auto-connect property to <code class="docutils literal notranslate"><span class="pre">hfp_hf</span></code>, <code class="docutils literal notranslate"><span class="pre">hsp_hs</span></code> and <code class="docutils literal notranslate"><span class="pre">a2dp_sink</span></code>
+on bluetooth devices whose name matches the <code class="docutils literal notranslate"><span class="pre">bluez_card.*</span></code> pattern.</p>
+<p>A list of valid properties are:</p>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="s2">&quot;bluez5.auto-connect&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;[ hfp_hf hsp_hs a2dp_sink ]&quot;</span>
+</pre></div>
+</div>
+<p>Auto-connect device profiles on start up or when only partial profiles have
+connected. Disabled by default if the property is not specified.</p>
+<p>Supported values are: <code class="docutils literal notranslate"><span class="pre">hfp_hf</span></code>, <code class="docutils literal notranslate"><span class="pre">hsp_hs</span></code>, <code class="docutils literal notranslate"><span class="pre">a2dp_sink</span></code>, <code class="docutils literal notranslate"><span class="pre">hfp_ag</span></code>,
+<code class="docutils literal notranslate"><span class="pre">hsp_ag</span></code> and <code class="docutils literal notranslate"><span class="pre">a2dp_source</span></code>.</p>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="s2">&quot;bluez5.hw-volume&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;[ hfp_ag hsp_ag a2dp_source ]&quot;</span>
+</pre></div>
+</div>
+<p>Hardware volume controls (default: <code class="docutils literal notranslate"><span class="pre">hfp_ag</span></code>, <code class="docutils literal notranslate"><span class="pre">hsp_ag</span></code>, and <code class="docutils literal notranslate"><span class="pre">a2dp_source</span></code>)</p>
+<p>Supported values are: <code class="docutils literal notranslate"><span class="pre">hfp_hf</span></code>, <code class="docutils literal notranslate"><span class="pre">hsp_hs</span></code>, <code class="docutils literal notranslate"><span class="pre">a2dp_sink</span></code>, <code class="docutils literal notranslate"><span class="pre">hfp_ag</span></code>,
+<code class="docutils literal notranslate"><span class="pre">hsp_ag</span></code> and <code class="docutils literal notranslate"><span class="pre">a2dp_source</span></code>.</p>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="s2">&quot;bluez5.a2dp.ldac.quality&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;auto&quot;</span>
+</pre></div>
+</div>
+<p>LDAC encoding quality.</p>
+<p>Available values: <code class="docutils literal notranslate"><span class="pre">auto</span></code> (Adaptive Bitrate, default),
+<code class="docutils literal notranslate"><span class="pre">hq</span></code> (High Quality, 990/909kbps), <code class="docutils literal notranslate"><span class="pre">sq</span></code> (Standard Quality, 660/606kbps) and
+<code class="docutils literal notranslate"><span class="pre">mq</span></code> (Mobile use Quality, 330/303kbps).</p>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="s2">&quot;bluez5.a2dp.aac.bitratemode&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+</pre></div>
+</div>
+<p>AAC variable bitrate mode.</p>
+<p>Available values: 0 (cbr, default), 1-5 (quality level).</p>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="s2">&quot;device.profile&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;a2dp-sink&quot;</span>
+</pre></div>
+</div>
+<p>Profile connected first.</p>
+<p>Available values: <code class="docutils literal notranslate"><span class="pre">a2dp-sink</span></code> (default) or <code class="docutils literal notranslate"><span class="pre">headset-head-unit</span></code>.</p>
+</li>
+</ul>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="alsa.html" class="btn btn-neutral float-left" title="ALSA configuration" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="policy.html" class="btn btn-neutral float-right" title="Policy Configuration" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Collabora.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

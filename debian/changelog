@@ -1,3 +1,9 @@
+wireplumber (0.4.16) jammy; urgency=medium
+
+  * https://gitlab.freedesktop.org/pipewire/wireplumber/-/releases/0.4.16
+
+ -- Michael Murphy <michael@mmurphy.dev>  Wed, 22 Nov 2023 15:54:53 +0100
+
 wireplumber (0.4.15-2) unstable; urgency=medium
 
   * Team upload.

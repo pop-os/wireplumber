@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Local Modules &mdash; WirePlumber 0.4.16 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Contributing to WirePlumber" href="../contributing.html" />
+    <link rel="prev" title="Spa Pod" href="lua_spa_pod.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> WirePlumber
+          </a>
+              <div class="version">
+                0.4.16
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">The WirePlumber Daemon</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installing-wireplumber.html">Installing WirePlumber</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../running-wireplumber-daemon.html">Running the WirePlumber daemon</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../daemon-logging.html">Debug Logging</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">The WirePlumber Library</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../c_api.html">C API Documentation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../lua_api.html">Lua API Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="lua_introduction.html">Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lua_gobject.html">GObject Integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lua_core_api.html">Core</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lua_log_api.html">Debug Logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lua_object_api.html">WpObject</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lua_object_manager_api.html">Object Manager</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lua_object_interest_api.html">Object Interest</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lua_proxies_api.html">PipeWire Proxies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lua_session_item_api.html">Session Item</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lua_spa_device_api.html">Spa Device</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lua_spa_pod.html">Spa Pod</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Local Modules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#constructors">Constructors</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Resources</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing to WirePlumber</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../testing.html">Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../community.html">Community Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Releases</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">WirePlumber</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../lua_api.html">Lua API Documentation</a> &raquo;</li>
+      <li>Local Modules</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/lua_api/lua_local_module_api.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="lua_spa_pod.html" class="btn btn-neutral float-left" title="Spa Pod" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../contributing.html" class="btn btn-neutral float-right" title="Contributing to WirePlumber" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+  </div>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <blockquote>
+<div></div></blockquote>
+<section id="local-modules">
+<span id="lua-local-module-api"></span><h1>Local Modules<a class="headerlink" href="#local-modules" title="Permalink to this headline"></a></h1>
+<p>The <cite>LocalModule</cite> object (which binds the <a class="reference internal" href="../c_api/impl_module_api.html#c.WpImplModule" title="WpImplModule"><code class="xref c c-struct docutils literal notranslate"><span class="pre">WpImplModule</span></code></a> C API) provides a way
+to load PipeWire modules in the WirePlumber process. Instantiating the object
+loads the module, and when the last reference to the returned module object is
+dropped, the module is unloaded.</p>
+<section id="constructors">
+<h2>Constructors<a class="headerlink" href="#constructors" title="Permalink to this headline"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="LocalModule">
+<span class="sig-name descname"><span class="pre">LocalModule</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arguments</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">properties</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">load_args_from_file</span></span></em><span class="optional">]</span><span class="sig-paren">)</span><a class="headerlink" href="#LocalModule" title="Permalink to this definition"></a></dt>
+<dd><p>Loads the named module with the provided arguments and properties (either of
+which can be <code class="docutils literal notranslate"><span class="pre">nil</span></code>).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>string</em>) – the module name, such as <code class="docutils literal notranslate"><span class="pre">&quot;libpipewire-module-loopback&quot;</span></code></p></li>
+<li><p><strong>arguments</strong> (<em>string</em>) – should be either <code class="docutils literal notranslate"><span class="pre">nil</span></code> or a string with the desired
+module arguments</p></li>
+<li><p><strong>properties</strong> (<em>table</em>) – can be <code class="docutils literal notranslate"><span class="pre">nil</span></code> or a table that can be
+<a class="reference internal" href="lua_gobject.html#lua-gobject-lua-to-c"><span class="std std-ref">converted</span></a> to <a class="reference internal" href="../c_api/properties_api.html#c.WpProperties" title="WpProperties"><code class="xref c c-struct docutils literal notranslate"><span class="pre">WpProperties</span></code></a></p></li>
+<li><p><strong>load_args_from_file</strong> – (since 0.4.15) optional. if true, arguments param is treated as a file path to load args from</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a new LocalModule</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>LocalModule (<a class="reference internal" href="../c_api/impl_module_api.html#c.WpImplModule" title="WpImplModule"><code class="xref c c-struct docutils literal notranslate"><span class="pre">WpImplModule</span></code></a>)</p>
+</dd>
+<dt class="field-even">Since</dt>
+<dd class="field-even"><p>0.4.2</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="lua_spa_pod.html" class="btn btn-neutral float-left" title="Spa Pod" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../contributing.html" class="btn btn-neutral float-right" title="Contributing to WirePlumber" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Collabora.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Object Interest &mdash; WirePlumber 0.4.16 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="PipeWire Proxies" href="lua_proxies_api.html" />
+    <link rel="prev" title="Object Manager" href="lua_object_manager_api.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> WirePlumber
+          </a>
+              <div class="version">
+                0.4.16
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">The WirePlumber Daemon</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installing-wireplumber.html">Installing WirePlumber</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../running-wireplumber-daemon.html">Running the WirePlumber daemon</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../daemon-logging.html">Debug Logging</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">The WirePlumber Library</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../c_api.html">C API Documentation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../lua_api.html">Lua API Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="lua_introduction.html">Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lua_gobject.html">GObject Integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lua_core_api.html">Core</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lua_log_api.html">Debug Logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lua_object_api.html">WpObject</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lua_object_manager_api.html">Object Manager</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Object Interest</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#construction">Construction</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#the-type">The type</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#the-constraint">The Constraint</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#constraint-types">Constraint types</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#methods">Methods</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="lua_proxies_api.html">PipeWire Proxies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lua_session_item_api.html">Session Item</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lua_spa_device_api.html">Spa Device</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lua_spa_pod.html">Spa Pod</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lua_local_module_api.html">Local Modules</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Resources</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing to WirePlumber</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../testing.html">Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../community.html">Community Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Releases</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">WirePlumber</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../lua_api.html">Lua API Documentation</a> &raquo;</li>
+      <li>Object Interest</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/lua_api/lua_object_interest_api.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="lua_object_manager_api.html" class="btn btn-neutral float-left" title="Object Manager" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="lua_proxies_api.html" class="btn btn-neutral float-right" title="PipeWire Proxies" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+  </div>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <blockquote>
+<div></div></blockquote>
+<section id="object-interest">
+<span id="lua-object-interest-api"></span><h1>Object Interest<a class="headerlink" href="#object-interest" title="Permalink to this headline"></a></h1>
+<p>The Interest object allows you to declare interest in a specific object, or
+a set of objects, and filter them. This is used in the
+<a class="reference internal" href="lua_object_manager_api.html#lua-object-manager-api"><span class="std std-ref">ObjectManager</span></a> but also in other places where
+methods allow you to iterate over a set of objects or lookup a specific object.</p>
+<p><em>Interest</em> is a binding of <a class="reference internal" href="../c_api/obj_interest_api.html#c.WpObjectInterest" title="WpObjectInterest"><code class="xref c c-struct docutils literal notranslate"><span class="pre">WpObjectInterest</span></code></a>, but it uses a
+Lua-idiomatic way of construction instead of mapping directly the C functions,
+for convenience.</p>
+<section id="construction">
+<h2>Construction<a class="headerlink" href="#construction" title="Permalink to this headline"></a></h2>
+<p>The most common use for <em>Interest</em> is in the
+<a class="reference internal" href="lua_object_manager_api.html#lua-object-manager-api"><span class="std std-ref">ObjectManager</span></a>, where you have to use the
+following construction method to create it.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="Interest">
+<span class="sig-name descname"><span class="pre">Interest</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decl</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#Interest" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>decl</strong> (<em>table</em>) – an interest declaration</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the interest</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Interest (<a class="reference internal" href="../c_api/obj_interest_api.html#c.WpObjectInterest" title="WpObjectInterest"><code class="xref c c-struct docutils literal notranslate"><span class="pre">WpObjectInterest</span></code></a>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<p>The interest consists of a GType and an array of constraints. It is constructed
+with a table that contains all the constraints, plus the GType in the <code class="docutils literal notranslate"><span class="pre">type</span></code>
+field.</p>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="kd">local</span> <span class="n">om</span> <span class="o">=</span> <span class="n">ObjectManager</span> <span class="p">{</span>
+  <span class="n">Interest</span> <span class="p">{</span>
+    <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;node&quot;</span><span class="p">,</span>
+    <span class="n">Constraint</span> <span class="p">{</span> <span class="s2">&quot;node.name&quot;</span><span class="p">,</span> <span class="s2">&quot;matches&quot;</span><span class="p">,</span> <span class="s2">&quot;alsa*&quot;</span><span class="p">,</span> <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;pw-global&quot;</span> <span class="p">},</span>
+    <span class="n">Constraint</span> <span class="p">{</span> <span class="s2">&quot;media.class&quot;</span><span class="p">,</span> <span class="s2">&quot;equals&quot;</span><span class="p">,</span> <span class="s2">&quot;Audio/Sink&quot;</span><span class="p">,</span> <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;pw-global&quot;</span> <span class="p">},</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>In the above example, the interest will match all objects of type
+<a class="reference internal" href="../c_api/node_api.html#c.WpNode" title="WpNode"><code class="xref c c-struct docutils literal notranslate"><span class="pre">WpNode</span></code></a> that contain the following 2 global properties:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>“node.name”, with a value that begins with the string “alsa”</p></li>
+<li><p>“media.class”, with a value that equals exactly the string “Audio/Sink”</p></li>
+</ul>
+</div></blockquote>
+<p>When an object method requires an <em>Interest</em> as an argument, you may as well
+directly pass the declaration table as argument instead of using the
+<a class="reference internal" href="#Interest" title="Interest"><code class="xref py py-func docutils literal notranslate"><span class="pre">Interest()</span></code></a> constructor function. For instance,</p>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="kd">local</span> <span class="n">fl_port</span> <span class="o">=</span> <span class="n">node</span><span class="p">:</span><span class="n">lookup_port</span> <span class="p">{</span>
+  <span class="n">Constraint</span> <span class="p">{</span> <span class="s2">&quot;port.name&quot;</span><span class="p">,</span> <span class="s2">&quot;equals&quot;</span><span class="p">,</span> <span class="s2">&quot;playback_FL&quot;</span> <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>In the above example, we lookup a port in a node. The <a class="reference internal" href="lua_proxies_api.html#Node.lookup_port" title="Node.lookup_port"><code class="xref py py-func docutils literal notranslate"><span class="pre">Node.lookup_port()</span></code></a>
+method takes an <em>Interest</em> as an argument, but we can pass the interest
+declaration table directly. Note also that such a method does not require
+declaring the <code class="docutils literal notranslate"><span class="pre">type</span></code> of the interest, as it has <a class="reference internal" href="../c_api/port_api.html#c.WpPort" title="WpPort"><code class="xref c c-struct docutils literal notranslate"><span class="pre">WpPort</span></code></a> as a
+hardcoded default.</p>
+<section id="the-type">
+<h3>The type<a class="headerlink" href="#the-type" title="Permalink to this headline"></a></h3>
+<p>The type of an interest must be a valid GType, written as a string without the
+“Wp” prefix and with the first letter optionally being lowercase. The type may
+match any wireplumber object or interface.</p>
+<p>Examples:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 52%" />
+<col style="width: 48%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>type string</p></th>
+<th class="head"><p>parsed as</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>node</p></td>
+<td><p>WpNode</p></td>
+</tr>
+<tr class="row-odd"><td><p>Node</p></td>
+<td><p>WpNode</p></td>
+</tr>
+<tr class="row-even"><td><p>device</p></td>
+<td><p>WpDevice</p></td>
+</tr>
+<tr class="row-odd"><td><p>plugin</p></td>
+<td><p>WpPlugin</p></td>
+</tr>
+<tr class="row-even"><td><p>siLink</p></td>
+<td><p>WpSiLink</p></td>
+</tr>
+<tr class="row-odd"><td><p>SiLink</p></td>
+<td><p>WpSiLink</p></td>
+</tr>
+<tr class="row-even"><td><p>properties</p></td>
+<td><p>WpProperties</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="the-constraint">
+<h3>The Constraint<a class="headerlink" href="#the-constraint" title="Permalink to this headline"></a></h3>
+<p>The <em>Constraint</em> is constructed also with a table, like <em>Interest</em> itself. This
+table must have the following items in this very strict order:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>a subject string: a string that specifies the name of a property to match</p></li>
+<li><p>a verb string: a string that specifies the match operation</p></li>
+<li><p>an object, if the verb requires it</p></li>
+</ul>
+</div></blockquote>
+<p>The verb may be any verb listed in <a class="reference internal" href="../c_api/obj_interest_api.html#c.WpConstraintVerb" title="WpConstraintVerb"><code class="xref c c-enum docutils literal notranslate"><span class="pre">WpConstraintVerb</span></code></a>, using either
+the nickname of the enum or the character value of it.</p>
+<p>Allowed verbs:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 20%" />
+<col style="width: 15%" />
+<col style="width: 65%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>nickname</p></th>
+<th class="head"><p>character</p></th>
+<th class="head"><p>value</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>“equals”</p></td>
+<td><p>“=”</p></td>
+<td><p><a class="reference internal" href="../c_api/obj_interest_api.html#c.WpConstraintVerb.WP_CONSTRAINT_VERB_EQUALS" title="WP_CONSTRAINT_VERB_EQUALS"><code class="xref c c-enum docutils literal notranslate"><span class="pre">WP_CONSTRAINT_VERB_EQUALS</span></code></a></p></td>
+</tr>
+<tr class="row-odd"><td><p>“not-equals”</p></td>
+<td><p>“!”</p></td>
+<td><p><a class="reference internal" href="../c_api/obj_interest_api.html#c.WpConstraintVerb.WP_CONSTRAINT_VERB_NOT_EQUALS" title="WP_CONSTRAINT_VERB_NOT_EQUALS"><code class="xref c c-enum docutils literal notranslate"><span class="pre">WP_CONSTRAINT_VERB_NOT_EQUALS</span></code></a></p></td>
+</tr>
+<tr class="row-even"><td><p>“in-list”</p></td>
+<td><p>“c”</p></td>
+<td><p><a class="reference internal" href="../c_api/obj_interest_api.html#c.WpConstraintVerb.WP_CONSTRAINT_VERB_IN_LIST" title="WP_CONSTRAINT_VERB_IN_LIST"><code class="xref c c-enum docutils literal notranslate"><span class="pre">WP_CONSTRAINT_VERB_IN_LIST</span></code></a></p></td>
+</tr>
+<tr class="row-odd"><td><p>“in-range”</p></td>
+<td><p>“~”</p></td>
+<td><p><a class="reference internal" href="../c_api/obj_interest_api.html#c.WpConstraintVerb.WP_CONSTRAINT_VERB_IN_RANGE" title="WP_CONSTRAINT_VERB_IN_RANGE"><code class="xref c c-enum docutils literal notranslate"><span class="pre">WP_CONSTRAINT_VERB_IN_RANGE</span></code></a></p></td>
+</tr>
+<tr class="row-even"><td><p>“matches”</p></td>
+<td><p>“#”</p></td>
+<td><p><a class="reference internal" href="../c_api/obj_interest_api.html#c.WpConstraintVerb.WP_CONSTRAINT_VERB_MATCHES" title="WP_CONSTRAINT_VERB_MATCHES"><code class="xref c c-enum docutils literal notranslate"><span class="pre">WP_CONSTRAINT_VERB_MATCHES</span></code></a></p></td>
+</tr>
+<tr class="row-odd"><td><p>“is-present”</p></td>
+<td><p>“+”</p></td>
+<td><p><a class="reference internal" href="../c_api/obj_interest_api.html#c.WpConstraintVerb.WP_CONSTRAINT_VERB_IS_PRESENT" title="WP_CONSTRAINT_VERB_IS_PRESENT"><code class="xref c c-enum docutils literal notranslate"><span class="pre">WP_CONSTRAINT_VERB_IS_PRESENT</span></code></a></p></td>
+</tr>
+<tr class="row-even"><td><p>“is-absent”</p></td>
+<td><p>“-”</p></td>
+<td><p><a class="reference internal" href="../c_api/obj_interest_api.html#c.WpConstraintVerb.WP_CONSTRAINT_VERB_IS_ABSENT" title="WP_CONSTRAINT_VERB_IS_ABSENT"><code class="xref c c-enum docutils literal notranslate"><span class="pre">WP_CONSTRAINT_VERB_IS_ABSENT</span></code></a></p></td>
+</tr>
+</tbody>
+</table>
+<p>The values that are expected for each verb are primarily documented in
+<a class="reference internal" href="../c_api/obj_interest_api.html#c.wp_object_interest_add_constraint" title="wp_object_interest_add_constraint"><code class="xref c c-func docutils literal notranslate"><span class="pre">wp_object_interest_add_constraint()</span></code></a>. In Lua, though, native types are
+expected instead of GVariant and then they are converted according to the rules
+documented in the <a class="reference internal" href="lua_gobject.html#lua-gobject"><span class="std std-ref">GObject Integration</span></a> page.</p>
+<p>Examples of constraints:</p>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="n">Constraint</span> <span class="p">{</span> <span class="s2">&quot;node.id&quot;</span><span class="p">,</span> <span class="s2">&quot;equals&quot;</span><span class="p">,</span> <span class="s2">&quot;42&quot;</span> <span class="p">}</span>
+<span class="n">Constraint</span> <span class="p">{</span> <span class="s2">&quot;node.id&quot;</span><span class="p">,</span> <span class="s2">&quot;equals&quot;</span><span class="p">,</span> <span class="mi">42</span> <span class="p">}</span>
+<span class="n">Constraint</span> <span class="p">{</span> <span class="s2">&quot;port.physical&quot;</span><span class="p">,</span> <span class="s2">&quot;=&quot;</span><span class="p">,</span> <span class="kc">true</span> <span class="p">}</span>
+
+<span class="n">Constraint</span> <span class="p">{</span> <span class="s2">&quot;audio.channel&quot;</span><span class="p">,</span> <span class="s2">&quot;not-equals&quot;</span><span class="p">,</span> <span class="s2">&quot;FL&quot;</span> <span class="p">}</span>
+
+<span class="n">Constraint</span> <span class="p">{</span> <span class="s2">&quot;node.name&quot;</span><span class="p">,</span> <span class="s2">&quot;matches&quot;</span><span class="p">,</span> <span class="s2">&quot;v4l2_input*&quot;</span> <span class="p">}</span>
+<span class="n">Constraint</span> <span class="p">{</span> <span class="s2">&quot;format.dsp&quot;</span><span class="p">,</span> <span class="s2">&quot;#&quot;</span><span class="p">,</span> <span class="s2">&quot;*mono audio*&quot;</span> <span class="p">}</span>
+
+<span class="c1">-- matches either &quot;default&quot; or &quot;settings&quot; as a possible value for &quot;metadata.name&quot;</span>
+<span class="n">Constraint</span> <span class="p">{</span> <span class="s2">&quot;metadata.name&quot;</span><span class="p">,</span> <span class="s2">&quot;in-list&quot;</span><span class="p">,</span> <span class="s2">&quot;default&quot;</span><span class="p">,</span> <span class="s2">&quot;settings&quot;</span> <span class="p">}</span>
+
+<span class="c1">-- matches any priority.session between 0 and 1000, inclusive</span>
+<span class="n">Constraint</span> <span class="p">{</span> <span class="s2">&quot;priority.session&quot;</span><span class="p">,</span> <span class="s2">&quot;in-range&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1000</span> <span class="p">}</span>
+
+<span class="c1">-- matches when the object has a &quot;media.role&quot; property</span>
+<span class="n">Constraint</span> <span class="p">{</span> <span class="s2">&quot;media.role&quot;</span><span class="p">,</span> <span class="s2">&quot;is-present&quot;</span> <span class="p">}</span>
+
+<span class="c1">-- matches when &quot;media.role&quot; is not present in the properties list</span>
+<span class="n">Constraint</span> <span class="p">{</span> <span class="s2">&quot;media.role&quot;</span><span class="p">,</span> <span class="s2">&quot;is-absent&quot;</span> <span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="constraint-types">
+<h3>Constraint types<a class="headerlink" href="#constraint-types" title="Permalink to this headline"></a></h3>
+<p>PipeWire objects have multiple properties lists, therefore constraints also need
+to have a way to specify on which property list they apply. The constraint type
+may be any of the types listed in <a class="reference internal" href="../c_api/obj_interest_api.html#c.WpConstraintType" title="WpConstraintType"><code class="xref c c-enum docutils literal notranslate"><span class="pre">WpConstraintType</span></code></a> and can be
+specified with an additional field in the <em>Constraint</em> construction table,
+called <code class="docutils literal notranslate"><span class="pre">type</span></code>.</p>
+<p>For instance:</p>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="n">Constraint</span> <span class="p">{</span> <span class="s2">&quot;node.id&quot;</span><span class="p">,</span> <span class="s2">&quot;equals&quot;</span><span class="p">,</span> <span class="s2">&quot;42&quot;</span><span class="p">,</span> <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;pw-global&quot;</span> <span class="p">}</span>
+<span class="n">Constraint</span> <span class="p">{</span> <span class="s2">&quot;api.alsa.card.name&quot;</span><span class="p">,</span> <span class="s2">&quot;matches&quot;</span><span class="p">,</span> <span class="s2">&quot;*Intel*&quot;</span><span class="p">,</span> <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;pw&quot;</span> <span class="p">}</span>
+<span class="n">Constraint</span> <span class="p">{</span> <span class="s2">&quot;bound-id&quot;</span><span class="p">,</span> <span class="s2">&quot;=&quot;</span><span class="p">,</span> <span class="mi">42</span><span class="p">,</span> <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;gobject&quot;</span> <span class="p">}</span>
+</pre></div>
+</div>
+<p>Valid types are:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 16%" />
+<col style="width: 84%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>type</p></th>
+<th class="head"><p>value</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>pw-global</p></td>
+<td><p><a class="reference internal" href="../c_api/obj_interest_api.html#c.WpConstraintType.WP_CONSTRAINT_TYPE_PW_GLOBAL_PROPERTY" title="WP_CONSTRAINT_TYPE_PW_GLOBAL_PROPERTY"><code class="xref c c-enum docutils literal notranslate"><span class="pre">WP_CONSTRAINT_TYPE_PW_GLOBAL_PROPERTY</span></code></a></p></td>
+</tr>
+<tr class="row-odd"><td><p>pw</p></td>
+<td><p><a class="reference internal" href="../c_api/obj_interest_api.html#c.WpConstraintType.WP_CONSTRAINT_TYPE_PW_PROPERTY" title="WP_CONSTRAINT_TYPE_PW_PROPERTY"><code class="xref c c-enum docutils literal notranslate"><span class="pre">WP_CONSTRAINT_TYPE_PW_PROPERTY</span></code></a></p></td>
+</tr>
+<tr class="row-even"><td><p>gobject</p></td>
+<td><p><a class="reference internal" href="../c_api/obj_interest_api.html#c.WpConstraintType.WP_CONSTRAINT_TYPE_G_PROPERTY" title="WP_CONSTRAINT_TYPE_G_PROPERTY"><code class="xref c c-enum docutils literal notranslate"><span class="pre">WP_CONSTRAINT_TYPE_G_PROPERTY</span></code></a></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="methods">
+<h2>Methods<a class="headerlink" href="#methods" title="Permalink to this headline"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="Interest.matches">
+<span class="sig-prename descclassname"><span class="pre">Interest.</span></span><span class="sig-name descname"><span class="pre">matches</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#Interest.matches" title="Permalink to this definition"></a></dt>
+<dd><p>Binds <a class="reference internal" href="../c_api/obj_interest_api.html#c.wp_object_interest_matches" title="wp_object_interest_matches"><code class="xref c c-func docutils literal notranslate"><span class="pre">wp_object_interest_matches()</span></code></a></p>
+<p>Checks if a specific object matches the interest. The object may be a GObject
+or a table convertible to <a class="reference internal" href="../c_api/properties_api.html#c.WpProperties" title="WpProperties"><code class="xref c c-struct docutils literal notranslate"><span class="pre">WpProperties</span></code></a>, if the interest is for
+properties.</p>
+<p>This is rarely useful to use directly on objects, but it may be useful to
+check if a specific table contains key-value pairs that match specific
+constraints, using “properties” as the interest type and passing a table as
+the object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – the interest</p></li>
+<li><p><strong>obj</strong> (<em>GObject</em><em> or </em><em>table</em>) – an object to check for a match</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>whether the object matches the interest</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>boolean</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="lua_object_manager_api.html" class="btn btn-neutral float-left" title="Object Manager" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="lua_proxies_api.html" class="btn btn-neutral float-right" title="PipeWire Proxies" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Collabora.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

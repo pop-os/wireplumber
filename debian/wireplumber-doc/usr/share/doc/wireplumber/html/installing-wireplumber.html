@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Installing WirePlumber &mdash; WirePlumber 0.4.16 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Running the WirePlumber daemon" href="running-wireplumber-daemon.html" />
+    <link rel="prev" title="WirePlumber" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> WirePlumber
+          </a>
+              <div class="version">
+                0.4.16
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">The WirePlumber Daemon</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Installing WirePlumber</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#dependencies">Dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#compilation">Compilation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#additional-options">Additional options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="running-wireplumber-daemon.html">Running the WirePlumber daemon</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="daemon-logging.html">Debug Logging</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">The WirePlumber Library</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="c_api.html">C API Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lua_api.html">Lua API Documentation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Resources</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing to WirePlumber</a></li>
+<li class="toctree-l1"><a class="reference internal" href="testing.html">Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="community.html">Community Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="releases.html">Releases</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">WirePlumber</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Installing WirePlumber</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/installing-wireplumber.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="index.html" class="btn btn-neutral float-left" title="WirePlumber" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="running-wireplumber-daemon.html" class="btn btn-neutral float-right" title="Running the WirePlumber daemon" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+  </div>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <blockquote>
+<div></div></blockquote>
+<section id="installing-wireplumber">
+<span id="id1"></span><h1>Installing WirePlumber<a class="headerlink" href="#installing-wireplumber" title="Permalink to this headline"></a></h1>
+<section id="dependencies">
+<h2>Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline"></a></h2>
+<p>In order to compile WirePlumber you will need:</p>
+<ul class="simple">
+<li><p>GLib &gt;= 2.62</p></li>
+<li><p>PipeWire 0.3 (&gt;= 0.3.43)</p></li>
+<li><p>Lua 5.3 or 5.4</p></li>
+</ul>
+<p>Lua is optional in the sense that if it is not found in the system, a bundled
+version will be built and linked statically with WirePlumber. This is controlled
+by the <strong>system-lua</strong> meson option.</p>
+<p>For building gobject-introspection data, you will also need
+<a class="reference external" href="https://www.doxygen.nl/">doxygen</a> and <strong>g-ir-scanner</strong>.
+The latter is usually shipped together with the gobject-introspection
+development files.</p>
+<p>For building documentation, you will also need
+<a class="reference external" href="https://pypi.org/project/Sphinx/">Sphinx</a>,
+<a class="reference external" href="https://github.com/readthedocs/sphinx_rtd_theme">sphinx-rtd-theme</a> and
+<a class="reference external" href="https://pypi.org/project/breathe/">breathe</a>.
+It is recommended to install those using python’s <strong>pip</strong> package manager.</p>
+</section>
+<section id="compilation">
+<h2>Compilation<a class="headerlink" href="#compilation" title="Permalink to this headline"></a></h2>
+<p>WirePlumber uses the <a class="reference external" href="https://mesonbuild.com/">meson build system</a></p>
+<p>To configure the project, you need to first run <cite>meson</cite>.
+The basic syntax is shown below:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">meson [--prefix=/path] [...options...] [build directory] [source directory]</span>
+</pre></div>
+</div>
+<p>Assuming you want to build in a directory called ‘build’ inside the source
+tree, you can run:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>meson setup --prefix<span class="o">=</span>/usr build
+<span class="gp">$ </span>meson compile -C build
+</pre></div>
+</div>
+</section>
+<section id="additional-options">
+<h2>Additional options<a class="headerlink" href="#additional-options" title="Permalink to this headline"></a></h2>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-Dintrospection">
+<span id="cmdoption-dintrospection"></span><span class="sig-name descname"><span class="pre">-Dintrospection</span></span><span class="sig-prename descclassname"><span class="pre">=[enabled|disabled|auto]</span></span><a class="headerlink" href="#cmdoption-Dintrospection" title="Permalink to this definition"></a></dt>
+<dd><p>Force enable or force disable building gobject-introspection data.</p>
+<p>The default value is <strong>auto</strong>, which means that g-i will be built
+if <strong>doxygen</strong> and <strong>g-ir-scanner</strong> are found and skipped otherwise.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-Ddocs">
+<span id="cmdoption-ddocs"></span><span class="sig-name descname"><span class="pre">-Ddocs</span></span><span class="sig-prename descclassname"><span class="pre">=[enabled|disabled|auto]</span></span><a class="headerlink" href="#cmdoption-Ddocs" title="Permalink to this definition"></a></dt>
+<dd><p>Force enable or force disable building documentation.</p>
+<p>The default value is <strong>auto</strong>, which means that documentation will be built
+if <strong>doxygen</strong>, <strong>sphinx</strong> and <strong>breathe</strong> are found and skipped otherwise.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-Dmodules">
+<span id="cmdoption-dmodules"></span><span class="sig-name descname"><span class="pre">-Dmodules</span></span><span class="sig-prename descclassname"><span class="pre">=[true|false]</span></span><a class="headerlink" href="#cmdoption-Dmodules" title="Permalink to this definition"></a></dt>
+<dd><p>Build the wireplumber modules.</p>
+<p>The default value is <strong>true</strong>.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-Ddaemon">
+<span id="cmdoption-ddaemon"></span><span class="sig-name descname"><span class="pre">-Ddaemon</span></span><span class="sig-prename descclassname"><span class="pre">=[true|false]</span></span><a class="headerlink" href="#cmdoption-Ddaemon" title="Permalink to this definition"></a></dt>
+<dd><p>Build the session manager daemon.</p>
+<p>The default value is <strong>true</strong>.</p>
+<p>Requires <strong>modules</strong> option to be <strong>true</strong>.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-Dtools">
+<span id="cmdoption-dtools"></span><span class="sig-name descname"><span class="pre">-Dtools</span></span><span class="sig-prename descclassname"><span class="pre">=[true|false]</span></span><a class="headerlink" href="#cmdoption-Dtools" title="Permalink to this definition"></a></dt>
+<dd><p>Enable or disable building tools.</p>
+<p>The default value is <strong>true</strong>.</p>
+<p>Requires <strong>modules</strong> option to be <strong>true</strong>.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-Dsystem-lua">
+<span id="cmdoption-dsystem-lua"></span><span class="sig-name descname"><span class="pre">-Dsystem-lua</span></span><span class="sig-prename descclassname"><span class="pre">=[enabled|disabled|auto]</span></span><a class="headerlink" href="#cmdoption-Dsystem-lua" title="Permalink to this definition"></a></dt>
+<dd><p>Force using lua from the system instead of the bundled one.</p>
+<p>The default value is <strong>auto</strong>, which means that system lua will be used
+if it is found, otherwise the bundled static version will be built silently.</p>
+<p>Use <strong>disabled</strong> to force using the bundled lua.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-Dsystemd">
+<span id="cmdoption-dsystemd"></span><span class="sig-name descname"><span class="pre">-Dsystemd</span></span><span class="sig-prename descclassname"><span class="pre">=[enabled|disabled|auto]</span></span><a class="headerlink" href="#cmdoption-Dsystemd" title="Permalink to this definition"></a></dt>
+<dd><p>Enables installing systemd units. The default is <strong>auto</strong></p>
+<p><strong>enabled</strong> and <strong>auto</strong> currently mean the same thing.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-Dsystemd-system-service">
+<span id="cmdoption-dsystemd-system-service"></span><span class="sig-name descname"><span class="pre">-Dsystemd-system-service</span></span><span class="sig-prename descclassname"><span class="pre">=[true|false]</span></span><a class="headerlink" href="#cmdoption-Dsystemd-system-service" title="Permalink to this definition"></a></dt>
+<dd><p>Enables installing systemd system service file. The default is <strong>false</strong></p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-Dsystemd-user-service">
+<span id="cmdoption-dsystemd-user-service"></span><span class="sig-name descname"><span class="pre">-Dsystemd-user-service</span></span><span class="sig-prename descclassname"><span class="pre">=[true|false]</span></span><a class="headerlink" href="#cmdoption-Dsystemd-user-service" title="Permalink to this definition"></a></dt>
+<dd><p>Enables installing systemd user service file. The default is <strong>true</strong></p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-Dsystemd-system-unit-dir">
+<span id="cmdoption-dsystemd-system-unit-dir"></span><span class="sig-name descname"><span class="pre">-Dsystemd-system-unit-dir</span></span><span class="sig-prename descclassname"><span class="pre">=[path]</span></span><a class="headerlink" href="#cmdoption-Dsystemd-system-unit-dir" title="Permalink to this definition"></a></dt>
+<dd><p>Directory for system systemd units.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-Dsystemd-user-unit-dir">
+<span id="cmdoption-dsystemd-user-unit-dir"></span><span class="sig-name descname"><span class="pre">-Dsystemd-user-unit-dir</span></span><span class="sig-prename descclassname"><span class="pre">=[path]</span></span><a class="headerlink" href="#cmdoption-Dsystemd-user-unit-dir" title="Permalink to this definition"></a></dt>
+<dd><p>Directory for user systemd units.</p>
+</dd></dl>
+
+</section>
+<section id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline"></a></h2>
+<p>To install, simply run the <strong>install</strong> target with ninja:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>ninja -C build install
+</pre></div>
+</div>
+<p>To revert the installation, there is also an <strong>uninstall</strong> target:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>ninja -C build uninstall
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="WirePlumber" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="running-wireplumber-daemon.html" class="btn btn-neutral float-right" title="Running the WirePlumber daemon" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Collabora.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
