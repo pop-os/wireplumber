@@ -5,6 +5,7 @@ wireplumber (0.4.16-0) UNRELEASED; urgency=medium
   * Drop patch included in upstream release:
       - policy-dsp: add ability to hide parent nodes
   * Bump minimum pipewire to 0.3.68
+  * Update symbols file
 
   [ Andreas Henriksson ]
   * Use ${gir:Depends} and ${gir:Provides}

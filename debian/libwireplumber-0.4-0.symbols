@@ -11,6 +11,7 @@ libwireplumber-0.4.so.0 libwireplumber-0.4-0 #MINVER#
  wp_core_connect@Base 0.3.95
  wp_core_disconnect@Base 0.3.95
  wp_core_get_g_main_context@Base 0.3.95
+ wp_core_get_own_bound_id@Base 0.4.16
  wp_core_get_properties@Base 0.3.95
  wp_core_get_pw_context@Base 0.3.95
  wp_core_get_pw_core@Base 0.3.95
