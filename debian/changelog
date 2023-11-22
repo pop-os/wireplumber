@@ -1,4 +1,4 @@
-wireplumber (0.4.16-0) UNRELEASED; urgency=medium
+wireplumber (0.4.16-1) unstable; urgency=medium
 
   [ Dylan Aïssi ]
   * New upstream version
@@ -10,7 +10,7 @@ wireplumber (0.4.16-0) UNRELEASED; urgency=medium
   [ Andreas Henriksson ]
   * Use ${gir:Depends} and ${gir:Provides}
 
- -- Dylan Aïssi <daissi@debian.org>  Wed, 22 Nov 2023 17:34:29 +0100
+ -- Dylan Aïssi <daissi@debian.org>  Wed, 22 Nov 2023 17:59:06 +0100
 
 wireplumber (0.4.15-2) unstable; urgency=medium
 
