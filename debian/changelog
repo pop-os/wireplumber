@@ -2,6 +2,8 @@ wireplumber (0.4.16-0) UNRELEASED; urgency=medium
 
   [ Dylan Aïssi ]
   * New upstream version
+  * Drop patch included in upstream release:
+      - policy-dsp: add ability to hide parent nodes
 
   [ Andreas Henriksson ]
   * Use ${gir:Depends} and ${gir:Provides}
