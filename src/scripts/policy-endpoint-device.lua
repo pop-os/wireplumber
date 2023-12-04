@@ -22,10 +22,13 @@ function rescan ()
     handleLinkable(si_ep)
   end
 
-  for filter in streams_om:iterate {
-    Constraint { "node.link-group", "+" },
-  } do
-    handleFilter(filter)
+  -- handle filters only if we have endpoints
+  if endpoints_om:get_n_objects () > 0 then
+    for filter in streams_om:iterate {
+      Constraint { "node.link-group", "+" },
+    } do
+      handleFilter(filter)
+    end
   end
 end
 
@@ -111,7 +114,7 @@ function findUndefinedTarget (si_ep)
   return si_target
 end
 
-function createLink (si_ep, si_target)
+function createLink (si_ep, si_target, is_filter)
   local out_item = nil
   local in_item = nil
   local ep_props = si_ep.properties
@@ -131,10 +134,11 @@ function createLink (si_ep, si_target)
     (is_filter and ep_props["node.name"] or ep_props["name"]),
     target_props["node.name"])
 
-  Log.info(si_link, link_string)
-
   -- create and configure link
   local si_link = SessionItem ( "si-standard-link" )
+
+  Log.info(si_link, link_string)
+
   if not si_link:configure {
     ["out.item"] = out_item,
     ["in.item"] = in_item,
@@ -212,7 +216,7 @@ function handleLinkable (si)
   end
 
   -- create new link
-  createLink (si, si_target)
+  createLink (si, si_target, is_filter)
 end
 
 function unhandleLinkable (si)
