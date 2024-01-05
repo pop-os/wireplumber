@@ -1,3 +1,9 @@
+wireplumber (0.4.81-0) UNRELEASED; urgency=medium
+
+  * New upstream version: This is a preliminary release of WirePlumber 0.5.0.
+
+ -- Dylan Aïssi <daissi@debian.org>  Fri, 05 Jan 2024 09:46:22 +0100
+
 wireplumber (0.4.17-1) unstable; urgency=medium
 
   * New upstream version
