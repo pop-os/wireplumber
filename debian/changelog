@@ -1,4 +1,4 @@
-wireplumber (0.4.81-0) UNRELEASED; urgency=medium
+wireplumber (0.4.81-1) experimental; urgency=medium
 
   * New upstream version: This is a preliminary release of WirePlumber 0.5.0.
   * Install conf files in /usr/share/pipewire/
@@ -6,7 +6,7 @@ wireplumber (0.4.81-0) UNRELEASED; urgency=medium
   * Update symbols file
   * Refresh patches
 
- -- Dylan Aïssi <daissi@debian.org>  Fri, 05 Jan 2024 09:46:22 +0100
+ -- Dylan Aïssi <daissi@debian.org>  Fri, 05 Jan 2024 11:40:34 +0100
 
 wireplumber (0.4.17-1) unstable; urgency=medium
 
