@@ -5,8 +5,17 @@
 --
 -- SPDX-License-Identifier: MIT
 
-local config = ... or {}
-local COMBINE_OFFSET = 64
+COMBINE_OFFSET = 64
+
+cutils = require ("common-utils")
+log = Log.open_topic ("s-monitors")
+
+config = {}
+config.seat_monitoring = Core.test_feature ("monitor.bluez.seat-monitoring")
+config.properties = cutils.get_config_section ("monitor.bluez.properties")
+
+-- This is not a setting, it must always be enabled
+config.properties["api.bluez5.connection-info"] = true
 
 devices_om = ObjectManager {
   Interest {
@@ -21,36 +30,6 @@ nodes_om = ObjectManager {
     Constraint { "device.id", "+" },
   }
 }
-
--- preprocess rules and create Interest objects
-for _, r in ipairs(config.rules or {}) do
-  r.interests = {}
-  for _, i in ipairs(r.matches) do
-    local interest_desc = { type = "properties" }
-    for _, c in ipairs(i) do
-      c.type = "pw"
-      table.insert(interest_desc, Constraint(c))
-    end
-    local interest = Interest(interest_desc)
-    table.insert(r.interests, interest)
-  end
-  r.matches = nil
-end
-
--- applies properties from config.rules when asked to
-function rulesApplyProperties(properties)
-  for _, r in ipairs(config.rules or {}) do
-    if r.apply_properties then
-      for _, interest in ipairs(r.interests) do
-        if interest:matches(properties) then
-          for k, v in pairs(r.apply_properties) do
-            properties[k] = v
-          end
-        end
-      end
-    end
-  end
-end
 
 function setOffloadActive(device, value)
   local pod = Pod.Object {
@@ -127,7 +106,7 @@ function createOffloadScoNode(parent, id, type, factory, properties)
     }
     args["playback.props"] = Json.Object(playback_args)
   else
-    Log.warning(parent, "Unsupported factory: " .. factory)
+    log:warning(parent, "Unsupported factory: " .. factory)
     return
   end
 
@@ -160,7 +139,7 @@ device_set_nodes_om:connect ("object-added", function(_, node)
       type = "device",
       Constraint { "object.id", "=", node.properties["device.id"] }
     }
-    Log.info("Device set node found: " .. tostring (node["bound-id"]))
+    log:info("Device set node found: " .. tostring (node["bound-id"]))
     for device in devices_om:iterate (interest) do
       local device_id = device.properties["api.bluez5.id"]
       if not device_id then
@@ -174,7 +153,7 @@ device_set_nodes_om:connect ("object-added", function(_, node)
 
       local id = node.properties["card.profile.device"]
       if id ~= nil then
-        Log.info(".. assign to device: " .. tostring (device["bound-id"]) .. " node " .. tostring (id))
+        log:info(".. assign to device: " .. tostring (device["bound-id"]) .. " node " .. tostring (id))
         spa_device:store_managed_object (id, node)
 
         -- set routes again to update volumes etc.
@@ -210,10 +189,10 @@ function createSetNode(parent, id, type, factory, properties)
     stream_class = "Stream/Input/Audio/Internal"
   end
 
-  Log.info("Device set: " .. properties["node.name"])
+  log:info("Device set: " .. properties["node.name"])
 
   for _, member in pairs(members) do
-    Log.info("Device set member:" .. member["object.path"])
+    log:info("Device set member:" .. member["object.path"])
     table.insert(rules,
       Json.Object {
         ["matches"] = Json.Array {
@@ -245,7 +224,7 @@ function createSetNode(parent, id, type, factory, properties)
   local args_json = Json.Object(args)
   local args_string = args_json:get_data()
   local combine_properties = {}
-  Log.info("Device set node: " .. args_string)
+  log:info("Device set node: " .. args_string)
   return LocalModule("libpipewire-module-combine-stream", args_string, combine_properties)
 end
 
@@ -297,8 +276,8 @@ function createNode(parent, id, type, factory, properties)
     properties["node.autoconnect"] = true
   end
 
-  -- apply properties from config.rules
-  rulesApplyProperties(properties)
+  -- apply properties from bluetooth.conf
+  cutils.evaluateRulesApplyProperties (properties, "monitor.bluez.rules")
 
   -- create the node; bluez requires "local" nodes, i.e. ones that run in
   -- the same process as the spa device, for several reasons
@@ -359,8 +338,8 @@ function createDevice(parent, id, type, factory, properties)
     properties["bluez5.profile"] = "off"
     properties["api.bluez5.id"] = id
 
-    -- apply properties from config.rules
-    rulesApplyProperties(properties)
+    -- apply properties from bluetooth.conf
+    cutils.evaluateRulesApplyProperties (properties, "monitor.bluez.rules")
 
     -- create the device
     device = SpaDevice(factory, properties)
@@ -369,12 +348,12 @@ function createDevice(parent, id, type, factory, properties)
       device:connect("object-removed", removeNode)
       parent:store_managed_object(id, device)
     else
-      Log.warning ("Failed to create '" .. factory .. "' device")
+      log:warning ("Failed to create '" .. factory .. "' device")
       return
     end
   end
 
-  Log.info(parent, string.format("%d, %s (%s): %s",
+  log:info(parent, string.format("%d, %s (%s): %s",
         id, properties["device.description"],
         properties["api.bluez5.address"], properties["api.bluez5.connection"]))
 
@@ -387,14 +366,11 @@ function createDevice(parent, id, type, factory, properties)
 end
 
 function createMonitor()
-  local monitor_props = config.properties or {}
-  monitor_props["api.bluez5.connection-info"] = true
-
-  local monitor = SpaDevice("api.bluez5.enum.dbus", monitor_props)
+  local monitor = SpaDevice("api.bluez5.enum.dbus", config.properties)
   if monitor then
     monitor:connect("create-object", createDevice)
   else
-    Log.message("PipeWire's BlueZ SPA missing or broken. Bluetooth not supported.")
+    log:notice("PipeWire's BlueZ SPA missing or broken. Bluetooth not supported.")
     return nil
   end
   monitor:activate(Feature.SpaDevice.ENABLED)
@@ -402,12 +378,14 @@ function createMonitor()
   return monitor
 end
 
-logind_plugin = Plugin.find("logind")
+if config.seat_monitoring then
+  logind_plugin = Plugin.find("logind")
+end
 if logind_plugin then
   -- if logind support is enabled, activate
   -- the monitor only when the seat is active
   function startStopMonitor(seat_state)
-    Log.info(logind_plugin, "Seat state changed: " .. seat_state)
+    log:info(logind_plugin, "Seat state changed: " .. seat_state)
 
     if seat_state == "active" then
       monitor = createMonitor()

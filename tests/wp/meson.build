@@ -8,6 +8,13 @@ common_args = [
 ]
 
 test(
+  'test-component-loader',
+  executable('test-component-loader', 'component-loader.c',
+      dependencies: common_deps, c_args: common_args),
+  env: common_env,
+)
+
+test(
   'test-core',
   executable('test-core', 'core.c',
       dependencies: common_deps, c_args: common_args),
@@ -15,8 +22,8 @@ test(
 )
 
 test(
-  'test-endpoint',
-  executable('test-endpoint', 'endpoint.c',
+  'test-events',
+  executable('test-events', 'events.c',
       dependencies: common_deps, c_args: common_args),
   env: common_env,
 )
@@ -91,14 +98,12 @@ test(
   env: common_env,
 )
 
-if get_option('dbus-tests')
-  test(
-    'test-dbus',
-    executable('test-dbus', 'dbus.c',
-        dependencies: common_deps, c_args: common_args),
-    env: common_env,
-  )
-endif
+test(
+  'test-settings',
+  executable('test-settings', 'settings.c',
+      dependencies: common_deps, c_args: common_args),
+  env: common_env,
+)
 
 test(
   'test-transition',
@@ -110,6 +115,20 @@ test(
 test(
   'test-factory',
   executable('test-factory', 'factory.c',
+      dependencies: common_deps, c_args: common_args),
+  env: common_env,
+)
+
+test(
+  'test-conf',
+  executable('test-conf', 'conf.c',
+      dependencies: common_deps, c_args: common_args),
+  env: common_env,
+)
+
+test(
+  'test-json-utils',
+  executable('test-json-utils', 'json-utils.c',
       dependencies: common_deps, c_args: common_args),
   env: common_env,
 )

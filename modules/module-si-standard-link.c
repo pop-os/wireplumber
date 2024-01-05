@@ -11,6 +11,8 @@
 #include <spa/debug/types.h>
 #include <spa/param/audio/type-info.h>
 
+WP_DEFINE_LOCAL_LOG_TOPIC ("m-si-standard-link")
+
 #define SI_FACTORY_NAME "si-standard-link"
 
 struct _WpSiStandardLink
@@ -80,8 +82,8 @@ get_and_validate_item (WpProperties * props, const gchar *key)
 
   str = wp_properties_get (props, key);
   if (!str || sscanf(str, "%p", &res) != 1 || !WP_IS_SI_LINKABLE (res) ||
-      !(wp_object_get_active_features (WP_OBJECT (res)) &
-          WP_SESSION_ITEM_FEATURE_ACTIVE))
+      !(wp_object_test_active_features (WP_OBJECT (res),
+          WP_SESSION_ITEM_FEATURE_ACTIVE)))
     return NULL;
 
   return res;
@@ -102,13 +104,13 @@ si_standard_link_configure (WpSessionItem * item, WpProperties * p)
   if (!out_item)
     return FALSE;
   wp_properties_setf (si_props, "out.item.id", "%u",
-      wp_session_item_get_id (out_item));
+      wp_object_get_id (WP_OBJECT (out_item)));
 
   in_item = get_and_validate_item (si_props, "in.item");
   if (!in_item)
     return FALSE;
   wp_properties_setf (si_props, "in.item.id", "%u",
-      wp_session_item_get_id (in_item));
+      wp_object_get_id (WP_OBJECT (in_item)));
 
   self->out_item_port_context = wp_properties_get (si_props,
       "out.item.port.context");
@@ -360,7 +362,7 @@ create_links (WpSiStandardLink * self, WpTransition * transition,
 
     /* activate to ensure it is created without errors */
     wp_object_activate_closure (WP_OBJECT (link),
-        WP_OBJECT_FEATURES_ALL & ~WP_LINK_FEATURE_ESTABLISHED, NULL,
+        WP_OBJECT_FEATURES_ALL, NULL,
         g_cclosure_new_object (
             (GCallback) on_link_activated, G_OBJECT (transition)));
 
@@ -543,10 +545,10 @@ configure_and_link_adapters (WpSiStandardLink *self, WpTransition *transition)
   in->is_device = !g_strcmp0 (str, "device");
 
   str = wp_session_item_get_property (WP_SESSION_ITEM (out->si), "item.factory.name");
-  out->is_device = (str && !g_strcmp0 (str, "si-audio-endpoint") && !in->is_device)
+  out->is_device = (str && !g_strcmp0 (str, "si-audio-virtual") && !in->is_device)
       || out->is_device;
   str = wp_session_item_get_property (WP_SESSION_ITEM (in->si), "item.factory.name");
-  in->is_device = (str && !g_strcmp0 (str, "si-audio-endpoint") && !out->is_device)
+  in->is_device = (str && !g_strcmp0 (str, "si-audio-virtual") && !out->is_device)
       || in->is_device;
 
   str = wp_session_item_get_property (WP_SESSION_ITEM (out->si), "stream.dont-remix");
@@ -768,10 +770,9 @@ si_standard_link_link_init (WpSiLinkInterface * iface)
   iface->get_in_item = si_standard_link_get_in_item;
 }
 
-WP_PLUGIN_EXPORT gboolean
-wireplumber__module_init (WpCore * core, GVariant * args, GError ** error)
+WP_PLUGIN_EXPORT GObject *
+wireplumber__module_init (WpCore * core, WpSpaJson * args, GError ** error)
 {
-  wp_si_factory_register (core, wp_si_factory_new_simple (SI_FACTORY_NAME,
+  return G_OBJECT (wp_si_factory_new_simple (SI_FACTORY_NAME,
       si_standard_link_get_type ()));
-  return TRUE;
 }

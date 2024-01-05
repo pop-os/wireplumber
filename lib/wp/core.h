@@ -9,9 +9,9 @@
 #ifndef __WIREPLUMBER_CORE_H__
 #define __WIREPLUMBER_CORE_H__
 
-#include <gio/gio.h>
-#include "defs.h"
+#include "object.h"
 #include "properties.h"
+#include "spa-json.h"
 
 G_BEGIN_DECLS
 
@@ -20,12 +20,23 @@ struct pw_core;
 typedef struct _WpObjectManager WpObjectManager;
 
 /*!
+ * \brief Flags to be used as WpObjectFeatures on WpCore
+ * \ingroup wpcore
+ */
+typedef enum { /*< flags >*/
+  /*! connects to pipewire */
+  WP_CORE_FEATURE_CONNECTED = (1 << 0),
+  /*! loads components defined in the configuration */
+  WP_CORE_FEATURE_COMPONENTS = (1 << 1),
+} WpCoreFeatures;
+
+/*!
  * \brief The WpCore GType
  * \ingroup wpcore
  */
 #define WP_TYPE_CORE (wp_core_get_type ())
 WP_API
-G_DECLARE_FINAL_TYPE (WpCore, wp_core, WP, CORE, GObject)
+G_DECLARE_FINAL_TYPE (WpCore, wp_core, WP, CORE, WpObject)
 
 /* Basic */
 
@@ -34,6 +45,9 @@ WpCore * wp_core_new (GMainContext *context, WpProperties * properties);
 
 WP_API
 WpCore * wp_core_clone (WpCore * self);
+
+WP_API
+WpCore * wp_core_get_export_core (WpCore * self);
 
 WP_API
 GMainContext * wp_core_get_g_main_context (WpCore * self);
@@ -46,10 +60,6 @@ struct pw_core * wp_core_get_pw_core (WpCore * self);
 
 WP_API
 gchar *wp_core_get_vm_type (WpCore *self);
-
-WP_API
-gboolean wp_core_load_component (WpCore * self, const gchar * component,
-    const gchar * type, GVariant * args, GError ** error);
 
 /* Connection */
 
@@ -121,10 +131,27 @@ WP_API
 gboolean wp_core_sync_finish (WpCore * self, GAsyncResult * res,
     GError ** error);
 
+/* Object Registry */
+
+WP_API
+gpointer wp_core_find_object (WpCore * self, GEqualFunc func,
+    gconstpointer data);
+
+WP_API
+void wp_core_register_object (WpCore * self, gpointer obj);
+
+WP_API
+void wp_core_remove_object (WpCore * self, gpointer obj);
+
 /* Object Manager */
 
 WP_API
 void wp_core_install_object_manager (WpCore * self, WpObjectManager * om);
+
+/* Global Features */
+
+WP_API
+gboolean wp_core_test_feature (WpCore * self, const gchar * feature);
 
 G_END_DECLS
 

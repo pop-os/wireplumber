@@ -5,11 +5,12 @@
 --
 -- SPDX-License-Identifier: MIT
 
--- Receive script arguments from config.lua
-local config = ... or {}
+cutils = require ("common-utils")
+log = Log.open_topic ("s-monitors")
 
--- ensure config.properties is not nil
-config.properties = config.properties or {}
+config = {}
+config.monitoring = Core.test_feature ("monitor.alsa-midi.monitoring")
+config.node_properties = cutils.get_config_section ("monitor.alsa-midi.properties")
 
 SND_PATH = "/dev/snd"
 SEQ_NAME = "seq"
@@ -20,17 +21,24 @@ fm_plugin = nil
 
 function CreateMidiNode ()
   -- Midi properties
-  local props = {}
-  if type(config.properties["alsa.midi.node-properties"]) == "table" then
-     props = config.properties["alsa.midi.node-properties"]
+  local props = {
+    ["factory.name"] = "api.alsa.seq.bridge",
+
+    -- Name set for the node with ALSA MIDI ports
+    ["node.name"] = "Midi-Bridge",
+
+    -- Set priorities so that it can be used as a fallback driver (see pipewire#3562)
+    ["priority.session"] = "100",
+    ["priority.driver"] = "1",
+  }
+  for k, v in pairs(config.node_properties) do
+    props[k] = v
   end
-  props["factory.name"] = "api.alsa.seq.bridge"
-  props["node.name"] = props["node.name"] or "Midi-Bridge"
 
   -- create the midi node
   local node = Node("spa-node-factory", props)
   node:activate(Feature.Proxy.BOUND, function (n)
-    Log.info ("activated Midi bridge")
+    log:info ("activated Midi bridge")
   end)
 
   return node;
@@ -38,7 +46,7 @@ end
 
 if GLib.access (SND_SEQ_PATH, "rw") then
   midi_node = CreateMidiNode ()
-elseif config.properties["alsa.midi.monitoring"] then
+elseif config.monitoring then
   fm_plugin = Plugin.find("file-monitor-api")
 end
 

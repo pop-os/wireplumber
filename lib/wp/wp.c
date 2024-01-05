@@ -6,11 +6,11 @@
  * SPDX-License-Identifier: MIT
  */
 
-#define G_LOG_DOMAIN "wp"
-
 #include "wp.h"
 #include <pipewire/pipewire.h>
 #include <libintl.h>
+
+WP_DEFINE_LOCAL_LOG_TOPIC ("wp")
 
 /*!
  * \defgroup wp Library Initialization
@@ -28,23 +28,10 @@
 void
 wp_init (WpInitFlags flags)
 {
-  if (flags & WP_INIT_SET_GLIB_LOG)
-    g_log_set_writer_func (wp_log_writer_default, NULL, NULL);
-
   /* Initialize the logging system */
-  wp_log_set_level (g_getenv ("WIREPLUMBER_DEBUG"));
-  wp_info ("WirePlumber " WIREPLUMBER_VERSION " initializing");
+  wp_log_init (flags);
 
-  /* set PIPEWIRE_DEBUG and the spa_log interface that pipewire will use */
-  if (flags & WP_INIT_SET_PW_LOG && !g_getenv ("WIREPLUMBER_NO_PW_LOG")) {
-    if (g_getenv ("WIREPLUMBER_DEBUG")) {
-      gchar lvl_str[2];
-      g_snprintf (lvl_str, 2, "%d", wp_spa_log_get_instance ()->level);
-      g_warn_if_fail (g_setenv ("PIPEWIRE_DEBUG", lvl_str, TRUE));
-    }
-    pw_log_set_level (wp_spa_log_get_instance ()->level);
-    pw_log_set (wp_spa_log_get_instance ());
-  }
+  wp_info ("WirePlumber " WIREPLUMBER_VERSION " initializing");
 
   if (flags & WP_INIT_PIPEWIRE)
     pw_init (NULL, NULL);
@@ -59,7 +46,6 @@ wp_init (WpInitFlags flags)
     to autodetect the GType of proxies created through wp_proxy_new_global() */
   g_type_ensure (WP_TYPE_CLIENT);
   g_type_ensure (WP_TYPE_DEVICE);
-  g_type_ensure (WP_TYPE_ENDPOINT);
   g_type_ensure (WP_TYPE_LINK);
   g_type_ensure (WP_TYPE_METADATA);
   g_type_ensure (WP_TYPE_NODE);
@@ -107,48 +93,6 @@ wp_get_module_dir (void)
   return module_dir;
 }
 
-/*!
- * \brief Gets the full path to the WirePlumber configuration directory
- * \returns The WirePlumber configuration directory
- * \deprecated Use wp_find_file() instead
- */
-const gchar *
-wp_get_config_dir (void)
-{
-  static gchar config_dir[PATH_MAX] = {0};
-  if (config_dir[0] == '\0') {
-    g_autofree gchar *abspath;
-    const gchar *path = g_getenv ("WIREPLUMBER_CONFIG_DIR");
-
-    if (!path)
-      path = WIREPLUMBER_DEFAULT_CONFIG_DIR;
-
-    abspath = g_canonicalize_filename (path, NULL);
-    (void) g_strlcpy (config_dir, abspath, sizeof (config_dir));
-  }
-  return config_dir;
-}
-
-/*!
- * \brief Gets full path to the WirePlumber data directory
- * \returns The WirePlumber data directory
- * \deprecated Use wp_find_file() instead
- */
-const gchar *
-wp_get_data_dir (void)
-{
-  static gchar data_dir[PATH_MAX] = {0};
-  if (data_dir[0] == '\0') {
-    g_autofree gchar *abspath;
-    const char *path = g_getenv ("WIREPLUMBER_DATA_DIR");
-    if (!path)
-      path = WIREPLUMBER_DEFAULT_DATA_DIR;
-    abspath = g_canonicalize_filename (path, NULL);
-    (void) g_strlcpy (data_dir, abspath, sizeof (data_dir));
-  }
-  return data_dir;
-}
-
 /*! \} */
 
 static gchar *
@@ -176,30 +120,31 @@ lookup_dirs (guint flags)
    * - XDG config directories
    * - /etc/
    * - /usr/share/....
-   *
-   * Note that wireplumber environment variables *replace* other directories.
    */
-  if ((flags & WP_LOOKUP_DIR_ENV_CONFIG) &&
-      (dir = g_getenv ("WIREPLUMBER_CONFIG_DIR"))) {
-    g_ptr_array_add (dirs, g_canonicalize_filename (dir, NULL));
-  }
-  else if ((flags & WP_LOOKUP_DIR_ENV_DATA) &&
-      (dir = g_getenv ("WIREPLUMBER_DATA_DIR"))) {
-    g_ptr_array_add (dirs, g_canonicalize_filename (dir, NULL));
-  }
-  else {
-    if (flags & WP_LOOKUP_DIR_XDG_CONFIG_HOME) {
-      dir = g_get_user_config_dir ();
-      g_ptr_array_add (dirs, g_build_filename (dir, "wireplumber", NULL));
-    }
-    if (flags & WP_LOOKUP_DIR_ETC)
-      g_ptr_array_add (dirs,
-          g_canonicalize_filename (WIREPLUMBER_DEFAULT_CONFIG_DIR, NULL));
-    if (flags & WP_LOOKUP_DIR_PREFIX_SHARE)
-      g_ptr_array_add (dirs,
-          g_canonicalize_filename(WIREPLUMBER_DEFAULT_DATA_DIR, NULL));
-  }
+  if (flags & (WP_LOOKUP_DIR_ENV_DATA | WP_LOOKUP_DIR_ENV_TEST_SRCDIR)) {
+    if ((flags & WP_LOOKUP_DIR_ENV_DATA) &&
+        (dir = g_getenv ("WIREPLUMBER_DATA_DIR")))
+      g_ptr_array_add (dirs, g_canonicalize_filename (dir, NULL));
 
+    if ((flags & WP_LOOKUP_DIR_ENV_TEST_SRCDIR) &&
+        (dir = g_getenv ("G_TEST_SRCDIR")))
+      g_ptr_array_add (dirs, g_canonicalize_filename (dir, NULL));
+
+    if (dirs->len)
+      goto done;
+  }
+  if (flags & WP_LOOKUP_DIR_XDG_CONFIG_HOME) {
+    dir = g_get_user_config_dir ();
+    g_ptr_array_add (dirs, g_build_filename (dir, "wireplumber", NULL));
+  }
+  if (flags & WP_LOOKUP_DIR_ETC)
+    g_ptr_array_add (dirs,
+        g_canonicalize_filename (WIREPLUMBER_DEFAULT_CONFIG_DIR, NULL));
+  if (flags & WP_LOOKUP_DIR_PREFIX_SHARE)
+    g_ptr_array_add (dirs,
+        g_canonicalize_filename(WIREPLUMBER_DEFAULT_DATA_DIR, NULL));
+
+done:
   return g_steal_pointer (&dirs);
 }
 

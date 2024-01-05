@@ -7,6 +7,7 @@
  */
 
 #include "test-server.h"
+#include "test-log.h"
 #include <wp/wp.h>
 
 typedef enum {
@@ -32,12 +33,17 @@ typedef struct {
     (second client to our internal server) */
   WpCore *client_core;
 
+ /* Custom JSON config file if any,
+  * this overrides the default conf file that is picked
+  */
+  gchar *conf_file;
+
 } WpBaseTestFixture;
 
 static gboolean
 timeout_callback (WpBaseTestFixture * self)
 {
-  wp_message ("test timed out");
+  wp_critical ("test timed out");
   g_test_fail ();
   g_main_loop_quit (self->loop);
 
@@ -47,9 +53,18 @@ timeout_callback (WpBaseTestFixture * self)
 static void
 disconnected_callback (WpCore *core, WpBaseTestFixture * self)
 {
-  wp_message_object (core, "%s core disconnected",
+  wp_critical_object (core, "%s core disconnected",
       (core == self->client_core) ? "client" : "sm");
   g_test_fail ();
+  g_main_loop_quit (self->loop);
+}
+
+static void
+on_core_connected (WpObject * core, GAsyncResult * res, WpBaseTestFixture * self)
+{
+  g_autoptr (GError) error = NULL;
+  wp_object_activate_finish (core, res, &error);
+  g_assert_no_error (error);
   g_main_loop_quit (self->loop);
 }
 
@@ -74,12 +89,22 @@ wp_base_test_fixture_setup (WpBaseTestFixture * self, WpBaseTestFlags flags)
 
   /* init our core */
   props = wp_properties_new (PW_KEY_REMOTE_NAME, self->server.name, NULL);
+
+  if (self->conf_file)
+    wp_properties_set (props, PW_KEY_CONFIG_NAME, self->conf_file);
+
   self->core = wp_core_new (self->context, wp_properties_ref (props));
+  g_assert_true (self->core);
+
   g_signal_connect (self->core, "disconnected",
       (GCallback) disconnected_callback, self);
 
-  if (!(flags & WP_BASE_TEST_FLAG_DONT_CONNECT))
-    g_assert_true (wp_core_connect (self->core));
+  if (!(flags & WP_BASE_TEST_FLAG_DONT_CONNECT)) {
+    wp_object_activate (WP_OBJECT (self->core), WP_CORE_FEATURE_CONNECTED, NULL,
+        (GAsyncReadyCallback) on_core_connected, self);
+    g_main_loop_run (self->loop);
+    g_assert_true (wp_core_is_connected (self->core));
+  }
 
   /* init the second client's core */
   if (flags & WP_BASE_TEST_FLAG_CLIENT_CORE) {
@@ -87,8 +112,12 @@ wp_base_test_fixture_setup (WpBaseTestFixture * self, WpBaseTestFlags flags)
     g_signal_connect (self->client_core, "disconnected",
         (GCallback) disconnected_callback, self);
 
-    if (!(flags & WP_BASE_TEST_FLAG_DONT_CONNECT))
-      g_assert_true (wp_core_connect (self->client_core));
+    if (!(flags & WP_BASE_TEST_FLAG_DONT_CONNECT)) {
+      wp_object_activate (WP_OBJECT (self->client_core), WP_CORE_FEATURE_CONNECTED,
+          NULL, (GAsyncReadyCallback) on_core_connected, self);
+      g_main_loop_run (self->loop);
+      g_assert_true (wp_core_is_connected (self->client_core));
+    }
   }
 }
 
@@ -127,6 +156,7 @@ wp_base_test_fixture_teardown (WpBaseTestFixture * self)
     g_main_context_iteration (self->context, TRUE);
 
   g_main_context_pop_thread_default (self->context);
+  g_clear_pointer (&self->conf_file, g_free);
   g_clear_object (&self->client_core);
   g_clear_object (&self->core);
   g_clear_pointer (&self->timeout_source, g_source_unref);

@@ -11,13 +11,15 @@
 
 #include "client.h"
 #include "component-loader.h"
+#include "conf.h"
 #include "core.h"
-#include "dbus.h"
 #include "device.h"
-#include "endpoint.h"
 #include "error.h"
+#include "event-dispatcher.h"
+#include "event-hook.h"
 #include "global-proxy.h"
 #include "iterator.h"
+#include "json-utils.h"
 #include "link.h"
 #include "log.h"
 #include "metadata.h"
@@ -42,6 +44,7 @@
 #include "wpenums.h"
 #include "wpversion.h"
 #include "factory.h"
+#include "settings.h"
 
 G_BEGIN_DECLS
 
@@ -75,21 +78,13 @@ const char * wp_get_library_api_version (void);
 WP_API
 const gchar * wp_get_module_dir (void);
 
-WP_API
-G_DEPRECATED_FOR (wp_find_file)
-const gchar * wp_get_config_dir (void);
-
-WP_API
-G_DEPRECATED_FOR (wp_find_file)
-const gchar * wp_get_data_dir (void);
-
 /*!
  * \brief Flags to specify lookup directories
  * \ingroup wp
  */
 typedef enum { /*< flags >*/
-  WP_LOOKUP_DIR_ENV_CONFIG = (1 << 0),       /*!< $WIREPLUMBER_CONFIG_DIR */
   WP_LOOKUP_DIR_ENV_DATA = (1 << 1),         /*!< $WIREPLUMBER_DATA_DIR */
+  WP_LOOKUP_DIR_ENV_TEST_SRCDIR = (1 << 2),  /*!< $G_TEST_SRCDIR */
 
   WP_LOOKUP_DIR_XDG_CONFIG_HOME = (1 << 10), /*!< XDG_CONFIG_HOME/wireplumber */
   WP_LOOKUP_DIR_ETC = (1 << 11),             /*!< ($prefix)/etc/wireplumber */

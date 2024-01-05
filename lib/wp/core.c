@@ -6,17 +6,18 @@
  * SPDX-License-Identifier: MIT
  */
 
-#define G_LOG_DOMAIN "wp-core"
-
 #include "core.h"
 #include "wp.h"
 #include "private/registry.h"
+#include "private/internal-comp-loader.h"
 
 #include <pipewire/pipewire.h>
 
 #include <spa/utils/result.h>
 #include <spa/debug/types.h>
 #include <spa/support/cpu.h>
+
+WP_DEFINE_LOCAL_LOG_TOPIC ("wp-core")
 
 /*
  * Integration between the PipeWire main loop and GMainLoop
@@ -133,7 +134,7 @@ wp_loop_source_new (void)
  */
 struct _WpCore
 {
-  GObject parent;
+  WpObject parent;
 
   /* main loop integration */
   GMainContext *g_main_context;
@@ -170,7 +171,7 @@ enum {
 
 static guint32 signals[NUM_SIGNALS];
 
-G_DEFINE_TYPE (WpCore, wp_core, G_TYPE_OBJECT)
+G_DEFINE_TYPE (WpCore, wp_core, WP_TYPE_OBJECT)
 
 static void
 core_info (void *data, const struct pw_core_info * info)
@@ -183,8 +184,10 @@ core_info (void *data, const struct pw_core_info * info)
   wp_info_object (self, "connected to server: %s, cookie: %u",
       self->info->name, self->info->cookie);
 
-  if (new_connection)
+  if (new_connection) {
     g_signal_emit (self, signals[SIGNAL_CONNECTED], 0);
+    wp_object_update_features (WP_OBJECT (self), WP_CORE_FEATURE_CONNECTED, 0);
+  }
 }
 
 static void
@@ -250,6 +253,7 @@ proxy_core_destroy (void *data)
   self->pw_core = NULL;
   wp_debug_object (self, "emit disconnected");
   g_signal_emit (self, signals[SIGNAL_DISCONNECTED], 0);
+  wp_object_update_features (WP_OBJECT (self), 0, WP_CORE_FEATURE_CONNECTED);
 }
 
 static const struct pw_proxy_events proxy_core_events = {
@@ -263,6 +267,9 @@ wp_core_init (WpCore * self)
   wp_registry_init (&self->registry);
   self->async_tasks = g_hash_table_new_full (g_direct_hash, g_direct_equal,
       NULL, g_object_unref);
+
+  wp_core_register_object (self,
+      g_object_new (WP_TYPE_INTERNAL_COMP_LOADER, NULL));
 }
 
 static void
@@ -292,8 +299,10 @@ wp_core_constructed (GObject *object)
     /* use the same config option as pipewire to set the log level */
     p = (struct pw_properties *) pw_context_get_properties (self->pw_context);
     if (!g_getenv("WIREPLUMBER_DEBUG") &&
-        (str = pw_properties_get(p, "log.level")) != NULL)
-      wp_log_set_level (str);
+        (str = pw_properties_get(p, "log.level")) != NULL) {
+      if (!wp_log_set_global_level (str))
+        wp_warning ("ignoring invalid log.level in config file: %s", str);
+    }
 
     /* Init refcount */
     grefcount *rc = pw_context_get_user_data (self->pw_context);
@@ -315,6 +324,7 @@ wp_core_dispose (GObject * obj)
   WpCore *self = WP_CORE (obj);
 
   wp_registry_clear (&self->registry);
+  wp_object_update_features (WP_OBJECT (self), 0, WP_CORE_FEATURE_COMPONENTS);
 
   G_OBJECT_CLASS (wp_core_parent_class)->dispose (obj);
 }
@@ -388,16 +398,130 @@ wp_core_set_property (GObject * object, guint property_id,
   }
 }
 
+static WpObjectFeatures
+wp_core_get_supported_features (WpObject * self)
+{
+  return WP_CORE_FEATURE_CONNECTED |
+      WP_CORE_FEATURE_COMPONENTS;
+}
+
+enum {
+  STEP_CONNECT = WP_TRANSITION_STEP_CUSTOM_START,
+  STEP_LOAD_COMPONENTS,
+};
+
+static guint
+wp_core_activate_get_next_step (WpObject * self,
+    WpFeatureActivationTransition * transition, guint step,
+    WpObjectFeatures missing)
+{
+  switch (step) {
+    case WP_TRANSITION_STEP_NONE:
+      if (missing & WP_CORE_FEATURE_CONNECTED)
+        return STEP_CONNECT;
+      G_GNUC_FALLTHROUGH;
+
+    case STEP_CONNECT:
+      if (missing & WP_CORE_FEATURE_COMPONENTS)
+        return STEP_LOAD_COMPONENTS;
+      G_GNUC_FALLTHROUGH;
+
+    case STEP_LOAD_COMPONENTS:
+      return WP_TRANSITION_STEP_NONE;
+
+    default:
+      return WP_TRANSITION_STEP_ERROR;
+  }
+}
+
+static void
+on_components_loaded (WpCore * self, GAsyncResult *res,
+    WpTransition * transition)
+{
+  g_autoptr (GError) error = NULL;
+
+  if (!wp_core_load_component_finish (self, res, &error)) {
+    wp_transition_return_error (transition, g_error_new (
+        WP_DOMAIN_LIBRARY, WP_LIBRARY_ERROR_INVALID_ARGUMENT,
+        "failed to load components: %s", error->message));
+    return;
+  }
+
+  wp_object_update_features (WP_OBJECT (self), WP_CORE_FEATURE_COMPONENTS, 0);
+}
+
+static void
+wp_core_activate_execute_step (WpObject * object,
+    WpFeatureActivationTransition * transition, guint step,
+    WpObjectFeatures missing)
+{
+  WpCore *self = WP_CORE (object);
+
+  switch (step) {
+    case STEP_CONNECT: {
+      wp_info_object (self, "connecting to pipewire...");
+
+      if (!wp_core_connect (self)) {
+        wp_transition_return_error (WP_TRANSITION (transition), g_error_new (
+            WP_DOMAIN_LIBRARY, WP_LIBRARY_ERROR_SERVICE_UNAVAILABLE,
+            "Failed to connect to PipeWire"));
+      }
+      break;
+    }
+
+    case STEP_LOAD_COMPONENTS: {
+      g_autoptr (WpProperties) props = wp_core_get_properties (self);
+
+      if (spa_atob (wp_properties_get (props, "wireplumber.export-core"))) {
+        /* do not load any components on the export core */
+        wp_object_update_features (WP_OBJECT (self), WP_CORE_FEATURE_COMPONENTS, 0);
+        return;
+      }
+      else {
+        const gchar *profile = wp_properties_get (props, "wireplumber.profile");
+
+        wp_info_object (self,
+            "parsing & loading components for profile [%s]...", profile);
+
+        /* Load components that are defined in the configuration section */
+        wp_core_load_component (self, profile, "profile", NULL, NULL, NULL,
+            (GAsyncReadyCallback) on_components_loaded, transition);
+      }
+      break;
+    }
+
+    case WP_TRANSITION_STEP_ERROR:
+      break;
+    default:
+      g_assert_not_reached ();
+  }
+}
+
+static void
+wp_core_deactivate (WpObject * self, WpObjectFeatures features)
+{
+  if (features & WP_CORE_FEATURE_CONNECTED)
+    wp_core_disconnect (WP_CORE (self));
+
+  /* WP_CORE_FEATURE_COMPONENTS cannot be manually deactivated */
+}
+
 static void
 wp_core_class_init (WpCoreClass * klass)
 {
   GObjectClass *object_class = (GObjectClass *) klass;
+  WpObjectClass *wpobject_class = (WpObjectClass *) klass;
 
   object_class->constructed = wp_core_constructed;
   object_class->dispose = wp_core_dispose;
   object_class->finalize = wp_core_finalize;
   object_class->get_property = wp_core_get_property;
   object_class->set_property = wp_core_set_property;
+
+  wpobject_class->get_supported_features = wp_core_get_supported_features;
+  wpobject_class->activate_get_next_step = wp_core_activate_get_next_step;
+  wpobject_class->activate_execute_step = wp_core_activate_execute_step;
+  wpobject_class->deactivate = wp_core_deactivate;
 
   g_object_class_install_property (object_class, PROP_G_MAIN_CONTEXT,
       g_param_spec_boxed ("g-main-context", "g-main-context",
@@ -457,10 +581,41 @@ WpCore *
 wp_core_clone (WpCore * self)
 {
   return g_object_new (WP_TYPE_CORE,
+      "core", self,
       "g-main-context", self->g_main_context,
       "properties", self->properties,
       "pw-context", self->pw_context,
       NULL);
+}
+
+static gboolean
+find_export_core (gconstpointer a, gconstpointer b)
+{
+  gpointer obj = (gpointer) a;
+  if (WP_IS_CORE ((gpointer) obj)) {
+    g_autoptr (WpProperties) props = wp_core_get_properties (WP_CORE (obj));
+    if (spa_atob (wp_properties_get (props, "wireplumber.export-core")))
+      return TRUE;
+  }
+  return FALSE;
+}
+
+/*!
+ * \brief Returns the special WpCore that is used to maintain a secondary
+ * connection to PipeWire, for exporting objects
+ *
+ * The export core is enabled by loading the built-in "export-core" component.
+ *
+ * \ingroup wpcore
+ * \param self the core
+ * \returns (transfer full): the export WpCore
+ */
+WpCore *
+wp_core_get_export_core (WpCore * self)
+{
+  g_return_val_if_fail (WP_IS_CORE (self), NULL);
+
+  return wp_core_find_object (self, find_export_core, NULL);
 }
 
 /*!
@@ -650,7 +805,7 @@ gboolean
 wp_core_is_connected (WpCore * self)
 {
   g_return_val_if_fail (WP_IS_CORE (self), FALSE);
-  return self->pw_core != NULL;
+  return self->pw_core && self->info;
 }
 
 /*!
@@ -686,7 +841,6 @@ guint32
 wp_core_get_remote_cookie (WpCore * self)
 {
   g_return_val_if_fail (wp_core_is_connected (self), 0);
-  g_return_val_if_fail (self->info, 0);
 
   return self->info->cookie;
 }
@@ -701,7 +855,6 @@ const gchar *
 wp_core_get_remote_name (WpCore * self)
 {
   g_return_val_if_fail (wp_core_is_connected (self), NULL);
-  g_return_val_if_fail (self->info, NULL);
 
   return self->info->name;
 }
@@ -717,7 +870,6 @@ const gchar *
 wp_core_get_remote_user_name (WpCore * self)
 {
   g_return_val_if_fail (wp_core_is_connected (self), NULL);
-  g_return_val_if_fail (self->info, NULL);
 
   return self->info->user_name;
 }
@@ -733,7 +885,6 @@ const gchar *
 wp_core_get_remote_host_name (WpCore * self)
 {
   g_return_val_if_fail (wp_core_is_connected (self), NULL);
-  g_return_val_if_fail (self->info, NULL);
 
   return self->info->host_name;
 }
@@ -748,7 +899,6 @@ const gchar *
 wp_core_get_remote_version (WpCore * self)
 {
   g_return_val_if_fail (wp_core_is_connected (self), NULL);
-  g_return_val_if_fail (self->info, NULL);
 
   return self->info->version;
 }
@@ -764,7 +914,6 @@ WpProperties *
 wp_core_get_remote_properties (WpCore * self)
 {
   g_return_val_if_fail (wp_core_is_connected (self), NULL);
-  g_return_val_if_fail (self->info, NULL);
 
   return wp_properties_new_wrap_dict (self->info->props);
 }
@@ -1074,6 +1223,112 @@ wp_core_sync_finish (WpCore * self, GAsyncResult * res, GError ** error)
   g_return_val_if_fail (g_task_is_valid (res, self), FALSE);
 
   return g_task_propagate_boolean (G_TASK (res), error);
+}
+
+
+/*!
+ * \brief Finds a registered object
+ *
+ * \param self the core
+ * \param func (scope call): a function that takes the object being searched
+ *   as the first argument and \a data as the second. it should return TRUE if
+ *   the object is found or FALSE otherwise
+ * \param data the second argument to \a func
+ * \returns (transfer full) (type GObject*) (nullable): the registered object
+ *   or NULL if not found
+ */
+gpointer
+wp_core_find_object (WpCore * self, GEqualFunc func, gconstpointer data)
+{
+  GObject *object;
+  guint i;
+
+  g_return_val_if_fail (WP_IS_CORE (self), NULL);
+
+  /* prevent bad things when called from within wp_registry_clear() */
+  if (G_UNLIKELY (!self->registry.objects))
+    return NULL;
+
+  for (i = 0; i < self->registry.objects->len; i++) {
+    object = g_ptr_array_index (self->registry.objects, i);
+    if (func (object, data))
+      return g_object_ref (object);
+  }
+
+  return NULL;
+}
+
+/*!
+ * \brief Registers \a obj with the core, making it appear on WpObjectManager
+ * instances as well.
+ *
+ * The core will also maintain a ref to that object until it
+ * is removed.
+ *
+ * \ingroup wpcore
+ * \param self the core
+ * \param obj (transfer full) (type GObject*): the object to register
+ */
+void
+wp_core_register_object (WpCore * self, gpointer obj)
+{
+  g_return_if_fail (WP_IS_CORE (self));
+  g_return_if_fail (G_IS_OBJECT (obj));
+
+  /* prevent bad things when called from within wp_registry_clear() */
+  if (G_UNLIKELY (!self->registry.objects)) {
+    g_object_unref (obj);
+    return;
+  }
+
+  /* ensure the registered object is associated with this core */
+  if (WP_IS_OBJECT (obj)) {
+    g_autoptr (WpCore) obj_core = wp_object_get_core (WP_OBJECT (obj));
+    g_return_if_fail (obj_core == self);
+  }
+
+  g_ptr_array_add (self->registry.objects, obj);
+
+  /* notify object managers */
+  wp_registry_notify_add_object (&self->registry, obj);
+}
+
+/*!
+ * \brief Detaches and unrefs the specified object from this core.
+ *
+ * \ingroup wpcore
+ * \param self the core
+ * \param obj (transfer none) (type GObject*): a pointer to the object to remove
+ */
+void
+wp_core_remove_object (WpCore * self, gpointer obj)
+{
+  g_return_if_fail (WP_IS_CORE (self));
+  g_return_if_fail (G_IS_OBJECT (obj));
+
+  /* prevent bad things when called from within wp_registry_clear() */
+  if (G_UNLIKELY (!self->registry.objects))
+    return;
+
+  /* notify object managers */
+  wp_registry_notify_rm_object (&self->registry, obj);
+
+  g_ptr_array_remove_fast (self->registry.objects, obj);
+}
+
+/*!
+ * \brief Test if a global feature is provided
+ *
+ * \ingroup wpcore
+ * \param self the core
+ * \param feature the feature name
+ * \returns TRUE if the feature is provided, FALSE otherwise
+ */
+gboolean
+wp_core_test_feature (WpCore * self, const gchar * feature)
+{
+  return g_ptr_array_find_with_equal_func (self->registry.features, feature,
+      g_str_equal, NULL);
 }
 
 WpRegistry *

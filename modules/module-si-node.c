@@ -11,6 +11,8 @@
 #include <pipewire/properties.h>
 #include <pipewire/extensions/session-manager/keys.h>
 
+WP_DEFINE_LOCAL_LOG_TOPIC ("m-si-node")
+
 #define SI_FACTORY_NAME "si-node"
 
 struct _WpSiNode
@@ -219,10 +221,9 @@ si_node_linkable_init (WpSiLinkableInterface * iface)
   iface->get_ports = si_node_get_ports;
 }
 
-WP_PLUGIN_EXPORT gboolean
-wireplumber__module_init (WpCore * core, GVariant * args, GError ** error)
+WP_PLUGIN_EXPORT GObject *
+wireplumber__module_init (WpCore * core, WpSpaJson * args, GError ** error)
 {
-  wp_si_factory_register (core, wp_si_factory_new_simple (SI_FACTORY_NAME,
+  return G_OBJECT (wp_si_factory_new_simple (SI_FACTORY_NAME,
       si_node_get_type ()));
-  return TRUE;
 }

@@ -15,6 +15,8 @@
 #include <spa/param/audio/format-utils.h>
 #include <spa/param/param.h>
 
+WP_DEFINE_LOCAL_LOG_TOPIC ("m-si-audio-adapter")
+
 #define SI_FACTORY_NAME "si-audio-adapter"
 
 struct _WpSiAudioAdapter
@@ -38,6 +40,7 @@ struct _WpSiAudioAdapter
   struct spa_audio_info_raw raw_format;
 
   gulong ports_changed_sigid;
+  gulong params_changed_sigid;
 
   WpSpaPod *format;
   gchar mode[32];
@@ -254,7 +257,7 @@ si_audio_adapter_configure (WpSessionItem * item, WpProperties *p)
   str = wp_properties_get (si_props, "item.features.no-format");
   self->no_format = str && pw_properties_parse_bool (str);
   if (!self->no_format && !si_audio_adapter_find_format (self, node)) {
-    wp_message_object (item, "no usable format found for node %d",
+    wp_notice_object (item, "no usable format found for node %d",
         wp_proxy_get_bound_id (WP_PROXY (node)));
     return FALSE;
   }
@@ -540,6 +543,20 @@ on_node_ports_changed (WpObject * node, WpSiAudioAdapter *self)
 }
 
 static void
+on_node_params_changed (WpPipewireObject * proxy, const gchar *param_name,
+    WpSiAudioAdapter *self)
+{
+  /* Only handle Props param that has been emitted when setting ports format */
+  if (!g_str_equal (param_name, "Props") || !self->format_task)
+    return;
+
+  /* If ports are already configured, finish task. This is the case for already
+   * loaded nodes such as virtual filters */
+  if (wp_node_get_n_ports (self->node) > 0)
+    on_node_ports_changed (WP_OBJECT (self->node), self);
+}
+
+static void
 si_audio_adapter_enable_active (WpSessionItem *si, WpTransition *transition)
 {
   WpSiAudioAdapter *self = WP_SI_AUDIO_ADAPTER (si);
@@ -551,8 +568,8 @@ si_audio_adapter_enable_active (WpSessionItem *si, WpTransition *transition)
     return;
   }
 
-  if (!(wp_object_get_active_features (WP_OBJECT (self->node))
-    & WP_PIPEWIRE_OBJECT_FEATURES_MINIMAL)) {
+  if (!(wp_object_test_active_features (WP_OBJECT (self->node),
+        WP_PIPEWIRE_OBJECT_FEATURES_MINIMAL))) {
     wp_transition_return_error (transition,
         g_error_new (WP_DOMAIN_LIBRARY, WP_LIBRARY_ERROR_INVARIANT,
         "si-audio-adapter: node minimal feature not enabled"));
@@ -561,6 +578,8 @@ si_audio_adapter_enable_active (WpSessionItem *si, WpTransition *transition)
 
   self->ports_changed_sigid = g_signal_connect_object (self->node,
       "ports-changed", (GCallback) on_node_ports_changed, self, 0);
+  self->params_changed_sigid = g_signal_connect_object (self->node,
+      "params-changed", (GCallback) on_node_params_changed, self, 0);
 
   /* If device node, enum available formats and set one of them */
   if (!self->no_format && (self->is_device || self->dont_remix ||
@@ -581,6 +600,10 @@ si_audio_adapter_disable_active (WpSessionItem *si)
   if (self->ports_changed_sigid) {
     g_signal_handler_disconnect (self->node, self->ports_changed_sigid);
     self->ports_changed_sigid = 0;
+  }
+  if (self->params_changed_sigid) {
+    g_signal_handler_disconnect (self->node, self->params_changed_sigid);
+    self->params_changed_sigid = 0;
   }
 
   wp_object_update_features (WP_OBJECT (self), 0,
@@ -632,7 +655,6 @@ si_audio_adapter_set_ports_format (WpSiAdapter * item, WpSpaPod *f,
   WpSiAudioAdapter *self = WP_SI_AUDIO_ADAPTER (item);
   g_autoptr (WpSpaPod) format = f;
   g_autoptr (GTask) task = g_task_new (self, NULL, callback, data);
-  guint32 active = 0;
 
   /* cancel previous task if any */
   if (self->format_task) {
@@ -653,8 +675,8 @@ si_audio_adapter_set_ports_format (WpSiAdapter * item, WpSpaPod *f,
   }
 
   /* make sure the node has WP_NODE_FEATURE_PORTS */
-  active = wp_object_get_active_features (WP_OBJECT (self->node));
-  if (G_UNLIKELY (!(active & WP_NODE_FEATURE_PORTS))) {
+  if (G_UNLIKELY (!(wp_object_test_active_features (WP_OBJECT (self->node),
+        WP_NODE_FEATURE_PORTS)))) {
     g_task_return_new_error (task, WP_DOMAIN_LIBRARY,
         WP_LIBRARY_ERROR_OPERATION_FAILED,
         "node feature ports is not enabled, aborting set format operation");
@@ -777,10 +799,9 @@ si_audio_adapter_linkable_init (WpSiLinkableInterface * iface)
   iface->get_ports = si_audio_adapter_get_ports;
 }
 
-WP_PLUGIN_EXPORT gboolean
-wireplumber__module_init (WpCore * core, GVariant * args, GError ** error)
+WP_PLUGIN_EXPORT GObject *
+wireplumber__module_init (WpCore * core, WpSpaJson * args, GError ** error)
 {
-  wp_si_factory_register (core, wp_si_factory_new_simple (SI_FACTORY_NAME,
+  return G_OBJECT (wp_si_factory_new_simple (SI_FACTORY_NAME,
       si_audio_adapter_get_type ()));
-  return TRUE;
 }

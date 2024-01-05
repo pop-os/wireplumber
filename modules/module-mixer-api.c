@@ -12,6 +12,8 @@
 #include <spa/pod/iter.h>
 #include <spa/param/audio/raw.h>
 
+WP_DEFINE_LOCAL_LOG_TOPIC ("m-mixer-api")
+
 struct volume {
   uint8_t channels;
   float values[SPA_AUDIO_MAX_CHANNELS];
@@ -33,6 +35,7 @@ struct node_info {
   struct volume monitorVolume;
   struct channel_map map;
   bool mute;
+  bool monitorMute;
   float svolume;
   float base;
   float step;
@@ -149,6 +152,7 @@ node_info_fill (struct node_info * info, WpSpaPod * props)
       "volumeStep", "?f", &info->step,
       "volume",     "?f", &info->svolume,
       "monitorVolumes", "?P", &monitorVolumes,
+      "monitorMute", "?b", &info->monitorMute,
       NULL);
 
   info->volume.channels = spa_pod_copy_array (
@@ -397,7 +401,9 @@ wp_mixer_api_set_volume (WpMixerApi * self, guint32 id, GVariant * vvolume)
   struct volume new_volume = {0};
   struct volume new_monVolume = {0};
   gboolean has_mute = FALSE;
+  gboolean has_monitorMute = FALSE;
   gboolean mute = FALSE;
+  gboolean monitorMute = FALSE;
   WpSpaIdTable t_audioChannel =
       wp_spa_id_table_from_name ("Spa:Enum:AudioChannel");
 
@@ -417,6 +423,7 @@ wp_mixer_api_set_volume (WpMixerApi * self, guint32 id, GVariant * vvolume)
     gdouble val;
 
     has_mute = g_variant_lookup (vvolume, "mute", "b", &mute);
+    has_monitorMute = g_variant_lookup (vvolume, "monitorMute", "b", &monitorMute);
 
     if (g_variant_lookup (vvolume, "volume", "d", &val)) {
       new_volume = info->volume;
@@ -444,7 +451,7 @@ wp_mixer_api_set_volume (WpMixerApi * self, guint32 id, GVariant * vvolume)
           channel = wp_spa_id_table_find_value_from_short_name (
               t_audioChannel, channel_str);
           if (!channel)
-            wp_message_object (self, "invalid channel: %s", channel_str);
+            wp_notice_object (self, "invalid channel: %s", channel_str);
         }
 
         if (channel) {
@@ -456,7 +463,7 @@ wp_mixer_api_set_volume (WpMixerApi * self, guint32 id, GVariant * vvolume)
         }
 
         if (index >= MIN(new_volume.channels, SPA_AUDIO_MAX_CHANNELS)) {
-          wp_message_object (self, "invalid channel index: %u", index);
+          wp_notice_object (self, "invalid channel index: %u", index);
           continue;
         }
 
@@ -488,6 +495,8 @@ wp_mixer_api_set_volume (WpMixerApi * self, guint32 id, GVariant * vvolume)
         new_monVolume.channels, new_monVolume.values, NULL);
   if (has_mute)
     wp_spa_pod_builder_add (b, "mute", "b", mute, NULL);
+  if (has_monitorMute)
+    wp_spa_pod_builder_add (b, "monitorMute", "b", monitorMute, NULL);
 
   props = wp_spa_pod_builder_end (b);
 
@@ -542,6 +551,7 @@ wp_mixer_api_get_volume (WpMixerApi * self, guint32 id)
     g_variant_builder_add (&b, "{sv}", "monitorVolume", g_variant_new_double (
           volume_from_linear (info->monitorVolume.values[0], self->scale)));
   }
+  g_variant_builder_add (&b, "{sv}", "monitorMute", g_variant_new_boolean (info->monitorMute));
 
   for (guint i = 0; i < info->volume.channels; i++) {
     gchar index_str[10];
@@ -614,12 +624,11 @@ wp_mixer_api_class_init (WpMixerApiClass * klass)
       G_SIGNAL_RUN_LAST, 0, NULL, NULL, NULL, G_TYPE_NONE, 1, G_TYPE_UINT);
 }
 
-WP_PLUGIN_EXPORT gboolean
-wireplumber__module_init (WpCore * core, GVariant * args, GError ** error)
+WP_PLUGIN_EXPORT GObject *
+wireplumber__module_init (WpCore * core, WpSpaJson * args, GError ** error)
 {
-  wp_plugin_register (g_object_new (wp_mixer_api_get_type (),
-          "name", "mixer-api",
-          "core", core,
-          NULL));
-  return TRUE;
+  return G_OBJECT (g_object_new (wp_mixer_api_get_type (),
+      "name", "mixer-api",
+      "core", core,
+      NULL));
 }

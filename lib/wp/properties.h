@@ -12,6 +12,7 @@
 #include <glib-object.h>
 #include "defs.h"
 #include "iterator.h"
+#include "spa-json.h"
 
 G_BEGIN_DECLS
 
@@ -39,6 +40,9 @@ WpProperties * wp_properties_new_valist (const gchar * key, va_list args);
 
 WP_API
 WpProperties * wp_properties_new_string (const gchar * str);
+
+WP_API
+WpProperties * wp_properties_new_json (const WpSpaJson * json);
 
 WP_API
 WpProperties * wp_properties_new_wrap (const struct pw_properties * props);
@@ -77,6 +81,9 @@ gint wp_properties_update (WpProperties * self, WpProperties * props);
 WP_API
 gint wp_properties_update_from_dict (WpProperties * self,
     const struct spa_dict * dict);
+
+WP_API
+gint wp_properties_update_from_json (WpProperties * self, const WpSpaJson * json);
 
 /* add */
 
@@ -156,14 +163,6 @@ G_DEFINE_AUTOPTR_CLEANUP_FUNC (WpPropertiesItem, wp_properties_item_unref)
 
 WP_API
 WpIterator * wp_properties_new_iterator (WpProperties * self);
-
-WP_API
-G_DEPRECATED_FOR(wp_properties_item_get_key)
-const gchar * wp_properties_iterator_item_get_key (const GValue * item);
-
-WP_API
-G_DEPRECATED_FOR(wp_properties_item_get_value)
-const gchar * wp_properties_iterator_item_get_value (const GValue * item);
 
 /* count */
 

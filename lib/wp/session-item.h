@@ -11,6 +11,7 @@
 
 #include "object.h"
 #include "proxy.h"
+#include "properties.h"
 
 G_BEGIN_DECLS
 
@@ -58,11 +59,6 @@ struct _WpSessionItemClass
   /*< private >*/
   WP_PADDING(5)
 };
-
-/* Id */
-
-WP_API
-guint wp_session_item_get_id (WpSessionItem * self);
 
 /* configuration */
 

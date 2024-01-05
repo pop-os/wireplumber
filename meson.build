@@ -1,5 +1,5 @@
 project('wireplumber', ['c'],
-  version : '0.4.17',
+  version : '0.4.81',
   license : 'MIT',
   meson_version : '>= 0.59.0',
   default_options : [
@@ -8,7 +8,7 @@ project('wireplumber', ['c'],
   ]
 )
 
-wireplumber_api_version = '0.4'
+wireplumber_api_version = '0.5'
 wireplumber_so_version = '0'
 
 wireplumber_headers_dir = get_option('includedir') / 'wireplumber-' + wireplumber_api_version / 'wp'
@@ -18,13 +18,15 @@ wireplumber_module_dir = get_option('prefix') / get_option('libdir') / 'wireplum
 wireplumber_data_dir = get_option('prefix') / get_option('datadir') / 'wireplumber'
 wireplumber_config_dir = get_option('prefix') / get_option('sysconfdir') / 'wireplumber'
 wireplumber_locale_dir = get_option('prefix') / get_option('localedir')
+wireplumber_doc_dir = get_option('prefix') / get_option('datadir') / 'doc' / 'wireplumber'
+pipewire_data_dir = get_option('prefix') / get_option('datadir') / 'pipewire'
 
 cc = meson.get_compiler('c')
 
-glib_req_version = '>= 2.62'
+glib_req_version = '>= 2.68'
 add_project_arguments([
-    '-DGLIB_VERSION_MIN_REQUIRED=GLIB_VERSION_2_62',
-    '-DGLIB_VERSION_MAX_ALLOWED=GLIB_VERSION_2_62',
+    '-DGLIB_VERSION_MIN_REQUIRED=GLIB_VERSION_2_68',
+    '-DGLIB_VERSION_MAX_ALLOWED=GLIB_VERSION_2_68',
   ], language: 'c'
 )
 
@@ -49,7 +51,7 @@ gmodule_dep = dependency('gmodule-2.0', version : glib_req_version)
 gio_dep = dependency('gio-2.0', version : glib_req_version)
 giounix_dep = dependency('gio-unix-2.0', version : glib_req_version)
 spa_dep = dependency('libspa-0.2', version: '>= 0.2')
-pipewire_dep = dependency('libpipewire-0.3', version: '>= 0.3.68')
+pipewire_dep = dependency('libpipewire-0.3', version: '>= 0.3.75')
 mathlib = cc.find_library('m')
 threads_dep = dependency('threads')
 libintl_dep = dependency('intl')
@@ -134,12 +136,12 @@ common_flags = [
 add_project_arguments(cc.get_supported_arguments(common_flags), language: 'c')
 
 subdir('lib')
-subdir('docs')
 if build_modules
   subdir('modules')
 endif
 subdir('src')
 subdir('po')
+subdir('docs')
 
 if get_option('tests')
   subdir('tests')

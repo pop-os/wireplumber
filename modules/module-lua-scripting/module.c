@@ -12,15 +12,14 @@
 
 #include "script.h"
 
+#define WP_LOCAL_LOG_TOPIC log_topic_lua_scripting
+WP_LOG_TOPIC (log_topic_lua_scripting, "m-lua-scripting")
+
 void wp_lua_scripting_api_init (lua_State *L);
-gboolean wp_lua_scripting_load_configuration (const gchar * conf_file,
-    WpCore * core, GError ** error);
 
 struct _WpLuaScriptingPlugin
 {
-  WpComponentLoader parent;
-
-  GPtrArray *scripts; /* element-type: WpPlugin* */
+  WpPlugin parent;
   lua_State *L;
 };
 
@@ -41,6 +40,7 @@ wp_lua_scripting_package_searcher (lua_State *L)
   g_autoptr (GError) error = NULL;
   g_autofree gchar *filename = g_strdup_printf ("%s.lua", name);
   g_autofree gchar *script = wp_find_file (
+      WP_LOOKUP_DIR_ENV_TEST_SRCDIR |
       WP_LOOKUP_DIR_ENV_DATA |
       WP_LOOKUP_DIR_XDG_CONFIG_HOME |
       WP_LOOKUP_DIR_ETC |
@@ -56,6 +56,7 @@ wp_lua_scripting_package_searcher (lua_State *L)
   lua_pushcfunction (L, wp_lua_scripting_package_loader);
 
   /* 2. loader data (param to 1) */
+  wp_debug ("Executing script %s", script);
   if (!wplua_load_path (L, script, &error)) {
     lua_pop (L, 1);
     lua_pushstring (L, error->message);
@@ -82,25 +83,18 @@ wp_lua_scripting_enable_package_searcher (lua_State *L)
   lua_call (L, 3, 0);
 }
 
+static void wp_lua_scripting_component_loader_init (WpComponentLoaderInterface * iface);
+
 G_DECLARE_FINAL_TYPE (WpLuaScriptingPlugin, wp_lua_scripting_plugin,
-                      WP, LUA_SCRIPTING_PLUGIN, WpComponentLoader)
-G_DEFINE_TYPE (WpLuaScriptingPlugin, wp_lua_scripting_plugin,
-               WP_TYPE_COMPONENT_LOADER)
+                      WP, LUA_SCRIPTING_PLUGIN, WpPlugin)
+G_DEFINE_TYPE_WITH_CODE (WpLuaScriptingPlugin, wp_lua_scripting_plugin,
+                         WP_TYPE_PLUGIN, G_IMPLEMENT_INTERFACE (
+                            WP_TYPE_COMPONENT_LOADER,
+                            wp_lua_scripting_component_loader_init))
 
 static void
 wp_lua_scripting_plugin_init (WpLuaScriptingPlugin * self)
 {
-  self->scripts = g_ptr_array_new_with_free_func (g_object_unref);
-}
-
-static void
-wp_lua_scripting_plugin_finalize (GObject * object)
-{
-  WpLuaScriptingPlugin * self = WP_LUA_SCRIPTING_PLUGIN (object);
-
-  g_clear_pointer (&self->scripts, g_ptr_array_unref);
-
-  G_OBJECT_CLASS (wp_lua_scripting_plugin_parent_class)->finalize (object);
 }
 
 static void
@@ -108,7 +102,6 @@ wp_lua_scripting_plugin_enable (WpPlugin * plugin, WpTransition * transition)
 {
   WpLuaScriptingPlugin * self = WP_LUA_SCRIPTING_PLUGIN (plugin);
   g_autoptr (WpCore) core = wp_object_get_core (WP_OBJECT (plugin));
-  WpCore *export_core;
 
   /* init lua engine */
   self->L = wplua_new ();
@@ -117,25 +110,9 @@ wp_lua_scripting_plugin_enable (WpPlugin * plugin, WpTransition * transition)
   lua_pushlightuserdata (self->L, core);
   lua_settable (self->L, LUA_REGISTRYINDEX);
 
-  /* initialize secondary connection to pipewire */
-  export_core = g_object_get_data (G_OBJECT (core), "wireplumber.export-core");
-  if (export_core) {
-    lua_pushliteral (self->L, "wireplumber_export_core");
-    wplua_pushobject (self->L, g_object_ref (export_core));
-    lua_settable (self->L, LUA_REGISTRYINDEX);
-  }
-
   wp_lua_scripting_api_init (self->L);
   wp_lua_scripting_enable_package_searcher (self->L);
   wplua_enable_sandbox (self->L, WP_LUA_SANDBOX_ISOLATE_ENV);
-
-  /* register scripts that were queued in for loading */
-  for (guint i = 0; i < self->scripts->len; i++) {
-    WpPlugin *script = g_ptr_array_index (self->scripts, i);
-    g_object_set (script, "lua-engine", self->L, NULL);
-    wp_plugin_register (g_object_ref (script));
-  }
-  g_ptr_array_set_size (self->scripts, 0);
 
   wp_object_update_features (WP_OBJECT (self), WP_PLUGIN_FEATURE_ENABLED, 0);
 }
@@ -144,6 +121,7 @@ static void
 wp_lua_scripting_plugin_disable (WpPlugin * plugin)
 {
   WpLuaScriptingPlugin * self = WP_LUA_SCRIPTING_PLUGIN (plugin);
+
   g_clear_pointer (&self->L, wplua_unref);
 }
 
@@ -151,7 +129,7 @@ static gboolean
 wp_lua_scripting_plugin_supports_type (WpComponentLoader * cl,
     const gchar * type)
 {
-  return (!g_strcmp0 (type, "script/lua") || !g_strcmp0 (type, "config/lua"));
+  return g_str_equal (type, "script/lua");
 }
 
 static gchar *
@@ -166,80 +144,94 @@ find_script (const gchar * script, WpCore *core)
     return g_strdup (script);
 
   return wp_find_file (WP_LOOKUP_DIR_ENV_DATA |
+                       WP_LOOKUP_DIR_ENV_TEST_SRCDIR |
                        WP_LOOKUP_DIR_XDG_CONFIG_HOME |
                        WP_LOOKUP_DIR_ETC |
                        WP_LOOKUP_DIR_PREFIX_SHARE,
                        script, "scripts");
 }
 
-static gboolean
-wp_lua_scripting_plugin_load (WpComponentLoader * cl, const gchar * component,
-    const gchar * type, GVariant * args, GError ** error)
+static void
+wp_lua_scripting_plugin_load (WpComponentLoader * cl, WpCore * core,
+    const gchar * component, const gchar * type, WpSpaJson * args,
+    GCancellable * cancellable, GAsyncReadyCallback callback, gpointer data)
 {
   WpLuaScriptingPlugin * self = WP_LUA_SCRIPTING_PLUGIN (cl);
-  g_autoptr (WpCore) core = wp_object_get_core (WP_OBJECT (cl));
+  g_autoptr (GTask) task = task = g_task_new (self, cancellable, callback, data);
+  g_autofree gchar *filepath = NULL;
+  g_autofree gchar *pluginname = NULL;
+  g_autoptr (WpPlugin) script = NULL;
 
-  /* interpret component as a script */
-  if (!g_strcmp0 (type, "script/lua")) {
-    g_autofree gchar *filename = NULL;
-    g_autofree gchar *pluginname = NULL;
-    g_autoptr (WpPlugin) script = NULL;
+  g_task_set_source_tag (task, wp_lua_scripting_plugin_load);
 
-    filename = find_script (component, core);
-    if (!filename) {
-      g_set_error (error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND,
-          "Could not locate script '%s'", component);
-      return FALSE;
-    }
-
-    pluginname = g_strdup_printf ("script:%s", component);
-
-    script = g_object_new (WP_TYPE_LUA_SCRIPT,
-        "core", core,
-        "name", pluginname,
-        "filename", filename,
-        "arguments", args,
-        NULL);
-
-    if (self->L) {
-      g_object_set (script, "lua-engine", self->L, NULL);
-      wp_plugin_register (g_steal_pointer (&script));
-    } else {
-      /* keep in a list and delay registering until the plugin is enabled */
-      g_ptr_array_add (self->scripts, g_steal_pointer (&script));
-    }
-    return TRUE;
-  }
-  /* interpret component as a configuration file */
-  else if (!g_strcmp0 (type, "config/lua")) {
-    return wp_lua_scripting_load_configuration (component, core, error);
+  /* make sure the component loader is activated */
+  if (!self->L) {
+    g_task_return_new_error (task, G_IO_ERROR, G_IO_ERROR_NOT_FOUND,
+        "Lua script component loader cannot load Lua scripts if not enabled");
+    return;
   }
 
-  g_return_val_if_reached (FALSE);
+  /* make sure the type is supported */
+  if (!g_str_equal (type, "script/lua")) {
+    g_task_return_new_error (task, G_IO_ERROR, G_IO_ERROR_NOT_FOUND,
+        "Could not load script '%s' as its type is not 'script/lua'",
+        component);
+    return;
+  }
+
+  /* find the script */
+  filepath = find_script (component, core);
+  if (!filepath) {
+    g_task_return_new_error (task, G_IO_ERROR, G_IO_ERROR_NOT_FOUND,
+        "Could not locate script '%s'", component);
+    return;
+  }
+
+  pluginname = g_strdup_printf ("script:%s", component);
+
+  script = g_object_new (WP_TYPE_LUA_SCRIPT,
+      "core", core,
+      "name", pluginname,
+      "lua-engine", self->L,
+      "filename", filepath,
+      "arguments", args,
+      NULL);
+
+  g_task_return_pointer (task, g_steal_pointer (&script), g_object_unref);
+}
+
+static GObject *
+wp_lua_scripting_plugin_load_finish (WpComponentLoader * self,
+    GAsyncResult * res, GError ** error)
+{
+  g_return_val_if_fail (
+    g_async_result_is_tagged (res, wp_lua_scripting_plugin_load), NULL);
+
+  return g_task_propagate_pointer (G_TASK (res), error);
 }
 
 static void
 wp_lua_scripting_plugin_class_init (WpLuaScriptingPluginClass * klass)
 {
-  GObjectClass *object_class = (GObjectClass *) klass;
   WpPluginClass *plugin_class = (WpPluginClass *) klass;
-  WpComponentLoaderClass *cl_class = (WpComponentLoaderClass *) klass;
-
-  object_class->finalize = wp_lua_scripting_plugin_finalize;
 
   plugin_class->enable = wp_lua_scripting_plugin_enable;
   plugin_class->disable = wp_lua_scripting_plugin_disable;
-
-  cl_class->supports_type = wp_lua_scripting_plugin_supports_type;
-  cl_class->load = wp_lua_scripting_plugin_load;
 }
 
-WP_PLUGIN_EXPORT gboolean
-wireplumber__module_init (WpCore * core, GVariant * args, GError ** error)
+static void
+wp_lua_scripting_component_loader_init (WpComponentLoaderInterface * iface)
 {
-  wp_plugin_register (g_object_new (wp_lua_scripting_plugin_get_type (),
-          "name", "lua-scripting",
-          "core", core,
-          NULL));
-  return TRUE;
+  iface->supports_type = wp_lua_scripting_plugin_supports_type;
+  iface->load = wp_lua_scripting_plugin_load;
+  iface->load_finish = wp_lua_scripting_plugin_load_finish;
+}
+
+WP_PLUGIN_EXPORT GObject *
+wireplumber__module_init (WpCore * core, WpSpaJson * args, GError ** error)
+{
+  return G_OBJECT (g_object_new (wp_lua_scripting_plugin_get_type (),
+      "name", "lua-scripting",
+      "core", core,
+      NULL));
 }
