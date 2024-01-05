@@ -9,14 +9,14 @@ Forwarded: not-needed
 
 --- a/src/systemd/system/wireplumber.service.in
 +++ b/src/systemd/system/wireplumber.service.in
-@@ -21,4 +21,3 @@
+@@ -20,4 +20,3 @@
  
  [Install]
  WantedBy=pipewire.service
 -Alias=pipewire-session-manager.service
 --- a/src/systemd/user/wireplumber.service.in
 +++ b/src/systemd/user/wireplumber.service.in
-@@ -19,4 +19,3 @@
+@@ -18,4 +18,3 @@
  
  [Install]
  WantedBy=pipewire.service
