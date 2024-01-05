@@ -1,5 +1,5 @@
-libwireplumber-0.4.so.0 libwireplumber-0.4-0 #MINVER#
-* Build-Depends-Package: libwireplumber-0.4-dev
+libwireplumber-0.5.so.0 libwireplumber-0.5-0 #MINVER#
+* Build-Depends-Package: libwireplumber-0.5-dev
  wp_client_get_type@Base 0.3.95
  wp_client_send_error@Base 0.4.4
  wp_client_update_permissions@Base 0.3.95

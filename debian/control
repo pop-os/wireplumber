@@ -30,7 +30,7 @@ Vcs-Browser: https://salsa.debian.org/utopia-team/wireplumber
 Vcs-Git: https://salsa.debian.org/utopia-team/wireplumber.git
 Rules-Requires-Root: no
 
-Package: libwireplumber-0.4-0
+Package: libwireplumber-0.5-0
 Architecture: linux-any
 Multi-Arch: same
 Depends: ${misc:Depends},
@@ -43,7 +43,7 @@ Description: Shared libraries for WirePlumber
  .
  This package contains the shared library and plugins.
 
-Package: libwireplumber-0.4-dev
+Package: libwireplumber-0.5-dev
 Section: libdevel
 Architecture: linux-any
 Multi-Arch: same
@@ -51,8 +51,8 @@ Depends: ${misc:Depends},
          ${gir:Depends},
          libglib2.0-dev,
          libpipewire-0.3-dev,
-         libwireplumber-0.4-0 (= ${binary:Version}),
-         gir1.2-wp-0.4 (= ${binary:Version}),
+         libwireplumber-0.5-0 (= ${binary:Version}),
+         gir1.2-wp-0.5 (= ${binary:Version}),
 Provides: ${gir:Provides}
 Suggests: wireplumber-doc
 Description: Development files for WirePlumber
@@ -68,7 +68,7 @@ Architecture: linux-any
 Depends: ${shlibs:Depends},
          ${misc:Depends},
          default-dbus-session-bus | dbus-session-bus,
-         libwireplumber-0.4-0 (= ${binary:Version}),
+         libwireplumber-0.5-0 (= ${binary:Version}),
          pipewire (>= 0.3.68),
 Recommends: pipewire-pulse
 Suggests: libspa-0.2-bluetooth,
@@ -99,13 +99,13 @@ Description: modular session / policy manager for PipeWire - documentation
  .
  This package contains the WirePlumber documentation.
 
-Package: gir1.2-wp-0.4
+Package: gir1.2-wp-0.5
 Section: introspection
 Architecture: linux-any
 Multi-Arch: same
 Depends: ${misc:Depends},
          ${gir:Depends},
-         libwireplumber-0.4-0 (= ${binary:Version}),
+         libwireplumber-0.5-0 (= ${binary:Version}),
 Provides: ${gir:Provides}
 Description: GObject introspection files for WirePlumber
  WirePlumber is a modular session / policy manager for PipeWire and a
