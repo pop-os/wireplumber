@@ -16,7 +16,7 @@ Build-Depends: debhelper-compat (= 13),
                meson (>= 0.59.0),
                pkg-config,
                python3-lxml,
-               systemd,
+               systemd-dev,
 # Only used for automated tests
                dbus <!nocheck>,
                pipewire (>= 0.3.68) <!nocheck>,
