@@ -152,10 +152,12 @@ libwireplumber-0.5.so.0 libwireplumber-0.5-0 #MINVER#
  wp_link_state_get_type@Base 0.4.11
  wp_log_checked@Base 0.4.81
 #MISSING: 0.4.81# wp_log_level_is_enabled@Base 0.3.95
- wp_log_set_global_level@Base 0.4.81
-#MISSING: 0.4.81# wp_log_set_level@Base 0.3.95
+#MISSING: 0.4.82# wp_log_set_global_level@Base 0.4.81
+ wp_log_set_level@Base 0.4.82
 #MISSING: 0.4.81# wp_log_structured_standard@Base 0.3.95
  wp_log_topic_init@Base 0.4.81
+ wp_log_topic_register@Base 0.4.82
+ wp_log_topic_unregister@Base 0.4.82
  wp_log_writer_default@Base 0.3.95
  wp_lookup_dirs_get_type@Base 0.4.2
  wp_metadata_clear@Base 0.3.95
@@ -298,9 +300,11 @@ libwireplumber-0.5.so.0 libwireplumber-0.5-0 #MINVER#
  wp_session_item_reset@Base 0.3.95
  wp_session_item_set_properties@Base 0.3.95
  wp_settings_features_get_type@Base 0.4.81
+ wp_settings_find@Base 0.4.82
  wp_settings_get@Base 0.4.81
- wp_settings_get_instance@Base 0.4.81
+#MISSING: 0.4.82# wp_settings_get_instance@Base 0.4.81
  wp_settings_get_type@Base 0.4.81
+ wp_settings_new@Base 0.4.82
  wp_settings_subscribe@Base 0.4.81
  wp_settings_subscribe_closure@Base 0.4.81
  wp_settings_unsubscribe@Base 0.4.81
