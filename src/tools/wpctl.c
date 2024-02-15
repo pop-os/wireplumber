@@ -11,6 +11,7 @@
 #include <locale.h>
 #include <spa/utils/defs.h>
 #include <spa/utils/string.h>
+#include <pipewire/pipewire.h>
 #include <pipewire/keys.h>
 #include <pipewire/extensions/session-manager/keys.h>
 
@@ -78,6 +79,10 @@ static struct {
     struct {
       guint64 id;
     } clear_default;
+
+    struct {
+      const gchar *key;
+    } clear_persistent;
 
     struct {
       guint64 id;
@@ -211,6 +216,7 @@ status_prepare (WpCtl * self, GError ** error)
   wp_object_manager_add_interest (self->om, WP_TYPE_LINK, NULL);
   wp_object_manager_request_object_features (self->om, WP_TYPE_GLOBAL_PROXY,
       WP_PIPEWIRE_OBJECT_FEATURES_MINIMAL);
+  wp_object_manager_add_interest (self->om, WP_TYPE_METADATA, NULL);
   return TRUE;
 }
 
@@ -224,6 +230,7 @@ struct print_context
   WpCtl *self;
   guint32 default_node;
   WpPlugin *mixer_api;
+  GHashTable *printed_filters;
 };
 
 static void
@@ -285,6 +292,50 @@ print_dev_node (const GValue *item, gpointer data)
 }
 
 static void
+print_filter_node (const GValue *item, gpointer data)
+{
+  struct print_context *context = data;
+  WpPipewireObject *obj = g_value_get_object (item);
+  g_autoptr (WpIterator) it = NULL;
+  g_auto (GValue) val = G_VALUE_INIT;
+  const gchar *link_group;
+
+  /* Skip already printed filters */
+  link_group = wp_pipewire_object_get_property (obj, PW_KEY_NODE_LINK_GROUP);
+  if (g_hash_table_contains (context->printed_filters, link_group))
+    return;
+
+  /* Print all nodes for this link_group */
+  printf (TREE_INDENT_LINE "  - %-60s\n", link_group);
+  it = wp_object_manager_new_filtered_iterator (context->self->om,
+      WP_TYPE_NODE,
+      WP_CONSTRAINT_TYPE_PW_PROPERTY, PW_KEY_NODE_LINK_GROUP, "=s", link_group,
+      NULL);
+  for (; wp_iterator_next (it, &val); g_value_unset (&val)) {
+    WpPipewireObject *node = g_value_get_object (&val);
+    guint32 id = wp_proxy_get_bound_id (WP_PROXY (node));
+    const gchar *name, *media_class;
+
+    name = wp_pipewire_object_get_property (node, PW_KEY_NODE_NAME);
+    if (cmdline.status.display_nicknames)
+      name = wp_pipewire_object_get_property (node, PW_KEY_NODE_NICK);
+    else if (cmdline.status.display_names)
+      name = wp_pipewire_object_get_property (node, PW_KEY_NODE_NAME);
+    if (!name)
+      name = wp_pipewire_object_get_property (node, PW_KEY_NODE_DESCRIPTION);
+    media_class = wp_pipewire_object_get_property (node, PW_KEY_MEDIA_CLASS);
+
+    printf (TREE_INDENT_LINE "%c %4u. %-60s [%s]\n",
+        context->default_node == id ? '*' : ' ', id, name, media_class);
+  }
+  g_clear_pointer (&it, wp_iterator_unref);
+
+  /* Insert link-group in table to not print them again */
+  g_hash_table_insert (context->printed_filters, g_strdup (link_group),
+      NULL);
+}
+
+static void
 print_stream_node (const GValue *item, gpointer data)
 {
   WpCtl * self = data;
@@ -342,6 +393,7 @@ status_run (WpCtl * self)
   g_autoptr (WpIterator) it = NULL;
   g_auto (GValue) val = G_VALUE_INIT;
   g_autoptr (WpPlugin) def_nodes_api = NULL;
+  g_autoptr (WpMetadata) persistent_settings = NULL;
   struct print_context context = { .self = self };
 
   def_nodes_api = wp_plugin_find (self->core, "default-nodes-api");
@@ -408,6 +460,7 @@ status_run (WpCtl * self)
           WP_TYPE_NODE,
           WP_CONSTRAINT_TYPE_PW_PROPERTY, PW_KEY_MEDIA_CLASS, "#s", "*/Sink*",
           WP_CONSTRAINT_TYPE_PW_PROPERTY, PW_KEY_MEDIA_CLASS, "#s", media_type_glob,
+          WP_CONSTRAINT_TYPE_PW_PROPERTY, PW_KEY_NODE_LINK_GROUP, "-",
           NULL);
       wp_iterator_foreach (child_it, print_dev_node, (gpointer) &context);
       g_clear_pointer (&child_it, wp_iterator_unref);
@@ -424,9 +477,24 @@ status_run (WpCtl * self)
           WP_TYPE_NODE,
           WP_CONSTRAINT_TYPE_PW_PROPERTY, PW_KEY_MEDIA_CLASS, "#s", "*/Source*",
           WP_CONSTRAINT_TYPE_PW_PROPERTY, PW_KEY_MEDIA_CLASS, "#s", media_type_glob,
+          WP_CONSTRAINT_TYPE_PW_PROPERTY, PW_KEY_NODE_LINK_GROUP, "-",
           NULL);
       wp_iterator_foreach (child_it, print_dev_node, (gpointer) &context);
       g_clear_pointer (&child_it, wp_iterator_unref);
+
+      printf (TREE_INDENT_LINE "\n");
+
+      printf (TREE_INDENT_NODE "Filters:\n");
+      context.printed_filters = g_hash_table_new_full (g_str_hash,
+          g_str_equal, g_free, NULL);
+      child_it = wp_object_manager_new_filtered_iterator (self->om,
+          WP_TYPE_NODE,
+          WP_CONSTRAINT_TYPE_PW_PROPERTY, PW_KEY_MEDIA_CLASS, "#s", media_type_glob,
+          WP_CONSTRAINT_TYPE_PW_PROPERTY, PW_KEY_NODE_LINK_GROUP, "+",
+          NULL);
+      wp_iterator_foreach (child_it, print_filter_node, (gpointer) &context);
+      g_clear_pointer (&child_it, wp_iterator_unref);
+      g_clear_pointer (&context.printed_filters, g_hash_table_unref);
 
       printf (TREE_INDENT_LINE "\n");
 
@@ -435,6 +503,7 @@ status_run (WpCtl * self)
           WP_TYPE_NODE,
           WP_CONSTRAINT_TYPE_PW_PROPERTY, PW_KEY_MEDIA_CLASS, "#s", "Stream/*",
           WP_CONSTRAINT_TYPE_PW_PROPERTY, PW_KEY_MEDIA_CLASS, "#s", media_type_glob,
+          WP_CONSTRAINT_TYPE_PW_PROPERTY, PW_KEY_NODE_LINK_GROUP, "-",
           NULL);
       wp_iterator_foreach (child_it, print_stream_node, self);
       g_clear_pointer (&child_it, wp_iterator_unref);
@@ -446,8 +515,25 @@ status_run (WpCtl * self)
   /* Settings */
   printf ("Settings\n");
 
+  persistent_settings = wp_object_manager_lookup (self->om, WP_TYPE_METADATA,
+      WP_CONSTRAINT_TYPE_PW_GLOBAL_PROPERTY,
+      "metadata.name", "=s", "persistent-sm-settings",
+      NULL);
+  printf (TREE_INDENT_NODE "Persistent:\n");
+  if (persistent_settings) {
+    it = wp_metadata_new_iterator (persistent_settings, 0);
+    for (; wp_iterator_next (it, &val); g_value_unset (&val)) {
+      const gchar *key, *value;
+      wp_metadata_iterator_item_extract (&val, NULL, &key, NULL, &value);
+      printf (TREE_INDENT_LINE "  - %s: %s\n", key, value);
+    }
+    g_clear_pointer (&it, wp_iterator_unref);
+  }
+
+  printf (TREE_INDENT_LINE "\n");
+
+  printf (TREE_INDENT_END "Default Configured Devices:\n");
   if (def_nodes_api) {
-    printf (TREE_INDENT_END "Default Configured Node Names:\n");
     for (guint i = 0; i < G_N_ELEMENTS (DEFAULT_NODE_MEDIA_CLASSES); i++) {
       const gchar *name = NULL;
       g_signal_emit_by_name (def_nodes_api, "get-default-configured-node-name",
@@ -1245,7 +1331,6 @@ static void
 clear_default_run (WpCtl * self)
 {
   g_autoptr (WpPlugin) def_nodes_api = NULL;
-  g_autoptr (GError) error = NULL;
   gboolean res = FALSE;
 
   def_nodes_api = wp_plugin_find (self->core, "default-nodes-api");
@@ -1274,6 +1359,57 @@ clear_default_run (WpCtl * self)
       goto out;
     }
   }
+
+  wp_core_sync (self->core, NULL, (GAsyncReadyCallback) async_quit, self);
+  return;
+
+out:
+  self->exit_code = 3;
+  g_main_loop_quit (self->loop);
+}
+
+/* clear-persistent */
+
+static gboolean
+clear_persistent_parse_positional (gint argc, gchar ** argv, GError **error)
+{
+  if (argc >= 3)
+    cmdline.clear_persistent.key = argv[2];
+  else
+    cmdline.clear_persistent.key = NULL;
+
+  return TRUE;
+}
+
+static gboolean
+clear_persistent_prepare (WpCtl * self, GError ** error)
+{
+  wp_object_manager_add_interest (self->om, WP_TYPE_METADATA, NULL);
+  wp_object_manager_request_object_features (self->om, WP_TYPE_METADATA,
+      WP_OBJECT_FEATURES_ALL);
+  return TRUE;
+}
+
+static void
+clear_persistent_run (WpCtl * self)
+{
+  g_autoptr (WpMetadata) persistent_settings = NULL;
+
+  persistent_settings = wp_object_manager_lookup (self->om, WP_TYPE_METADATA,
+      WP_CONSTRAINT_TYPE_PW_GLOBAL_PROPERTY,
+      "metadata.name", "=s", "persistent-sm-settings",
+      NULL);
+  if (!persistent_settings) {
+    fprintf (stderr, "Persistent settings metadata not found\n");
+    goto out;
+  }
+
+  if (cmdline.clear_persistent.key)
+    wp_metadata_set (persistent_settings, 0, cmdline.clear_persistent.key, NULL,
+        NULL);
+  else
+    wp_metadata_clear (persistent_settings);
+
 
   wp_core_sync (self->core, NULL, (GAsyncReadyCallback) async_quit, self);
   return;
@@ -1509,6 +1645,16 @@ static const struct subcommand {
     .parse_positional = clear_default_parse_positional,
     .prepare = clear_default_prepare,
     .run = clear_default_run,
+  },
+  {
+    .name = "clear-persistent",
+    .positional_args = "[KEY]",
+    .summary = "Clears the persistent setting (no KEY means 'all')",
+    .description = NULL,
+    .entries = { { NULL } },
+    .parse_positional = clear_persistent_parse_positional,
+    .prepare = clear_persistent_prepare,
+    .run = clear_persistent_run,
   },
   {
     .name = "set-log-level",

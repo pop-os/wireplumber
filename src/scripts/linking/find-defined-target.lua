@@ -31,12 +31,12 @@ SimpleEventHook {
       return
     end
 
-    log:info (si, string.format ("handling item: %s (%s)",
+    log:info (si, string.format ("handling item %d: %s (%s)", si.id,
         tostring (si_props ["node.name"]), tostring (si_props ["node.id"])))
 
     local metadata = settings.allow_moving_streams and cutils.get_default_metadata_object ()
-    local dont_fallback = cutils.parseBool (si_props ["target.dont-fallback"])
-    local dont_move = cutils.parseBool (si_props ["target.dont-move"])
+    local dont_fallback = cutils.parseBool (si_props ["node.dont-fallback"])
+    local dont_move = cutils.parseBool (si_props ["node.dont-move"])
     local target_key
     local target_value = nil
     local node_defined = false
@@ -102,6 +102,7 @@ SimpleEventHook {
       end
     end
 
+    si_flags.has_defined_target = false
     if target_picked and target then
       log:info (si,
         string.format ("... defined target picked: %s (%s), can_passthrough:%s",
@@ -110,10 +111,11 @@ SimpleEventHook {
           tostring (can_passthrough)))
       si_flags.has_node_defined_target = node_defined
       si_flags.can_passthrough = can_passthrough
+      si_flags.has_defined_target = true
       event:set_data ("target", target)
     elseif target_value and dont_fallback then
       -- send error to client and destroy node if linger is not set
-      local linger = cutils.parseBool (si_props ["target.linger"])
+      local linger = cutils.parseBool (si_props ["node.linger"])
       if not linger then
         local node = si:get_associated_proxy ("node")
         lutils.sendClientError (event, node, "defined target not found")

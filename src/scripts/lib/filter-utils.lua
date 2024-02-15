@@ -83,11 +83,34 @@ local function getFilterSmartDisabled (metadata, node)
   return false
 end
 
-local function getFilterSmartTarget (metadata, node, om, dont_move)
+local function getFilterSmartTargetable (metadata, node)
+  -- Check metadata
+  if metadata ~= nil then
+    local id = node["bound-id"]
+    local value_str = metadata:find (id, "filter.smart.targetable")
+    if value_str ~= nil then
+      local json = Json.Raw (value_str)
+      if json:is_boolean() then
+        return json:parse()
+      end
+    end
+  end
+
+  -- Check node properties
+  local prop_str = node.properties ["filter.smart.targetable"]
+  if prop_str ~= nil then
+    return cutils.parseBool (prop_str)
+  end
+
+  -- Otherwise consider the filter not targetable by default
+  return false
+end
+
+local function getFilterSmartTarget (metadata, node, om)
   -- Check metadata and fallback to properties
   local id = node["bound-id"]
   local value_str = nil
-  if metadata ~= nil and not dont_move then
+  if metadata ~= nil then
     value_str = metadata:find (id, "filter.smart.target")
   end
   if value_str == nil then
@@ -119,7 +142,7 @@ local function getFilterSmartTarget (metadata, node, om, dont_move)
 
     -- Make sure the target node properties match all rules
     for key, val in pairs(match_rules) do
-      if n_target.properties[key] ~= val then
+      if n_target.properties[key] ~= tostring (val) then
         goto skip_target
       end
     end
@@ -287,6 +310,7 @@ local function rescanFilters (om, metadata_om)
     filter.smart = getFilterSmart (metadata, n)
     filter.name = getFilterSmartName (metadata, n)
     filter.disabled = getFilterSmartDisabled (metadata, n)
+    filter.targetable = getFilterSmartTargetable (metadata, n)
     filter.target = getFilterSmartTarget (metadata, n, om)
     filter.before = getFilterSmartBefore (metadata, n)
     filter.after = getFilterSmartAfter (metadata, n)
@@ -354,6 +378,21 @@ function module.is_filter_disabled (direction, link_group)
   return false
 end
 
+function module.is_filter_targetable (direction, link_group)
+  -- Make sure direction and link_group is valid
+  if direction == nil or link_group == nil then
+    return false
+  end
+
+  for i, v in ipairs(module.filters) do
+    if v.direction == direction and v.link_group == link_group then
+      return v.targetable
+    end
+  end
+
+  return false
+end
+
 function module.get_filter_target (direction, link_group)
   -- Make sure direction and link_group are valid
   if direction == nil or link_group == nil then
@@ -384,7 +423,7 @@ function module.get_filter_target (direction, link_group)
         v.link_group ~= link_group and
         not v.disabled and
         v.smart and
-        ((v.target == nil and v.target == filter.target) or
+        ((v.target == nil and filter.target == nil) or
             (v.target.id == filter.target.id)) and
         i > index then
       return v.main_si
@@ -396,28 +435,43 @@ function module.get_filter_target (direction, link_group)
 end
 
 function module.get_filter_from_target (direction, si_target)
-  -- Make sure direction and si_target are valid
-  if direction == nil or si_target == nil then
+  local target = si_target
+
+  -- Make sure direction is valid
+  if direction == nil then
     return nil
   end
+
+  -- If si_target is a filter, find it and use its target
+  if si_target then
+    local target_node = si_target:get_associated_proxy ("node")
+    local target_link_group = target_node.properties ["node.link-group"]
+    if target_link_group ~= nil then
+      local filter = nil
+      for i, v in ipairs(module.filters) do
+        if v.direction == direction and
+            v.link_group == target_link_group and
+            not v.disabled and
+            v.smart then
+          filter = v
+          break
+        end
+      end
+      if filter == nil then
+        return nil
+      end
+      target = filter.target
+    end
+  end
+
 
   -- Find the first filter matching target
   for i, v in ipairs(module.filters) do
     if v.direction == direction and
         not v.disabled and
         v.smart and
-        v.target ~= nil and
-        v.target.id == si_target.id then
-      return v.main_si
-    end
-  end
-
-  -- If not found, just return the first filter with nil target
-  for i, v in ipairs(module.filters) do
-    if v.direction == direction and
-        not v.disabled and
-        v.smart and
-        v.target == nil then
+        ((v.target ~= nil and target ~= nil and v.target.id == target.id) or
+            (target == nil and v.target == nil)) then
       return v.main_si
     end
   end

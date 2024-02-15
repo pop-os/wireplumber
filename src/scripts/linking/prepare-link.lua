@@ -30,7 +30,7 @@ SimpleEventHook {
     local exclusive = cutils.parseBool (si_props ["node.exclusive"])
     local si_must_passthrough = cutils.parseBool (si_props ["item.node.encoded-only"])
 
-    log:info (si, string.format ("handling item: %s (%s)",
+    log:info (si, string.format ("handling item %d: %s (%s)", si_id,
         tostring (si_props ["node.name"]), tostring (si_props ["node.id"])))
 
     -- Check if item is linked to proper target, otherwise re-link
@@ -101,6 +101,13 @@ SimpleEventHook {
       local node = si:get_associated_proxy ("node")
       if reconnect and si_flags.was_handled then
         log:info (si, "... waiting reconnect")
+        return
+      end
+
+      local linger = cutils.parseBool (si_props ["node.linger"])
+
+      if linger then
+        log:info (si, "... node linger")
         return
       end
 

@@ -311,17 +311,27 @@ static const luaL_Reg core_funcs[] = {
 typedef struct _WpLogTopic WpLuaLogTopic;
 
 static WpLuaLogTopic *
+wp_lua_log_topic_new (const char *name)
+{
+  WpLuaLogTopic *topic = g_new0 (WpLuaLogTopic, 1);
+  topic->topic_name = g_ref_string_new (name);
+  wp_log_topic_register (topic);
+  return topic;
+}
+
+static WpLuaLogTopic *
 wp_lua_log_topic_copy (WpLuaLogTopic *topic)
 {
   WpLuaLogTopic *copy = g_new0 (WpLuaLogTopic, 1);
-  *copy = *topic;
-  g_ref_string_acquire ((char *) copy->topic_name);
+  copy->topic_name = g_ref_string_acquire ((char *) copy->topic_name);
+  wp_log_topic_register (copy);
   return copy;
 }
 
 static void
 wp_lua_log_topic_free (WpLuaLogTopic *topic)
 {
+  wp_log_topic_unregister (topic);
   g_ref_string_release ((char *) topic->topic_name);
   g_free (topic);
 }
@@ -406,10 +416,7 @@ static int
 log_open_topic (lua_State *L)
 {
   const char *name = luaL_checkstring (L, 1);
-
-  WpLuaLogTopic *topic = g_new0 (WpLuaLogTopic, 1);
-  topic->topic_name = g_ref_string_new (name);
-  wp_log_topic_init (topic);
+  WpLuaLogTopic *topic = wp_lua_log_topic_new (name);
 
   lua_newtable (L); // empty table
   lua_newtable (L); // metatable
@@ -1803,8 +1810,7 @@ settings_get (lua_State *L)
 {
   const char *setting = luaL_checkstring (L, 1);
 
-  g_autoptr (WpSettings) s = wp_settings_get_instance (get_wp_core (L),
-      "sm-settings");
+  g_autoptr (WpSettings) s = wp_settings_find (get_wp_core (L), NULL);
 
   if (s) {
     WpSpaJson *j = wp_settings_get (s, setting);
@@ -1821,8 +1827,7 @@ static int
 settings_subscribe (lua_State *L)
 {
   const gchar *pattern = luaL_checkstring (L, 1);
-  g_autoptr (WpSettings) s = wp_settings_get_instance (get_wp_core (L),
-    "sm-settings");
+  g_autoptr (WpSettings) s = wp_settings_find (get_wp_core (L), NULL);
 
   guintptr sub_id = 0;
 
@@ -1840,8 +1845,7 @@ settings_unsubscribe (lua_State *L)
 {
   guintptr sub_id = luaL_checkinteger (L, 1);
   gboolean ret = FALSE;
-  g_autoptr (WpSettings) s = wp_settings_get_instance (get_wp_core (L),
-    "sm-settings");
+  g_autoptr (WpSettings) s = wp_settings_find (get_wp_core (L), NULL);
 
   if (s)
     ret = wp_settings_unsubscribe (s, sub_id);
@@ -2130,7 +2134,7 @@ simple_event_hook_new (lua_State *L)
   if (lua_type (L, 5) == LUA_TTABLE && after_size > 0) {
     i = 0;
     lua_pushnil (L);
-    while (lua_next (L, 5) && i < after_size - 1) {
+    while (lua_next (L, 5) && i < after_size) {
       after[i++] = luaL_checkstring (L, -1);
       /* bring the key on top without popping the string value */
       lua_rotate (L, lua_gettop (L) - 1, 1);
@@ -2379,7 +2383,7 @@ async_event_hook_new (lua_State *L)
   if (lua_type (L, 5) == LUA_TTABLE && after_size > 0) {
     i = 0;
     lua_pushnil (L);
-    while (lua_next (L, 5) && i < after_size - 1) {
+    while (lua_next (L, 5) && i < after_size) {
       after[i++] = luaL_checkstring (L, -1);
       /* bring the key on top without popping the string value */
       lua_rotate (L, lua_gettop (L) - 1, 1);

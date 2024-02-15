@@ -2,13 +2,13 @@
 sphinx_files += files(
   'conf_file.rst',
   'components_and_profiles.rst',
+  'configuration_option_types.rst',
   'features.rst',
   'settings.rst',
-  'locations.rst',
-  'main.rst',
-  'multi_instance.rst',
   'alsa.rst',
   'bluetooth.rst',
   'policy.rst',
   'access.rst',
+  'locations.rst',
+  'multi_instance.rst',
 )

@@ -35,11 +35,29 @@ SimpleEventHook {
       return
     end
 
-    -- Get the filter from the given target, if any
+    -- bypass the hook if target is defined, is a filter and is targetable
+    local target_node = target:get_associated_proxy ("node")
+    local target_link_group = target_node.properties ["node.link-group"]
+    local target_direction = cutils.getTargetDirection (si.properties)
+    if target_link_group ~= nil and si_flags.has_defined_target then
+      if futils.is_filter_smart (target_direction, target_link_group) and
+          not futils.is_filter_disabled (target_direction, target_link_group) and
+          futils.is_filter_targetable (target_direction, target_link_group) then
+        return
+      end
+    end
+
+    -- Get the filter from the given target if it exists, otherwise get the
+    -- default filter, but only if target was not defined
     local target_direction = cutils.getTargetDirection (si.properties)
     local filter_target = futils.get_filter_from_target (target_direction, target)
     if filter_target ~= nil then
       target = filter_target
+    elseif filter_target == nil and not si_flags.has_defined_target then
+      filter_target = futils.get_filter_from_target (target_direction, nil)
+      if filter_target ~= nil then
+        target = filter_target
+      end
     end
 
     local can_passthrough, passthrough_compatible
