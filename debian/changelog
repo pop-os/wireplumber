@@ -1,9 +1,10 @@
-wireplumber (0.4.82-0) UNRELEASED; urgency=medium
+wireplumber (0.4.82-1) experimental; urgency=medium
 
-  * New upstream version
+  * New upstream version 0.4.82 (0.5.0 pre-release 2)
   * Update symbols file
+  * Refresh Remove-privacy-breach-documentation.patch
 
- -- Dylan Aïssi <daissi@debian.org>  Thu, 15 Feb 2024 10:55:29 +0100
+ -- Dylan Aïssi <daissi@debian.org>  Thu, 15 Feb 2024 11:24:41 +0100
 
 wireplumber (0.4.81-1) experimental; urgency=medium
 
