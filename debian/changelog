@@ -1,3 +1,9 @@
+wireplumber (0.4.90-0) UNRELEASED; urgency=medium
+
+  * New upstream version 0.4.90 (0.5.0 release candidate 1)
+
+ -- Dylan Aïssi <daissi@debian.org>  Tue, 05 Mar 2024 17:12:27 +0100
+
 wireplumber (0.4.82-1) experimental; urgency=medium
 
   * New upstream version 0.4.82 (0.5.0 pre-release 2)
