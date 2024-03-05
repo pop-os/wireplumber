@@ -83,22 +83,6 @@ function cutils.get_default_metadata_object ()
   }
 end
 
-function cutils.evaluateRulesApplyProperties (properties, name)
-  local section = Conf.get_section (name)
-  if not section then
-    return
-  end
-
-  local matched, mprops = JsonUtils.match_rules_update_properties (
-      section, properties)
-
-  if (matched > 0 and mprops) then
-    for k, v in pairs (mprops) do
-      properties [k] = v
-    end
-  end
-end
-
 function cutils.arrayContains (a, value)
   for _, v in ipairs (a) do
     if v == value then
@@ -110,28 +94,6 @@ end
 
 function cutils.get_application_name ()
   return Core.get_properties()["application.name"] or "WirePlumber"
-end
-
-function cutils.get_config_section (name, defaults)
-  local section = Conf.get_section (name)
-  if not section then
-    section = defaults or {}
-  else
-    section = section:parse ()
-    if defaults then
-      for k, v in pairs (defaults) do
-        if section [k] == nil then
-          section [k] = v
-        end
-      end
-      for k, v in ipairs (defaults) do
-        if section [k] == nil then
-          section [k] = v
-        end
-      end
-    end
-  end
-  return section
 end
 
 return cutils

@@ -9,8 +9,10 @@
 -- SPDX-License-Identifier: MIT
 
 cutils = require ("common-utils")
-settings = require ("settings-node")
 log = Log.open_topic ("s-node")
+
+config = {}
+config.rules = Conf.get_section_as_json ("stream.rules", Json.Array {})
 
 -- the state storage
 state = nil
@@ -43,7 +45,7 @@ restore_stream_hook = SimpleEventHook {
   execute = function (event)
     local node = event:get_subject ()
     local stream_props = node.properties
-    cutils.evaluateRulesApplyProperties (stream_props, "stream.rules")
+    stream_props = JsonUtils.match_rules_update_properties (config.rules, stream_props)
 
     local key = formKey (stream_props)
     if not key then
@@ -56,7 +58,7 @@ restore_stream_hook = SimpleEventHook {
     end
 
     -- restore node Props (volumes, channelMap, etc...)
-    if settings ["stream.restore-props"] and stream_props ["state.restore-props"] ~= "false"
+    if Settings.get_boolean ("node.stream.restore-props") and stream_props ["state.restore-props"] ~= "false"
     then
       local props = {
         "Spa:Pod:Object:Param:Props", "Props",
@@ -87,7 +89,7 @@ restore_stream_hook = SimpleEventHook {
     end
 
     -- restore the node's link target on metadata
-    if settings ["stream.restore-target"] and stream_props ["state.restore-target"] ~= "false"
+    if Settings.get_boolean ("node.stream.restore-target") and stream_props ["state.restore-target"] ~= "false"
     then
       if stored_values.target then
         -- check first if there is a defined target in the node's properties
@@ -150,9 +152,9 @@ store_stream_props_hook = SimpleEventHook {
   execute = function (event)
     local node = event:get_subject ()
     local stream_props = node.properties
-    cutils.evaluateRulesApplyProperties (stream_props, "stream.rules")
+    stream_props = JsonUtils.match_rules_update_properties (config.rules, stream_props)
 
-    if settings ["stream.restore-props"] and stream_props ["state.restore-props"] ~= "false"
+    if Settings.get_boolean ("node.stream.restore-props") and stream_props ["state.restore-props"] ~= "false"
     then
       local key = formKey (stream_props)
       if not key then
@@ -224,7 +226,7 @@ store_stream_target_hook = SimpleEventHook {
     end
 
     local stream_props = node.properties
-    cutils.evaluateRulesApplyProperties (stream_props, "stream.rules")
+    stream_props = JsonUtils.match_rules_update_properties (config.rules, stream_props)
 
     if stream_props ["state.restore-target"] == "false" then
       return
@@ -346,9 +348,9 @@ function buildDefaultChannelVolumes (node)
   if str ~= nil then
     def_vol = tonumber (str)
   elseif direction == "input" then
-    def_vol = settings ["stream.default-capture-volume"]
+    def_vol = Settings.get_float ("node.stream.default-capture-volume")
   elseif direction == "output" then
-    def_vol = settings ["stream.default-playback-volume"]
+    def_vol = Settings.get_float ("node.stream.default-playback-volume")
   end
 
   for pod in node:iterate_params("Format") do
@@ -439,12 +441,15 @@ function toggleState (enable)
   end
 end
 
-settings:subscribe ("restore-props", function (enable)
-  toggleState (enable or settings["stream.restore-target"])
+Settings.subscribe ("node.stream.restore-props", function ()
+  toggleState (Settings.get_boolean ("node.stream.restore-props") or
+      Settings.get_boolean ("node.stream.restore-target"))
 end)
 
-settings:subscribe ("restore-target", function (enable)
-  toggleState (enable or settings["stream.restore-props"])
+Settings.subscribe ("node.stream.restore-target", function ()
+  toggleState (Settings.get_boolean ("node.stream.restore-props") or
+      Settings.get_boolean ("node.stream.restore-target"))
 end)
 
-toggleState (settings["stream.restore-props"] or settings["stream.restore-target"])
+toggleState (Settings.get_boolean ("node.stream.restore-props") or
+      Settings.get_boolean ("node.stream.restore-target"))

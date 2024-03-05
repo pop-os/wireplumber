@@ -698,10 +698,12 @@ load_module (WpCore * core, const gchar * module_name, WpSpaJson * args,
   GModule *gmodule;
   gpointer module_init;
 
-  if (!g_file_test (module_name, G_FILE_TEST_EXISTS))
-    module_path = g_module_build_path (wp_get_module_dir (), module_name);
-  else
-    module_path = g_strdup (module_name);
+  module_path = wp_base_dirs_find_file (WP_BASE_DIRS_MODULE, NULL, module_name);
+  if (!module_path) {
+    g_set_error (error, WP_DOMAIN_LIBRARY, WP_LIBRARY_ERROR_OPERATION_FAILED,
+        "Failed to locate module %s", module_name);
+    return NULL;
+  }
 
   wp_trace_object (core, "loading %s from %s", module_name, module_path);
 
@@ -749,25 +751,28 @@ wp_internal_comp_loader_load (WpComponentLoader * self, WpCore * core,
     if (g_str_equal (type, "profile")) {
       /* component name is the profile name;
          component list and profile features are loaded from config */
-      g_autoptr (WpConf) conf = wp_conf_get_instance (core);
-      g_autoptr (WpSpaJson) profile_json = NULL;
+      g_autoptr (WpConf) conf = wp_core_get_conf (core);
+      g_autoptr (WpSpaJson) all_profiles_j = NULL;
+      g_autoptr (WpSpaJson) profile_j = NULL;
+      const gchar *profile_name = component;
 
-      profile_json =
-          wp_conf_get_value (conf, "wireplumber.profiles", component, NULL);
-      if (!profile_json) {
+      all_profiles_j = wp_conf_get_section (conf, "wireplumber.profiles");
+      if (all_profiles_j)
+        wp_spa_json_object_get (all_profiles_j, profile_name, "J", &profile_j, NULL);
+
+      if (!profile_j) {
         g_autoptr (GTask) task = g_task_new (self, cancellable, callback, data);
         g_task_set_source_tag (task, wp_internal_comp_loader_load);
         g_task_return_new_error (G_TASK (task), WP_DOMAIN_LIBRARY,
             WP_LIBRARY_ERROR_INVALID_ARGUMENT,
-            "profile '%s' not found in configuration", component);
+            "profile '%s' not found in configuration", profile_name);
         return;
       }
 
-      wp_properties_update_from_json (profile, profile_json);
+      wp_properties_update_from_json (profile, profile_j);
 
-      components = wp_conf_get_section (conf, "wireplumber.components", NULL);
-
-      rules = wp_conf_get_section (conf, "wireplumber.components.rules", NULL);
+      components = wp_conf_get_section (conf, "wireplumber.components");
+      rules = wp_conf_get_section (conf, "wireplumber.components.rules");
     }
     else {
       /* component list is retrieved from args; profile features are empty */

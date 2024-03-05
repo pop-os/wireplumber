@@ -82,7 +82,11 @@ static struct {
 
     struct {
       const gchar *key;
-    } clear_persistent;
+      const gchar *val;
+      gboolean delete;
+      gboolean save;
+      gboolean reset;
+    } settings;
 
     struct {
       guint64 id;
@@ -393,7 +397,6 @@ status_run (WpCtl * self)
   g_autoptr (WpIterator) it = NULL;
   g_auto (GValue) val = G_VALUE_INIT;
   g_autoptr (WpPlugin) def_nodes_api = NULL;
-  g_autoptr (WpMetadata) persistent_settings = NULL;
   struct print_context context = { .self = self };
 
   def_nodes_api = wp_plugin_find (self->core, "default-nodes-api");
@@ -514,23 +517,6 @@ status_run (WpCtl * self)
 
   /* Settings */
   printf ("Settings\n");
-
-  persistent_settings = wp_object_manager_lookup (self->om, WP_TYPE_METADATA,
-      WP_CONSTRAINT_TYPE_PW_GLOBAL_PROPERTY,
-      "metadata.name", "=s", "persistent-sm-settings",
-      NULL);
-  printf (TREE_INDENT_NODE "Persistent:\n");
-  if (persistent_settings) {
-    it = wp_metadata_new_iterator (persistent_settings, 0);
-    for (; wp_iterator_next (it, &val); g_value_unset (&val)) {
-      const gchar *key, *value;
-      wp_metadata_iterator_item_extract (&val, NULL, &key, NULL, &value);
-      printf (TREE_INDENT_LINE "  - %s: %s\n", key, value);
-    }
-    g_clear_pointer (&it, wp_iterator_unref);
-  }
-
-  printf (TREE_INDENT_LINE "\n");
 
   printf (TREE_INDENT_END "Default Configured Devices:\n");
   if (def_nodes_api) {
@@ -1368,21 +1354,40 @@ out:
   g_main_loop_quit (self->loop);
 }
 
-/* clear-persistent */
+/* settings */
 
 static gboolean
-clear_persistent_parse_positional (gint argc, gchar ** argv, GError **error)
+settings_parse_positional (gint argc, gchar ** argv, GError **error)
 {
-  if (argc >= 3)
-    cmdline.clear_persistent.key = argv[2];
-  else
-    cmdline.clear_persistent.key = NULL;
+  cmdline.settings.key = NULL;
+  cmdline.settings.val = NULL;
+  if (argc >= 3) {
+    cmdline.settings.key = argv[2];
+    if (argc >= 4)
+      cmdline.settings.val = argv[3];
+  }
+
+  if (cmdline.settings.delete && cmdline.settings.save) {
+    g_set_error (error, wpctl_error_domain_quark(), 0,
+                   "Cannot use --delete and --save flags at the same time");
+    return FALSE;
+  }
+  if (cmdline.settings.delete && cmdline.settings.reset) {
+    g_set_error (error, wpctl_error_domain_quark(), 0,
+                   "Cannot use --delete and --reset flags at the same time");
+    return FALSE;
+  }
+  if (cmdline.settings.save && cmdline.settings.reset) {
+    g_set_error (error, wpctl_error_domain_quark(), 0,
+                   "Cannot use --save and --reset flags at the same time");
+    return FALSE;
+  }
 
   return TRUE;
 }
 
 static gboolean
-clear_persistent_prepare (WpCtl * self, GError ** error)
+settings_prepare (WpCtl * self, GError ** error)
 {
   wp_object_manager_add_interest (self->om, WP_TYPE_METADATA, NULL);
   wp_object_manager_request_object_features (self->om, WP_TYPE_METADATA,
@@ -1390,26 +1395,181 @@ clear_persistent_prepare (WpCtl * self, GError ** error)
   return TRUE;
 }
 
-static void
-clear_persistent_run (WpCtl * self)
+static const char *
+settings_spec_type_to_string (WpSettingsSpecType type)
 {
-  g_autoptr (WpMetadata) persistent_settings = NULL;
+  switch (type) {
+    case WP_SETTINGS_SPEC_TYPE_BOOL:
+      return "Boolean";
+    case WP_SETTINGS_SPEC_TYPE_INT:
+      return "Integer";
+    case WP_SETTINGS_SPEC_TYPE_FLOAT:
+      return "Float";
+    case WP_SETTINGS_SPEC_TYPE_STRING:
+      return "String";
+    case WP_SETTINGS_SPEC_TYPE_ARRAY:
+      return "Array";
+    case WP_SETTINGS_SPEC_TYPE_OBJECT:
+      return "Object";
+    case WP_SETTINGS_SPEC_TYPE_UNKNOWN:
+    default:
+      break;
+  }
+  return "Uknown";
+}
 
-  persistent_settings = wp_object_manager_lookup (self->om, WP_TYPE_METADATA,
-      WP_CONSTRAINT_TYPE_PW_GLOBAL_PROPERTY,
-      "metadata.name", "=s", "persistent-sm-settings",
-      NULL);
-  if (!persistent_settings) {
-    fprintf (stderr, "Persistent settings metadata not found\n");
+static void
+print_setting (WpSettings *s, const gchar *key)
+{
+  g_autoptr (WpSpaJson) value = NULL;
+  g_autoptr (WpSpaJson) saved = NULL;
+  g_autoptr (WpSettingsSpec) spec = NULL;
+  const gchar *desc;
+  WpSettingsSpecType val_type;
+  g_autoptr (WpSpaJson) def = NULL;
+  g_autoptr (WpSpaJson) min = NULL;
+  g_autoptr (WpSpaJson) max = NULL;
+
+  value = wp_settings_get (s, key);
+  saved = wp_settings_get_saved (s, key);
+  spec = wp_settings_get_spec (s, key);
+  desc = wp_settings_spec_get_description (spec);
+  val_type = wp_settings_spec_get_value_type (spec);
+  def = wp_settings_spec_get_default_value (spec);
+  min = wp_settings_spec_get_min_value (spec);
+  max = wp_settings_spec_get_max_value (spec);
+
+  /* print key */
+  printf ("- Name: %s\n", key);
+
+  /* print spec */
+  printf ("  Desc: %s\n", desc);
+  printf ("  Type: %s\n", settings_spec_type_to_string (val_type));
+  printf ("  Default: %s", wp_spa_json_get_data (def));
+  if (min && max)
+    printf ("\t[Min: %s, Max: %s]", wp_spa_json_get_data (min),
+        wp_spa_json_get_data (max));
+  printf ("\n");
+  printf ("  Value: %s", wp_spa_json_get_data (value));
+  if (saved)
+    printf ("\t[Saved: %s]", wp_spa_json_get_data (saved));
+  printf ("\n\n");
+}
+
+static void
+print_settings (WpSettings *s)
+{
+  g_autoptr (WpIterator) it = NULL;
+  g_auto (GValue) item = G_VALUE_INIT;
+
+  printf ("Settings:\n\n");
+
+  it = wp_settings_new_iterator (s);
+  while (wp_iterator_next (it, &item)) {
+    WpSettingsItem *si = g_value_get_boxed (&item);
+    const gchar *key = wp_settings_item_get_key (si);
+    print_setting (s, key);
+    g_value_unset (&item);
+  }
+}
+
+static void
+settings_run (WpCtl * self)
+{
+  g_autoptr (WpSettings) s = NULL;
+  const gchar *key = cmdline.settings.key, *val = cmdline.settings.val;
+  gboolean delete_flag = cmdline.settings.delete;
+  gboolean save_flag = cmdline.settings.save;
+  gboolean reset_flag = cmdline.settings.reset;
+
+  s = wp_settings_find (self->core, NULL);
+  if (!s) {
+    printf ("Could not find registered settings\n");
     goto out;
   }
 
-  if (cmdline.clear_persistent.key)
-    wp_metadata_set (persistent_settings, 0, cmdline.clear_persistent.key, NULL,
-        NULL);
-  else
-    wp_metadata_clear (persistent_settings);
+  /* If no key or value are provided */
+  if (!key && !val) {
+    if (!delete_flag && !save_flag && !reset_flag) {
+      print_settings (s);
+    } else if (!delete_flag && save_flag && !reset_flag) {
+      wp_settings_save_all (s);
+      fprintf (stderr, "Saved all settings\n");
+    } else if (delete_flag && !save_flag && !reset_flag) {
+      wp_settings_delete_all (s);
+      fprintf (stderr, "Deleted all saved settings\n");
+    } else if (!delete_flag && !save_flag && reset_flag) {
+      wp_settings_reset_all (s);
+      fprintf (stderr, "Reset all settings\n");
+    } else {
+      g_assert_not_reached ();
+    }
+  }
 
+  /* If key is only provided */
+  else if (key && !val) {
+    if (!delete_flag && !save_flag && !reset_flag) {
+      g_autoptr (WpSpaJson) value = NULL;
+      value = wp_settings_get (s, key);
+      if (value) {
+        g_autoptr (WpSpaJson) saved = wp_settings_get_saved (s, key);
+        printf ("Value: %s", wp_spa_json_get_data (value));
+        if (saved)
+          printf (" (Saved: %s)", wp_spa_json_get_data (saved));
+        printf ("\n");
+      } else {
+        printf ("Setting '%s' not found\n", key);
+      }
+    } else if (!delete_flag && save_flag && !reset_flag) {
+      if (wp_settings_save (s, key))
+        printf ("Saved setting '%s' successfully\n", key);
+      else
+        printf ("Setting '%s' not found\n", key);
+    } else if (delete_flag && !save_flag && !reset_flag) {
+      if (wp_settings_delete (s, key))
+        printf ("Deleted setting '%s' successfully\n", key);
+      else
+        printf ("Setting '%s' not found\n", key);
+    } else if (!delete_flag && !save_flag && reset_flag) {
+      if (wp_settings_reset (s, key))
+        printf ("Reset setting '%s' successfully\n", key);
+      else
+        printf ("Setting '%s' not found\n", key);
+    } else {
+      g_assert_not_reached ();
+    }
+  }
+
+  /* If both key and value are provided */
+  else if (key && val) {
+    if (!delete_flag && !save_flag && !reset_flag) {
+      g_autoptr (WpSpaJson) value = wp_spa_json_new_from_string (val);
+      if (wp_settings_set (s, key, value))
+        printf ("Updated setting '%s' to: %s\n", key, val);
+      else
+        printf ("Failed to set setting '%s' to: %s\n", key, val);
+    } else if (!delete_flag && save_flag && !reset_flag) {
+      g_autoptr (WpSpaJson) value = wp_spa_json_new_from_string (val);
+      if (wp_settings_set (s, key, value) && wp_settings_save (s, key))
+        printf ("Updated and saved setting '%s' to: %s\n", key, val);
+      else
+        printf ("Failed to update and save setting '%s' to: %s\n", key, val);
+    } else if (delete_flag && !save_flag && !reset_flag) {
+      if (wp_settings_delete (s, key))
+        printf ("Deleted setting '%s' successfully\n", key);
+      else
+        printf ("Setting %s not found\n", key);
+    } else if (!delete_flag && !save_flag && reset_flag) {
+      if (wp_settings_reset (s, key))
+        printf ("Reset setting '%s' successfully\n", key);
+      else
+        printf ("Setting '%s' not found\n", key);
+    } else {
+      g_assert_not_reached ();
+    }
+  } else {
+    g_assert_not_reached ();
+  }
 
   wp_core_sync (self->core, NULL, (GAsyncReadyCallback) async_quit, self);
   return;
@@ -1647,14 +1807,24 @@ static const struct subcommand {
     .run = clear_default_run,
   },
   {
-    .name = "clear-persistent",
-    .positional_args = "[KEY]",
-    .summary = "Clears the persistent setting (no KEY means 'all')",
+    .name = "settings",
+    .positional_args = "[KEY] [VAL]",
+    .summary = "Shows, changes or removes settings",
     .description = NULL,
-    .entries = { { NULL } },
-    .parse_positional = clear_persistent_parse_positional,
-    .prepare = clear_persistent_prepare,
-    .run = clear_persistent_run,
+    .entries = {
+      { "delete", 'd', G_OPTION_FLAG_NONE, G_OPTION_ARG_NONE,
+        &cmdline.settings.delete,
+        "Deletes the saved setting value (no KEY means 'all')", NULL },
+      { "save", 's', G_OPTION_FLAG_NONE, G_OPTION_ARG_NONE,
+        &cmdline.settings.save,
+        "Saves the setting value (no KEY means 'all', no VAL means current value)", NULL },
+      { "reset", 'r', G_OPTION_FLAG_NONE, G_OPTION_ARG_NONE,
+        &cmdline.settings.reset,
+        "Resets the saved setting to its default value", NULL }
+    },
+    .parse_positional = settings_parse_positional,
+    .prepare = settings_prepare,
+    .run = settings_run,
   },
   {
     .name = "set-log-level",
@@ -1667,6 +1837,21 @@ static const struct subcommand {
     .run = set_log_level_run,
   }
 };
+
+static void
+on_settings_activated (WpSettings *s, GAsyncResult *res, WpCtl *ctl)
+{
+  GError *error = NULL;
+
+  if (!wp_object_activate_finish (WP_OBJECT (s), res, &error)) {
+    fprintf (stderr, "%s\n", error->message);
+    ctl->exit_code = 1;
+    g_main_loop_quit (ctl->loop);
+    return;
+  }
+
+  wp_core_register_object (ctl->core, g_object_ref (s));
+}
 
 static void
 on_plugin_loaded (WpCore * core, GAsyncResult * res, WpCtl *ctl)
@@ -1694,6 +1879,7 @@ main (gint argc, gchar **argv)
   const struct subcommand *cmd = NULL;
   g_autoptr (GError) error = NULL;
   g_autofree gchar *summary = NULL;
+  g_autoptr (WpSettings) settings = NULL;
 
   setlocale (LC_ALL, "");
   setlocale (LC_NUMERIC, "C");
@@ -1702,7 +1888,7 @@ main (gint argc, gchar **argv)
   ctl.context = g_option_context_new (
       "COMMAND [COMMAND_OPTIONS] - WirePlumber Control CLI");
   ctl.loop = g_main_loop_new (NULL, FALSE);
-  ctl.core = wp_core_new (NULL, NULL);
+  ctl.core = wp_core_new (NULL, NULL, NULL);
   ctl.om = wp_object_manager_new ();
 
   /* find the subcommand */
@@ -1767,6 +1953,14 @@ main (gint argc, gchar **argv)
     fprintf (stderr, "%s\n", error->message);
     return 1;
   }
+
+  /* load and register settings */
+  settings = wp_settings_new (ctl.core, NULL);
+  wp_object_activate (WP_OBJECT (settings),
+      WP_OBJECT_FEATURES_ALL,
+      NULL,
+      (GAsyncReadyCallback)on_settings_activated,
+      &ctl);
 
   /* load required API modules */
   ctl.pending_plugins++;

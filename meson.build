@@ -1,5 +1,5 @@
 project('wireplumber', ['c'],
-  version : '0.4.82',
+  version : '0.4.90',
   license : 'MIT',
   meson_version : '>= 0.59.0',
   default_options : [
@@ -19,7 +19,6 @@ wireplumber_data_dir = get_option('prefix') / get_option('datadir') / 'wireplumb
 wireplumber_config_dir = get_option('prefix') / get_option('sysconfdir') / 'wireplumber'
 wireplumber_locale_dir = get_option('prefix') / get_option('localedir')
 wireplumber_doc_dir = get_option('prefix') / get_option('datadir') / 'doc' / 'wireplumber'
-pipewire_data_dir = get_option('prefix') / get_option('datadir') / 'pipewire'
 
 cc = meson.get_compiler('c')
 
@@ -51,7 +50,7 @@ gmodule_dep = dependency('gmodule-2.0', version : glib_req_version)
 gio_dep = dependency('gio-2.0', version : glib_req_version)
 giounix_dep = dependency('gio-unix-2.0', version : glib_req_version)
 spa_dep = dependency('libspa-0.2', version: '>= 0.2')
-pipewire_dep = dependency('libpipewire-0.3', version: '>= 0.3.75')
+pipewire_dep = dependency('libpipewire-0.3', version: '>= 0.3.82')
 mathlib = cc.find_library('m')
 threads_dep = dependency('threads')
 libintl_dep = dependency('intl')
