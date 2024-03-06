@@ -2,20 +2,31 @@ libwireplumber-0.5.so.0 libwireplumber-0.5-0 #MINVER#
 * Build-Depends-Package: libwireplumber-0.5-dev
  wp_async_event_hook_get_type@Base 0.4.81
  wp_async_event_hook_new@Base 0.4.81
+ wp_base_dirs_find_file@Base 0.4.90
+ wp_base_dirs_flags_get_type@Base 0.4.90
+ wp_base_dirs_new_files_iterator@Base 0.4.90
  wp_client_get_type@Base 0.3.95
  wp_client_send_error@Base 0.4.4
  wp_client_update_permissions@Base 0.3.95
  wp_client_update_permissions_array@Base 0.3.95
  wp_client_update_properties@Base 0.4.81
  wp_component_loader_get_type@Base 0.3.95
- wp_conf_get_instance@Base 0.4.81
+ wp_conf_close@Base 0.4.90
+#MISSING: 0.4.90# wp_conf_get_instance@Base 0.4.81
+ wp_conf_get_name@Base 0.4.90
  wp_conf_get_section@Base 0.4.81
  wp_conf_get_type@Base 0.4.81
- wp_conf_get_value@Base 0.4.81
- wp_conf_get_value_boolean@Base 0.4.81
- wp_conf_get_value_float@Base 0.4.81
- wp_conf_get_value_int@Base 0.4.81
- wp_conf_get_value_string@Base 0.4.81
+#MISSING: 0.4.90# wp_conf_get_value@Base 0.4.81
+#MISSING: 0.4.90# wp_conf_get_value_boolean@Base 0.4.81
+#MISSING: 0.4.90# wp_conf_get_value_float@Base 0.4.81
+#MISSING: 0.4.90# wp_conf_get_value_int@Base 0.4.81
+#MISSING: 0.4.90# wp_conf_get_value_string@Base 0.4.81
+ wp_conf_is_open@Base 0.4.90
+ wp_conf_new@Base 0.4.90
+ wp_conf_new_open@Base 0.4.90
+ wp_conf_open@Base 0.4.90
+ wp_conf_parse_pw_context_sections@Base 0.4.90
+ wp_conf_section_update_props@Base 0.4.90
  wp_constraint_type_get_type@Base 0.3.95
  wp_constraint_verb_get_type@Base 0.3.95
  wp_core_clone@Base 0.3.95
@@ -23,6 +34,7 @@ libwireplumber-0.5.so.0 libwireplumber-0.5-0 #MINVER#
  wp_core_disconnect@Base 0.3.95
  wp_core_features_get_type@Base 0.4.81
  wp_core_find_object@Base 0.4.81
+ wp_core_get_conf@Base 0.4.90
  wp_core_get_export_core@Base 0.4.81
  wp_core_get_g_main_context@Base 0.3.95
  wp_core_get_own_bound_id@Base 0.4.16
@@ -99,12 +111,12 @@ libwireplumber-0.5.so.0 libwireplumber-0.5-0 #MINVER#
  wp_factory_get_type@Base 0.4.5
  wp_feature_activation_transition_get_requested_features@Base 0.3.95
  wp_feature_activation_transition_get_type@Base 0.3.95
- wp_find_file@Base 0.4.2
+#MISSING: 0.4.90# wp_find_file@Base 0.4.2
 #MISSING: 0.4.81# wp_get_config_dir@Base 0.3.95
 #MISSING: 0.4.81# wp_get_data_dir@Base 0.3.95
  wp_get_library_api_version@Base 0.4.12
  wp_get_library_version@Base 0.4.12
- wp_get_module_dir@Base 0.3.95
+#MISSING: 0.4.90# wp_get_module_dir@Base 0.3.95
  wp_global_proxy_bind@Base 0.3.95
  wp_global_proxy_get_global_properties@Base 0.3.95
  wp_global_proxy_get_permissions@Base 0.3.95
@@ -160,14 +172,22 @@ libwireplumber-0.5.so.0 libwireplumber-0.5-0 #MINVER#
  wp_log_topic_unregister@Base 0.4.82
  wp_log_writer_default@Base 0.3.95
  wp_lookup_dirs_get_type@Base 0.4.2
+#MISSING: 0.4.90# wp_lookup_dirs_get_type@Base 0.4.2
  wp_metadata_clear@Base 0.3.95
  wp_metadata_features_get_type@Base 0.3.95
  wp_metadata_find@Base 0.3.95
  wp_metadata_get_type@Base 0.3.95
- wp_metadata_iterator_item_extract@Base 0.3.95
+ wp_metadata_item_get_key@Base 0.4.90
+ wp_metadata_item_get_subject@Base 0.4.90
+ wp_metadata_item_get_type@Base 0.4.90
+ wp_metadata_item_get_value@Base 0.4.90
+ wp_metadata_item_get_value_type@Base 0.4.90
+ wp_metadata_item_ref@Base 0.4.90
+ wp_metadata_item_unref@Base 0.4.90
+#MISSING: 0.4.90# wp_metadata_iterator_item_extract@Base 0.3.95
  wp_metadata_new_iterator@Base 0.3.95
  wp_metadata_set@Base 0.3.95
- wp_new_files_iterator@Base 0.4.2
+#MISSING: 0.4.90# wp_new_files_iterator@Base 0.4.2
  wp_node_features_get_type@Base 0.3.95
  wp_node_get_n_input_ports@Base 0.3.95
  wp_node_get_n_output_ports@Base 0.3.95
@@ -299,12 +319,37 @@ libwireplumber-0.5.so.0 libwireplumber-0.5-0 #MINVER#
  wp_session_item_remove@Base 0.3.95
  wp_session_item_reset@Base 0.3.95
  wp_session_item_set_properties@Base 0.3.95
+ wp_settings_delete@Base 0.4.90
+ wp_settings_delete_all@Base 0.4.90
  wp_settings_features_get_type@Base 0.4.81
  wp_settings_find@Base 0.4.82
  wp_settings_get@Base 0.4.81
 #MISSING: 0.4.82# wp_settings_get_instance@Base 0.4.81
+ wp_settings_get_saved@Base 0.4.90
+ wp_settings_get_spec@Base 0.4.90
  wp_settings_get_type@Base 0.4.81
+ wp_settings_item_get_key@Base 0.4.90
+ wp_settings_item_get_type@Base 0.4.90
+ wp_settings_item_get_value@Base 0.4.90
+ wp_settings_item_ref@Base 0.4.90
+ wp_settings_item_unref@Base 0.4.90
  wp_settings_new@Base 0.4.82
+ wp_settings_new_iterator@Base 0.4.90
+ wp_settings_reset@Base 0.4.90
+ wp_settings_reset_all@Base 0.4.90
+ wp_settings_save@Base 0.4.90
+ wp_settings_save_all@Base 0.4.90
+ wp_settings_set@Base 0.4.90
+ wp_settings_spec_check_value@Base 0.4.90
+ wp_settings_spec_get_default_value@Base 0.4.90
+ wp_settings_spec_get_description@Base 0.4.90
+ wp_settings_spec_get_max_value@Base 0.4.90
+ wp_settings_spec_get_min_value@Base 0.4.90
+ wp_settings_spec_get_type@Base 0.4.90
+ wp_settings_spec_get_value_type@Base 0.4.90
+ wp_settings_spec_ref@Base 0.4.90
+ wp_settings_spec_type_get_type@Base 0.4.90
+ wp_settings_spec_unref@Base 0.4.90
  wp_settings_subscribe@Base 0.4.81
  wp_settings_subscribe_closure@Base 0.4.81
  wp_settings_unsubscribe@Base 0.4.81
@@ -433,6 +478,7 @@ libwireplumber-0.5.so.0 libwireplumber-0.5-0 #MINVER#
  wp_spa_json_parser_get_valist@Base 0.4.8
  wp_spa_json_parser_new_array@Base 0.4.8
  wp_spa_json_parser_new_object@Base 0.4.8
+ wp_spa_json_parser_new_undefined@Base 0.4.90
  wp_spa_json_parser_ref@Base 0.4.8
  wp_spa_json_parser_unref@Base 0.4.8
  wp_spa_json_ref@Base 0.4.8
