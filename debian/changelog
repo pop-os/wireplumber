@@ -1,8 +1,10 @@
-wireplumber (0.4.90-0) UNRELEASED; urgency=medium
+wireplumber (0.4.90-1) experimental; urgency=medium
 
   * New upstream version 0.4.90 (0.5.0 release candidate 1)
+  * Don't install conf files in /usr/share/pipewire/, it was reverted upstream
+  * Update symbols file
 
- -- Dylan Aïssi <daissi@debian.org>  Tue, 05 Mar 2024 17:12:27 +0100
+ -- Dylan Aïssi <daissi@debian.org>  Wed, 06 Mar 2024 10:16:36 +0100
 
 wireplumber (0.4.82-1) experimental; urgency=medium
 
