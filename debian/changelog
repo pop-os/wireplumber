@@ -4,8 +4,12 @@ wireplumber (0.5.0-0) UNRELEASED; urgency=medium
   * Update symbols file
   * Bump minimum pipewire to 1.0.2
   * Bump minimum glib to 2.68
+  * Switch Build-Deps from systemd to systemd-dev (Closes: #1060497)
+  * Drop useless comments in debian/control
+  * Mark doxygen and python3-lxml as <!nodoc>
+  * Use pkgconf instead of the transitional pkg-config
 
- -- Dylan Aïssi <daissi@debian.org>  Mon, 18 Mar 2024 18:12:06 +0100
+ -- Dylan Aïssi <daissi@debian.org>  Mon, 18 Mar 2024 18:27:03 +0100
 
 wireplumber (0.4.90-1) experimental; urgency=medium
 
