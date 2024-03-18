@@ -1,4 +1,4 @@
-wireplumber (0.5.0-0) UNRELEASED; urgency=medium
+wireplumber (0.5.0-1) experimental; urgency=medium
 
   * New upstream version
   * Update symbols file
@@ -10,7 +10,7 @@ wireplumber (0.5.0-0) UNRELEASED; urgency=medium
   * Use pkgconf instead of the transitional pkg-config
   * Update copyright file
 
- -- Dylan Aïssi <daissi@debian.org>  Mon, 18 Mar 2024 18:27:03 +0100
+ -- Dylan Aïssi <daissi@debian.org>  Mon, 18 Mar 2024 21:47:47 +0100
 
 wireplumber (0.4.90-1) experimental; urgency=medium
 
