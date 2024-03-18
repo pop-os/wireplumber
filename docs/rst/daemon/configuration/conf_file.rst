@@ -1,11 +1,11 @@
 .. _config_conf_file:
 
-Configuration file
-==================
+The configuration file
+======================
 
 WirePlumber's configuration file is by default ``wireplumber.conf`` and resides
-in the ``pipewire`` configuration directory (see :ref:`config_locations` for
-more details on that).
+in one of the WirePlumber specific
+:ref:`configuration file search locations <config_locations>`.
 
 The default configuration file can be changed on the command line by passing
 the ``--config-file`` or ``-c`` option:
@@ -25,8 +25,8 @@ the ``--config-file`` or ``-c`` option:
    Note that Lua is still the scripting language for WirePlumber, but it is only
    used for actual scripting and not for configuration.
 
-Format
-------
+The SPA-JSON Format
+-------------------
 
 The format of this configuration file is a variant of JSON that is also
 used in PipeWire configuration files (also known as SPA-JSON). The file consists
@@ -103,17 +103,18 @@ When loading the configuration file, WirePlumber will also look for
 additional files in the directory that has the same name as the configuration
 file suffixed with ``.d`` and will load all of them as well. For example,
 loading ``wireplumber.conf`` will also load any ``.conf`` files under
-``wireplumber.conf.d/``. This directory is searched in all the search paths
-for configuration files (see :ref:`config_locations`) and the fragments are
-loaded from *all* of them.
+``wireplumber.conf.d/``. This directory is searched in all the configuration
+search locations and the fragments are loaded from *all* of them, starting
+from the most system-wide locations and moving towards the most user-specific
+locations, in alphanumerical order within each location (see also
+:ref:`config_locations_fragments`).
 
-The fragments are loaded in alphabetical order, after the main configuration
-file. When a JSON object appears in multiple files, the properties of the
-objects are merged together. When a JSON array appears in multiple files, the
-arrays are concatenated together. When merging objects, if specific properties
-appear in many of those objects, the last one to be parsed always overwrites
-previous ones, unless the value is also an object or array; if it is, then the
-value is recursively merged using the same rules.
+When a JSON object appears in multiple files, the properties of the objects are
+merged together. When a JSON array appears in multiple files, the arrays are
+concatenated together. When merging objects, if specific properties appear in
+many of those objects, the last one to be parsed always overwrites previous
+ones, unless the value is also an object or array; if it is, then the value is
+recursively merged using the same rules.
 
 Sections
 --------
@@ -126,6 +127,12 @@ file:
   This section is an array that lists components that can be loaded by
   WirePlumber. For more information, see :ref:`config_components_and_profiles`.
 
+* *wireplumber.components.rules*
+
+  This section is an array containing rules that can be used to modify entries
+  of the *wireplumber.components* array. This is useful to inject changes
+  to the components list without having to modify the main configuration file.
+
 * *wireplumber.profiles*
 
   This section is an object that defines profiles that can be loaded by
@@ -135,6 +142,13 @@ file:
 
   This section is an object that defines settings that can be used to
   alter WirePlumber's behavior. For more information, see :ref:`config_settings`.
+
+* *wireplumber.settings.schema*
+
+  This section is an object that defines the schema for the settings that
+  can be listed in *wireplumber.settings*. This is used to validate the
+  settings when they are modified at runtime. For more information, see
+  :ref:`config_configuration_option_types`.
 
 In addition, there are many sections that are specific to certain components,
 mostly hardware monitors, such as *monitor.alsa.properties*,
@@ -191,6 +205,15 @@ by libpipewire to configure the PipeWire context:
      PipeWire modules can also be loaded as :ref:`components <config_components_and_profiles>`,
      which may be preferrable since it allows you to load them conditionally
      based on the profile and component dependencies.
+
+  .. admonition:: Remember
+
+     Modules listed in *context.modules* are always loaded before attempting a
+     connection to the PipeWire daemon, while modules listed in
+     *wireplumber.components* are always loaded after the connection is
+     established. It is important to load the PipeWire protocol-native module
+     and any extensions (such as module-metadata) in the *context.modules*
+     section, so that the connection can be done properly.
 
   Each module is described by a JSON object containing the module's *name*,
   its arguments (*args*) and a combination of *flags*, which can be ``ifexists``

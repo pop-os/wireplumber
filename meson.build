@@ -1,5 +1,5 @@
 project('wireplumber', ['c'],
-  version : '0.4.90',
+  version : '0.5.0',
   license : 'MIT',
   meson_version : '>= 0.59.0',
   default_options : [
@@ -50,7 +50,7 @@ gmodule_dep = dependency('gmodule-2.0', version : glib_req_version)
 gio_dep = dependency('gio-2.0', version : glib_req_version)
 giounix_dep = dependency('gio-unix-2.0', version : glib_req_version)
 spa_dep = dependency('libspa-0.2', version: '>= 0.2')
-pipewire_dep = dependency('libpipewire-0.3', version: '>= 0.3.82')
+pipewire_dep = dependency('libpipewire-0.3', version: '>= 1.0.2')
 mathlib = cc.find_library('m')
 threads_dep = dependency('threads')
 libintl_dep = dependency('intl')
@@ -133,6 +133,13 @@ common_flags = [
   '-Wunused-result',
 ]
 add_project_arguments(cc.get_supported_arguments(common_flags), language: 'c')
+
+common_args = [
+  '-D_GNU_SOURCE',
+  '-DG_LOG_USE_STRUCTURED',
+  '-DWP_USE_LOCAL_LOG_TOPIC_IN_G_LOG',
+]
+add_project_arguments(common_args, language: 'c')
 
 subdir('lib')
 if build_modules

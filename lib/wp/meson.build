@@ -41,6 +41,7 @@ wp_lib_sources = files(
 wp_lib_priv_sources = files(
   'private/pipewire-object-mixin.c',
   'private/internal-comp-loader.c',
+  'private/registry.c',
 )
 
 wp_lib_headers = files(
@@ -124,8 +125,6 @@ wpbuildbasedirs = configure_file (
 wp_lib = library('wireplumber-' + wireplumber_api_version,
   wp_lib_sources, wp_lib_priv_sources, wpenums_c, wpenums_h, wpversion, wpbuildbasedirs,
   c_args : [
-    '-D_GNU_SOURCE',
-    '-DG_LOG_USE_STRUCTURED',
     '-DBUILDING_WP',
   ],
   install: true,
