@@ -2,4 +2,5 @@
 sphinx_files += files(
    'linking.rst',
    'smart_filters.rst',
+   'software_dsp.rst',
 )

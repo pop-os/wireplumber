@@ -10,7 +10,9 @@ Table of Contents
    daemon/installing.rst
    daemon/running.rst
    daemon/configuration.rst
+   daemon/locations.rst
    daemon/logging.rst
+   daemon/multi_instance.rst
 
 .. toctree::
    :maxdepth: 2
@@ -26,6 +28,7 @@ Table of Contents
 
    policies/linking.rst
    policies/smart_filters.rst
+   policies/software_dsp.rst
 
 .. toctree::
    :maxdepth: 2
