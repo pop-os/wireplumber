@@ -74,6 +74,7 @@ Suggests: libspa-0.2-bluetooth,
           wireplumber-doc
 Conflicts: pipewire-media-session
 Replaces: pipewire-media-session
+Breaks: asahi-audio (<< 2.0)
 Section: video
 Description: modular session / policy manager for PipeWire
  WirePlumber is a modular session / policy manager for PipeWire and a
