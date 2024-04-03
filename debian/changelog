@@ -1,10 +1,10 @@
-wireplumber (0.5.1-1) UNRELEASED; urgency=medium
+wireplumber (0.5.1-1) experimental; urgency=medium
 
   * New upstream version
   * Add asahi-audio << 2.0 in Breaks, see #1067660
   * Add debian/NEWS to warn users about incompatible conf files
 
- -- Dylan Aïssi <daissi@debian.org>  Wed, 03 Apr 2024 10:18:02 +0200
+ -- Dylan Aïssi <daissi@debian.org>  Wed, 03 Apr 2024 10:45:11 +0200
 
 wireplumber (0.5.0-1) experimental; urgency=medium
 
