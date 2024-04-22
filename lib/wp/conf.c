@@ -50,6 +50,7 @@ struct _WpConf
 
   /* Props */
   gchar *name;
+  WpProperties *properties;
 
   /* Private */
   GArray *conf_sections; /* element-type: WpConfSection */
@@ -59,6 +60,7 @@ struct _WpConf
 enum {
   PROP_0,
   PROP_NAME,
+  PROP_PROPERTIES,
 };
 
 G_DEFINE_TYPE (WpConf, wp_conf, G_TYPE_OBJECT)
@@ -81,6 +83,9 @@ wp_conf_set_property (GObject * object, guint property_id,
   case PROP_NAME:
     self->name = g_value_dup_string (value);
     break;
+  case PROP_PROPERTIES:
+    self->properties = g_value_dup_boxed (value);
+    break;
   default:
     G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
     break;
@@ -97,6 +102,9 @@ wp_conf_get_property (GObject * object, guint property_id,
   case PROP_NAME:
     g_value_set_string (value, self->name);
     break;
+  case PROP_PROPERTIES:
+    g_value_take_boxed (value, wp_properties_copy (self->properties));
+    break;
   default:
     G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
     break;
@@ -109,6 +117,7 @@ wp_conf_finalize (GObject * object)
   WpConf *self = WP_CONF (object);
 
   wp_conf_close (self);
+  g_clear_pointer (&self->properties, wp_properties_unref);
   g_clear_pointer (&self->conf_sections, g_array_unref);
   g_clear_pointer (&self->files, g_ptr_array_unref);
   g_clear_pointer (&self->name, g_free);
@@ -125,9 +134,13 @@ wp_conf_class_init (WpConfClass * klass)
   object_class->set_property = wp_conf_set_property;
   object_class->get_property = wp_conf_get_property;
 
-  g_object_class_install_property (object_class, PROP_NAME,
-      g_param_spec_string ("name", "name", "The name of the configuration file",
+  g_object_class_install_property(object_class, PROP_NAME,
+        g_param_spec_string ("name", "name", "The name of the configuration file",
           NULL, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
+
+  g_object_class_install_property(object_class, PROP_PROPERTIES,
+        g_param_spec_boxed ("properties", "properties", "WpProperties",
+          WP_TYPE_PROPERTIES, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
 }
 
 /*!
@@ -138,15 +151,18 @@ wp_conf_class_init (WpConfClass * klass)
  *
  * \ingroup wpconf
  * \param name the name of the configuration file
- * \param properties (transfer full) (nullable): unused, reserved for future use
+ * \param properties (transfer full) (nullable): a WpProperties with keys
+ *    specifying how to load the WpConf object
  * \returns (transfer full): a new WpConf object
  */
 WpConf *
 wp_conf_new (const gchar * name, WpProperties * properties)
 {
   g_return_val_if_fail (name, NULL);
-  g_clear_pointer (&properties, wp_properties_unref);
-  return g_object_new (WP_TYPE_CONF, "name", name, NULL);
+  g_autoptr (WpProperties) props = properties;
+  return g_object_new (WP_TYPE_CONF, "name", name,
+                       "properties", props,
+                       NULL);
 }
 
 /*!
@@ -155,7 +171,8 @@ wp_conf_new (const gchar * name, WpProperties * properties)
  *
  * \ingroup wpconf
  * \param name the name of the configuration file
- * \param properties (transfer full) (nullable): unused, reserved for future use
+ * \param properties (transfer full) (nullable): a WpProperties with keys
+ *    specifying how to load the WpConf object
  * \param error (out) (nullable): return location for a GError, or NULL
  * \returns (transfer full) (nullable): a new WpConf object, or NULL
  *   if an error occurred
@@ -184,6 +201,13 @@ detect_old_conf_format (WpConf * self, GMappedFile *file)
 static gboolean
 open_and_load_sections (WpConf * self, const gchar *path, GError ** error)
 {
+  const gchar *as_section = NULL;
+
+  if (self->properties) {
+    as_section = wp_properties_get (self->properties, "as-section");
+    wp_info_object (self, "Opening as section %s", as_section);
+  }
+
   g_autoptr (GMappedFile) file = g_mapped_file_new (path, FALSE, error);
   if (!file)
     return FALSE;
@@ -212,7 +236,7 @@ open_and_load_sections (WpConf * self, const gchar *path, GError ** error)
     if (!tmp)
       break;
 
-    if (wp_spa_json_is_container (tmp) ||
+    if ((wp_spa_json_is_container (tmp) && !as_section) ||
         wp_spa_json_is_int (tmp) ||
         wp_spa_json_is_float (tmp) ||
         wp_spa_json_is_boolean (tmp) ||
@@ -224,15 +248,19 @@ open_and_load_sections (WpConf * self, const gchar *path, GError ** error)
       return FALSE;
     }
 
-    section.name = wp_spa_json_parse_string (tmp);
-    g_clear_pointer (&tmp, wp_spa_json_unref);
-
-    /* parse the section contents */
-    tmp = wp_spa_json_parser_get_json (parser);
-    if (!tmp) {
-      g_set_error (error, WP_DOMAIN_LIBRARY, WP_LIBRARY_ERROR_INVALID_ARGUMENT,
-          "section '%s' has no value", section.name);
-      return FALSE;
+    if (as_section) {
+      wp_info_object (self, "Parsing object file as section %s", as_section);
+      section.name = g_strdup (as_section);
+    } else {
+      section.name = wp_spa_json_parse_string (tmp);
+      g_clear_pointer (&tmp, wp_spa_json_unref);
+      /* parse the section contents */
+      tmp = wp_spa_json_parser_get_json (parser);
+      if (!tmp) {
+        g_set_error (error, WP_DOMAIN_LIBRARY, WP_LIBRARY_ERROR_INVALID_ARGUMENT,
+            "section '%s' has no value", section.name);
+        return FALSE;
+      }
     }
 
     section.value = g_steal_pointer (&tmp);
@@ -263,35 +291,46 @@ open_and_load_sections (WpConf * self, const gchar *path, GError ** error)
 gboolean
 wp_conf_open (WpConf * self, GError ** error)
 {
+  const gchar *no_frags = NULL;
+
   g_return_val_if_fail (WP_IS_CONF (self), FALSE);
 
   g_autofree gchar *path = NULL;
   g_autoptr (WpIterator) iterator = NULL;
   g_auto (GValue) value = G_VALUE_INIT;
 
-  /* open the main file */
+  if (self->properties) {
+    no_frags = wp_properties_get (self->properties, "no-fragments");
+  }
+
+  /*
+   * open the config file - if the path supplied is absolute,
+   * wp_base_dirs_find_file will ignore WP_BASE_DIRS_CONFIGURATION
+   */
   path = wp_base_dirs_find_file (WP_BASE_DIRS_CONFIGURATION, NULL, self->name);
   if (path) {
-    wp_info_object (self, "opening main file: %s", path);
+    wp_info_object (self, "opening config file: %s", path);
     if (!open_and_load_sections (self, path, error))
       return FALSE;
   }
   g_clear_pointer (&path, g_free);
 
   /* open the .conf.d/ fragments */
-  path = g_strdup_printf ("%s.d", self->name);
-  iterator = wp_base_dirs_new_files_iterator (WP_BASE_DIRS_CONFIGURATION, path,
-      ".conf");
+  if (!no_frags) {
+    path = g_strdup_printf ("%s.d", self->name);
+    iterator = wp_base_dirs_new_files_iterator (WP_BASE_DIRS_CONFIGURATION, path,
+        ".conf");
 
-  for (; wp_iterator_next (iterator, &value); g_value_unset (&value)) {
-    const gchar *filename = g_value_get_string (&value);
+    for (; wp_iterator_next (iterator, &value); g_value_unset (&value)) {
+      const gchar *filename = g_value_get_string (&value);
 
-    wp_info_object (self, "opening fragment file: %s", filename);
+      wp_info_object (self, "opening fragment file: %s", filename);
 
-    g_autoptr (GError) e = NULL;
-    if (!open_and_load_sections (self, filename, &e)) {
-      wp_warning_object (self, "failed to open '%s': %s", filename, e->message);
-      continue;
+      g_autoptr (GError) e = NULL;
+      if (!open_and_load_sections (self, filename, &e)) {
+        wp_warning_object (self, "failed to open '%s': %s", filename, e->message);
+        continue;
+      }
     }
   }
 

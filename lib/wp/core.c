@@ -30,20 +30,23 @@ struct _WpLoopSource
 {
   GSource parent;
   struct pw_loop *loop;
+  gboolean entered;
 };
 
 static gboolean
 wp_loop_source_dispatch (GSource * s, GSourceFunc callback, gpointer user_data)
 {
+  WpLoopSource *ls = WP_LOOP_SOURCE (s);
   int result;
 
-  wp_trace_boxed (G_TYPE_SOURCE, s, "entering pw main loop");
+  if (!ls->entered) {
+    wp_trace_boxed (G_TYPE_SOURCE, s, "entering pw main loop");
+    pw_loop_enter (ls->loop);
+    ls->entered = TRUE;
+    g_source_set_ready_time (s, -1);
+  }
 
-  pw_loop_enter (WP_LOOP_SOURCE(s)->loop);
-  result = pw_loop_iterate (WP_LOOP_SOURCE(s)->loop, 0);
-  pw_loop_leave (WP_LOOP_SOURCE(s)->loop);
-
-  wp_trace_boxed (G_TYPE_SOURCE, s, "leaving pw main loop");
+  result = pw_loop_iterate (ls->loop, 0);
 
   if (G_UNLIKELY (result < 0))
     wp_warning_boxed (G_TYPE_SOURCE, s,
@@ -55,7 +58,21 @@ wp_loop_source_dispatch (GSource * s, GSourceFunc callback, gpointer user_data)
 static void
 wp_loop_source_finalize (GSource * s)
 {
-  pw_loop_destroy (WP_LOOP_SOURCE(s)->loop);
+  WpLoopSource *ls = WP_LOOP_SOURCE (s);
+
+  wp_trace_boxed (G_TYPE_SOURCE, s, "finalize loop source");
+
+  /* Source should be left from the thread it was entered from.
+   *
+   * This puts additional restrictions to upper layers on how WpLoopSource (and
+   * WpCore) can be used: they must be finalized from the GMainContext thread.
+   */
+  if (ls->entered) {
+    wp_trace_boxed (G_TYPE_SOURCE, s, "leaving pw main loop");
+    pw_loop_leave (ls->loop);
+  }
+
+  pw_loop_destroy (ls->loop);
 }
 
 static GSourceFuncs source_funcs = {
@@ -74,6 +91,9 @@ wp_loop_source_new (void)
   g_source_add_unix_fd (s,
       pw_loop_get_fd (WP_LOOP_SOURCE(s)->loop),
       G_IO_IN | G_IO_ERR | G_IO_HUP);
+
+  /* dispatch immediately to enter the loop */
+  g_source_set_ready_time (s, 0);
 
   return (GSource *) s;
 }
@@ -178,6 +198,11 @@ struct _WpCore
 
   WpRegistry registry;
   GHashTable *async_tasks; // <int seq, GTask*>
+};
+
+struct context_data {
+  grefcount rc;
+  GSource *loop_source;
 };
 
 enum {
@@ -302,16 +327,12 @@ static void
 wp_core_constructed (GObject *object)
 {
   WpCore *self = WP_CORE (object);
-  g_autoptr (GSource) source = NULL;
-
-  /* loop */
-  source = wp_loop_source_new ();
-  g_source_attach (source, self->g_main_context);
 
   /* context */
   if (!self->pw_context) {
     struct pw_properties *p = NULL;
     const gchar *str = NULL;
+    g_autoptr (GSource) source = wp_loop_source_new ();
 
     /* use our own configuration file, if specified */
     if (self->conf) {
@@ -330,6 +351,7 @@ wp_core_constructed (GObject *object)
 
       /* disable loading of a configuration file in pw_context */
       wp_properties_set (self->properties, PW_KEY_CONFIG_NAME, "null");
+      wp_properties_set (self->properties, "context.modules.allow-empty", "true");
     }
 
     /* properties are fully stored in the pw_context, no need to keep a copy */
@@ -338,7 +360,7 @@ wp_core_constructed (GObject *object)
     self->properties = NULL;
 
     self->pw_context = pw_context_new (WP_LOOP_SOURCE(source)->loop, p,
-        sizeof (grefcount));
+        sizeof (struct context_data));
     g_return_if_fail (self->pw_context);
 
     /* use the same config option as pipewire to set the log level */
@@ -354,14 +376,18 @@ wp_core_constructed (GObject *object)
       wp_conf_parse_pw_context_sections (self->conf, self->pw_context);
 
     /* Init refcount */
-    grefcount *rc = pw_context_get_user_data (self->pw_context);
-    g_return_if_fail (rc);
-    g_ref_count_init (rc);
+    struct context_data *cd = pw_context_get_user_data (self->pw_context);
+    g_return_if_fail (cd);
+    g_ref_count_init (&cd->rc);
+    cd->loop_source = g_source_ref (source);
+
+    /* Start source */
+    g_source_attach (source, self->g_main_context);
   } else {
     /* Increase refcount */
-    grefcount *rc = pw_context_get_user_data (self->pw_context);
-    g_return_if_fail (rc);
-    g_ref_count_inc (rc);
+    struct context_data *cd = pw_context_get_user_data (self->pw_context);
+    g_return_if_fail (cd);
+    g_ref_count_inc (&cd->rc);
   }
 
   G_OBJECT_CLASS (wp_core_parent_class)->constructed (object);
@@ -382,14 +408,19 @@ static void
 wp_core_finalize (GObject * obj)
 {
   WpCore *self = WP_CORE (obj);
-  grefcount *rc = pw_context_get_user_data (self->pw_context);
-  g_return_if_fail (rc);
+  struct context_data *cd = pw_context_get_user_data (self->pw_context);
+  g_return_if_fail (cd);
 
   wp_core_disconnect (self);
 
   /* Clear pw-context if refcount reaches 0 */
-  if (g_ref_count_dec (rc))
+  if (g_ref_count_dec (&cd->rc)) {
+    GSource *source = cd->loop_source;
+
     g_clear_pointer (&self->pw_context, pw_context_destroy);
+    g_source_destroy (source);
+    g_source_unref (source);
+  }
 
   g_clear_pointer (&self->properties, wp_properties_unref);
   g_clear_pointer (&self->g_main_context, g_main_context_unref);

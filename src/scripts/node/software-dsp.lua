@@ -6,7 +6,6 @@
 -- SPDX-License-Identifier: MIT
 
 log = Log.open_topic("s-node")
-cutils = require ("common-utils")
 
 config = {}
 config.rules = Conf.get_section_as_json("node.software-dsp.rules", Json.Array{})
@@ -36,9 +35,22 @@ SimpleEventHook {
         if props["filter-graph"] then
           log:debug("Loading filter graph for " .. node.properties["node.name"])
           filter_nodes[node.properties["object.id"]] = LocalModule("libpipewire-module-filter-chain", props["filter-graph"], {})
+        elseif props["filter-path"] then
+          log:debug("Loading filter graph for " .. node.properties["node.name"] .. " from disk")
+          local conf = Conf(props["filter-path"], {
+            ["as-section"] = "node.software-dsp.graph",
+            ["no-fragments"] = true
+          })
+          local err = conf:open()
+          if not err then
+            local args = conf:get_section_as_json("node.software-dsp.graph"):to_string()
+            filter_nodes[node.properties["object.id"]] = LocalModule("libpipewire-module-filter-chain", args, {})
+          else
+            log:warning("Unable to load filter graph for " .. node.properties["node.name"])
+          end
         end
 
-        if cutils.parseBool (props["hide-parent"]) then
+        if props["hide-parent"] then
           log:debug("Setting permissions to '-' on " .. node.properties["node.name"] .. " for open clients")
           for client in clients_om:iterate{ type = "client" } do
             if not client["properties"]["wireplumber.daemon"] then
