@@ -1,6 +1,7 @@
 wireplumber (0.5.2-0) UNRELEASED; urgency=medium
 
   * New upstream version
+  * Standards-Version: 4.7.0 (no changes needed)
 
  -- Dylan Aïssi <daissi@debian.org>  Mon, 22 Apr 2024 18:00:55 +0200
 
