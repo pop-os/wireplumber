@@ -12,6 +12,8 @@
 #include <stdio.h>
 #include <locale.h>
 
+WP_DEFINE_LOCAL_LOG_TOPIC ("wpexec")
+
 #define WP_DOMAIN_DAEMON (wp_domain_daemon_quark ())
 static G_DEFINE_QUARK (wireplumber-daemon, wp_domain_daemon);
 
@@ -25,8 +27,8 @@ enum WpExitCode
 };
 
 static gchar * exec_script = NULL;
-static GVariantBuilder exec_args_b =
-    G_VARIANT_BUILDER_INIT (G_VARIANT_TYPE_VARDICT);
+static gchar *exec_args_s = NULL;
+static WpSpaJson *exec_args = NULL;
 
 static gboolean
 parse_exec_script_arg (const gchar *option_name, const gchar *value,
@@ -38,16 +40,17 @@ parse_exec_script_arg (const gchar *option_name, const gchar *value,
     return TRUE;
   }
 
-  g_auto(GStrv) tokens = g_strsplit (value, "=", 2);
-  if (!tokens[0] || *g_strstrip (tokens[0]) == '\0') {
-    g_set_error (error, WP_DOMAIN_DAEMON, WP_EXIT_USAGE,
-        "invalid script argument '%s'; must be in key=value format", value);
-    return FALSE;
+  /* the second argument is a json object with script arguments */
+  if (!exec_args) {
+    exec_args_s = g_strdup (value);
+    exec_args = wp_spa_json_new_wrap_string (exec_args_s);
+    if (!exec_args || !wp_spa_json_is_object (exec_args)) {
+      g_set_error (error, WP_DOMAIN_DAEMON, WP_EXIT_USAGE,
+          "script argument must be a JSON object");
+      return FALSE;
+    }
   }
 
-  g_variant_builder_add (&exec_args_b, "{sv}", tokens[0], tokens[1] ?
-          g_variant_new_string (g_strstrip (tokens[1])) :
-          g_variant_new_boolean (TRUE));
   return TRUE;
 }
 
@@ -63,13 +66,12 @@ static GOptionEntry entries[] =
 struct _WpInitTransition
 {
   WpTransition parent;
+  guint plugins_loaded;
 };
 
 enum {
-  STEP_LOAD_ENGINE = WP_TRANSITION_STEP_CUSTOM_START,
-  STEP_LOAD_SCRIPT,
-  STEP_CONNECT,
-  STEP_ACTIVATE_ENGINE,
+  STEP_CONNECT = WP_TRANSITION_STEP_CUSTOM_START,
+  STEP_ACTIVATE_PLUGINS,
   STEP_ACTIVATE_SCRIPT,
 };
 
@@ -86,25 +88,33 @@ static guint
 wp_init_transition_get_next_step (WpTransition * transition, guint step)
 {
   switch (step) {
-  case WP_TRANSITION_STEP_NONE: return STEP_LOAD_ENGINE;
-  case STEP_LOAD_ENGINE:        return STEP_LOAD_SCRIPT;
-  case STEP_LOAD_SCRIPT:        return STEP_CONNECT;
-  case STEP_CONNECT:            return STEP_ACTIVATE_ENGINE;
-  case STEP_ACTIVATE_ENGINE:    return STEP_ACTIVATE_SCRIPT;
+  case WP_TRANSITION_STEP_NONE: return STEP_CONNECT;
+  case STEP_CONNECT:            return STEP_ACTIVATE_PLUGINS;
   case STEP_ACTIVATE_SCRIPT:    return WP_TRANSITION_STEP_NONE;
+
+  case STEP_ACTIVATE_PLUGINS: {
+    WpInitTransition *self = WP_INIT_TRANSITION (transition);
+    if (self->plugins_loaded == 2)
+      return STEP_ACTIVATE_SCRIPT;
+    else
+      return STEP_ACTIVATE_PLUGINS;
+  }
+
   default:
     g_return_val_if_reached (WP_TRANSITION_STEP_ERROR);
   }
 }
 
 static void
-on_plugin_activated (WpObject * p, GAsyncResult * res, WpInitTransition *self)
+on_plugin_loaded (WpCore * core, GAsyncResult * res, WpInitTransition *self)
 {
   GError *error = NULL;
-  if (!wp_object_activate_finish (p, res, &error)) {
+
+  if (!wp_core_load_component_finish (core, res, &error)) {
     wp_transition_return_error (WP_TRANSITION (self), error);
     return;
   }
+  ++self->plugins_loaded;
   wp_transition_advance (WP_TRANSITION (self));
 }
 
@@ -113,28 +123,8 @@ wp_init_transition_execute_step (WpTransition * transition, guint step)
 {
   WpInitTransition *self = WP_INIT_TRANSITION (transition);
   WpCore *core = wp_transition_get_source_object (transition);
-  GError *error = NULL;
 
   switch (step) {
-  case STEP_LOAD_ENGINE:
-    if (!wp_core_load_component (core, "libwireplumber-module-lua-scripting",
-            "module", NULL, &error)) {
-      wp_transition_return_error (transition, error);
-      return;
-    }
-    wp_transition_advance (transition);
-    break;
-
-  case STEP_LOAD_SCRIPT: {
-    GVariant *args = g_variant_builder_end (&exec_args_b);
-    if (!wp_core_load_component (core, exec_script, "script/lua", args, &error)) {
-      wp_transition_return_error (transition, error);
-      return;
-    }
-    wp_transition_advance (transition);
-    break;
-  }
-
   case STEP_CONNECT:
     g_signal_connect_object (core, "connected",
         G_CALLBACK (wp_transition_advance), transition, G_CONNECT_SWAPPED);
@@ -146,18 +136,17 @@ wp_init_transition_execute_step (WpTransition * transition, guint step)
     }
     break;
 
-  case STEP_ACTIVATE_ENGINE: {
-    g_autoptr (WpPlugin) p = wp_plugin_find (core, "lua-scripting");
-    wp_object_activate (WP_OBJECT (p), WP_PLUGIN_FEATURE_ENABLED, NULL,
-        (GAsyncReadyCallback) on_plugin_activated, self);
+  case STEP_ACTIVATE_PLUGINS: {
+    wp_core_load_component (core, "libwireplumber-module-lua-scripting",
+        "module", NULL, NULL, NULL, (GAsyncReadyCallback) on_plugin_loaded, self);
+    wp_core_load_component (core, "libwireplumber-module-standard-event-source",
+        "module", NULL, NULL, NULL, (GAsyncReadyCallback) on_plugin_loaded, self);
     break;
   }
 
   case STEP_ACTIVATE_SCRIPT: {
-    g_autofree gchar *name = g_strdup_printf ("script:%s", exec_script);
-    g_autoptr (WpPlugin) p = wp_plugin_find (core, name);
-    wp_object_activate (WP_OBJECT (p), WP_PLUGIN_FEATURE_ENABLED, NULL,
-        (GAsyncReadyCallback) on_plugin_activated, self);
+    wp_core_load_component (core, exec_script, "script/lua", exec_args, NULL, NULL,
+          (GAsyncReadyCallback) on_plugin_loaded, self);
     break;
   }
 
@@ -243,17 +232,11 @@ main (gint argc, gchar **argv)
 
   /* init wireplumber core */
   d.loop = g_main_loop_new (NULL, FALSE);
-  d.core = wp_core_new (NULL, wp_properties_new (
+  d.core = wp_core_new (NULL, NULL, wp_properties_new (
           PW_KEY_APP_NAME, "wpexec",
           NULL));
   g_signal_connect_swapped (d.core, "disconnected",
       G_CALLBACK (g_main_loop_quit), d.loop);
-
-  /* at the very least, enable warnings...
-     this is required to spot lua runtime errors, otherwise
-     there is silence and nothing is happening */
-  if (!wp_log_level_is_enabled (G_LOG_LEVEL_WARNING))
-    wp_log_set_level ("1");
 
   /* watch for exit signals */
   g_unix_signal_add (SIGINT, signal_handler, &d);

@@ -1,5 +1,5 @@
 project('wireplumber', ['c'],
-  version : '0.4.17',
+  version : '0.5.2',
   license : 'MIT',
   meson_version : '>= 0.59.0',
   default_options : [
@@ -8,8 +8,16 @@ project('wireplumber', ['c'],
   ]
 )
 
-wireplumber_api_version = '0.4'
+wireplumber_version = meson.project_version()
+version_arr = wireplumber_version.split('.')
+wireplumber_version_major = version_arr[0]
+wireplumber_version_minor = version_arr[1]
+wireplumber_version_micro = version_arr[2]
+
+wireplumber_api_version = '0.5'
 wireplumber_so_version = '0'
+wireplumber_libversion_minor = wireplumber_version_major.to_int() * 1000 + wireplumber_version_minor.to_int() * 100 + wireplumber_version_micro.to_int()
+wireplumber_libversion = '@0@.@1@.0'.format(wireplumber_so_version, wireplumber_libversion_minor)
 
 wireplumber_headers_dir = get_option('includedir') / 'wireplumber-' + wireplumber_api_version / 'wp'
 
@@ -18,13 +26,14 @@ wireplumber_module_dir = get_option('prefix') / get_option('libdir') / 'wireplum
 wireplumber_data_dir = get_option('prefix') / get_option('datadir') / 'wireplumber'
 wireplumber_config_dir = get_option('prefix') / get_option('sysconfdir') / 'wireplumber'
 wireplumber_locale_dir = get_option('prefix') / get_option('localedir')
+wireplumber_doc_dir = get_option('prefix') / get_option('datadir') / 'doc' / 'wireplumber'
 
 cc = meson.get_compiler('c')
 
-glib_req_version = '>= 2.62'
+glib_req_version = '>= 2.68'
 add_project_arguments([
-    '-DGLIB_VERSION_MIN_REQUIRED=GLIB_VERSION_2_62',
-    '-DGLIB_VERSION_MAX_ALLOWED=GLIB_VERSION_2_62',
+    '-DGLIB_VERSION_MIN_REQUIRED=GLIB_VERSION_2_68',
+    '-DGLIB_VERSION_MAX_ALLOWED=GLIB_VERSION_2_68',
   ], language: 'c'
 )
 
@@ -49,7 +58,7 @@ gmodule_dep = dependency('gmodule-2.0', version : glib_req_version)
 gio_dep = dependency('gio-2.0', version : glib_req_version)
 giounix_dep = dependency('gio-unix-2.0', version : glib_req_version)
 spa_dep = dependency('libspa-0.2', version: '>= 0.2')
-pipewire_dep = dependency('libpipewire-0.3', version: '>= 0.3.68')
+pipewire_dep = dependency('libpipewire-0.3', version: '>= 1.0.2')
 mathlib = cc.find_library('m')
 threads_dep = dependency('threads')
 libintl_dep = dependency('intl')
@@ -133,13 +142,20 @@ common_flags = [
 ]
 add_project_arguments(cc.get_supported_arguments(common_flags), language: 'c')
 
+common_args = [
+  '-D_GNU_SOURCE',
+  '-DG_LOG_USE_STRUCTURED',
+  '-DWP_USE_LOCAL_LOG_TOPIC_IN_G_LOG',
+]
+add_project_arguments(common_args, language: 'c')
+
 subdir('lib')
-subdir('docs')
 if build_modules
   subdir('modules')
 endif
 subdir('src')
 subdir('po')
+subdir('docs')
 
 if get_option('tests')
   subdir('tests')

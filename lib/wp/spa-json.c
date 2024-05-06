@@ -6,12 +6,13 @@
  * SPDX-License-Identifier: MIT
  */
 
-#define G_LOG_DOMAIN "wp-spa-json"
+#include "spa-json.h"
+#include "log.h"
 
 #include <spa/utils/defs.h>
 #include <spa/utils/json.h>
 
-#include "spa-json.h"
+WP_DEFINE_LOCAL_LOG_TOPIC ("wp-spa-json")
 
 #define WP_SPA_JSON_STRING_INIT_SIZE 64
 #define WP_SPA_JSON_BUILDER_INIT_SIZE 64
@@ -183,13 +184,14 @@ wp_spa_json_new (const gchar *data, size_t size)
  *
  * \ingroup wpspajson
  * \param json_str a JSON string
- * \returns a new WpSpaJson that references the data in \a json_str. \a json_str
- *   is not copied, so it needs to stay alive.
+ * \returns a new WpSpaJson; unlike the "wrap" variants, this function copies
+ *    the data in \a json_str, so it does not need to stay alive.
+ * \since 0.5.0
  */
-WpSpaJson *
-wp_spa_json_new_from_string (const gchar *json_str)
+WP_API
+WpSpaJson * wp_spa_json_new_from_string (const gchar *json_str)
 {
-  return wp_spa_json_new_from_stringn(json_str, strlen (json_str));
+  return wp_spa_json_new (json_str, strlen (json_str));
 }
 
 /*!
@@ -198,13 +200,43 @@ wp_spa_json_new_from_string (const gchar *json_str)
  * \ingroup wpspajson
  * \param json_str a JSON string
  * \param len the specific length of the string
+ * \returns a new WpSpaJson; unlike the "wrap" variants, this function copies
+ *    the data in \a json_str, so it does not need to stay alive.
+ * \since 0.5.0
+ */
+WP_API
+WpSpaJson * wp_spa_json_new_from_stringn (const gchar *json_str, size_t len)
+{
+  return wp_spa_json_new (json_str, len);
+}
+
+/*!
+ * \brief Constructs a new WpSpaJson that wraps a JSON string.
+ *
+ * \ingroup wpspajson
+ * \param json_str a JSON string
  * \returns a new WpSpaJson that references the data in \a json_str. \a json_str
  *   is not copied, so it needs to stay alive.
- *
- * \since 0.4.10
+ * \since 0.5.0
  */
 WpSpaJson *
-wp_spa_json_new_from_stringn (const gchar *json_str, size_t len)
+wp_spa_json_new_wrap_string (const gchar *json_str)
+{
+  return wp_spa_json_new_wrap_stringn(json_str, strlen (json_str));
+}
+
+/*!
+ * \brief Constructs a new WpSpaJson that wraps a JSON string with specific length.
+ *
+ * \ingroup wpspajson
+ * \param json_str a JSON string
+ * \param len the specific length of the string
+ * \returns a new WpSpaJson that references the data in \a json_str. \a json_str
+ *   is not copied, so it needs to stay alive.
+ * \since 0.5.0
+ */
+WpSpaJson *
+wp_spa_json_new_wrap_stringn (const gchar *json_str, size_t len)
 {
   WpSpaJson *self = g_slice_new0 (WpSpaJson);
   g_ref_count_init (&self->ref);
@@ -613,7 +645,7 @@ wp_spa_json_is_string (WpSpaJson *self)
 }
 
 /*!
- * \brief Checks wether the spa json is of type array or not
+ * \brief Checks whether the spa json is of type array or not
  *
  * \ingroup wpspajson
  * \param self the spa json object
@@ -626,7 +658,20 @@ wp_spa_json_is_array (WpSpaJson *self)
 }
 
 /*!
- * \brief Checks wether the spa json is of type object or not
+ * \brief Checks whether the spa json is of type container or not
+ *
+ * \ingroup wpspajson
+ * \param self the spa json object
+ * \returns TRUE if it is of type container, FALSE otherwise
+ */
+gboolean
+wp_spa_json_is_container (WpSpaJson *self)
+{
+  return spa_json_is_container (self->data, self->size);
+}
+
+/*!
+ * \brief Checks whether the spa json is of type object or not
  *
  * \ingroup wpspajson
  * \param self the spa json object
@@ -997,11 +1042,11 @@ builder_add_formatted (WpSpaJsonBuilder *self, const gchar *fmt, ...)
 }
 
 static void
-builder_add_json (WpSpaJsonBuilder *self, WpSpaJson *json)
+builder_add (WpSpaJsonBuilder *self, const gchar *data, size_t size)
 {
-  g_return_if_fail (self->max_size - self->size >= json->size + 1);
-  snprintf (self->data + self->size, json->size + 1, "%s", json->data);
-  self->size += json->size;
+  g_return_if_fail (self->max_size - self->size >= size + 1);
+  snprintf (self->data + self->size, size + 1, "%s", data);
+  self->size += size;
 }
 
 /*!
@@ -1122,7 +1167,38 @@ wp_spa_json_builder_add_json (WpSpaJsonBuilder *self, WpSpaJson *json)
 {
   ensure_separator (self, FALSE);
   ensure_allocated_max_size (self, json->size);
-  builder_add_json (self, json);
+  builder_add (self, json->data, json->size);
+}
+
+/*!
+ * \brief Adds a json string into the builder
+ *
+ * \ingroup wpspajson
+ * \param self the spa json builder object
+ * \param json_str the json string
+ */
+void
+wp_spa_json_builder_add_from_string (WpSpaJsonBuilder *self,
+    const gchar *json_str)
+{
+  wp_spa_json_builder_add_from_stringn (self, json_str, strlen (json_str));
+}
+
+/*!
+ * \brief Adds a json string with specific length into the builder
+ *
+ * \ingroup wpspajson
+ * \param self the spa json builder object
+ * \param json_str the json string
+ * \param len the specific length of the json string
+ */
+void
+wp_spa_json_builder_add_from_stringn (WpSpaJsonBuilder *self,
+    const gchar *json_str, size_t len)
+{
+  ensure_separator (self, FALSE);
+  ensure_allocated_max_size (self, len);
+  builder_add (self, json_str, len);
 }
 
 /*!
@@ -1279,6 +1355,39 @@ wp_spa_json_parser_new_object (WpSpaJson *json)
   return self;
 }
 
+/*!
+ * \brief Creates a new spa json parser for undefined type of data. The \a json
+ * object must be valid for the entire life-cycle of the returned parser.
+ *
+ * This function allows creating a parser object for any type of spa json and is
+ * mostly useful to parse non-standard JSON data that should be treated as if it
+ * were an object or array, but does not start with a '{' or '[' character. Such
+ * data can be for instance a comma-separated list of single values (array) or
+ * key-value pairs (object). Such data is also the main configuration file,
+ * which is an object but doesn't start with a '{' character.
+ *
+ * \note If the data is an array or object, the parser will not enter it and the
+ * only token it will be able to parse is the same \a json object that is passed
+ * in as an argument. Use wp_spa_json_parser_new_array() or
+ * wp_spa_json_parser_new_object() to parse arrays or objects.
+ *
+ * \ingroup wpspajson
+ * \param json the spa json to parse
+ * \returns (transfer full): The new spa json parser
+ * \since 0.5.0
+ */
+WpSpaJsonParser *
+wp_spa_json_parser_new_undefined (WpSpaJson *json)
+{
+  WpSpaJsonParser *self;
+
+  self = g_rc_box_new0 (WpSpaJsonParser);
+  self->json = json;
+  self->data[0] = *json->json;
+  self->pos = &self->data[0];
+  return self;
+}
+
 static int
 check_nested_size (struct spa_json *parent, const gchar *data, int size)
 {
@@ -1415,6 +1524,10 @@ wp_spa_json_parser_get_string (WpSpaJsonParser *self)
 /*!
  * \brief Gets the spa json value from a spa json parser object
  *
+ * \note the returned spa json object references the original data instead
+ * of copying it, therefore the original data must be valid for the entire
+ * life-cycle of the returned object
+ *
  * \ingroup wpspajson
  * \param self the spa json parser object
  * \returns (transfer full): The spa json value or NULL if it could not be
@@ -1424,7 +1537,8 @@ WpSpaJson *
 wp_spa_json_parser_get_json (WpSpaJsonParser *self)
 {
   return wp_spa_json_parser_advance (self) ?
-      wp_spa_json_new_wrap (&self->curr) : NULL;
+      wp_spa_json_new_wrap_stringn (self->curr.cur,
+          self->curr.end - self->curr.cur) : NULL;
 }
 
 gboolean

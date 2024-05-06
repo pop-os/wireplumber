@@ -4,7 +4,7 @@ Forwarded: not-needed
 
 --- a/README.rst
 +++ b/README.rst
-@@ -1,21 +1,6 @@
+@@ -1,18 +1,6 @@
  WirePlumber
  ===========
  
@@ -13,9 +13,6 @@ Forwarded: not-needed
 -
 -.. image:: https://scan.coverity.com/projects/21488/badge.svg
 -   :alt: Coverity Scan Build Status
--
--.. image:: https://img.shields.io/tokei/lines/gitlab.freedesktop.org/pipewire/wireplumber
--   :alt: Lines of code
 -
 -.. image:: https://img.shields.io/badge/license-MIT-green
 -   :alt: License

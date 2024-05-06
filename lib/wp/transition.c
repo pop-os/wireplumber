@@ -6,11 +6,11 @@
  * SPDX-License-Identifier: MIT
  */
 
-#define G_LOG_DOMAIN "wp-transition"
-
 #include "transition.h"
 #include "log.h"
 #include "error.h"
+
+WP_DEFINE_LOCAL_LOG_TOPIC ("wp-transition")
 
 /*! \defgroup wptransition Transitions */
 /*!
@@ -29,7 +29,7 @@
  * code must call wp_transition_return_error() instead, in which case the
  * transition completes immediately and wp_transition_had_error() returns TRUE.
  *
- * Typically, every step will start an asynchronous operation. Although is is
+ * Typically, every step will start an asynchronous operation. Although it is
  * possible, the WpTransition base class does not expect
  * _WpTransitionClass::execute_step() to call wp_transition_advance() directly.
  * Instead, it is expected that wp_transition_advance() will be called from
@@ -488,10 +488,12 @@ wp_transition_return_error (WpTransition * self, GError * error)
 
   WpTransitionPrivate *priv = wp_transition_get_instance_private (self);
 
+  /* don't allow _return_error() to be called multiple times,
+     as it is dangerous to recurse in execute_step() */
   if (G_UNLIKELY (priv->error)) {
     wp_warning_object (self, "transition bailing out multiple times; "
-        "old error was: %s", priv->error->message);
-    g_clear_error (&priv->error);
+        "new error is: %s", error->message);
+    return;
   }
 
   priv->step = WP_TRANSITION_STEP_ERROR;

@@ -14,6 +14,8 @@
 #include <spa/utils/result.h>
 #include <spa/utils/string.h>
 
+WP_DEFINE_LOCAL_LOG_TOPIC ("m-logind")
+
 #define NAME "logind"
 
 struct _WpLogind
@@ -131,12 +133,11 @@ wp_logind_class_init (WpLogindClass * klass)
       G_SIGNAL_RUN_LAST, 0, NULL, NULL, NULL, G_TYPE_NONE, 1, G_TYPE_STRING);
 }
 
-WP_PLUGIN_EXPORT gboolean
-wireplumber__module_init (WpCore * core, GVariant * args, GError ** error)
+WP_PLUGIN_EXPORT GObject *
+wireplumber__module_init (WpCore * core, WpSpaJson * args, GError ** error)
 {
-  wp_plugin_register (g_object_new (wp_logind_get_type (),
-          "name", NAME,
-          "core", core,
-          NULL));
-  return TRUE;
+  return G_OBJECT (g_object_new (wp_logind_get_type (),
+      "name", NAME,
+      "core", core,
+      NULL));
 }

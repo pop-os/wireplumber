@@ -5,41 +5,21 @@
 --
 -- SPDX-License-Identifier: MIT
 
-local config = ... or {}
+cutils = require ("common-utils")
+log = Log.open_topic ("s-monitors")
+
+defaults = {}
+defaults.servers = { "bluez_midi.server" }
+
+config = {}
+config.seat_monitoring = Core.test_feature ("monitor.bluez.seat-monitoring")
+config.properties = Conf.get_section_as_properties ("monitor.bluez-midi.properties")
+config.servers = Conf.get_section_as_array ("monitor.bluez-midi.servers", defaults.servers)
+config.rules = Conf.get_section_as_json ("monitor.bluez-midi.rules", Json.Array {})
 
 -- unique device/node name tables
 node_names_table = nil
 id_to_name_table = nil
-
--- preprocess rules and create Interest objects
-for _, r in ipairs(config.rules or {}) do
-  r.interests = {}
-  for _, i in ipairs(r.matches) do
-    local interest_desc = { type = "properties" }
-    for _, c in ipairs(i) do
-      c.type = "pw"
-      table.insert(interest_desc, Constraint(c))
-    end
-    local interest = Interest(interest_desc)
-    table.insert(r.interests, interest)
-  end
-  r.matches = nil
-end
-
--- applies properties from config.rules when asked to
-function rulesApplyProperties(properties)
-  for _, r in ipairs(config.rules or {}) do
-    if r.apply_properties then
-      for _, interest in ipairs(r.interests) do
-        if interest:matches(properties) then
-          for k, v in pairs(r.apply_properties) do
-            properties[k] = v
-          end
-        end
-      end
-    end
-  end
-end
 
 function setLatencyOffset(node, offset_msec)
   if not offset_msec then
@@ -50,7 +30,7 @@ function setLatencyOffset(node, offset_msec)
   props.latencyOffsetNsec = tonumber(offset_msec) * 1000000
 
   local param = Pod.Object(props)
-  Log.debug(param, "setting latency offset on " .. tostring(node))
+  log:debug(param, "setting latency offset on " .. tostring(node))
   node:set_param("Props", param)
 end
 
@@ -79,8 +59,8 @@ function createNode(parent, id, type, factory, properties)
 
   properties["api.glib.mainloop"] = "true"
 
-  -- apply properties from config.rules
-  rulesApplyProperties(properties)
+  -- apply properties from the rules in the configuration file
+  properties = JsonUtils.match_rules_update_properties (config.rules, properties)
 
   local latency_offset = properties["node.latency-offset-msec"]
   properties["node.latency-offset-msec"] = nil
@@ -101,7 +81,6 @@ function createMonitor()
   for k, v in pairs(config.properties or {}) do
     monitor_props[k] = v
   end
-  monitor_props["server"] = nil
 
   monitor_props["api.glib.mainloop"] = "true"
 
@@ -113,7 +92,7 @@ function createMonitor()
         id_to_name_table[id] = nil
     end)
   else
-    Log.message("PipeWire's BlueZ MIDI SPA missing or broken. Bluetooth not supported.")
+    log:notice("PipeWire's BlueZ MIDI SPA missing or broken. Bluetooth not supported.")
     return nil
   end
 
@@ -126,16 +105,10 @@ function createMonitor()
 end
 
 function createServers()
-  local props = config.properties or {}
-
-  if not props["servers"] then
-    return nil
-  end
-
   local servers = {}
   local i = 1
 
-  for k, v in pairs(props["servers"]) do
+  for k, v in pairs(config.servers) do
     local node_props = {
       ["node.name"] = v,
       ["node.description"] = string.format(I18n.gettext("BLE MIDI %d"), i),
@@ -143,7 +116,7 @@ function createServers()
       ["factory.name"] = "api.bluez5.midi.node",
       ["api.glib.mainloop"] = "true",
     }
-    rulesApplyProperties(node_props)
+    node_props = JsonUtils.match_rules_update_properties (config.rules, node_props)
 
     local latency_offset = node_props["node.latency-offset-msec"]
     node_props["node.latency-offset-msec"] = nil
@@ -154,7 +127,7 @@ function createServers()
       table.insert(servers, node)
       setLatencyOffset(node, latency_offset)
     else
-      Log.message("Failed to create BLE MIDI server.")
+      log:notice("Failed to create BLE MIDI server.")
     end
     i = i + 1
   end
@@ -162,12 +135,14 @@ function createServers()
   return servers
 end
 
-logind_plugin = Plugin.find("logind")
+if config.seat_monitoring then
+  logind_plugin = Plugin.find("logind")
+end
 if logind_plugin then
   -- if logind support is enabled, activate
   -- the monitor only when the seat is active
   function startStopMonitor(seat_state)
-    Log.info(logind_plugin, "Seat state changed: " .. seat_state)
+    log:info(logind_plugin, "Seat state changed: " .. seat_state)
 
     if seat_state == "active" then
       monitor = createMonitor()

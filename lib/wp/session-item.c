@@ -6,16 +6,25 @@
  * SPDX-License-Identifier: MIT
  */
 
-#define G_LOG_DOMAIN "wp-si"
-
 #include "session-item.h"
+#include "core.h"
 #include "log.h"
 #include "error.h"
-#include "private/registry.h"
+#include <spa/utils/defs.h>
+
+WP_DEFINE_LOCAL_LOG_TOPIC ("wp-si")
 
 /*! \defgroup wpsessionitem WpSessionItem */
 /*!
  * \struct WpSessionItem
+ *
+ * Session items are high level objects that wrap underlying PipeWire objects
+ * and manage them. For example, a session item may be managing a node, taking
+ * responsibility for configuring the PortConfig and Format parameters of the
+ * node. Or another may be managing links between two nodes.
+ *
+ * All the implementations are provided by modules and instantiated via the
+ * WpSiFactory class.
  *
  * \gproperties
  *
@@ -34,33 +43,22 @@ enum {
 typedef struct _WpSessionItemPrivate WpSessionItemPrivate;
 struct _WpSessionItemPrivate
 {
-  guint id;
   WpProperties *properties;
 };
 
 enum {
   PROP_0,
-  PROP_ID,
   PROP_PROPERTIES,
 };
 
 G_DEFINE_ABSTRACT_TYPE_WITH_PRIVATE (WpSessionItem, wp_session_item,
     WP_TYPE_OBJECT)
 
-static guint
-get_next_id ()
-{
-  static guint next_id = 0;
-  g_atomic_int_inc (&next_id);
-  return next_id;
-}
-
 static void
 wp_session_item_init (WpSessionItem * self)
 {
   WpSessionItemPrivate *priv = wp_session_item_get_instance_private (self);
 
-  priv->id = get_next_id ();
   priv->properties = NULL;
 }
 
@@ -89,12 +87,8 @@ wp_session_item_get_gobject_property (GObject * object, guint property_id,
     GValue * value, GParamSpec * pspec)
 {
   WpSessionItem *self = WP_SESSION_ITEM (object);
-  WpSessionItemPrivate *priv = wp_session_item_get_instance_private (self);
 
   switch (property_id) {
-  case PROP_ID:
-    g_value_set_uint (value, priv->id);
-    break;
   case PROP_PROPERTIES:
     g_value_take_boxed (value, wp_session_item_get_properties (self));
     break;
@@ -210,31 +204,10 @@ wp_session_item_class_init (WpSessionItemClass * klass)
 
   klass->reset = wp_session_item_default_reset;
 
-  g_object_class_install_property (object_class, PROP_ID,
-      g_param_spec_uint ("id", "id",
-          "The session item unique id", 0, G_MAXUINT, 0,
-          G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
-
   g_object_class_install_property (object_class, PROP_PROPERTIES,
       g_param_spec_boxed ("properties", "properties",
           "The session item properties", WP_TYPE_PROPERTIES,
           G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
-}
-
-/*!
- * \brief Gets the unique Id of the session item
- * \ingroup wpsessionitem
- * \param self the session item
- */
-guint
-wp_session_item_get_id (WpSessionItem * self)
-{
-  WpSessionItemPrivate *priv = NULL;
-
-  g_return_val_if_fail (WP_IS_SESSION_ITEM (self), SPA_ID_INVALID);
-
-  priv = wp_session_item_get_instance_private (self);
-  return priv->id;
 }
 
 /*!
@@ -292,12 +265,7 @@ wp_session_item_is_configured (WpSessionItem * self)
 
 /*!
  * \brief An associated proxy is a WpProxy subclass instance that
- * is somehow related to this item. For example:
- *  - An exported WpSiEndpoint should have at least:
- *      - an associated WpSiEndpoint
- *      - an associated WpSession
- *  - In cases where the item wraps a single PipeWire node, it should also
- *    have an associated WpNode
+ * is somehow related to this item.
  *
  * \ingroup wpsessionitem
  * \param self the session item
@@ -351,11 +319,11 @@ wp_session_item_register (WpSessionItem * self)
   g_return_if_fail (WP_IS_SESSION_ITEM (self));
 
   core = wp_object_get_core (WP_OBJECT (self));
-  wp_registry_register_object (wp_core_get_registry (core), self);
+  wp_core_register_object (core, self);
 }
 
 /*!
- * \brief Removes the session item from the registry
+ * \brief Removes the session item from its associated core
  *
  * \ingroup wpsessionitem
  * \param self (transfer none): the session item
@@ -368,7 +336,7 @@ wp_session_item_remove (WpSessionItem * self)
   g_return_if_fail (WP_IS_SESSION_ITEM (self));
 
   core = wp_object_get_core (WP_OBJECT (self));
-  wp_registry_remove_object (wp_core_get_registry (core), self);
+  wp_core_remove_object (core, self);
 }
 
 /*!

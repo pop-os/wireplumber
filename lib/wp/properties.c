@@ -6,12 +6,13 @@
  * SPDX-License-Identifier: MIT
  */
 
-#define G_LOG_DOMAIN "wp-properties"
-
 #include "properties.h"
+#include "log.h"
 
 #include <errno.h>
 #include <pipewire/properties.h>
+
+WP_DEFINE_LOCAL_LOG_TOPIC ("wp-properties")
 
 /*! \defgroup wpproperties WpProperties */
 /*!
@@ -142,6 +143,26 @@ wp_properties_new_string (const gchar * str)
   g_ref_count_init (&self->ref);
   self->flags = 0;
   self->props = pw_properties_new_string (str);
+  return self;
+}
+
+/*!
+ * \brief Constructs a new properties set that contains the properties that can
+ * be parsed from the given JSON object
+ *
+ * \ingroup wpproperties
+ * \param json a JSON object
+ * \returns (transfer full): the newly constructed properties set
+ */
+WpProperties *
+wp_properties_new_json (const WpSpaJson * json)
+{
+  WpProperties * self;
+
+  g_return_val_if_fail (json != NULL, NULL);
+
+  self = wp_properties_new_empty ();
+  wp_properties_update_from_json (self, json);
   return self;
 }
 
@@ -395,6 +416,28 @@ wp_properties_update_from_dict (WpProperties * self,
   g_return_val_if_fail (!(self->flags & FLAG_NO_OWNERSHIP), -EINVAL);
 
   return pw_properties_update (self->props, dict);
+}
+
+/*!
+ * \brief Updates (adds new or modifies existing) properties in \a self,
+ * using the given \a json as a source.
+ *
+ * Any properties that are not contained in \a json are left untouched.
+ *
+ * \ingroup wpproperties
+ * \param self a properties object
+ * \param json a JSON object that contains properties to update
+ * \returns the number of properties that were changed
+ */
+gint
+wp_properties_update_from_json (WpProperties * self, const WpSpaJson * json)
+{
+  g_return_val_if_fail (self != NULL, -EINVAL);
+  g_return_val_if_fail (!(self->flags & FLAG_IS_DICT), -EINVAL);
+  g_return_val_if_fail (!(self->flags & FLAG_NO_OWNERSHIP), -EINVAL);
+
+  return pw_properties_update_string (self->props, wp_spa_json_get_data (json),
+      wp_spa_json_get_size (json));
 }
 
 /*!
@@ -892,40 +935,6 @@ wp_properties_new_iterator (WpProperties * self)
   it_data->properties = wp_properties_ref (self);
   it_data->item = wp_properties_peek_dict (it_data->properties)->items;
   return g_steal_pointer (&it);
-}
-
-/*!
- * \brief Gets the key from a properties iterator item
- *
- * \ingroup wpproperties
- * \param item a GValue that was returned from the WpIterator of
- *   wp_properties_new_iterator()
- * \returns (transfer none): the property key of the \a item
- * \deprecated Use wp_properties_item_get_key() instead
- */
-const gchar *
-wp_properties_iterator_item_get_key (const GValue * item)
-{
-  WpPropertiesItem *pi = g_value_get_boxed (item);
-  g_return_val_if_fail (pi != NULL, NULL);
-  return wp_properties_item_get_key (pi);
-}
-
-/*!
- * \brief Gets the value from a properties iterator item
- *
- * \ingroup wpproperties
- * \param item a GValue that was returned from the WpIterator of
- *   wp_properties_new_iterator()
- * \returns (transfer none): the property value of the \a item
- * \deprecated Use wp_properties_item_get_value() instead
- */
-const gchar *
-wp_properties_iterator_item_get_value (const GValue * item)
-{
-  WpPropertiesItem *pi = g_value_get_boxed (item);
-  g_return_val_if_fail (pi != NULL, NULL);
-  return wp_properties_item_get_value (pi);
 }
 
 /*!

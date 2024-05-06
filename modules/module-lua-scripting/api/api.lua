@@ -70,6 +70,11 @@ local function Constraint (spec)
   return debug.setmetatable(spec, { __name = "Constraint" })
 end
 
+local function EventInterest(spec)
+  spec.type = "event"
+  return WpObjectInterest_new(spec)
+end
+
 local function dump_table(t, indent)
   local indent_str = ""
   indent = indent or 1
@@ -170,13 +175,6 @@ local Feature = {
   Node = {
     PORTS             = (1 << 16),
   },
-  Session = {
-    ENDPOINTS         = (1 << 16),
-    LINKS             = (1 << 17),
-  },
-  Endpoint = {
-    STREAMS           = (1 << 16),
-  },
   Metadata = {
     DATA              = (1 << 16),
   },
@@ -185,6 +183,9 @@ local Feature = {
     EXPORTED          = (1 << 1),
   },
 }
+
+-- Allow calling Conf() to instantiate a new WpConf
+WpConf["__new"] = WpConf_new
 
 SANDBOX_EXPORT = {
   Debug = Debug,
@@ -196,10 +197,12 @@ SANDBOX_EXPORT = {
   Log = WpLog,
   Core = WpCore,
   Plugin = WpPlugin,
+  EventDispatcher = WpEventDispatcher,
   ObjectManager = WpObjectManager_new,
   Interest = WpObjectInterest_new,
   SessionItem = WpSessionItem_new,
   Constraint = Constraint,
+  EventInterest = EventInterest,
   Device = WpDevice_new,
   SpaDevice = WpSpaDevice_new,
   Node = WpNode_new,
@@ -210,4 +213,9 @@ SANDBOX_EXPORT = {
   State = WpState_new,
   LocalModule = WpImplModule_new,
   ImplMetadata = WpImplMetadata_new,
+  Settings = WpSettings,
+  Conf = WpConf,
+  JsonUtils = JsonUtils,
+  SimpleEventHook = WpSimpleEventHook_new,
+  AsyncEventHook = WpAsyncEventHook_new,
 }

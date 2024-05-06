@@ -1,3 +1,58 @@
+wireplumber (0.5.2-1) experimental; urgency=medium
+
+  * New upstream version
+  * Standards-Version: 4.7.0 (no changes needed)
+
+ -- Dylan Aïssi <daissi@debian.org>  Mon, 22 Apr 2024 18:25:04 +0200
+
+wireplumber (0.5.1-1) experimental; urgency=medium
+
+  * New upstream version
+  * Add asahi-audio << 2.0 in Breaks, see #1067660
+  * Add debian/NEWS to warn users about incompatible conf files
+
+ -- Dylan Aïssi <daissi@debian.org>  Wed, 03 Apr 2024 10:45:11 +0200
+
+wireplumber (0.5.0-1) experimental; urgency=medium
+
+  * New upstream version
+  * Update symbols file
+  * Bump minimum pipewire to 1.0.2
+  * Bump minimum glib to 2.68
+  * Switch Build-Deps from systemd to systemd-dev (Closes: #1060497)
+  * Drop useless comments in debian/control
+  * Mark doxygen and python3-lxml as <!nodoc>
+  * Use pkgconf instead of the transitional pkg-config
+  * Update copyright file
+
+ -- Dylan Aïssi <daissi@debian.org>  Mon, 18 Mar 2024 21:47:47 +0100
+
+wireplumber (0.4.90-1) experimental; urgency=medium
+
+  * New upstream version 0.4.90 (0.5.0 release candidate 1)
+  * Don't install conf files in /usr/share/pipewire/, it was reverted upstream
+  * Update symbols file
+
+ -- Dylan Aïssi <daissi@debian.org>  Wed, 06 Mar 2024 10:16:36 +0100
+
+wireplumber (0.4.82-1) experimental; urgency=medium
+
+  * New upstream version 0.4.82 (0.5.0 pre-release 2)
+  * Update symbols file
+  * Refresh Remove-privacy-breach-documentation.patch
+
+ -- Dylan Aïssi <daissi@debian.org>  Thu, 15 Feb 2024 11:24:41 +0100
+
+wireplumber (0.4.81-1) experimental; urgency=medium
+
+  * New upstream version: This is a preliminary release of WirePlumber 0.5.0.
+  * Install conf files in /usr/share/pipewire/
+  * Bump SONAME to libwireplumber-0.5
+  * Update symbols file
+  * Refresh patches
+
+ -- Dylan Aïssi <daissi@debian.org>  Fri, 05 Jan 2024 11:40:34 +0100
+
 wireplumber (0.4.17-1) unstable; urgency=medium
 
   * New upstream version

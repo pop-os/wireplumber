@@ -8,27 +8,27 @@ Build-Depends: debhelper-compat (= 13),
                doxygen <!nodoc>,
                gobject-introspection,
                libgirepository1.0-dev,
-               libglib2.0-dev (>= 2.62),
+               libglib2.0-dev (>= 2.68),
                liblua5.4-dev,
-               libpipewire-0.3-dev (>= 0.3.68),
+               libpipewire-0.3-dev (>= 1.0.2),
                libspa-0.2-dev,
                libsystemd-dev,
                meson (>= 0.59.0),
                pkgconf,
                systemd-dev,
                dbus <!nocheck>,
-               pipewire (>= 0.3.68) <!nocheck>,
+               pipewire (>= 1.0.2) <!nocheck>,
                python3-breathe <!nodoc>,
                python3-lxml <!nodoc>,
                python3-sphinx <!nodoc>,
                python3-sphinx-rtd-theme <!nodoc>,
-Standards-Version: 4.6.2
+Standards-Version: 4.7.0
 Homepage: https://gitlab.freedesktop.org/pipewire/wireplumber
 Vcs-Browser: https://salsa.debian.org/utopia-team/wireplumber
 Vcs-Git: https://salsa.debian.org/utopia-team/wireplumber.git
 Rules-Requires-Root: no
 
-Package: libwireplumber-0.4-0
+Package: libwireplumber-0.5-0
 Architecture: linux-any
 Multi-Arch: same
 Depends: ${misc:Depends},
@@ -41,7 +41,7 @@ Description: Shared libraries for WirePlumber
  .
  This package contains the shared library and plugins.
 
-Package: libwireplumber-0.4-dev
+Package: libwireplumber-0.5-dev
 Section: libdevel
 Architecture: linux-any
 Multi-Arch: same
@@ -49,8 +49,8 @@ Depends: ${misc:Depends},
          ${gir:Depends},
          libglib2.0-dev,
          libpipewire-0.3-dev,
-         libwireplumber-0.4-0 (= ${binary:Version}),
-         gir1.2-wp-0.4 (= ${binary:Version}),
+         libwireplumber-0.5-0 (= ${binary:Version}),
+         gir1.2-wp-0.5 (= ${binary:Version}),
 Provides: ${gir:Provides}
 Suggests: wireplumber-doc
 Description: Development files for WirePlumber
@@ -66,14 +66,15 @@ Architecture: linux-any
 Depends: ${shlibs:Depends},
          ${misc:Depends},
          default-dbus-session-bus | dbus-session-bus,
-         libwireplumber-0.4-0 (= ${binary:Version}),
-         pipewire (>= 0.3.68),
+         libwireplumber-0.5-0 (= ${binary:Version}),
+         pipewire (>= 1.0.2),
 Recommends: pipewire-pulse
 Suggests: libspa-0.2-bluetooth,
           libspa-0.2-libcamera,
           wireplumber-doc
 Conflicts: pipewire-media-session
 Replaces: pipewire-media-session
+Breaks: asahi-audio (<< 2.0)
 Section: video
 Description: modular session / policy manager for PipeWire
  WirePlumber is a modular session / policy manager for PipeWire and a
@@ -97,13 +98,13 @@ Description: modular session / policy manager for PipeWire - documentation
  .
  This package contains the WirePlumber documentation.
 
-Package: gir1.2-wp-0.4
+Package: gir1.2-wp-0.5
 Section: introspection
 Architecture: linux-any
 Multi-Arch: same
 Depends: ${misc:Depends},
          ${gir:Depends},
-         libwireplumber-0.4-0 (= ${binary:Version}),
+         libwireplumber-0.5-0 (= ${binary:Version}),
 Provides: ${gir:Provides}
 Description: GObject introspection files for WirePlumber
  WirePlumber is a modular session / policy manager for PipeWire and a

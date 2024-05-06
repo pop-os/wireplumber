@@ -1,0 +1,19 @@
+wireplumber (0.5.1-1) experimental; urgency=medium
+
+  WirePlumber 0.5 was released with a new configuration system.
+  The new system is based on JSON instead of Lua which makes WirePlumber >= 0.5
+  incompatible with Lua conf files written for WirePlumber 0.4.
+  .
+  If only the default configuration (e.g the configuration shipped with the
+  Debian package) is used, then there is nothing to do.
+  .
+  If you use custom configuration files, you will have to manually update them
+  by following the migration guide. No automatic migration of old configuration
+  files is performed.
+  .
+  This guide is available at (after having installed "wireplumber-doc"):
+    /usr/share/doc/wireplumber/html/daemon/configuration/migration.html
+  or
+    https://pipewire.pages.freedesktop.org/wireplumber/daemon/configuration/migration.html
+
+ -- Dylan Aïssi <daissi@debian.org>  Sun, 31 Mar 2024 14:44:46 +0200
