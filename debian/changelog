@@ -1,8 +1,8 @@
-wireplumber (0.5.2-2) UNRELEASED; urgency=medium
+wireplumber (0.5.2-2) unstable; urgency=medium
 
   * Upload to unstable
 
- -- Dylan Aïssi <daissi@debian.org>  Mon, 06 May 2024 10:05:11 +0200
+ -- Dylan Aïssi <daissi@debian.org>  Mon, 06 May 2024 10:22:38 +0200
 
 wireplumber (0.5.2-1) experimental; urgency=medium
 
