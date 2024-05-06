@@ -6,8 +6,6 @@
  * SPDX-License-Identifier: MIT
  */
 
-#define G_LOG_DOMAIN "wp-pw-obj-mixin"
-
 #include "private/pipewire-object-mixin.h"
 #include "core.h"
 #include "spa-type.h"
@@ -16,6 +14,8 @@
 #include "error.h"
 
 #include <spa/utils/result.h>
+
+WP_DEFINE_LOCAL_LOG_TOPIC ("wp-pw-obj-mixin")
 
 G_DEFINE_INTERFACE (WpPwObjectMixinPriv, wp_pw_object_mixin_priv, WP_TYPE_PROXY)
 
@@ -176,7 +176,7 @@ wp_pw_object_mixin_enum_params_unchecked (gpointer obj,
 
     /* return early if seq contains an error */
     if (G_UNLIKELY (SPA_RESULT_IS_ERROR (seq))) {
-      wp_message_object (obj, "enum_params failed: %s", spa_strerror (seq));
+      wp_notice_object (obj, "enum_params failed: %s", spa_strerror (seq));
       g_task_report_new_error (obj, callback, user_data, NULL,
           WP_DOMAIN_LIBRARY, WP_LIBRARY_ERROR_OPERATION_FAILED,
           "enum_params failed: %s", spa_strerror (seq));
@@ -191,7 +191,7 @@ wp_pw_object_mixin_enum_params_unchecked (gpointer obj,
   task = g_task_new (obj, cancellable, callback, user_data);
 
   /* debug */
-  if (wp_log_level_is_enabled (G_LOG_LEVEL_DEBUG)) {
+  if (wp_local_log_topic_is_enabled (G_LOG_LEVEL_DEBUG)) {
     const gchar *name = NULL;
     name = wp_spa_id_value_short_name (
         wp_spa_id_value_from_number ("Spa:Enum:ParamId", id));
@@ -300,7 +300,7 @@ wp_pw_object_mixin_set_param (WpPipewireObject * obj, const gchar * id,
   gint ret;
 
   if (!d->iface) {
-    wp_message_object (obj, "ignoring set_param on already destroyed objects");
+    wp_notice_object (obj, "ignoring set_param on already destroyed objects");
     return FALSE;
   }
 
@@ -319,7 +319,7 @@ wp_pw_object_mixin_set_param (WpPipewireObject * obj, const gchar * id,
   ret = iface->set_param (obj, wp_spa_id_value_number (param_id), flags, param);
 
   if (G_UNLIKELY (SPA_RESULT_IS_ERROR (ret))) {
-    wp_message_object (obj, "set_param failed: %s", spa_strerror (ret));
+    wp_notice_object (obj, "set_param failed: %s", spa_strerror (ret));
     return FALSE;
   }
   return TRUE;

@@ -41,6 +41,12 @@ WP_API
 WpSpaJson * wp_spa_json_new_from_stringn (const gchar *json_str, size_t len);
 
 WP_API
+WpSpaJson * wp_spa_json_new_wrap_string (const gchar *json_str);
+
+WP_API
+WpSpaJson * wp_spa_json_new_wrap_stringn (const gchar *json_str, size_t len);
+
+WP_API
 WpSpaJson * wp_spa_json_new_wrap (struct spa_json *json);
 
 WP_API
@@ -111,6 +117,9 @@ gboolean wp_spa_json_is_string (WpSpaJson *self);
 
 WP_API
 gboolean wp_spa_json_is_array (WpSpaJson *self);
+
+WP_API
+gboolean wp_spa_json_is_container (WpSpaJson *self);
 
 WP_API
 gboolean wp_spa_json_is_object (WpSpaJson *self);
@@ -194,6 +203,14 @@ WP_API
 void wp_spa_json_builder_add_json (WpSpaJsonBuilder *self, WpSpaJson *json);
 
 WP_API
+void wp_spa_json_builder_add_from_string (WpSpaJsonBuilder *self,
+    const gchar *json_str);
+
+WP_API
+void wp_spa_json_builder_add_from_stringn (WpSpaJsonBuilder *self,
+    const gchar *json_str, size_t len);
+
+WP_API
 void wp_spa_json_builder_add (WpSpaJsonBuilder *self, ...)
     G_GNUC_NULL_TERMINATED;
 
@@ -226,6 +243,9 @@ WpSpaJsonParser *wp_spa_json_parser_new_array (WpSpaJson *json);
 
 WP_API
 WpSpaJsonParser *wp_spa_json_parser_new_object (WpSpaJson *json);
+
+WP_API
+WpSpaJsonParser *wp_spa_json_parser_new_undefined (WpSpaJson *json);
 
 WP_API
 gboolean wp_spa_json_parser_get_null (WpSpaJsonParser *self);

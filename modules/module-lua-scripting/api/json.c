@@ -9,6 +9,9 @@
 #include <wp/wp.h>
 #include <wplua/wplua.h>
 
+#define WP_LOCAL_LOG_TOPIC log_topic_lua_scripting
+WP_LOG_TOPIC_EXTERN (log_topic_lua_scripting)
+
 /* API */
 
 static int
@@ -94,7 +97,7 @@ spa_json_is_object (lua_State *L)
   return 1;
 }
 
-static void
+void
 push_luajson (lua_State *L, WpSpaJson *json, gint n_recursions)
 {
   /* Null */

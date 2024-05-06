@@ -16,11 +16,6 @@ wplua_resources = gnome.compile_resources(
 
 wplua_lib = static_library('wplua-' + wireplumber_api_version,
   [ wplua_lib_sources, wplua_resources ],
-  c_args : [
-    '-D_GNU_SOURCE',
-    '-DG_LOG_USE_STRUCTURED',
-    '-DG_LOG_DOMAIN="wplua"',
-  ],
   install: false,
   include_directories: wplua_include_dir,
   dependencies : [wp_dep, lua_dep],

@@ -9,10 +9,11 @@
 #ifndef __WIREPLUMBER_OBJECT_H__
 #define __WIREPLUMBER_OBJECT_H__
 
-#include "core.h"
 #include "transition.h"
 
 G_BEGIN_DECLS
+
+typedef struct _WpCore WpCore;
 
 /*!
  * \brief Flags that specify functionality that is available on this class.
@@ -80,13 +81,22 @@ struct _WpObjectClass
 };
 
 WP_API
+guint wp_object_get_id (WpObject * self);
+
+WP_API
 WpCore * wp_object_get_core (WpObject * self);
 
 WP_API
 WpObjectFeatures wp_object_get_active_features (WpObject * self);
 
 WP_API
+gboolean wp_object_test_active_features (WpObject * self, WpObjectFeatures features);
+
+WP_API
 WpObjectFeatures wp_object_get_supported_features (WpObject * self);
+
+WP_API
+gboolean wp_object_test_supported_features (WpObject * self, WpObjectFeatures features);
 
 WP_API
 void wp_object_activate (WpObject * self,

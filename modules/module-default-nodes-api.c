@@ -9,7 +9,39 @@
 #include <wp/wp.h>
 #include <spa/utils/defs.h>
 #include <pipewire/keys.h>
-#include "module-default-nodes/common.h"
+
+WP_DEFINE_LOCAL_LOG_TOPIC ("m-default-nodes-api")
+
+/*
+ * Module Provides the APIs to query the default device nodes. Module looks at
+ * the default metadata to know the default devices.
+ */
+
+enum {
+  AUDIO_SINK,
+  AUDIO_SOURCE,
+  VIDEO_SOURCE,
+  N_DEFAULT_NODES
+};
+
+static const gchar * DEFAULT_KEY[N_DEFAULT_NODES] = {
+  [AUDIO_SINK] = "default.audio.sink",
+  [AUDIO_SOURCE] = "default.audio.source",
+  [VIDEO_SOURCE] = "default.video.source",
+};
+
+static const gchar * NODE_TYPE_STR[N_DEFAULT_NODES] = {
+  [AUDIO_SINK] = "Audio/Sink",
+  [AUDIO_SOURCE] = "Audio/Source",
+  [VIDEO_SOURCE] = "Video/Source",
+};
+
+static const gchar * DEFAULT_CONFIG_KEY[N_DEFAULT_NODES] = {
+  [AUDIO_SINK] = "default.configured.audio.sink",
+  [AUDIO_SOURCE] = "default.configured.audio.source",
+  [VIDEO_SOURCE] = "default.configured.video.source",
+};
+
 
 typedef struct _WpDefaultNode WpDefaultNode;
 struct _WpDefaultNode
@@ -73,38 +105,40 @@ on_metadata_changed (WpMetadata *m, guint32 subject,
     const gchar *key, const gchar *type, const gchar *value, gpointer d)
 {
   WpDefaultNodesApi * self = WP_DEFAULT_NODES_API (d);
+  gchar *new_value = NULL;
 
   if (subject != 0)
     return;
 
   for (gint i = 0; i < N_DEFAULT_NODES; i++) {
     if (!g_strcmp0 (key, DEFAULT_KEY[i])) {
-      g_clear_pointer (&self->defaults[i].value, g_free);
 
       if (value && !g_strcmp0 (type, "Spa:String:JSON")) {
-        g_autoptr (WpSpaJson) json = wp_spa_json_new_from_string (value);
-        g_autofree gchar *name = NULL;
-        if (wp_spa_json_object_get (json, "name", "s", &name, NULL))
-          self->defaults[i].value = g_strdup (name);
+        g_autoptr (WpSpaJson) json = wp_spa_json_new_wrap_string (value);
+        wp_spa_json_object_get (json, "name", "s", &new_value, NULL);
       }
 
-      wp_debug_object (m, "changed '%s' -> '%s'", key,
-          self->defaults[i].value);
+      wp_debug_object (m, "'%s' changed from '%s' -> '%s'", key,
+          self->defaults[i].value, new_value);
+
+      g_clear_pointer (&self->defaults[i].value, g_free);
+      self->defaults[i].value = new_value;
 
       schedule_changed_notification (self);
       break;
     } else if (!g_strcmp0 (key, DEFAULT_CONFIG_KEY[i])) {
-      g_clear_pointer (&self->defaults[i].config_value, g_free);
 
       if (value && !g_strcmp0 (type, "Spa:String:JSON")) {
-        g_autoptr (WpSpaJson) json = wp_spa_json_new_from_string (value);
-        g_autofree gchar *name = NULL;
-        if (wp_spa_json_object_get (json, "name", "s", &name, NULL))
-          self->defaults[i].config_value = g_strdup (name);
+        g_autoptr (WpSpaJson) json = wp_spa_json_new_wrap_string (value);
+        wp_spa_json_object_get (json, "name", "s", &new_value, NULL);
       }
 
-      wp_debug_object (m, "changed '%s' -> '%s'", key,
-          self->defaults[i].config_value);
+      wp_debug_object (m, "'%s' changed from '%s' -> '%s'", key,
+          self->defaults[i].config_value, new_value);
+
+      g_clear_pointer (&self->defaults[i].config_value, g_free);
+      self->defaults[i].config_value = new_value;
+
       break;
     }
   }
@@ -118,9 +152,11 @@ on_metadata_added (WpObjectManager *om, WpObject *obj, WpDefaultNodesApi * self)
     g_auto (GValue) val = G_VALUE_INIT;
 
     for (; wp_iterator_next (it, &val); g_value_unset (&val)) {
-      guint32 subject;
-      const gchar *key, *type, *value;
-      wp_metadata_iterator_item_extract (&val, &subject, &key, &type, &value);
+      WpMetadataItem *mi = g_value_get_boxed (&val);
+      guint32 subject = wp_metadata_item_get_subject (mi);
+      const gchar *key = wp_metadata_item_get_key (mi);
+      const gchar *type = wp_metadata_item_get_value_type (mi);
+      const gchar *value = wp_metadata_item_get_value (mi);
       on_metadata_changed (WP_METADATA (obj), subject, key, type, value, self);
     }
 
@@ -272,12 +308,11 @@ wp_default_nodes_api_class_init (WpDefaultNodesApiClass * klass)
       G_SIGNAL_RUN_LAST, 0, NULL, NULL, NULL, G_TYPE_NONE, 0);
 }
 
-WP_PLUGIN_EXPORT gboolean
-wireplumber__module_init (WpCore * core, GVariant * args, GError ** error)
+WP_PLUGIN_EXPORT GObject *
+wireplumber__module_init (WpCore * core, WpSpaJson * args, GError ** error)
 {
-  wp_plugin_register (g_object_new (wp_default_nodes_api_get_type (),
-          "name", "default-nodes-api",
-          "core", core,
-          NULL));
-  return TRUE;
+  return G_OBJECT (g_object_new (wp_default_nodes_api_get_type (),
+      "name", "default-nodes-api",
+      "core", core,
+      NULL));
 }

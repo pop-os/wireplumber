@@ -28,6 +28,7 @@ function create_sandbox_env()
         pcall    select print tostring type xpcall require
         table    string math  package  utf8 debug  coroutine
         os.clock  os.difftime os.time  os.date     os.getenv
+        setmetatable getmetatable
     ]]):gsub('%S+', populate_env)
 
     -- Additionally export everything in SANDBOX_EXPORT
@@ -42,6 +43,9 @@ function create_sandbox_env()
       if type(v) == "table" then
         SANDBOX_ENV[k] = setmetatable({}, {
           __index = v,
+          __call = function(t, ...)
+            return t["__new"](...)
+          end,
           __newindex = function(_, attr_name, _)
             error('Can not modify ' .. k .. '.' .. attr_name .. '. Protected by the sandbox.')
           end

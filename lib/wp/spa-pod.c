@@ -6,15 +6,16 @@
  * SPDX-License-Identifier: MIT
  */
 
-#define G_LOG_DOMAIN "wp-spa-pod"
-
 #include "spa-pod.h"
 #include "spa-type.h"
+#include "log.h"
 
 #include <spa/utils/type-info.h>
 #include <spa/pod/builder.h>
 #include <spa/pod/parser.h>
 #include <spa/pod/filter.h>
+
+WP_DEFINE_LOCAL_LOG_TOPIC ("wp-spa-pod")
 
 #define WP_SPA_POD_BUILDER_REALLOC_STEP_SIZE 64
 #define WP_SPA_POD_ID_PROPERTY_NAME_MAX 16
@@ -2707,6 +2708,13 @@ wp_spa_pod_parser_get (WpSpaPodParser *self, ...)
   return res;
 }
 
+static inline gboolean
+wp_spa_pod_parser_can_collect (const struct spa_pod *pod, char format)
+{
+  format = (format == 'K') ? 'I' : format;
+  return spa_pod_parser_can_collect (pod, format);
+}
+
 /*!
  * \brief This is the `va_list` version of wp_spa_pod_parser_get()
  *
@@ -2735,7 +2743,8 @@ wp_spa_pod_parser_get_valist (WpSpaPodParser *self, va_list args)
         break;
 
       if (g_str_has_prefix (key_name, "id-")) {
-        g_return_val_if_fail (sscanf (key_name, "id-%08x", &key_id) == 1, FALSE);
+        if (sscanf (key_name, "id-%08x", &key_id) != 1)
+          return FALSE;
       } else {
         key = wp_spa_id_table_find_value_from_short_name (table, key_name);
         g_return_val_if_fail (key != NULL, FALSE);
@@ -2757,7 +2766,7 @@ wp_spa_pod_parser_get_valist (WpSpaPodParser *self, va_list args)
     if ((optional = (*format == '?')))
       format++;
 
-    if (!pod || !spa_pod_parser_can_collect (pod, *format)) {
+    if (!pod || !wp_spa_pod_parser_can_collect (pod, *format)) {
       if (!optional)
         return FALSE;
 

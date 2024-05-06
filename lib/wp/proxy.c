@@ -6,8 +6,6 @@
  * SPDX-License-Identifier: MIT
  */
 
-#define G_LOG_DOMAIN "wp-proxy"
-
 #include "proxy.h"
 #include "log.h"
 #include "error.h"
@@ -15,6 +13,8 @@
 #include <pipewire/pipewire.h>
 #include <spa/utils/hook.h>
 #include <spa/utils/result.h>
+
+WP_DEFINE_LOCAL_LOG_TOPIC ("wp-proxy")
 
 /*! \defgroup wpproxy WpProxy */
 /*!
@@ -167,7 +167,7 @@ proxy_event_error (void *data, int seq, int res, const char *message)
 
   /* we destroy the proxy on error if feature bound is still not enabled */
   if (priv->pw_proxy &&
-      !(wp_object_get_active_features (WP_OBJECT (self)) & WP_PROXY_FEATURE_BOUND))
+      !(wp_object_test_active_features (WP_OBJECT (self), WP_PROXY_FEATURE_BOUND)))
     pw_proxy_destroy (priv->pw_proxy);
 
   wp_object_abort_activation (WP_OBJECT (self), message);

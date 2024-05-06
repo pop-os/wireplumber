@@ -69,6 +69,7 @@ if build_doc
     meson.current_source_dir()/'..'/'README.rst',
     meson.current_source_dir()/'..'/'NEWS.rst',
   )
+  sphinx_files += scripts_doc_files
   subdir('rst')
 
   sphinx_conf_data = configuration_data()
@@ -98,7 +99,7 @@ if build_doc
     depends: [doxyxml_wp],
     output: 'html',
     install: true,
-    install_dir: get_option('datadir') / 'doc' / 'wireplumber',
+    install_dir: wireplumber_doc_dir,
     build_by_default: true,
   )
 endif
@@ -140,7 +141,7 @@ if build_gir
     dependencies: [wp_dep, dummy_dep],
     namespace: 'Wp',
     nsversion: wireplumber_api_version,
-    export_packages: 'wireplumber-0.4',
+    export_packages: 'wireplumber-' + wireplumber_api_version,
     header: 'wp/wp.h',
     sources: [wpenums_h, wp_gtkdoc_h, wp_lib_headers],
     include_directories: [wpenums_include_dir],

@@ -36,10 +36,9 @@ common_test_env = environment({
   'XDG_CONFIG_HOME': meson.current_build_dir() / '.config',
   'XDG_STATE_HOME': meson.current_build_dir() / '.local' / 'state',
   'FILE_MONITOR_DIR': meson.current_build_dir() / '.local' / 'file_monitor',
-  'WIREPLUMBER_CONFIG_DIR': '/invalid',
-  'WIREPLUMBER_DATA_DIR': '/invalid',
+  'WIREPLUMBER_DATA_DIR': meson.current_source_dir() / '..' / 'src',
   'WIREPLUMBER_MODULE_DIR': meson.current_build_dir() / '..' / 'modules',
-  'WIREPLUMBER_DEBUG': '7',
+  'WIREPLUMBER_DEBUG': 'T,pw.*:I,spa.*:I,mod.*:I',
 })
 
 spa_plugindir = spa_dep.get_variable(
@@ -62,6 +61,6 @@ endif
 subdir('wp')
 if build_modules
   subdir('wplua')
+  subdir('scripts')
   subdir('modules')
 endif
-subdir('examples')

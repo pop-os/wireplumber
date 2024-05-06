@@ -1,39 +1,25 @@
-common_c_args = [
-  '-D_GNU_SOURCE',
-  '-DG_LOG_USE_STRUCTURED',
-]
-
 shared_library(
-  'wireplumber-module-metadata',
+  'wireplumber-module-settings',
   [
-    'module-metadata.c',
+    'module-settings.c',
   ],
-  c_args : [common_c_args, '-DG_LOG_DOMAIN="m-metadata"'],
   install : true,
   install_dir : wireplumber_module_dir,
   dependencies : [wp_dep, pipewire_dep],
 )
 
-shared_library(
-  'wireplumber-module-default-profile',
-  [
-    'module-default-profile.c',
-  ],
-  c_args : [common_c_args, '-DG_LOG_DOMAIN="m-default-profile"'],
-  install : true,
-  install_dir : wireplumber_module_dir,
-  dependencies : [wp_dep, pipewire_dep],
+dbus_connection_enums = gnome.mkenums_simple('dbus-connection-enums',
+  sources: [ 'dbus-connection-state.h' ],
 )
-
 shared_library(
-  'wireplumber-module-default-nodes',
+  'wireplumber-module-dbus-connection',
   [
-    'module-default-nodes.c',
+    'module-dbus-connection.c',
+    dbus_connection_enums,
   ],
-  c_args : [common_c_args, '-DG_LOG_DOMAIN="m-default-nodes"'],
   install : true,
   install_dir : wireplumber_module_dir,
-  dependencies : [wp_dep, pipewire_dep],
+  dependencies : [wp_dep],
 )
 
 shared_library(
@@ -41,7 +27,6 @@ shared_library(
   [
     'module-default-nodes-api.c',
   ],
-  c_args : [common_c_args, '-DG_LOG_DOMAIN="m-default-nodes-api"'],
   install : true,
   install_dir : wireplumber_module_dir,
   dependencies : [wp_dep, pipewire_dep],
@@ -57,7 +42,6 @@ shared_library(
     reserve_device_interface_src,
     reserve_device_enums,
   ],
-  c_args : [common_c_args, '-DG_LOG_DOMAIN="m-reserve-device"'],
   include_directories: reserve_device_includes,
   install : true,
   install_dir : wireplumber_module_dir,
@@ -69,7 +53,6 @@ shared_library(
   [
     'module-portal-permissionstore.c',
   ],
-  c_args : [common_c_args, '-DG_LOG_DOMAIN="m-portal-permissionstore"'],
   install : true,
   install_dir : wireplumber_module_dir,
   dependencies : [wp_dep, giounix_dep],
@@ -80,18 +63,16 @@ shared_library(
   [
     'module-si-audio-adapter.c',
   ],
-  c_args : [common_c_args, '-DG_LOG_DOMAIN="m-si-audio-adapter"'],
   install : true,
   install_dir : wireplumber_module_dir,
   dependencies : [wp_dep, pipewire_dep],
 )
 
 shared_library(
-  'wireplumber-module-si-audio-endpoint',
+  'wireplumber-module-si-audio-virtual',
   [
-    'module-si-audio-endpoint.c',
+    'module-si-audio-virtual.c',
   ],
-  c_args : [common_c_args, '-DG_LOG_DOMAIN="m-si-audio-endpoint"'],
   install : true,
   install_dir : wireplumber_module_dir,
   dependencies : [wp_dep, pipewire_dep],
@@ -102,7 +83,6 @@ shared_library(
   [
     'module-si-node.c',
   ],
-  c_args : [common_c_args, '-DG_LOG_DOMAIN="m-si-node"'],
   install : true,
   install_dir : wireplumber_module_dir,
   dependencies : [wp_dep, pipewire_dep],
@@ -113,7 +93,6 @@ shared_library(
   [
     'module-si-standard-link.c',
   ],
-  c_args : [common_c_args, '-DG_LOG_DOMAIN="m-si-standard-link"'],
   install : true,
   install_dir : wireplumber_module_dir,
   dependencies : [wp_dep, pipewire_dep],
@@ -128,10 +107,8 @@ shared_library(
     'module-lua-scripting/api/pod.c',
     'module-lua-scripting/api/json.c',
     'module-lua-scripting/api/api.c',
-    'module-lua-scripting/api/config.c',
      m_lua_scripting_resources,
   ],
-  c_args : [common_c_args, '-DG_LOG_DOMAIN="m-lua-scripting"'],
   install : true,
   install_dir : wireplumber_module_dir,
   dependencies : [wp_dep, pipewire_dep, wplua_dep, libintl_dep],
@@ -142,7 +119,6 @@ shared_library(
   [
     'module-mixer-api.c',
   ],
-  c_args : [common_c_args, '-DG_LOG_DOMAIN="m-mixer-api"'],
   install : true,
   install_dir : wireplumber_module_dir,
   dependencies : [wp_dep, pipewire_dep, mathlib],
@@ -153,7 +129,16 @@ shared_library(
   [
     'module-file-monitor-api.c',
   ],
-  c_args : [common_c_args, '-DG_LOG_DOMAIN="m-file-monitor-api"'],
+  install : true,
+  install_dir : wireplumber_module_dir,
+  dependencies : [wp_dep, pipewire_dep],
+)
+
+shared_library(
+  'wireplumber-module-log-settings',
+  [
+    'module-log-settings.c',
+  ],
   install : true,
   install_dir : wireplumber_module_dir,
   dependencies : [wp_dep, pipewire_dep],
@@ -165,9 +150,18 @@ if libsystemd_dep.found() or libelogind_dep.found()
     [
       'module-logind.c',
     ],
-    c_args : [common_c_args, '-DG_LOG_DOMAIN="m-logind"'],
     install : true,
     install_dir : wireplumber_module_dir,
     dependencies : [wp_dep, pipewire_dep, libsystemd_dep, libelogind_dep],
   )
 endif
+
+shared_library(
+  'wireplumber-module-standard-event-source',
+  [
+    'module-standard-event-source.c',
+  ],
+  install : true,
+  install_dir : wireplumber_module_dir,
+  dependencies : [wp_dep, pipewire_dep],
+)

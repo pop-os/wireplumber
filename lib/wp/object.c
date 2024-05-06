@@ -6,12 +6,14 @@
  * SPDX-License-Identifier: MIT
  */
 
-#define G_LOG_DOMAIN "wp-object"
+#include <spa/utils/defs.h>
 
 #include "object.h"
 #include "log.h"
 #include "core.h"
 #include "error.h"
+
+WP_DEFINE_LOCAL_LOG_TOPIC ("wp-object")
 
 /*! \defgroup wpfeatureactivationtransition WpFeatureActivationTransition */
 /*!
@@ -139,6 +141,7 @@ typedef struct _WpObjectPrivate WpObjectPrivate;
 struct _WpObjectPrivate
 {
   /* properties */
+  guint id;
   GWeakRef core;
 
   /* features state */
@@ -150,6 +153,7 @@ struct _WpObjectPrivate
 
 enum {
   PROP_0,
+  PROP_ID,
   PROP_CORE,
   PROP_ACTIVE_FEATURES,
   PROP_SUPPORTED_FEATURES,
@@ -157,11 +161,20 @@ enum {
 
 G_DEFINE_ABSTRACT_TYPE_WITH_PRIVATE (WpObject, wp_object, G_TYPE_OBJECT)
 
+static guint
+get_next_id ()
+{
+  static guint next_id = 0;
+  g_atomic_int_inc (&next_id);
+  return next_id;
+}
+
 static void
 wp_object_init (WpObject * self)
 {
   WpObjectPrivate *priv = wp_object_get_instance_private (self);
 
+  priv->id = get_next_id ();
   g_weak_ref_init (&priv->core, NULL);
   priv->transitions = g_queue_new ();
   g_weak_ref_init (&priv->ongoing_transition, NULL);
@@ -227,8 +240,11 @@ wp_object_get_property (GObject * object, guint property_id, GValue * value,
   WpObjectPrivate *priv = wp_object_get_instance_private (self);
 
   switch (property_id) {
+  case PROP_ID:
+    g_value_set_uint (value, priv->id);
+    break;
   case PROP_CORE:
-    g_value_take_object (value, g_weak_ref_get (&priv->core));
+    g_value_take_object (value, wp_object_get_core (self));
     break;
   case PROP_ACTIVE_FEATURES:
     g_value_set_uint (value, priv->ft_active);
@@ -252,6 +268,11 @@ wp_object_class_init (WpObjectClass * klass)
   object_class->get_property = wp_object_get_property;
   object_class->set_property = wp_object_set_property;
 
+  g_object_class_install_property (object_class, PROP_ID,
+      g_param_spec_uint ("id", "id",
+          "The object unique id", 0, G_MAXUINT, 0,
+          G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+
   g_object_class_install_property (object_class, PROP_CORE,
       g_param_spec_object ("core", "core", "The WpCore", WP_TYPE_CORE,
           G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
@@ -268,6 +289,20 @@ wp_object_class_init (WpObjectClass * klass)
 }
 
 /*!
+ * \brief Gets the unique wireplumber Id of this object
+ * \ingroup wpsessionitem
+ * \param self the session item
+ */
+guint
+wp_object_get_id (WpObject * self)
+{
+  g_return_val_if_fail (WP_IS_OBJECT (self), SPA_ID_INVALID);
+
+  WpObjectPrivate *priv = wp_object_get_instance_private (self);
+  return priv->id;
+}
+
+/*!
  * \brief Gets the core associated with this object.
  *
  * \ingroup wpobject
@@ -280,7 +315,10 @@ wp_object_get_core (WpObject * self)
   g_return_val_if_fail (WP_IS_OBJECT (self), NULL);
 
   WpObjectPrivate *priv = wp_object_get_instance_private (self);
-  return g_weak_ref_get (&priv->core);
+  WpCore *core = g_weak_ref_get (&priv->core);
+  if (!core && WP_IS_CORE (self))
+    core = WP_CORE (g_object_ref (self));
+  return core;
 }
 
 /*!
@@ -299,6 +337,23 @@ wp_object_get_active_features (WpObject * self)
 }
 
 /*!
+ * \brief Checks if the given features are active on this object.
+ * \param self the object
+ * \param features the features to check
+ * \returns TRUE if all the given features are active on this object
+ * \ingroup wpobject
+ * \since 0.5.0
+ */
+gboolean
+wp_object_test_active_features (WpObject * self, WpObjectFeatures features)
+{
+  g_return_val_if_fail (WP_IS_OBJECT (self), FALSE);
+
+  WpObjectPrivate *priv = wp_object_get_instance_private (self);
+  return (priv->ft_active & features) == features;
+}
+
+/*!
  * \brief Gets the supported features of this object.
  * \ingroup wpobject
  * \param self the object
@@ -312,6 +367,20 @@ wp_object_get_supported_features (WpObject * self)
   g_return_val_if_fail (WP_OBJECT_GET_CLASS (self)->get_supported_features, 0);
 
   return WP_OBJECT_GET_CLASS (self)->get_supported_features (self);
+}
+
+/*!
+ * \brief Checks if the given features are supported on this object.
+ * \param self the object
+ * \param features the features to check
+ * \returns TRUE if all the given features are supported on this object
+ * \ingroup wpobject
+ * \since 0.5.0
+ */
+gboolean
+wp_object_test_supported_features (WpObject * self, WpObjectFeatures features)
+{
+  return (wp_object_get_supported_features (self) & features) == features;
 }
 
 static gboolean
@@ -356,7 +425,7 @@ on_transition_completed (WpTransition * transition, GParamSpec * param,
 
   /* advance pending transitions */
   if (!g_queue_is_empty (priv->transitions) && !priv->idle_advnc_source) {
-    g_autoptr (WpCore) core = g_weak_ref_get (&priv->core);
+    g_autoptr (WpCore) core = wp_object_get_core (self);
     g_return_if_fail (core != NULL);
 
     wp_core_idle_add (core, &priv->idle_advnc_source,
@@ -413,7 +482,7 @@ wp_object_activate_closure (WpObject * self,
   g_return_if_fail (WP_IS_OBJECT (self));
 
   WpObjectPrivate *priv = wp_object_get_instance_private (self);
-  g_autoptr (WpCore) core = g_weak_ref_get (&priv->core);
+  g_autoptr (WpCore) core = wp_object_get_core (self);
 
   g_return_if_fail (core != NULL);
 
@@ -548,7 +617,7 @@ wp_object_update_features (WpObject * self, WpObjectFeatures activated,
 
   t = g_weak_ref_get (&priv->ongoing_transition);
   if ((t || !g_queue_is_empty (priv->transitions)) && !priv->idle_advnc_source) {
-    g_autoptr (WpCore) core = g_weak_ref_get (&priv->core);
+    g_autoptr (WpCore) core = wp_object_get_core (self);
     g_return_if_fail (core != NULL);
 
     wp_core_idle_add (core, &priv->idle_advnc_source,
