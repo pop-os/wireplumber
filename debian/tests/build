@@ -23,7 +23,7 @@ EOF
 # deliberately word-splitting pkg-config output:
 # shellcheck disable=SC2046
 "${CROSS_COMPILE}gcc" -o libwireplumber_test libwireplumber_test.c \
-$("${CROSS_COMPILE}pkg-config" --cflags --libs wireplumber-0.4)
+$("${CROSS_COMPILE}pkg-config" --cflags --libs wireplumber-0.5)
 echo "build: OK"
 [ -x libwireplumber_test ]
 ./libwireplumber_test
