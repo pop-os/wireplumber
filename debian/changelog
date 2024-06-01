@@ -1,3 +1,9 @@
+wireplumber (0.5.3-0) UNRELEASED; urgency=medium
+
+  * New upstream version
+
+ -- Dylan Aïssi <daissi@debian.org>  Sat, 01 Jun 2024 17:59:18 +0200
+
 wireplumber (0.5.2-3) unstable; urgency=medium
 
   * Fix debian/watch
