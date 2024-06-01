@@ -306,18 +306,20 @@ local function rescanFilters (om, metadata_om)
 
     -- Only handle the main filter nodes
     filter.media_class = n.properties ["media.class"]
-    if filter.media_class ~= "Audio/Sink" and
-        filter.media_class ~= "Audio/Source" and
-        filter.media_class ~= "Video/Source" then
+    if string.find (filter.media_class, "Stream") then
       goto skip_linkable
     end
 
     -- Filter direction
-    if filter.media_class == "Audio/Sink" then
+    if string.find (filter.media_class, "Audio/Sink") or
+       string.find (filter.media_class, "Video/Sink") then
       filter.direction = "input"
     else
       filter.direction = "output"
     end
+
+    -- Filter media type
+    filter.media_type = si.properties["media.type"]
 
     -- Get filter properties
     filter.smart = getFilterSmart (metadata, n)
@@ -433,6 +435,7 @@ function module.get_filter_target (direction, link_group)
   -- Return the next filter with matching target
   for i, v in ipairs(module.filters) do
     if v.direction == direction and
+        v.media_type == filter.media_type and
         v.name ~= filter.name and
         v.link_group ~= link_group and
         not v.disabled and
@@ -448,11 +451,11 @@ function module.get_filter_target (direction, link_group)
   return filter.target
 end
 
-function module.get_filter_from_target (direction, si_target)
+function module.get_filter_from_target (direction, media_type, si_target)
   local target = si_target
 
-  -- Make sure direction is valid
-  if direction == nil then
+  -- Make sure direction and media_type are valid
+  if direction == nil or media_type == nil then
     return nil
   end
 
@@ -464,6 +467,7 @@ function module.get_filter_from_target (direction, si_target)
       local filter = nil
       for i, v in ipairs(module.filters) do
         if v.direction == direction and
+            v.media_type == media_type and
             v.link_group == target_link_group and
             not v.disabled and
             v.smart then
@@ -478,10 +482,10 @@ function module.get_filter_from_target (direction, si_target)
     end
   end
 
-
   -- Find the first filter matching target
   for i, v in ipairs(module.filters) do
     if v.direction == direction and
+        v.media_type == media_type and
         not v.disabled and
         v.smart and
         ((v.target ~= nil and target ~= nil and v.target.id == target.id) or

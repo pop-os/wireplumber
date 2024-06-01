@@ -159,12 +159,26 @@ push_luajson (lua_State *L, WpSpaJson *json, gint n_recursions)
     }
   }
 
-  /* Otherwise alwyas parse as String to allow parsing strings without quotes */
+  /* Otherwise always parse as String to allow parsing strings without quotes */
   else {
     g_autofree gchar *value = wp_spa_json_parse_string (json);
     g_warn_if_fail (value);
     lua_pushstring (L, value);
   }
+}
+
+static int
+spa_json_merge (lua_State *L)
+{
+  WpSpaJson *a = wplua_checkboxed (L, 1, WP_TYPE_SPA_JSON);
+  WpSpaJson *b = wplua_checkboxed (L, 2, WP_TYPE_SPA_JSON);
+
+  WpSpaJson *merge =  wp_json_utils_merge_containers(a, b);
+  if(!merge)
+    luaL_error (L, "only Json container merge supported");
+
+  wplua_pushboxed (L, WP_TYPE_SPA_JSON, merge);
+  return 1;
 }
 
 static int
@@ -267,7 +281,7 @@ spa_json_array_new (lua_State *L)
           break;
         }
         default:
-          luaL_error (L, "Json does not support lua type ",
+          luaL_error (L, "Json does not support lua type %s",
               lua_typename(L, lua_type(L, -1)));
           break;
       }
@@ -313,7 +327,7 @@ spa_json_object_new (lua_State *L)
           break;
         }
         default:
-          luaL_error (L, "Json does not support lua type ",
+          luaL_error (L, "Json does not support lua type %s",
               lua_typename(L, lua_type(L, -1)));
           break;
       }
@@ -340,6 +354,7 @@ static const luaL_Reg spa_json_methods[] = {
   { "is_array", spa_json_is_array },
   { "is_object", spa_json_is_object },
   { "parse", spa_json_parse },
+  { "merge", spa_json_merge },
   { NULL, NULL }
 };
 
