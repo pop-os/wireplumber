@@ -550,7 +550,11 @@ wp_log_set_level (const gchar *level_str)
   return TRUE;
 }
 
-/* private, called from wp_init() */
+/*!
+ * \brief private, called from wp_init()
+ * \ingroup wplog
+ * \private
+ */
 void
 wp_log_init (gint flags)
 {
@@ -670,6 +674,7 @@ struct _WpLogFields
   const gchar *func;
   const gchar *message;
   gint log_level;
+  gboolean debug;
   GType object_type;
   gconstpointer object;
 };
@@ -678,6 +683,7 @@ static void
 wp_log_fields_init (WpLogFields *lf,
     const gchar *log_topic,
     gint log_level,
+    gboolean debug,
     const gchar *file,
     const gchar *line,
     const gchar *func,
@@ -687,6 +693,7 @@ wp_log_fields_init (WpLogFields *lf,
 {
   lf->log_topic = log_topic ? log_topic : "default";
   lf->log_level = log_level;
+  lf->debug = debug;
   lf->file = file;
   lf->line = line;
   lf->func = func;
@@ -695,11 +702,18 @@ wp_log_fields_init (WpLogFields *lf,
   lf->message = message ? message : "(null)";
 }
 
+static gboolean
+wp_want_debug_log (const struct spa_log_topic *topic)
+{
+  return spa_log_level_topic_enabled (wp_spa_log_get_instance(), topic, SPA_LOG_LEVEL_DEBUG);
+}
+
 static void
 wp_log_fields_init_from_glib (WpLogFields *lf, GLogLevelFlags log_level_flags,
     const GLogField *fields, gsize n_fields)
 {
   wp_log_fields_init (lf, NULL, level_index_from_flags (log_level_flags),
+      wp_want_debug_log (NULL),
       NULL, NULL, NULL, 0, NULL, NULL);
 
   for (guint i = 0; i < n_fields; i++) {
@@ -758,15 +772,41 @@ wp_log_fields_write_to_stream (WpLogFields *lf, FILE *s)
 static gboolean
 wp_log_fields_write_to_journal (WpLogFields *lf)
 {
-  gsize n_fields = 6;
-  GLogField fields[6] = {
-    { "PRIORITY", log_level_info[lf->log_level].priority, -1 },
-    { "CODE_FILE", lf->file ? lf->file : "", -1 },
-    { "CODE_LINE", lf->line ? lf->line : "", -1 },
-    { "CODE_FUNC", lf->func ? lf->func : "", -1 },
-    { "TOPIC", lf->log_topic ? lf->log_topic : "", -1 },
-    { "MESSAGE", lf->message ? lf->message : "", -1 },
-  };
+  GLogField fields[6];
+  gsize n_fields = 0;
+  g_autofree gchar *full_message = NULL;
+  const gchar *message = lf->message ? lf->message : "";
+
+  if (lf->debug) {
+    if (lf->file && lf->line && lf->func) {
+      g_autofree gchar *file = g_path_get_basename(lf->file);
+
+      message = full_message = g_strdup_printf("%c %s%s[%s:%s:%s]: %s",
+          log_level_info[lf->log_level].name,
+          lf->log_topic ? lf->log_topic : "",
+          lf->log_topic ? " " : "",
+          file, lf->line, lf->func, message);
+    } else {
+      message = full_message = g_strdup_printf("%c %s%s%s",
+          log_level_info[lf->log_level].name,
+          lf->log_topic ? lf->log_topic : "",
+          lf->log_topic ? ": " : "",
+          message);
+    }
+  } else if (lf->log_topic) {
+    message = full_message = g_strdup_printf("%s: %s", lf->log_topic, message);
+  }
+
+  fields[n_fields++] = (GLogField) { "PRIORITY", log_level_info[lf->log_level].priority, -1 };
+  if (lf->file)
+    fields[n_fields++] = (GLogField) { "CODE_FILE", lf->file, -1 };
+  if (lf->line)
+    fields[n_fields++] = (GLogField) { "CODE_LINE", lf->line, -1 };
+  if (lf->func)
+    fields[n_fields++] = (GLogField) { "CODE_FUNC", lf->func, -1 };
+  if (lf->log_topic)
+    fields[n_fields++] = (GLogField) { "TOPIC", lf->log_topic, -1 };
+  fields[n_fields++] = (GLogField) { "MESSAGE", message, -1 };
 
   /* the log level flags are not used in this function, so we can pass 0 */
   return (g_log_writer_journald (0, fields, n_fields, NULL) == G_LOG_WRITER_HANDLED);
@@ -856,6 +896,8 @@ wp_log_writer_default (GLogLevelFlags log_level_flags,
 /*!
  * \brief Used internally by the debug logging macros. Avoid using it directly.
  *
+ * \deprecated Use \ref wp_logt_checked instead.
+ *
  * This assumes that the arguments are correct and that the log_topic is
  * enabled for the given log_level. No additional checks are performed.
  * \ingroup wplog
@@ -881,6 +923,46 @@ wp_log_checked (
   va_end (args);
 
   wp_log_fields_init (&lf, log_topic, level_index_from_flags (log_level_flags),
+      wp_want_debug_log (NULL),
+      file, line, func, object_type, object, message);
+  wp_log_fields_log (&lf);
+}
+
+/*!
+ * \brief Used internally by the debug logging macros. Avoid using it directly.
+ *
+ * This assumes that the arguments are correct and that the log_topic is
+ * enabled for the given log_level. No additional checks are performed.
+ * \ingroup wplog
+ */
+void
+wp_logt_checked (
+    const WpLogTopic *topic,
+    GLogLevelFlags log_level_flags,
+    const gchar *file,
+    const gchar *line,
+    const gchar *func,
+    GType object_type,
+    gconstpointer object,
+    const gchar *message_format,
+    ...)
+{
+  WpLogFields lf = {0};
+  g_autofree gchar *message = NULL;
+  va_list args;
+  const gchar *log_topic = topic ? topic->topic_name : NULL;
+  gboolean debug;
+
+  if (topic)
+    debug = (topic->flags & WP_LOG_TOPIC_LEVEL_MASK & G_LOG_LEVEL_DEBUG);
+  else
+    debug = wp_want_debug_log (NULL);
+
+  va_start (args, message_format);
+  message = g_strdup_vprintf (message_format, args);
+  va_end (args);
+
+  wp_log_fields_init (&lf, log_topic, level_index_from_flags (log_level_flags), debug,
       file, line, func, object_type, object, message);
   wp_log_fields_log (&lf);
 }
@@ -904,6 +986,7 @@ wp_spa_log_logtv (void *object,
   message = g_strdup_vprintf (fmt, args);
 
   wp_log_fields_init (&lf, topic ? topic->topic : NULL, log_level,
+      wp_want_debug_log (topic),
       file, line_str, func, 0, NULL, message);
   wp_log_fields_log (&lf);
 }
