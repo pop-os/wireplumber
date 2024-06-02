@@ -172,6 +172,7 @@ libwireplumber-0.5.so.0 libwireplumber-0.5-0 #MINVER#
  wp_log_topic_register@Base 0.4.82
  wp_log_topic_unregister@Base 0.4.82
  wp_log_writer_default@Base 0.3.95
+ wp_logt_checked@Base 0.5.3
  wp_lookup_dirs_get_type@Base 0.4.2
 #MISSING: 0.4.90# wp_lookup_dirs_get_type@Base 0.4.2
  wp_metadata_clear@Base 0.3.95
