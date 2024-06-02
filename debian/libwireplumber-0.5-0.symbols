@@ -12,15 +12,9 @@ libwireplumber-0.5.so.0 libwireplumber-0.5-0 #MINVER#
  wp_client_update_properties@Base 0.4.81
  wp_component_loader_get_type@Base 0.3.95
  wp_conf_close@Base 0.4.90
-#MISSING: 0.4.90# wp_conf_get_instance@Base 0.4.81
  wp_conf_get_name@Base 0.4.90
  wp_conf_get_section@Base 0.4.81
  wp_conf_get_type@Base 0.4.81
-#MISSING: 0.4.90# wp_conf_get_value@Base 0.4.81
-#MISSING: 0.4.90# wp_conf_get_value_boolean@Base 0.4.81
-#MISSING: 0.4.90# wp_conf_get_value_float@Base 0.4.81
-#MISSING: 0.4.90# wp_conf_get_value_int@Base 0.4.81
-#MISSING: 0.4.90# wp_conf_get_value_string@Base 0.4.81
  wp_conf_is_open@Base 0.4.90
  wp_conf_new@Base 0.4.90
  wp_conf_new_open@Base 0.4.90
@@ -65,21 +59,10 @@ libwireplumber-0.5.so.0 libwireplumber-0.5-0 #MINVER#
  wp_core_timeout_add@Base 0.3.95
  wp_core_timeout_add_closure@Base 0.3.95
  wp_core_update_properties@Base 0.3.95
-#MISSING: 0.4.81# wp_dbus_features_get_type@Base 0.4.11
-#MISSING: 0.4.81# wp_dbus_get_bus_type@Base 0.4.11
-#MISSING: 0.4.81# wp_dbus_get_connection@Base 0.4.11
-#MISSING: 0.4.81# wp_dbus_get_instance@Base 0.4.11
-#MISSING: 0.4.81# wp_dbus_get_state@Base 0.4.11
-#MISSING: 0.4.81# wp_dbus_get_type@Base 0.4.11
-#MISSING: 0.4.81# wp_dbus_state_get_type@Base 0.4.11
  wp_device_get_type@Base 0.3.95
  wp_device_new_from_factory@Base 0.3.95
  wp_direction_get_type@Base 0.3.95
  wp_domain_library_quark@Base 0.3.95
-#MISSING: 0.4.81# wp_endpoint_get_direction@Base 0.3.95
-#MISSING: 0.4.81# wp_endpoint_get_media_class@Base 0.3.95
-#MISSING: 0.4.81# wp_endpoint_get_name@Base 0.3.95
-#MISSING: 0.4.81# wp_endpoint_get_type@Base 0.3.95
  wp_event_collect_hooks@Base 0.4.81
  wp_event_dispatcher_get_instance@Base 0.4.81
  wp_event_dispatcher_get_type@Base 0.4.81
@@ -111,26 +94,18 @@ libwireplumber-0.5.so.0 libwireplumber-0.5-0 #MINVER#
  wp_factory_get_type@Base 0.4.5
  wp_feature_activation_transition_get_requested_features@Base 0.3.95
  wp_feature_activation_transition_get_type@Base 0.3.95
-#MISSING: 0.4.90# wp_find_file@Base 0.4.2
-#MISSING: 0.4.81# wp_get_config_dir@Base 0.3.95
-#MISSING: 0.4.81# wp_get_data_dir@Base 0.3.95
  wp_get_library_api_version@Base 0.4.12
  wp_get_library_version@Base 0.4.12
-#MISSING: 0.4.90# wp_get_module_dir@Base 0.3.95
  wp_global_proxy_bind@Base 0.3.95
  wp_global_proxy_get_global_properties@Base 0.3.95
  wp_global_proxy_get_permissions@Base 0.3.95
  wp_global_proxy_get_type@Base 0.3.95
  wp_global_proxy_request_destroy@Base 0.3.95
-#MISSING: 0.4.81# wp_impl_endpoint_get_type@Base 0.3.95
-#MISSING: 0.4.81# wp_impl_endpoint_new@Base 0.3.95
  wp_impl_metadata_get_type@Base 0.3.95
  wp_impl_metadata_new@Base 0.3.95
  wp_impl_metadata_new_full@Base 0.4.3
  wp_impl_module_get_type@Base 0.4.2
  wp_impl_module_load@Base 0.4.2
- wp_impl_module_load_file@Base 0.4.15
-#MISSING: 0.4.81# wp_impl_module_load_file@Base 0.4.15
  wp_impl_node_get_type@Base 0.3.95
  wp_impl_node_new_from_pw_factory@Base 0.3.95
  wp_impl_node_new_wrap@Base 0.3.95
@@ -156,25 +131,19 @@ libwireplumber-0.5.so.0 libwireplumber-0.5-0 #MINVER#
  wp_json_utils_match_rules_update_properties@Base 0.4.81
  wp_json_utils_merge_containers@Base 0.4.81
  wp_library_error_enum_get_type@Base 0.3.95
-#MISSING: 0.4.81# wp_link_features_get_type@Base 0.4.11
  wp_link_get_linked_object_ids@Base 0.3.95
  wp_link_get_state@Base 0.4.11
  wp_link_get_type@Base 0.3.95
  wp_link_new_from_factory@Base 0.3.95
  wp_link_state_get_type@Base 0.4.11
  wp_log_checked@Base 0.4.81
-#MISSING: 0.4.81# wp_log_level_is_enabled@Base 0.3.95
-#MISSING: 0.4.82# wp_log_set_global_level@Base 0.4.81
  wp_log_set_level@Base 0.4.82
-#MISSING: 0.4.81# wp_log_structured_standard@Base 0.3.95
  wp_log_topic_flags_get_type@Base 0.5.0
  wp_log_topic_init@Base 0.4.81
  wp_log_topic_register@Base 0.4.82
  wp_log_topic_unregister@Base 0.4.82
  wp_log_writer_default@Base 0.3.95
  wp_logt_checked@Base 0.5.3
- wp_lookup_dirs_get_type@Base 0.4.2
-#MISSING: 0.4.90# wp_lookup_dirs_get_type@Base 0.4.2
  wp_metadata_clear@Base 0.3.95
  wp_metadata_features_get_type@Base 0.3.95
  wp_metadata_find@Base 0.3.95
@@ -186,10 +155,8 @@ libwireplumber-0.5.so.0 libwireplumber-0.5-0 #MINVER#
  wp_metadata_item_get_value_type@Base 0.4.90
  wp_metadata_item_ref@Base 0.4.90
  wp_metadata_item_unref@Base 0.4.90
-#MISSING: 0.4.90# wp_metadata_iterator_item_extract@Base 0.3.95
  wp_metadata_new_iterator@Base 0.3.95
  wp_metadata_set@Base 0.3.95
-#MISSING: 0.4.90# wp_new_files_iterator@Base 0.4.2
  wp_node_features_get_type@Base 0.3.95
  wp_node_get_n_input_ports@Base 0.3.95
  wp_node_get_n_output_ports@Base 0.3.95
@@ -253,7 +220,6 @@ libwireplumber-0.5.so.0 libwireplumber-0.5-0 #MINVER#
  wp_plugin_find@Base 0.3.95
  wp_plugin_get_name@Base 0.3.95
  wp_plugin_get_type@Base 0.3.95
-#MISSING: 0.4.81# wp_plugin_register@Base 0.3.95
  wp_port_get_direction@Base 0.3.95
  wp_port_get_type@Base 0.3.95
  wp_properties_add@Base 0.3.95
@@ -271,8 +237,6 @@ libwireplumber-0.5.so.0 libwireplumber-0.5-0 #MINVER#
  wp_properties_item_get_value@Base 0.4.2
  wp_properties_item_ref@Base 0.4.2
  wp_properties_item_unref@Base 0.4.2
-#MISSING: 0.4.81# wp_properties_iterator_item_get_key@Base 0.3.95
-#MISSING: 0.4.81# wp_properties_iterator_item_get_value@Base 0.3.95
  wp_properties_matches@Base 0.3.95
  wp_properties_new@Base 0.3.95
  wp_properties_new_copy@Base 0.3.95
@@ -310,7 +274,6 @@ libwireplumber-0.5.so.0 libwireplumber-0.5-0 #MINVER#
  wp_session_item_features_get_type@Base 0.3.95
  wp_session_item_get_associated_proxy@Base 0.3.95
  wp_session_item_get_associated_proxy_id@Base 0.3.95
-#MISSING: 0.4.81# wp_session_item_get_id@Base 0.3.95
  wp_session_item_get_properties@Base 0.3.95
  wp_session_item_get_property@Base 0.3.96
  wp_session_item_get_type@Base 0.3.95
@@ -326,7 +289,6 @@ libwireplumber-0.5.so.0 libwireplumber-0.5-0 #MINVER#
  wp_settings_features_get_type@Base 0.4.81
  wp_settings_find@Base 0.4.82
  wp_settings_get@Base 0.4.81
-#MISSING: 0.4.82# wp_settings_get_instance@Base 0.4.81
  wp_settings_get_saved@Base 0.4.90
  wp_settings_get_spec@Base 0.4.90
  wp_settings_get_type@Base 0.4.81
@@ -365,15 +327,11 @@ libwireplumber-0.5.so.0 libwireplumber-0.5-0 #MINVER#
  wp_si_adapter_ports_state_get_type@Base 0.4.10
  wp_si_adapter_set_ports_format@Base 0.3.96
  wp_si_adapter_set_ports_format_finish@Base 0.3.96
-#MISSING: 0.4.81# wp_si_endpoint_get_properties@Base 0.3.95
-#MISSING: 0.4.81# wp_si_endpoint_get_registration_info@Base 0.3.95
-#MISSING: 0.4.81# wp_si_endpoint_get_type@Base 0.3.95
  wp_si_factory_construct@Base 0.3.95
  wp_si_factory_find@Base 0.3.95
  wp_si_factory_get_name@Base 0.3.95
  wp_si_factory_get_type@Base 0.3.95
  wp_si_factory_new_simple@Base 0.3.95
-#MISSING: 0.4.81# wp_si_factory_register@Base 0.3.95
  wp_si_link_get_in_item@Base 0.3.95
  wp_si_link_get_out_item@Base 0.3.95
  wp_si_link_get_properties@Base 0.3.95
