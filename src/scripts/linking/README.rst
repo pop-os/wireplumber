@@ -49,10 +49,10 @@ processed while targets are being selected.
      - metadata-changed
      - schedules rescan-for-linking when node target metadata properties are changed
 
-   * - linking/rescan-virtual-links
-     - rescan-virtual-links.lua
+   * - linking/rescan-media-role-links
+     - rescan-media-role-links.lua
      - link SI added, removed or metadata-changed
-     -
+     - activates or deactivates role-based links based on role priorities and actions
 
 .. list-table:: rescan-for-linking hooks, in order of execution
    :header-rows: 1
@@ -80,10 +80,6 @@ processed while targets are being selected.
      - File
      - Description
 
-   * - linking/find-virtual-target
-     - find-virtual-target.lua
-     -
-
    * - linking/find-defined-target
      - find-defined-target.lua
      - Select the target that has been defined explicitly by the 'target.object' property or metadata
@@ -91,6 +87,10 @@ processed while targets are being selected.
    * - linking/find-filter-target
      - find-filter-target.lua
      - Select the target of a filter node, if the subject is a filter node
+
+   * - linking/find-media-role-target
+     - find-media-role-target.lua
+     - Select the target based on the stream's media.role and the target's device.intended-roles
 
    * - linking/find-default-target
      - find-default-target.lua

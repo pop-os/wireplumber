@@ -53,37 +53,31 @@ AsyncEventHook {
           return
         end
 
-        if si_props ["item.factory.name"] == "si-audio-virtual" then
-          if si_props ["item.node.direction"] == "output" then
-            -- playback
-            out_item = target
-            in_item = si
-          else
-            -- capture
-            in_item = target
-            out_item = si
-          end
+        if si_props["item.node.direction"] == "output" then
+          -- playback
+          out_item = si
+          in_item = target
         else
-          if si_props ["item.node.direction"] == "output" then
-            -- playback
-            out_item = si
-            in_item = target
-          else
-            -- capture
-            in_item = si
-            out_item = target
-          end
+          -- capture
+          in_item = si
+          out_item = target
         end
 
-        local is_virtual_client_link = target_props ["item.factory.name"] == "si-audio-virtual"
+        -- role links are those that link to targets with intended-roles
+        -- unless the stream is a monitor (usually pavucontrol) or the stream
+        -- is linking to the monitor ports of a sink (both are "input")
+        local is_media_role_link = Core.test_feature ("hooks.linking.role-based.rescan")
+            and target_props["device.intended-roles"] ~= nil
+            and not cutils.parseBool (si_props ["stream.monitor"])
+            and si_props["item.node.direction"] ~= target_props["item.node.direction"]
 
         log:info (si,
-          string.format ("link %s <-> %s passthrough:%s, exclusive:%s, virtual-client:%s",
+          string.format ("link %s <-> %s passthrough:%s, exclusive:%s, media role link:%s",
             tostring (si_props ["node.name"]),
             tostring (target_props ["node.name"]),
             tostring (passthrough),
             tostring (exclusive),
-            tostring (is_virtual_client_link)))
+            tostring (is_media_role_link)))
 
         -- create and configure link
         si_link = SessionItem ("si-standard-link")
@@ -94,9 +88,12 @@ AsyncEventHook {
           ["exclusive"] = exclusive,
           ["out.item.port.context"] = "output",
           ["in.item.port.context"] = "input",
-          ["media.role"] = target_props["role"],
+          ["media.role"] = si_props["media.role"],
           ["target.media.class"] = target_props["media.class"],
-          ["is.virtual.client.link"] = is_virtual_client_link,
+          ["policy.role-based.priority"] = target_props["policy.role-based.priority"],
+          ["policy.role-based.action.same-priority"] = target_props["policy.role-based.action.same-priority"],
+          ["policy.role-based.action.lower-priority"] = target_props["policy.role-based.action.lower-priority"],
+          ["is.media.role.link"] = is_media_role_link,
           ["main.item.id"] = si.id,
           ["target.item.id"] = target.id,
         } then
@@ -105,9 +102,8 @@ AsyncEventHook {
           return
         end
 
+        local ids = {si.id, target.id}
         si_link:connect("link-error", function (_, error_msg)
-          local ids = {si.id, si_flags.peer_id}
-
           for _, id in ipairs (ids) do
             local si = om:lookup {
               Constraint { "id", "=", id, type = "gobject" },
@@ -133,9 +129,9 @@ AsyncEventHook {
         log:debug (si_link, "registered link between "
             .. tostring (si) .. " and " .. tostring (target))
 
-        -- only activate non virtual links because virtual links activation is
-        -- handled by rescan-virtual-links.lua
-        if not is_virtual_client_link then
+        -- only activate non media role links because their activation is
+        -- handled by rescan-media-role-links.lua
+        if not is_media_role_link then
           si_link:activate (Feature.SessionItem.ACTIVE, function (l, e)
             if e then
               transition:return_error (tostring (l) .. " link failed: "
@@ -158,6 +154,7 @@ AsyncEventHook {
             end
           end)
         else
+          lutils.updatePriorityMediaRoleLink(si_link)
           transition:advance ()
         end
       end,

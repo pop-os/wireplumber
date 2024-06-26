@@ -216,6 +216,11 @@ open_and_load_sections (WpConf * self, const gchar *path, GError ** error)
   if (!file)
     return FALSE;
 
+  if (!g_mapped_file_get_contents (file) || g_mapped_file_get_length (file) == 0) {
+    wp_notice_object (self, "Ignoring empty configuration file at '%s'", path);
+    return TRUE;
+  }
+
   /* test if the file is a relic from 0.4 */
   if (detect_old_conf_format (self, file)) {
     g_set_error (error, WP_DOMAIN_LIBRARY, WP_LIBRARY_ERROR_INVALID_ARGUMENT,
@@ -246,34 +251,26 @@ open_and_load_sections (WpConf * self, const gchar *path, GError ** error)
     g_array_append_val (sections, section);
   }
   else {
-    /* if !is_object && !is_string, but we can't test it this way because
-       is_string expects quotes and we want to support strings without quotes */
-    if (wp_spa_json_is_array (json) ||
-        wp_spa_json_is_int (json) ||
-        wp_spa_json_is_float (json) ||
-        wp_spa_json_is_boolean (json) ||
-        wp_spa_json_is_null (json))
-    {
-      g_set_error (error, WP_DOMAIN_LIBRARY, WP_LIBRARY_ERROR_INVALID_ARGUMENT,
-          "invalid config file start (expected an object or a section name): %.*s",
-          (int) wp_spa_json_get_size (json), wp_spa_json_get_data (json));
-      return FALSE;
+    g_auto (WpConfSection) section = { 0, };
+    g_autoptr (WpSpaJson) tmp = NULL, toplevel = NULL;
+    g_autoptr (WpSpaJsonParser) parser = wp_spa_json_parser_new_undefined (json);
+
+    /* get the very first token */
+    tmp = wp_spa_json_parser_get_json (parser);
+
+    /* if the top-level token is an object, parse that instead */
+    if (tmp && wp_spa_json_is_object (tmp)) {
+      g_clear_pointer (&parser, wp_spa_json_parser_unref);
+      toplevel = g_steal_pointer (&tmp);
+      parser = wp_spa_json_parser_new_object (toplevel);
+      tmp = wp_spa_json_parser_get_json (parser);
     }
 
-    g_autoptr (WpSpaJsonParser) parser = wp_spa_json_is_object (json) ?
-        wp_spa_json_parser_new_object (json) :
-        wp_spa_json_parser_new_undefined (json);
-
     while (TRUE) {
-      g_auto (WpConfSection) section = { 0, };
-      g_autoptr (WpSpaJson) tmp = NULL;
-
-      /* parse the section name */
-      tmp = wp_spa_json_parser_get_json (parser);
       if (!tmp)
         break;
 
-      /* if !is_string, but we want to supprt strings without quotes */
+      /* if !is_string, but we want to support strings without quotes */
       if (wp_spa_json_is_container (tmp) ||
           wp_spa_json_is_int (tmp) ||
           wp_spa_json_is_float (tmp) ||
@@ -301,6 +298,9 @@ open_and_load_sections (WpConf * self, const gchar *path, GError ** error)
       section.location = g_strdup (path);
       g_array_append_val (sections, section);
       memset (&section, 0, sizeof (section));
+
+      /* parse the next section name */
+      tmp = wp_spa_json_parser_get_json (parser);
     }
   }
 

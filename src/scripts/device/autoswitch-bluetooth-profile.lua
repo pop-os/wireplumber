@@ -71,8 +71,18 @@ streams_om = ObjectManager {
   Interest {
     type = "node",
     Constraint { "media.class", "matches", "Stream/Input/Audio", type = "pw-global" },
+    Constraint { "node.link-group", "-", type = "pw" },
     Constraint { "stream.monitor", "!", "true", type = "pw" },
     Constraint { "bluez5.loopback", "!", "true", type = "pw" }
+  }
+}
+
+filter_nodes_om = ObjectManager {
+  Interest {
+    type = "node",
+    Constraint { "node.link-group", "+", type = "pw" },
+    Constraint { "stream.monitor", "!", "true", type = "pw" },
+    Constraint { "bluez5.loopback", "!", "true", type = "pw" },
   }
 }
 
@@ -80,6 +90,8 @@ loopback_nodes_om = ObjectManager {
   Interest {
     type = "node",
     Constraint { "media.class", "matches", "Audio/Source", type = "pw-global" },
+    Constraint { "node.link-group", "+", type = "pw" },
+    Constraint { "stream.monitor", "!", "true", type = "pw" },
     Constraint { "bluez5.loopback", "=", "true", type = "pw" },
   }
 }
@@ -200,9 +212,10 @@ local function switchDeviceToHeadsetProfile (dev_id)
     return
   end
 
-  if isSwitchedToHeadsetProfile (device) then
-    Log.info ("Device with id " .. tostring(dev_id).. " is already switched to HSP/HFP")
-    return
+  -- clear restore callback, if any
+  if restore_timeout_source[dev_id] ~= nil then
+    restore_timeout_source[dev_id]:destroy ()
+    restore_timeout_source[dev_id] = nil
   end
 
   local cur_profile_name = getCurrentProfile (device)
@@ -212,10 +225,9 @@ local function switchDeviceToHeadsetProfile (dev_id)
     return
   end
 
-  -- clear restore callback, if any
-  if restore_timeout_source[dev_id] ~= nil then
-    restore_timeout_source[dev_id]:destroy ()
-    restore_timeout_source[dev_id] = nil
+  if isSwitchedToHeadsetProfile (device) then
+    Log.info ("Device with id " .. tostring(dev_id).. " is already switched to HSP/HFP")
+    return
   end
 
   local saved_headset_profile = getSavedHeadsetProfile (device)
@@ -312,7 +324,13 @@ local function triggerRestoreProfile (dev_id)
     end
   end
 
-  restore_timeout_source[dev_id] = nil
+  -- clear restore callback, if any
+  if restore_timeout_source[dev_id] ~= nil then
+    restore_timeout_source[dev_id]:destroy ()
+    restore_timeout_source[dev_id] = nil
+  end
+
+  -- create new restore callback
   restore_timeout_source[dev_id] = Core.timeout_add (profile_restore_timeout_msec, function ()
     restore_timeout_source[dev_id] = nil
     restoreProfile (dev_id)
@@ -341,6 +359,24 @@ local function checkStreamStatus (stream)
         end
 
         return dev_id
+      end
+    else
+      -- Check if it is linked to a filter main node, and recursively advance if so
+      local filter_main_node = filter_nodes_om:lookup {
+        Constraint { "bound-id", "=", peer_id, type = "gobject" }
+      }
+      if filter_main_node ~= nil then
+        -- Now check the all stream nodes for this filter
+        local filter_link_group = filter_main_node.properties ["node.link-group"]
+        for filter_stream_node in filter_nodes_om:iterate {
+            Constraint { "media.class", "matches", "Stream/Input/Audio", type = "pw-global" },
+            Constraint { "node.link-group", "=", filter_link_group, type = "pw" }
+          } do
+          local dev_id = checkStreamStatus (filter_stream_node)
+          if dev_id ~= nil then
+            return dev_id
+          end
+        end
       end
     end
   end
@@ -405,12 +441,8 @@ SimpleEventHook {
     local p = link.properties
     for stream in streams_om:iterate () do
       local in_id = tonumber(p["link.input.node"])
-      local out_id = tonumber(p["link.output.node"])
       local stream_id = tonumber(stream["bound-id"])
-      local bt_node = loopback_nodes_om:lookup {
-          Constraint { "bound-id", "=", out_id, type = "gobject" }
-      }
-      if in_id == stream_id and bt_node ~= nil then
+      if in_id == stream_id then
         handleStream (stream)
       end
     end
@@ -435,5 +467,6 @@ SimpleEventHook {
 
 devices_om:activate ()
 streams_om:activate ()
+filter_nodes_om:activate ()
 loopback_nodes_om:activate()
 
