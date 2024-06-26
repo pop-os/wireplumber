@@ -43,11 +43,6 @@ end
 function checkLinkable (si, om, handle_nonstreams)
   local si_props = si.properties
 
-  -- Always handle si-audio-virtual session items
-  if si_props ["item.factory.name"] == "si-audio-virtual" then
-    return true, si_props
-  end
-
   -- For the rest of them, only handle stream session items
   if not si_props or (si_props ["item.node.type"] ~= "stream"
       and not handle_nonstreams) then
@@ -85,6 +80,10 @@ function unhandleLinkable (si, om)
         in_flags.peer_id = nil
       elseif in_id == si_id and out_flags.peer_id == in_id then
         out_flags.peer_id = nil
+      end
+
+      if cutils.parseBool (silink.properties["is.media.role.link"]) then
+        lutils.clearPriorityMediaRoleLink(silink)
       end
 
       silink:remove ()
