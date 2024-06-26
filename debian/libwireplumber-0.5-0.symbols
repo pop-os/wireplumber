@@ -633,8 +633,6 @@ libwireplumber-module-settings.so libwireplumber-0.5-0 #MINVER#
  wireplumber__module_init@Base 0.4.81
 libwireplumber-module-si-audio-adapter.so libwireplumber-0.5-0 #MINVER#
  wireplumber__module_init@Base 0.3.95
-libwireplumber-module-si-audio-virtual.so libwireplumber-0.5-0 #MINVER#
- wireplumber__module_init@Base 0.4.81
 libwireplumber-module-si-node.so libwireplumber-0.5-0 #MINVER#
  wireplumber__module_init@Base 0.3.95
 libwireplumber-module-si-standard-link.so libwireplumber-0.5-0 #MINVER#
