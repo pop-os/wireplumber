@@ -1,3 +1,10 @@
+wireplumber (0.5.5-0) UNRELEASED; urgency=medium
+
+  * New upstream version
+      - Fix crashes in the Bluetooth HSP/HFP autoswitch (Closes: #1074379)
+
+ -- Dylan Aïssi <daissi@debian.org>  Fri, 28 Jun 2024 20:44:20 +0200
+
 wireplumber (0.5.4-1) unstable; urgency=medium
 
   * New upstream version
