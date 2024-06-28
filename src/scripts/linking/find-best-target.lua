@@ -8,11 +8,16 @@
 
 lutils = require ("linking-utils")
 cutils = require ("common-utils")
+futils = require ("filter-utils")
 log = Log.open_topic ("s-linking")
 
 SimpleEventHook {
   name = "linking/find-best-target",
-  after = "linking/find-default-target",
+  after = { "linking/find-defined-target",
+            "linking/find-filter-target",
+            "linking/find-media-role-target",
+            "linking/find-default-target" },
+  before = "linking/prepare-link",
   interests = {
     EventInterest {
       Constraint { "event.type", "=", "select-target" },
@@ -52,8 +57,10 @@ SimpleEventHook {
         tostring (target_props ["node.name"]),
         tostring (target_node_id)))
 
-      if si_target_link_group ~= nil then
-        Log.debug ("... ignoring filter as best target")
+      -- Skip smart filters as best target
+      if si_target_link_group ~= nil and
+          futils.is_filter_smart (target_direction, si_target_link_group) then
+        Log.debug ("... ignoring smart filter as best target")
         goto skip_linkable
       end
 
