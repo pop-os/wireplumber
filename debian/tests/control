@@ -1,0 +1,3 @@
+Tests: build
+Depends: build-essential, pkgconf, libwireplumber-0.5-dev
+Restrictions: superficial
