@@ -851,6 +851,37 @@ wp_core_get_vm_type (WpCore *self)
   return res;
 }
 
+static gboolean
+wp_core_connect_internal (WpCore *self, int fd)
+{
+  struct pw_properties *p = NULL;
+
+  /* Don't do anything if core is already connected */
+  if (self->pw_core)
+    return TRUE;
+
+  /* Connect */
+  p = self->properties ? wp_properties_to_pw_properties (self->properties) : NULL;
+
+  if (fd == -1)
+    self->pw_core = pw_context_connect (self->pw_context, p, 0);
+  else
+    self->pw_core = pw_context_connect_fd (self->pw_context, fd, p, 0);
+
+  if (!self->pw_core)
+    return FALSE;
+
+  /* Add the core listeners */
+  pw_core_add_listener (self->pw_core, &self->core_listener, &core_events, self);
+  pw_proxy_add_listener((struct pw_proxy*)self->pw_core,
+      &self->proxy_core_listener, &proxy_core_events, self);
+
+  /* Add the registry listener */
+  wp_registry_attach (&self->registry, self->pw_core);
+
+  return TRUE;
+}
+
 /*!
  * \brief Connects this core to the PipeWire server.
  *
@@ -864,29 +895,31 @@ wp_core_get_vm_type (WpCore *self)
 gboolean
 wp_core_connect (WpCore *self)
 {
-  struct pw_properties *p = NULL;
-
   g_return_val_if_fail (WP_IS_CORE (self), FALSE);
 
-  /* Don't do anything if core is already connected */
-  if (self->pw_core)
-    return TRUE;
+  return wp_core_connect_internal (self, -1);
+}
 
-  /* Connect */
-  p = self->properties ? wp_properties_to_pw_properties (self->properties) : NULL;
-  self->pw_core = pw_context_connect (self->pw_context, p, 0);
-  if (!self->pw_core)
-    return FALSE;
+/*!
+ * \brief Connects this core to the PipeWire server on the given socket.
+ *
+ * When connection succeeds, the WpCore \c "connected" signal is emitted.
+ *
+ * \ingroup wpcore
+ * \param self the core
+ * \param fd the connected socket to use, the socket will be closed
+ *   automatically on disconnect or error
+ * \returns TRUE if the core is effectively connected or FALSE if
+ *   connection failed
+ * \since 0.5.6
+ */
+gboolean
+wp_core_connect_fd (WpCore *self, int fd)
+{
+  g_return_val_if_fail (WP_IS_CORE (self), FALSE);
+  g_return_val_if_fail (fd > -1, FALSE);
 
-  /* Add the core listeners */
-  pw_core_add_listener (self->pw_core, &self->core_listener, &core_events, self);
-  pw_proxy_add_listener((struct pw_proxy*)self->pw_core,
-      &self->proxy_core_listener, &proxy_core_events, self);
-
-  /* Add the registry listener */
-  wp_registry_attach (&self->registry, self->pw_core);
-
-  return TRUE;
+  return wp_core_connect_internal (self, fd);
 }
 
 /*!

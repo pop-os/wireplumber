@@ -165,7 +165,7 @@ static void
 on_component_failed (WpCore * core, GAsyncResult * res, TestFixture *f)
 {
   gboolean loaded;
-  GError *error = NULL;
+  g_autoptr (GError) error = NULL;
 
   loaded = wp_core_load_component_finish (core, res, &error);
   g_assert_error (error, WP_DOMAIN_LIBRARY, WP_LIBRARY_ERROR_INVALID_ARGUMENT);
@@ -209,7 +209,7 @@ test_dependencies (TestFixture *f, gconstpointer data)
 
   /* verify the order of loading the plugins was as expected */
   const gchar *expected[] = {
-    "five", "one", "six", "two", "three", "four", "seven", NULL };
+    "five", "one", "seven", "ten", "eleven", "six", "two", "three", "four", "nine", NULL };
   g_assert_cmpstrv (f->loader->history->pdata, expected);
 
   g_assert_true (wp_core_test_feature (f->base.core, "support.one"));
@@ -221,6 +221,9 @@ test_dependencies (TestFixture *f, gconstpointer data)
   g_assert_true (wp_core_test_feature (f->base.core, "support.six"));
   g_assert_false (wp_core_test_feature (f->base.core, "support.seven"));
   g_assert_false (wp_core_test_feature (f->base.core, "support.eight"));
+  g_assert_true (wp_core_test_feature (f->base.core, "support.nine"));
+  g_assert_true (wp_core_test_feature (f->base.core, "support.ten"));
+  g_assert_true (wp_core_test_feature (f->base.core, "support.eleven"));
 }
 
 gint
