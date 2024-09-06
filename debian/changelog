@@ -1,9 +1,9 @@
-wireplumber (0.5.6-0) UNRELEASED; urgency=medium
+wireplumber (0.5.6-1) unstable; urgency=medium
 
   * New upstream version
   * Update symbols file
 
- -- Dylan Aïssi <daissi@debian.org>  Thu, 05 Sep 2024 21:46:08 +0200
+ -- Dylan Aïssi <daissi@debian.org>  Fri, 06 Sep 2024 09:40:36 +0200
 
 wireplumber (0.5.5-1) unstable; urgency=medium
 
