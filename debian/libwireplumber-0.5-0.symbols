@@ -25,6 +25,7 @@ libwireplumber-0.5.so.0 libwireplumber-0.5-0 #MINVER#
  wp_constraint_verb_get_type@Base 0.3.95
  wp_core_clone@Base 0.3.95
  wp_core_connect@Base 0.3.95
+ wp_core_connect_fd@Base 0.5.6
  wp_core_disconnect@Base 0.3.95
  wp_core_features_get_type@Base 0.4.81
  wp_core_find_object@Base 0.4.81
