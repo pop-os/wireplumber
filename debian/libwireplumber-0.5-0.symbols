@@ -612,31 +612,3 @@ libwireplumber-0.5.so.0 libwireplumber-0.5-0 #MINVER#
  wp_transition_set_data@Base 0.3.95
  wp_transition_set_source_tag@Base 0.3.95
  wp_transition_step_get_type@Base 0.3.95
-libwireplumber-module-dbus-connection.so libwireplumber-0.5-0 #MINVER#
- wireplumber__module_init@Base 0.4.81
-libwireplumber-module-default-nodes-api.so libwireplumber-0.5-0 #MINVER#
- wireplumber__module_init@Base 0.3.95
-libwireplumber-module-file-monitor-api.so libwireplumber-0.5-0 #MINVER#
- wireplumber__module_init@Base 0.4.2
-libwireplumber-module-log-settings.so libwireplumber-0.5-0 #MINVER#
- wireplumber__module_init@Base 0.4.81
-libwireplumber-module-logind.so libwireplumber-0.5-0 #MINVER#
- wireplumber__module_init@Base 0.4.3
-libwireplumber-module-lua-scripting.so libwireplumber-0.5-0 #MINVER#
- wireplumber__module_init@Base 0.3.95
-libwireplumber-module-mixer-api.so libwireplumber-0.5-0 #MINVER#
- wireplumber__module_init@Base 0.3.95
-libwireplumber-module-portal-permissionstore.so libwireplumber-0.5-0 #MINVER#
- wireplumber__module_init@Base 0.3.95
-libwireplumber-module-reserve-device.so libwireplumber-0.5-0 #MINVER#
- wireplumber__module_init@Base 0.3.95
-libwireplumber-module-settings.so libwireplumber-0.5-0 #MINVER#
- wireplumber__module_init@Base 0.4.81
-libwireplumber-module-si-audio-adapter.so libwireplumber-0.5-0 #MINVER#
- wireplumber__module_init@Base 0.3.95
-libwireplumber-module-si-node.so libwireplumber-0.5-0 #MINVER#
- wireplumber__module_init@Base 0.3.95
-libwireplumber-module-si-standard-link.so libwireplumber-0.5-0 #MINVER#
- wireplumber__module_init@Base 0.3.95
-libwireplumber-module-standard-event-source.so libwireplumber-0.5-0 #MINVER#
- wireplumber__module_init@Base 0.4.81

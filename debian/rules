@@ -25,3 +25,8 @@ override_dh_auto_configure:
 		-Dtests=true \
 		-Ddbus-tests=true \
 		$(NULL)
+
+override_dh_makeshlibs:
+	dh_makeshlibs \
+		--exclude=/usr/lib/$(DEB_HOST_MULTIARCH)/wireplumber-0.5 \
+		-- -c4
