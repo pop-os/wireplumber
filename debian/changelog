@@ -1,3 +1,10 @@
+wireplumber (0.5.6-2) unstable; urgency=medium
+
+  * Add dh-sequence-gir in Build-Deps to fill fields ${gir:*}
+  * dh_makeshlibs: ignore modules
+
+ -- Dylan Aïssi <daissi@debian.org>  Sat, 02 Nov 2024 10:43:19 +0100
+
 wireplumber (0.5.6-1) unstable; urgency=medium
 
   * New upstream version
