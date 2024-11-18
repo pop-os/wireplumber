@@ -5,3 +5,7 @@ include:
 
 reprotest:
   allow_failure: true
+
+variables:
+  SALSA_CI_ENABLE_BUILD_PACKAGE_PROFILES: 1
+  BUILD_PROFILES: nodoc,nogir
