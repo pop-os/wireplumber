@@ -8,4 +8,10 @@ reprotest:
 
 variables:
   SALSA_CI_ENABLE_BUILD_PACKAGE_PROFILES: 1
-  BUILD_PROFILES: nodoc,nogir
+
+test-build-profiles:
+  extends: .test-build-package-profiles
+  parallel:
+    matrix:
+      - BUILD_PROFILES: nodoc
+      - BUILD_PROFILES: nogir
