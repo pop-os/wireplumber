@@ -1,11 +1,14 @@
-wireplumber (0.5.6-2.1) UNRELEASED; urgency=medium
+wireplumber (0.5.6-3) unstable; urgency=medium
 
-  * Non-maintainer upload.
+  [ Helmut Grohne ]
   * Improve cross building: (Closes: #1087705)
     + Skip documentation in arch-only build.
   * Add nogir build profile (using dh-exec).
 
- -- Helmut Grohne <helmut@subdivi.de>  Sun, 17 Nov 2024 14:03:49 +0100
+  [ Dylan Aïssi ]
+  * Test build profiles (nodoc and nogir) with salsa-ci.
+
+ -- Dylan Aïssi <daissi@debian.org>  Mon, 18 Nov 2024 23:00:52 +0100
 
 wireplumber (0.5.6-2) unstable; urgency=medium
 
