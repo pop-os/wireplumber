@@ -5,10 +5,11 @@ Maintainer: Utopia Maintenance Team <pkg-utopia-maintainers@alioth-lists.debian.
 Uploaders: Sjoerd Simons <sjoerd@debian.org>,
            Dylan Aïssi <daissi@debian.org>
 Build-Depends: debhelper-compat (= 13),
+               dh-exec,
                dh-sequence-gir,
                doxygen <!nodoc>,
-               gobject-introspection,
-               libgirepository1.0-dev,
+               gobject-introspection <!nogir>,
+               libgirepository1.0-dev <!nogir>,
                libglib2.0-dev (>= 2.68),
                liblua5.4-dev,
                libpipewire-0.3-dev (>= 1.0.2),
@@ -19,8 +20,9 @@ Build-Depends: debhelper-compat (= 13),
                systemd-dev,
                dbus <!nocheck>,
                pipewire (>= 1.0.2) <!nocheck>,
+               python3-lxml:native <!nogir>,
+Build-Depends-Indep:
                python3-breathe <!nodoc>,
-               python3-lxml <!nodoc>,
                python3-sphinx <!nodoc>,
                python3-sphinx-rtd-theme <!nodoc>,
 Standards-Version: 4.7.0
@@ -102,6 +104,7 @@ Description: modular session / policy manager for PipeWire - documentation
 Package: gir1.2-wp-0.5
 Section: introspection
 Architecture: linux-any
+Build-Profiles: <!nogir>
 Multi-Arch: same
 Depends: ${misc:Depends},
          ${gir:Depends},

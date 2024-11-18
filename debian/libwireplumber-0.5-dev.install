@@ -1,4 +1,5 @@
+#!/usr/bin/dh-exec
 usr/include/wireplumber-*
 usr/lib/*/libwireplumber*.so
 usr/lib/*/pkgconfig/wireplumber*
-/usr/share/gir-1.0/*.gir
+/usr/share/gir-1.0/*.gir <!nogir>
