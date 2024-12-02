@@ -1,6 +1,8 @@
 wireplumber (0.5.7-0) UNRELEASED; urgency=medium
 
   * New upstream version
+  * Add missing Build-Deps: gir1.2-gobject-2.0-dev and gir1.2-gio-2.0-dev.
+      dh_girepository warns about them.
 
  -- Dylan Aïssi <daissi@debian.org>  Mon, 02 Dec 2024 16:35:48 +0100
 
