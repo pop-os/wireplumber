@@ -1,6 +1,15 @@
+# Create merge request pipelines for open merge requests, branch pipelines
+# otherwise. This allows MRs for new users to run CI, and prevents duplicate
+# pipelines for branches with open MRs.
+workflow:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH && $CI_OPEN_MERGE_REQUESTS
+      when: never
+    - if: $CI_COMMIT_BRANCH
+
 stages:
   - container
-  - container_coverity
   - build
   - analysis
   - pages
@@ -112,14 +121,23 @@ include:
       tar xf /tmp/cov-analysis-linux64.tgz ;
       mv cov-analysis-linux64-* coverity ;
       rm /tmp/cov-analysis-linux64.tgz
-  only:
-    variables:
-      - $COVERITY
 
-.not_coverity:
-  except:
-    variables:
-      - $COVERITY
+.rules_on_success_except_coverity:
+  rules:
+    - if: $COVERITY
+      when: never
+    - when: on_success
+
+.rules_only_on_coverity:
+  rules:
+    - if: $COVERITY
+
+.rules_only_on_mr_and_branch:
+  rules:
+    - if: $COVERITY
+      when: never
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH != "master"
 
 .build:
   before_script:
@@ -164,6 +182,7 @@ include:
 
 container_fedora:
   extends:
+    - .rules_on_success_except_coverity
     - .fedora
     - .fdo.container-build@fedora
   stage: container
@@ -172,6 +191,7 @@ container_fedora:
 
 container_ubuntu:
   extends:
+    - .rules_only_on_mr_and_branch
     - .ubuntu
     - .fdo.container-build@ubuntu
   stage: container
@@ -180,6 +200,7 @@ container_ubuntu:
 
 container_alpine:
   extends:
+    - .rules_only_on_mr_and_branch
     - .alpine
     - .fdo.container-build@alpine
   stage: container
@@ -188,17 +209,18 @@ container_alpine:
 
 container_coverity:
   extends:
+    - .rules_only_on_coverity
     - .fedora
     - .coverity
     - .fdo.container-build@fedora
-  stage: container_coverity
+  stage: container
   variables:
     GIT_STRATEGY: none
 
 build_on_fedora_with_docs:
   extends:
+    - .rules_on_success_except_coverity
     - .fedora
-    - .not_coverity
     - .fdo.distribution-image@fedora
     - .build
   stage: build
@@ -207,8 +229,8 @@ build_on_fedora_with_docs:
 
 build_on_fedora_no_docs:
   extends:
+    - .rules_only_on_mr_and_branch
     - .fedora
-    - .not_coverity
     - .fdo.distribution-image@fedora
     - .build
   stage: build
@@ -217,8 +239,8 @@ build_on_fedora_no_docs:
 
 build_on_ubuntu_with_gir:
   extends:
+    - .rules_only_on_mr_and_branch
     - .ubuntu
-    - .not_coverity
     - .fdo.distribution-image@ubuntu
     - .build
   stage: build
@@ -227,8 +249,8 @@ build_on_ubuntu_with_gir:
 
 build_on_ubuntu_no_gir:
   extends:
+    - .rules_only_on_mr_and_branch
     - .ubuntu
-    - .not_coverity
     - .fdo.distribution-image@ubuntu
     - .build
   stage: build
@@ -237,8 +259,8 @@ build_on_ubuntu_no_gir:
 
 build_on_alpine:
   extends:
+    - .rules_only_on_mr_and_branch
     - .alpine
-    - .not_coverity
     - .fdo.distribution-image@alpine
     - .build
   stage: build
@@ -247,6 +269,7 @@ build_on_alpine:
 
 build_with_coverity:
   extends:
+    - .rules_only_on_coverity
     - .fedora
     - .coverity
     - .fdo.suffixed-image@fedora
@@ -276,16 +299,23 @@ build_with_coverity:
 shellcheck:
   extends:
     - .fedora
-    - .not_coverity
     - .fdo.distribution-image@fedora
   stage: analysis
   script:
     - shellcheck $(git grep -l "#\!/.*bin/.*sh")
+  rules:
+    - if: $COVERITY
+      when: never
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      changes:
+        - "**/*.sh"
+    - if: $CI_COMMIT_BRANCH != "master"
+      changes:
+        - "**/*.sh"
 
 linguas_check:
   extends:
     - .fedora
-    - .not_coverity
     - .fdo.distribution-image@fedora
   stage: analysis
   script:
@@ -294,10 +324,17 @@ linguas_check:
     - ls *.po | sed s/.po//g | sort > LINGUAS.new
     - diff -u LINGUAS.sorted LINGUAS.new
     - rm -f LINGUAS.*
+  rules:
+    - if: $COVERITY
+      when: never
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      changes:
+        - po/*
+    - if: $CI_COMMIT_BRANCH != "master"
+      changes:
+        - po/*
 
 pages:
-  extends:
-    - .not_coverity
   stage: pages
   dependencies:
     - build_on_fedora_with_docs
@@ -307,5 +344,7 @@ pages:
   artifacts:
     paths:
       - public
-  only:
-    - master
+  rules:
+    - if: $COVERITY
+      when: never
+    - if: $CI_COMMIT_BRANCH == "master"
