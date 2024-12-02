@@ -32,9 +32,11 @@ state = nil
 headset_profiles = nil
 
 local profile_restore_timeout_msec = 2000
+local profile_switch_timeout_msec = 500
 
 local INVALID = -1
 local restore_timeout_source = {}
+local switch_timeout_source = {}
 
 local last_profiles = {}
 
@@ -58,30 +60,30 @@ Settings.subscribe ("bluetooth.use-persistent-storage", function ()
   handlePersistentSetting (Settings.get_boolean ("bluetooth.use-persistent-storage"))
 end)
 
-local function saveHeadsetProfile (device, profile_name)
+function saveHeadsetProfile (device, profile_name)
   local key = "saved-headset-profile:" .. device.properties ["device.name"]
   headset_profiles [key] = profile_name
   state:save_after_timeout (headset_profiles)
 end
 
-local function getSavedHeadsetProfile (device)
+function getSavedHeadsetProfile (device)
   local key = "saved-headset-profile:" .. device.properties ["device.name"]
   return headset_profiles [key]
 end
 
-local function saveLastProfile (device, profile_name)
+function saveLastProfile (device, profile_name)
   last_profiles [device.properties ["device.name"]] = profile_name
 end
 
-local function getSavedLastProfile (device)
+function getSavedLastProfile (device)
   return last_profiles [device.properties ["device.name"]]
 end
 
-local function isSwitchedToHeadsetProfile (device)
+function isSwitchedToHeadsetProfile (device)
   return getSavedLastProfile (device) ~= nil
 end
 
-local function findProfile (device, index, name)
+function findProfile (device, index, name)
   for p in device:iterate_params ("EnumProfile") do
     local profile = cutils.parseParam (p, "EnumProfile")
     if not profile then
@@ -101,7 +103,7 @@ local function findProfile (device, index, name)
   return INVALID, INVALID, nil
 end
 
-local function getCurrentProfile (device)
+function getCurrentProfile (device)
   for p in device:iterate_params ("Profile") do
     local profile = cutils.parseParam (p, "Profile")
     if profile then
@@ -112,7 +114,7 @@ local function getCurrentProfile (device)
   return nil
 end
 
-local function highestPrioProfileWithInputRoute (device)
+function highestPrioProfileWithInputRoute (device)
   local profile_priority = INVALID
   local profile_index = INVALID
   local profile_name = nil
@@ -150,7 +152,7 @@ local function highestPrioProfileWithInputRoute (device)
   return profile_priority, profile_index, profile_name
 end
 
-local function hasProfileInputRoute (device, profile_index)
+function hasProfileInputRoute (device, profile_index)
   for p in device:iterate_params ("EnumRoute") do
     local route = cutils.parseParam (p, "EnumRoute")
     if route and route.direction == "Input" and route.profiles then
@@ -164,7 +166,7 @@ local function hasProfileInputRoute (device, profile_index)
   return false
 end
 
-local function switchDeviceToHeadsetProfile (dev_id, device_om)
+function switchDeviceToHeadsetProfile (dev_id, device_om)
   -- Find the actual device
   local device = device_om:lookup {
       Constraint { "bound-id", "=", dev_id, type = "gobject" }
@@ -172,12 +174,6 @@ local function switchDeviceToHeadsetProfile (dev_id, device_om)
   if device == nil then
     Log.info ("Device with id " .. tostring(dev_id).. " not found")
     return
-  end
-
-  -- clear restore callback, if any
-  if restore_timeout_source[dev_id] ~= nil then
-    restore_timeout_source[dev_id]:destroy ()
-    restore_timeout_source[dev_id] = nil
   end
 
   local cur_profile_name = getCurrentProfile (device)
@@ -226,7 +222,7 @@ local function switchDeviceToHeadsetProfile (dev_id, device_om)
   end
 end
 
-local function restoreProfile (dev_id, device_om)
+function restoreProfile (dev_id, device_om)
   -- Find the actual device
   local device = device_om:lookup {
       Constraint { "bound-id", "=", dev_id, type = "gobject" }
@@ -278,7 +274,25 @@ local function restoreProfile (dev_id, device_om)
   end
 end
 
-local function triggerRestoreProfile (dev_id, device_om)
+function triggerSwitchDeviceToHeadsetProfile (dev_id, device_om)
+  -- Always clear any pending restore/switch callbacks when triggering a new switch
+  if restore_timeout_source[dev_id] ~= nil then
+    restore_timeout_source[dev_id]:destroy ()
+    restore_timeout_source[dev_id] = nil
+  end
+  if switch_timeout_source[dev_id] ~= nil then
+    switch_timeout_source[dev_id]:destroy ()
+    switch_timeout_source[dev_id] = nil
+  end
+
+  -- create new switch callback
+  switch_timeout_source[dev_id] = Core.timeout_add (profile_switch_timeout_msec, function ()
+    switch_timeout_source[dev_id] = nil
+    switchDeviceToHeadsetProfile (dev_id, device_om)
+  end)
+end
+
+function triggerRestoreProfile (dev_id, device_om)
   -- we never restore the device profiles if there are active streams
   for _, v in pairs (active_streams) do
     if v == dev_id then
@@ -286,7 +300,11 @@ local function triggerRestoreProfile (dev_id, device_om)
     end
   end
 
-  -- clear restore callback, if any
+  -- Always clear any pending restore/switch callbacks when triggering a new restore
+  if switch_timeout_source[dev_id] ~= nil then
+    switch_timeout_source[dev_id]:destroy ()
+    switch_timeout_source[dev_id] = nil
+  end
   if restore_timeout_source[dev_id] ~= nil then
     restore_timeout_source[dev_id]:destroy ()
     restore_timeout_source[dev_id] = nil
@@ -301,13 +319,14 @@ end
 
 -- We consider a Stream of interest if it is linked to a bluetooth loopback
 -- source filter
-local function checkStreamStatus (stream, node_om)
+function checkStreamStatus (stream, node_om, visited_link_groups)
   -- check if the stream is linked to a bluetooth loopback source
   local stream_id = tonumber(stream["bound-id"])
   local peer_id = lutils.getNodePeerId (stream_id)
   if peer_id ~= nil then
     local bt_node = node_om:lookup {
-        Constraint { "bound-id", "=", peer_id, type = "gobject" }
+        Constraint { "bound-id", "=", peer_id, type = "gobject" },
+        Constraint { "bluez5.loopback", "=", "true", type = "pw" }
     }
     if bt_node ~= nil then
       local dev_id = bt_node.properties["device.id"]
@@ -325,18 +344,27 @@ local function checkStreamStatus (stream, node_om)
     else
       -- Check if it is linked to a filter main node, and recursively advance if so
       local filter_main_node = node_om:lookup {
-        Constraint { "bound-id", "=", peer_id, type = "gobject" }
+        Constraint { "bound-id", "=", peer_id, type = "gobject" },
+        Constraint { "node.link-group", "+", type = "pw" }
       }
       if filter_main_node ~= nil then
         -- Now check all stream nodes for this filter
         local filter_link_group = filter_main_node.properties ["node.link-group"]
+        if visited_link_groups == nil then
+          visited_link_groups = {}
+        end
+        if visited_link_groups [filter_link_group] then
+          return nil
+        else
+          visited_link_groups [filter_link_group] = true
+        end
         for filter_stream_node in node_om:iterate {
             Constraint { "media.class", "matches", "Stream/Input/Audio", type = "pw-global" },
             Constraint { "stream.monitor", "!", "true", type = "pw" },
             Constraint { "bluez5.loopback", "!", "true", type = "pw" },
             Constraint { "node.link-group", "=", filter_link_group, type = "pw" }
           } do
-          local dev_id = checkStreamStatus (filter_stream_node, node_om)
+          local dev_id = checkStreamStatus (filter_stream_node, node_om, visited_link_groups)
           if dev_id ~= nil then
             return dev_id
           end
@@ -348,7 +376,7 @@ local function checkStreamStatus (stream, node_om)
   return nil
 end
 
-local function handleStream (stream, node_om, device_om)
+function handleStream (stream, node_om, device_om)
   if not Settings.get_boolean ("bluetooth.autoswitch-to-headset-profile") then
     return
   end
@@ -357,7 +385,7 @@ local function handleStream (stream, node_om, device_om)
   if dev_id ~= nil then
     active_streams [stream.id] = dev_id
     previous_streams [stream.id] = dev_id
-    switchDeviceToHeadsetProfile (dev_id, device_om)
+    triggerSwitchDeviceToHeadsetProfile (dev_id, device_om)
   else
     dev_id = active_streams [stream.id]
     active_streams [stream.id] = nil
@@ -367,7 +395,7 @@ local function handleStream (stream, node_om, device_om)
   end
 end
 
-local function handleAllStreams (node_om, device_om)
+function handleAllStreams (node_om, device_om)
   for stream in node_om:iterate {
     Constraint { "media.class", "matches", "Stream/Input/Audio", type = "pw-global" },
     Constraint { "node.link-group", "-", type = "pw" },
