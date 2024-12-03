@@ -34,3 +34,12 @@ override_dh_makeshlibs:
 	dh_makeshlibs \
 		--exclude=/usr/lib/$(DEB_HOST_MULTIARCH)/wireplumber-0.5 \
 		-- -c4
+
+# We only use dh-sequence-gnome so that Ubuntu
+# runs dh_translations
+override_dh_gnome:
+override_dh_gnome_clean:
+
+# Workaround for Ubuntu language pack issue
+execute_after_dh_translations:
+	ninja -C obj-$(DEB_HOST_GNU_TYPE) wireplumber-pot
