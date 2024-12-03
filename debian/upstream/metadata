@@ -3,3 +3,16 @@ Bug-Database: https://gitlab.freedesktop.org/pipewire/wireplumber/-/issues
 Bug-Submit: https://gitlab.freedesktop.org/pipewire/wireplumber/-/issues/new
 Repository: https://gitlab.freedesktop.org/pipewire/wireplumber.git
 Repository-Browse: https://gitlab.freedesktop.org/pipewire/wireplumber
+Reference:
+  - Title: "Smart audio filters with WirePlumber 0.5"
+    Author: Julian Bouzas
+    Year: 2024
+    URL: https://www.collabora.com/news-and-blog/blog/2024/06/26/smart-audio-filters-with-wireplumber-0.5/
+  - Title: "What's the latest with WirePlumber?"
+    Author: George Kiagiadakis
+    Year: 2024
+    URL: https://www.collabora.com/news-and-blog/blog/2024/02/19/whats-the-latest-with-wireplumber/
+  - Title: "WirePlumber: Exploring Lua scripts with Event Dispatcher"
+    Author: Ashok Sidipotu
+    Year: 2023
+    URL: https://www.collabora.com/news-and-blog/blog/2023/10/30/wireplumber-exploring-lua-scripts-with-event-dispatcher/
