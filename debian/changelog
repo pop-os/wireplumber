@@ -2,6 +2,7 @@ wireplumber (0.5.8-0) UNRELEASED; urgency=medium
 
   [ Dylan Aïssi ]
   * New upstream version
+  * Update symbols file
   * Add some references in debian/upstream/metadata
 
   [ Jeremy Bícha ]
