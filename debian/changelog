@@ -1,4 +1,4 @@
-wireplumber (0.5.8-0) UNRELEASED; urgency=medium
+wireplumber (0.5.8-1) unstable; urgency=medium
 
   [ Dylan Aïssi ]
   * New upstream version
@@ -8,7 +8,7 @@ wireplumber (0.5.8-0) UNRELEASED; urgency=medium
   [ Jeremy Bícha ]
   * Opt into Ubuntu language packs (using dh-sequence-gnome)
 
- -- Dylan Aïssi <daissi@debian.org>  Fri, 07 Feb 2025 21:53:23 +0100
+ -- Dylan Aïssi <daissi@debian.org>  Fri, 07 Feb 2025 22:27:17 +0100
 
 wireplumber (0.5.7-1) unstable; urgency=medium
 
