@@ -1,3 +1,14 @@
+wireplumber (0.5.8-0) UNRELEASED; urgency=medium
+
+  [ Dylan Aïssi ]
+  * New upstream version
+  * Add some references in debian/upstream/metadata
+
+  [ Jeremy Bícha ]
+  * Opt into Ubuntu language packs (using dh-sequence-gnome)
+
+ -- Dylan Aïssi <daissi@debian.org>  Fri, 07 Feb 2025 21:53:23 +0100
+
 wireplumber (0.5.7-1) unstable; urgency=medium
 
   * New upstream version
