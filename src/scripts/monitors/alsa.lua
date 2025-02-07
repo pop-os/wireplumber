@@ -5,6 +5,9 @@
 --
 -- SPDX-License-Identifier: MIT
 
+SPLIT_PCM_PARENT_OFFSET = 256
+SPLIT_PCM_OFFSET = 512
+
 cutils = require ("common-utils")
 log = Log.open_topic ("s-monitors")
 
@@ -17,6 +20,10 @@ config.rules = Conf.get_section_as_json ("monitor.alsa.rules", Json.Array {})
 device_names_table = nil
 node_names_table = nil
 
+-- SPA ids to node names: name = id_name_table[device_id][node_id]
+id_name_table = nil
+
+
 function nonempty(str)
   return str ~= "" and str or nil
 end
@@ -26,10 +33,154 @@ function applyDefaultDeviceProperties (properties)
   properties["api.acp.auto-profile"] = false
   properties["api.acp.auto-port"] = false
   properties["api.dbus.ReserveDevice1.Priority"] = -20
+  properties["api.alsa.split-enable"] = true
 end
+
+function createSplitPCMHWNode(dev_props, properties)
+  local skip_keys = {
+    "api.alsa.split.position", "card.profile.device", "device.profile.description",
+    "device.profile.name"
+  }
+  local props = {}
+
+  for k, v in pairs(properties) do
+    props[k] = v
+  end
+  for _, k in pairs(skip_keys) do
+    props[k] = nil
+  end
+
+  -- create the underlying hidden ALSA node
+  props["node.name"] = props["api.alsa.split.name"]
+  props["node.description"] = string.format("%s %s", dev_props["device.description"],
+        props["api.alsa.path"]:gsub("^[^,]*[,:]", ""))
+  if props["api.alsa.pcm.stream"] == "capture" then
+    props["media.class"] = "Audio/Source/Internal"
+  else
+    props["media.class"] = "Audio/Sink/Internal"
+  end
+  props["api.alsa.use-chmap"] = false
+  props["api.alsa.split.parent"] = true
+  props["audio.position"] = props["api.alsa.split.hw-position"]
+  local channels = Json.Raw (props["api.alsa.split.hw-position"]):parse ()
+  props["audio.channels"] = tostring(#channels)
+
+  props = JsonUtils.match_rules_update_properties (config.rules, props)
+
+  if cutils.parseBool (props ["node.disabled"]) then
+    log:notice ("ALSA node " .. props ["node.name"] .. " disabled")
+    return nil
+  end
+
+  return Node("adapter", props)
+end
+
+function createSplitPCMLoopback(parent, id, obj_type, factory, properties)
+  local skip_keys = {
+    -- not suitable for loopback
+    "audio.rate",
+    "clock.quantum-limit",
+    "factory.name",
+    "node.driver",
+    "node.pause-on-idle",
+    "node.want-driver",
+    "port.group",
+    "priority.driver",
+    "resample.disable",
+    "resample.prefill",
+  }
+  local args
+  local props = {}
+
+  props["node.virtual"] = false
+
+  for k, v in pairs(properties) do
+    props[k] = v
+  end
+  for _, k in pairs(skip_keys) do
+    props[k] = nil
+  end
+
+  local split_props = {
+    ["node.name"] = properties["node.name"] .. ".split",
+    ["node.description"] = string.format(I18n.gettext("Split %s"), properties["node.description"]),
+    ["audio.position"] = properties["api.alsa.split.position"],
+    ["stream.dont-remix"] = true,
+    ["node.passive"] = true,
+    ["node.dont-fallback"] = true,
+    ["node.linger"] = true,
+    ["state.restore-props"] = false,
+    ["target.object"] = properties["api.alsa.split.name"],
+  }
+
+  if properties["api.alsa.pcm.stream"] == "playback" then
+    props["media.class"] = "Audio/Sink"
+    split_props["media.class"] = "Stream/Output/Audio/Internal"
+    args = Json.Object {
+      ["capture.props"] = Json.Object (props),
+      ["playback.props"] = Json.Object (split_props),
+    }
+  else
+    props["media.class"] = "Audio/Source"
+    split_props["media.class"] = "Stream/Input/Audio/Internal"
+    args = Json.Object {
+      ["playback.props"] = Json.Object (props),
+      ["capture.props"] = Json.Object (split_props),
+    }
+  end
+
+  return LocalModule("libpipewire-module-loopback", args:get_data(), {})
+end
+
+devices_om = ObjectManager {
+  Interest {
+    type = "device",
+  }
+}
+
+split_nodes_om = ObjectManager {
+  Interest {
+    type = "node",
+    Constraint { "api.alsa.split.position", "+", type = "pw" },
+  }
+}
+
+split_nodes_om:connect ("object-added", function(_, node)
+    -- Connect ObjectConfig events to the right node
+    if not monitor then
+      return
+    end
+
+    local interest = Interest {
+      type = "device",
+      Constraint { "object.id", "=", node.properties["device.id"] }
+    }
+    log:info("Split PCM node found: " .. tostring (node["bound-id"]))
+
+    for device in devices_om:iterate (interest) do
+      local device_id = device.properties["spa.object.id"]
+      if not device_id then
+        goto next_device
+      end
+
+      local spa_device = monitor:get_managed_object (tonumber (device_id))
+      if not spa_device then
+        goto next_device
+      end
+
+      local id = node.properties["card.profile.device"]
+      if id ~= nil then
+        log:info(".. assign to device: " .. tostring (device["bound-id"]) .. " node " .. tostring (id))
+        spa_device:store_managed_object (id, node)
+      end
+
+      ::next_device::
+    end
+end)
 
 function createNode(parent, id, obj_type, factory, properties)
   local dev_props = parent.properties
+  local parent_id = tonumber(dev_props["spa.object.id"])
 
   -- set the device id and spa factory name; REQUIRED, do not change
   properties["device.id"] = parent["bound-id"]
@@ -38,7 +189,7 @@ function createNode(parent, id, obj_type, factory, properties)
   -- set the default pause-on-idle setting
   properties["node.pause-on-idle"] = false
 
-  -- try to negotiate the max ammount of channels
+  -- try to negotiate the max amount of channels
   if dev_props["api.alsa.use-acp"] ~= "true" then
     properties["audio.channels"] = properties["audio.channels"] or "64"
   end
@@ -103,7 +254,6 @@ function createNode(parent, id, obj_type, factory, properties)
     -- deduplicate nodes with the same name
     for counter = 2, 99, 1 do
       if node_names_table[properties["node.name"]] ~= true then
-        node_names_table[properties["node.name"]] = true
         break
       end
       properties["node.name"] = name .. "." .. counter
@@ -157,11 +307,47 @@ function createNode(parent, id, obj_type, factory, properties)
   end
 
   -- apply properties from rules defined in JSON .conf file
+  local orig_properties = {}
+  for k, v in pairs(properties) do
+    orig_properties[k] = v
+  end
   properties = JsonUtils.match_rules_update_properties (config.rules, properties)
 
   if cutils.parseBool (properties ["node.disabled"]) then
     log:notice ("ALSA node " .. properties["node.name"] .. " disabled")
-    node_names_table [properties ["node.name"]] = nil
+    return
+  end
+
+  node_names_table[properties["node.name"]] = true
+  id_name_table[parent_id][id] = properties["node.name"]
+
+  -- handle split HW node
+  if properties["api.alsa.split.position"] ~= nil then
+    local split_hw_node_name = string.format("%s.%s",
+      (stream == "capture" and "alsa_input" or "alsa_output"),
+      properties["api.alsa.path"]:gsub("([:,])", "_"))
+    properties["api.alsa.split.name"] = split_hw_node_name
+    orig_properties["api.alsa.split.name"] = split_hw_node_name
+
+    if not node_names_table [split_hw_node_name] then
+      log:info ("Create ALSA SplitPCM HW node " .. split_hw_node_name)
+
+      local node = createSplitPCMHWNode(dev_props, orig_properties)
+      if node ~= nil then
+        node:activate(Feature.Proxy.BOUND)
+        parent:store_managed_object(SPLIT_PCM_PARENT_OFFSET + id, node)
+
+        node_names_table[split_hw_node_name] = true
+        id_name_table[parent_id][SPLIT_PCM_PARENT_OFFSET + id] = split_hw_node_name
+      end
+    end
+
+    -- create split PCM node
+    log:info ("Create ALSA SplitPCM split node " .. properties["node.name"])
+
+    local loopback = createSplitPCMLoopback (parent, id, obj_type, factory, properties)
+    parent:store_managed_object(SPLIT_PCM_OFFSET + id, loopback)
+    parent:set_managed_pending(id)
     return
   end
 
@@ -171,37 +357,49 @@ function createNode(parent, id, obj_type, factory, properties)
       if err then
         log:warning ("Failed to create " .. properties ["node.name"]
           .. ": " .. tostring(err))
-
-        -- if it fails, object-removed gets called with missing
-        -- properties, so clean up already here
-        node_names_table [properties ["node.name"]] = nil
       end
   end)
   parent:store_managed_object(id, node)
 end
 
+function removeNode(parent, id)
+  local parent_id = tonumber(parent.properties["spa.object.id"])
+  local ids = {id, SPLIT_PCM_PARENT_OFFSET + id, SPLIT_PCM_OFFSET + id}
+
+  for _, j in pairs(ids) do
+    local node_name = id_name_table[parent_id][j]
+
+    parent:store_managed_object(j, nil)
+
+    if node_name ~= nil then
+      log:info ("Removing node " .. node_name)
+      node_names_table[node_name] = nil
+      id_name_table[parent_id][j] = nil
+    end
+  end
+end
+
 function createDevice(parent, id, factory, properties)
+  id_name_table[id] = {}
+  properties["spa.object.id"] = id
   local device = SpaDevice(factory, properties)
   if device then
     device:connect("create-object", createNode)
-    device:connect("object-removed", function (parent, id)
-      local node = parent:get_managed_object(id)
-      if not node then
-        return
-      end
-
-      local node_name = node.properties["node.name"]
-      if node_name ~= nil then
-        log:info ("Removing node " .. node_name)
-        node_names_table[node_name] = nil
-      else
-        log:info ("Removing node with missing node.name")
-      end
-    end)
+    device:connect("object-removed", removeNode)
     device:activate(Feature.SpaDevice.ENABLED | Feature.Proxy.BOUND)
     parent:store_managed_object(id, device)
   else
     log:warning ("Failed to create '" .. factory .. "' device")
+  end
+end
+
+function removeDevice(parent, id)
+  if id_name_table[id] ~= nil then
+    for _, node_name in pairs(id_name_table[id]) do
+      log:info ("Release " .. node_name)
+      node_names_table[node_name] = nil
+    end
+    id_name_table[id] = nil
   end
 end
 
@@ -317,6 +515,7 @@ function prepareDevice(parent, id, obj_type, factory, properties)
 
       elseif state == "busy" then
         -- destroy the device
+        removeDevice(parent, id)
         parent:store_managed_object(id, nil)
       end
     end)
@@ -347,6 +546,8 @@ function createMonitor ()
 
   -- handle object-removed to destroy device reservations and recycle device name
   m:connect("object-removed", function (parent, id)
+    removeDevice(parent, id)
+
     local device = parent:get_managed_object(id)
     if not device then
       return
@@ -367,6 +568,7 @@ function createMonitor ()
   -- reset the name tables to make sure names are recycled
   device_names_table = {}
   node_names_table = {}
+  id_name_table = {}
 
   -- activate monitor
   log:info("Activating ALSA monitor")
@@ -405,3 +607,6 @@ end
 
 -- create the monitor
 monitor = createMonitor()
+
+devices_om:activate()
+split_nodes_om:activate()

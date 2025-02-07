@@ -20,6 +20,10 @@ config.rules = Conf.get_section_as_json ("monitor.bluez.rules", Json.Array {})
 -- This is not a setting, it must always be enabled
 config.properties["api.bluez5.connection-info"] = true
 
+-- Properties used for previously creating a SCO source node. key: SPA device id
+sco_source_node_properties = {}
+
+
 devices_om = ObjectManager {
   Interest {
     type = "device",
@@ -90,6 +94,7 @@ function createOffloadScoNode(parent, id, type, factory, properties)
     args["playback.props"] = Json.Object {
       ["node.passive"] = true,
       ["node.pause-on-idle"] = false,
+      ["state.restore-props"] = false,
     }
   elseif factory:find("source") then
     local playback_args = {
@@ -106,6 +111,7 @@ function createOffloadScoNode(parent, id, type, factory, properties)
     args["capture.props"] = Json.Object {
       ["node.passive"] = true,
       ["node.pause-on-idle"] = false,
+      ["state.restore-props"] = false,
     }
     args["playback.props"] = Json.Object(playback_args)
   else
@@ -144,7 +150,7 @@ device_set_nodes_om:connect ("object-added", function(_, node)
     }
     log:info("Device set node found: " .. tostring (node["bound-id"]))
     for device in devices_om:iterate (interest) do
-      local device_id = device.properties["api.bluez5.id"]
+      local device_id = device.properties["spa.object.id"]
       if not device_id then
         goto next_device
       end
@@ -158,11 +164,6 @@ device_set_nodes_om:connect ("object-added", function(_, node)
       if id ~= nil then
         log:info(".. assign to device: " .. tostring (device["bound-id"]) .. " node " .. tostring (id))
         spa_device:store_managed_object (id, node)
-
-        -- set routes again to update volumes etc.
-        for route in device:iterate_params ("Route") do
-          device:set_param ("Route", route)
-        end
       end
 
       ::next_device::
@@ -205,6 +206,7 @@ function createSetNode(parent, id, type, factory, properties)
           ["create-stream"] = Json.Object {
             ["media.class"] = stream_class,
             ["audio.position"] = Json.Array (member["channels"]),
+            ["state.restore-props"] = false,
           }
         },
       }
@@ -231,6 +233,7 @@ end
 function createNode(parent, id, type, factory, properties)
   local dev_props = parent.properties
   local parent_id = parent["bound-id"]
+  local parent_spa_id = tonumber(dev_props["spa.object.id"])
 
   if cutils.parseBool (config.properties ["bluez5.hw-offload-sco"]) and factory:find("sco") then
     createOffloadScoNode(parent, id, type, factory, properties)
@@ -240,6 +243,7 @@ function createNode(parent, id, type, factory, properties)
   -- set the device id and spa factory name; REQUIRED, do not change
   properties["device.id"] = parent_id
   properties["factory.name"] = factory
+  properties["spa.object.id"] = id
 
   -- set the default pause-on-idle setting
   properties["node.pause-on-idle"] = false
@@ -297,8 +301,13 @@ function createNode(parent, id, type, factory, properties)
   if properties["api.bluez5.set.leader"] then
     local combine = createSetNode(parent, id, type, factory, properties)
     parent:store_managed_object(id + COMBINE_OFFSET, combine)
+    parent:set_managed_pending(id)
   else
+    log:info("Create node: " .. properties["node.name"] .. ": " .. factory .. " " .. tostring (id))
     properties["bluez5.loopback"] = false
+    if factory == "api.bluez5.sco.source" then
+      sco_source_node_properties[parent_spa_id] = properties
+    end
     local node = LocalNode("adapter", properties)
     node:activate(Feature.Proxy.BOUND)
     parent:store_managed_object(id, node)
@@ -306,6 +315,17 @@ function createNode(parent, id, type, factory, properties)
 end
 
 function removeNode(parent, id)
+  local dev_props = parent.properties
+  local parent_spa_id = tonumber(dev_props["spa.object.id"])
+  local src_properties = sco_source_node_properties[parent_spa_id]
+
+  log:debug("Remove node: " .. tostring (id))
+
+  if src_properties ~= nil and id == tonumber(src_properties["spa.object.id"]) then
+    log:debug("Clear old SCO properties")
+    sco_source_node_properties[parent_spa_id] = nil
+  end
+
   -- Clear also the device set module, if any
   parent:store_managed_object(id + COMBINE_OFFSET, nil)
 end
@@ -349,7 +369,7 @@ function createDevice(parent, id, type, factory, properties)
 
     -- initial profile is to be set by policy-device-profile.lua, not spa-bluez5
     properties["bluez5.profile"] = "off"
-    properties["api.bluez5.id"] = id
+    properties["spa.object.id"] = id
 
     -- apply properties from the rules in the configuration file
     properties = JsonUtils.match_rules_update_properties (config.rules, properties)
@@ -378,10 +398,15 @@ function createDevice(parent, id, type, factory, properties)
   end
 end
 
+function removeDevice(parent, id)
+  sco_source_node_properties[id] = nil
+end
+
 function createMonitor()
   local monitor = SpaDevice("api.bluez5.enum.dbus", config.properties)
   if monitor then
     monitor:connect("create-object", createDevice)
+    monitor:connect("object-removed", removeDevice)
   else
     log:notice("PipeWire's BlueZ SPA plugin is missing or broken. " ..
         "Bluetooth devices will not be supported.")
@@ -405,15 +430,18 @@ function CreateDeviceLoopbackSource (dev_name, dec_desc, dev_id)
       ["stream.dont-remix"] = true,
       ["node.passive"] = true,
       ["node.dont-fallback"] = true,
-      ["node.linger"] = true
+      ["node.linger"] = true,
+      ["state.restore-props"] = false,
     },
     ["playback.props"] = Json.Object {
       ["node.name"] = string.format ("bluez_input.%s", dev_name),
       ["node.description"] = string.format ("%s", dec_desc),
+      ["node.virtual"] = false,
       ["audio.position"] = "[MONO]",
       ["media.class"] = "Audio/Source",
       ["device.id"] = dev_id,
       ["card.profile.device"] = DEVICE_SOURCE_ID,
+      ["device.routes"] = "1",
       ["priority.driver"] = 2010,
       ["priority.session"] = 2010,
       ["bluez5.loopback"] = true,
@@ -431,6 +459,7 @@ end
 function checkProfiles (dev)
   local device_id = dev["bound-id"]
   local props = dev.properties
+  local device_spa_id = tonumber(props["spa.object.id"])
 
   -- Don't create loopback source device if autoswitch is disabled
   if not Settings.get_boolean ("bluetooth.autoswitch-to-headset-profile") then
@@ -438,7 +467,7 @@ function checkProfiles (dev)
   end
 
   -- Get the associated BT SpaDevice
-  local internal_id = tostring (props["api.bluez5.id"])
+  local internal_id = tostring (props["spa.object.id"])
   local spa_device = monitor:get_managed_object (internal_id)
   if spa_device == nil then
     return
@@ -465,10 +494,32 @@ function checkProfiles (dev)
     local dev_name = props["api.bluez5.address"] or props["device.name"]
     local dec_desc = props["device.description"] or props["device.name"]
       or props["device.nick"] or props["device.alias"] or "bluetooth-device"
+
+    log:info("create SCO loopback node: " .. dev_name)
+
     -- sanitize description, replace ':' with ' '
     dec_desc = dec_desc:gsub("(:)", " ")
     loopback = CreateDeviceLoopbackSource (dev_name, dec_desc, device_id)
     spa_device:store_managed_object(LOOPBACK_SOURCE_ID, loopback)
+
+    -- recreate any sco source node
+    local properties = sco_source_node_properties[device_spa_id]
+    if properties ~= nil then
+      local node_id = tonumber(properties["spa.object.id"])
+      local node = spa_device:get_managed_object (node_id)
+      if node ~= nil then
+        log:info("Recreate node: " .. properties["node.name"] .. ": " ..
+          properties["factory.name"] .. " " .. tostring (node_id))
+
+        spa_device:store_managed_object(node_id, nil)
+
+        properties["bluez5.loopback-target"] = true
+        properties["api.bluez5.internal"] = true
+        node = LocalNode("adapter", properties)
+        node:activate(Feature.Proxy.BOUND)
+        spa_device:store_managed_object(node_id, node)
+      end
+    end
   end
 end
 
