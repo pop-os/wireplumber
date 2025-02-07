@@ -29,16 +29,16 @@ SimpleEventHook {
     local name = lnkbl.properties ["node.name"]
 
     if tu.linkablesReady () and name ~= "stream-node" then
-      -- all linkables created execept stream-node
+      -- all linkables created except stream-node
       tu.createStreamNode ("playback")
     elseif tu.linkablesReady () and tu.lnkbls ["stream-node"] then
       -- when "stream-node" linkable is ready
-      tu.setTargetInMetadata ("target.node", "defined-device-node")
+      tu.setTargetInMetadata ("target.node", "defined-device-node", "node.id")
     end
   end
 }:register ()
 
--- hook to selet defined target
+-- hook to select defined target
 SimpleEventHook {
   name = "linkable-added@test-linking",
   after = "linkable-added@test-utils-linking",
@@ -52,7 +52,7 @@ SimpleEventHook {
   },
   execute = function (event)
     if tu.linkablesReady () then
-      tu.setTargetInMetadata ("target.node", "defined-device-node")
+      tu.setTargetInMetadata ("target.node", "defined-device-node", "node.id")
     end
   end
 }:register ()

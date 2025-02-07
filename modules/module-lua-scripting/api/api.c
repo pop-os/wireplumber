@@ -293,6 +293,15 @@ core_test_feature (lua_State *L)
   return 1;
 }
 
+static int
+core_update_properties (lua_State *L)
+{
+  WpCore *core = get_wp_core(L);
+  luaL_checktype (L, 1, LUA_TTABLE);
+  wp_core_update_properties (core, wplua_table_to_properties (L, 1));
+  return 0;
+}
+
 static const luaL_Reg core_funcs[] = {
   { "get_properties", core_get_properties },
   { "get_info", core_get_info },
@@ -304,6 +313,7 @@ static const luaL_Reg core_funcs[] = {
   { "quit", core_quit },
   { "require_api", core_require_api },
   { "test_feature", core_test_feature },
+  { "update_properties", core_update_properties },
   { NULL, NULL }
 };
 
@@ -324,7 +334,7 @@ static WpLuaLogTopic *
 wp_lua_log_topic_copy (WpLuaLogTopic *topic)
 {
   WpLuaLogTopic *copy = g_new0 (WpLuaLogTopic, 1);
-  copy->topic_name = g_ref_string_acquire ((char *) copy->topic_name);
+  copy->topic_name = g_ref_string_acquire ((char *) topic->topic_name);
   wp_log_topic_register (copy);
   return copy;
 }
@@ -1070,10 +1080,20 @@ spa_device_store_managed_object (lua_State *L)
   return 0;
 }
 
+static int
+spa_device_set_managed_pending (lua_State *L)
+{
+  WpSpaDevice *device = wplua_checkobject (L, 1, WP_TYPE_SPA_DEVICE);
+  guint id = luaL_checkinteger (L, 2);
+  wp_spa_device_set_managed_pending (device, id);
+  return 0;
+}
+
 static const luaL_Reg spa_device_methods[] = {
   { "iterate_managed_objects", spa_device_iterate_managed_objects },
   { "get_managed_object", spa_device_get_managed_object },
   { "store_managed_object", spa_device_store_managed_object },
+  { "set_managed_pending", spa_device_set_managed_pending },
   { NULL, NULL }
 };
 
