@@ -1,10 +1,10 @@
-wireplumber (0.5.8-2) UNRELEASED; urgency=medium
+wireplumber (0.5.8-2) unstable; urgency=medium
 
   * Install zsh completions in /usr/share/zsh/vendor-completions/
     See: /usr/share/doc/zsh/README.Debian.
   * Standards-Version: 4.7.2 (no changes needed)
 
- -- Dylan Aïssi <daissi@debian.org>  Thu, 20 Mar 2025 09:14:06 +0100
+ -- Dylan Aïssi <daissi@debian.org>  Sat, 19 Apr 2025 09:10:54 +0200
 
 wireplumber (0.5.8-1) unstable; urgency=medium
 
