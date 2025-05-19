@@ -1,6 +1,7 @@
 wireplumber (0.5.9-0) UNRELEASED; urgency=medium
 
   * New upstream version
+  * Update symbols file with new symbols
   * Adjust VCS fields in d/control and d/gbp.conf for experimental
 
  -- Dylan Aïssi <daissi@debian.org>  Mon, 19 May 2025 15:35:59 +0200

@@ -223,6 +223,15 @@ libwireplumber-0.5.so.0 libwireplumber-0.5-0 #MINVER#
  wp_plugin_get_type@Base 0.3.95
  wp_port_get_direction@Base 0.3.95
  wp_port_get_type@Base 0.3.95
+ wp_proc_info_get_arg@Base 0.5.9
+ wp_proc_info_get_cgroup@Base 0.5.9
+ wp_proc_info_get_n_args@Base 0.5.9
+ wp_proc_info_get_parent_pid@Base 0.5.9
+ wp_proc_info_get_pid@Base 0.5.9
+ wp_proc_info_get_type@Base 0.5.9
+ wp_proc_info_ref@Base 0.5.9
+ wp_proc_info_unref@Base 0.5.9
+ wp_proc_utils_get_proc_info@Base 0.5.9
  wp_properties_add@Base 0.3.95
  wp_properties_add_from_dict@Base 0.3.95
  wp_properties_add_keys@Base 0.3.95
