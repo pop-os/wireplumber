@@ -529,7 +529,7 @@ status_run (WpCtl * self)
   printf (TREE_INDENT_END "Default Configured Devices:\n");
   if (def_nodes_api) {
     for (guint i = 0; i < G_N_ELEMENTS (DEFAULT_NODE_MEDIA_CLASSES); i++) {
-      const gchar *name = NULL;
+      g_autofree gchar *name = NULL;
       g_signal_emit_by_name (def_nodes_api, "get-default-configured-node-name",
           DEFAULT_NODE_MEDIA_CLASSES[i], &name);
       if (name)
@@ -753,7 +753,7 @@ inspect_print_object (WpCtl * self, WpProxy * proxy, guint nest_level)
     if (cmdline.inspect.show_referenced && nest_level == 0 &&
         key_is_object_reference (prop_item->key))
     {
-      guint id = (guint) strtol (prop_item->value, NULL, 10);
+      guint32 id = (guint32) strtol (prop_item->value, NULL, 10);
       g_autoptr (WpProxy) refer_proxy =
           wp_object_manager_lookup (self->om, WP_TYPE_GLOBAL_PROXY,
               WP_CONSTRAINT_TYPE_G_PROPERTY, "bound-id", "=u", id, NULL);
@@ -833,10 +833,8 @@ set_default_prepare (WpCtl * self, GError ** error)
 {
   wp_object_manager_add_interest (self->om, WP_TYPE_NODE,
       WP_CONSTRAINT_TYPE_PW_GLOBAL_PROPERTY,
-      "object.id", "=u", cmdline.set_default.id,
+      "object.id", "=u", (guint32) cmdline.set_default.id,
       NULL);
-  wp_object_manager_request_object_features (self->om, WP_TYPE_METADATA,
-      WP_OBJECT_FEATURES_ALL);
   wp_object_manager_request_object_features (self->om, WP_TYPE_NODE,
       WP_PIPEWIRE_OBJECT_FEATURES_MINIMAL);
   return TRUE;

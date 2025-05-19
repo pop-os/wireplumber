@@ -95,12 +95,12 @@ Examples
      }
    ]
 
-   wireplumber.profiles = [
+   wireplumber.profiles = {
      main = {
        node.software-dsp = required
      }
-   ]
+   }
 
 
-This will match any sinks with the UCM HiFi Speaker profile set that are associated
-with cards containing the string "WeirdHardware" at the start of their name.
+This will match any sinks with the UCM HiFi Speaker profile set or cards
+containing the string "WeirdHardware" at the start of their name.

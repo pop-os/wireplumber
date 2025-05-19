@@ -1,5 +1,5 @@
 project('wireplumber', ['c'],
-  version : '0.5.8',
+  version : '0.5.9',
   license : 'MIT',
   meson_version : '>= 0.59.0',
   default_options : [
@@ -41,6 +41,17 @@ add_project_arguments([
     '-DGETTEXT_PACKAGE="@0@"'.format(meson.project_name()),
   ], language: 'c'
 )
+
+check_short_name = '''#define _GNU_SOURCE
+#include <errno.h>
+void main() { program_invocation_short_name; }
+'''
+if cc.compiles(check_short_name, name : 'check short_name')
+  add_project_arguments([
+      '-DHAS_SHORT_NAME',
+    ], language: 'c'
+  )
+endif
 
 build_modules = get_option('modules')
 build_daemon = get_option('daemon')
