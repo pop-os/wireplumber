@@ -1,8 +1,8 @@
-wireplumber (0.5.10-0) UNRELEASED; urgency=medium
+wireplumber (0.5.10-1) experimental; urgency=medium
 
   * New upstream version
 
- -- Dylan Aïssi <daissi@debian.org>  Wed, 21 May 2025 10:07:44 +0200
+ -- Dylan Aïssi <daissi@debian.org>  Wed, 21 May 2025 10:17:37 +0200
 
 wireplumber (0.5.9-1) experimental; urgency=medium
 
