@@ -43,3 +43,6 @@ override_dh_gnome_clean:
 # Workaround for Ubuntu language pack issue
 execute_after_dh_translations:
 	ninja -C obj-$(DEB_HOST_GNU_TYPE) wireplumber-pot
+
+override_dh_builddeb:
+	dh_builddeb -- -Zzstd -z3
