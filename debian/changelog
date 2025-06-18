@@ -1,3 +1,9 @@
+wireplumber (0.5.8-2pop1) noble; urgency=medium
+
+  * Backport to 24.04
+
+ -- Michael Murphy <michael@mmurphy.dev>  Wed, 18 Jun 2025 13:19:23 +0200
+
 wireplumber (0.5.8-2) unstable; urgency=medium
 
   * Install zsh completions in /usr/share/zsh/vendor-completions/
