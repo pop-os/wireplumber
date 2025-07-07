@@ -1,5 +1,5 @@
 usr/bin
-usr/lib/systemd
+usr/lib/systemd/user
 usr/share/locale
 usr/share/wireplumber
 usr/share/zsh/site-functions/_wpctl	/usr/share/zsh/vendor-completions/
