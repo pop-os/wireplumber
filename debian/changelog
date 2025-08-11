@@ -1,3 +1,10 @@
+wireplumber (0.5.10-3) unstable; urgency=medium
+
+  * Adjust VCS fields in d/control and d/gbp.conf for unstable.
+  * Upload to unstable.
+
+ -- Dylan Aïssi <daissi@debian.org>  Mon, 11 Aug 2025 08:58:28 +0200
+
 wireplumber (0.5.10-2) experimental; urgency=medium
 
   * Install system-wide services in a new package (wireplumber-system-services).
