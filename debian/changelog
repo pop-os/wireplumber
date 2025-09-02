@@ -3,6 +3,7 @@ wireplumber (0.5.11-1) UNRELEASED; urgency=medium
   * New upstream version
   * debian/gbp.conf: use upstream-vcs-tag instead of upstream-tag
   * debian/gbp.conf: add "pristine-tar = True"
+  * Update symbols file: add 1 new symbol
 
  -- Dylan Aïssi <daissi@debian.org>  Tue, 02 Sep 2025 16:28:33 +0200
 
