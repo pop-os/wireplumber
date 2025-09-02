@@ -1,3 +1,10 @@
+wireplumber (0.5.11-1) UNRELEASED; urgency=medium
+
+  * New upstream version
+  * debian/gbp.conf: use upstream-vcs-tag instead of upstream-tag
+
+ -- Dylan Aïssi <daissi@debian.org>  Tue, 02 Sep 2025 16:28:33 +0200
+
 wireplumber (0.5.10-3) unstable; urgency=medium
 
   * Adjust VCS fields in d/control and d/gbp.conf for unstable.
