@@ -1,5 +1,5 @@
 project('wireplumber', ['c'],
-  version : '0.5.10',
+  version : '0.5.11',
   license : 'MIT',
   meson_version : '>= 0.59.0',
   default_options : [
@@ -159,6 +159,8 @@ common_args = [
   '-DWP_USE_LOCAL_LOG_TOPIC_IN_G_LOG',
 ]
 add_project_arguments(common_args, language: 'c')
+
+i18n_conf = files()
 
 subdir('lib')
 if build_modules
