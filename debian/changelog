@@ -1,3 +1,9 @@
+wireplumber (0.5.12-1) UNRELEASED; urgency=medium
+
+  * New upstream version.
+
+ -- Dylan Aïssi <daissi@debian.org>  Fri, 10 Oct 2025 17:25:14 +0200
+
 wireplumber (0.5.11-1) unstable; urgency=medium
 
   * New upstream version
