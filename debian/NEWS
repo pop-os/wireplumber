@@ -1,3 +1,18 @@
+wireplumber (0.5.11-1) unstable; urgency=medium
+
+  WirePlumber 0.5.11 adds support of MPRIS media player pause functionality
+  that automatically pauses media playback when the audio target
+  (e.g. headphones) is removed.
+  .
+  The intention is to not allow music to inadvertently blast out of the
+  speakers when you disconnect your headset, as that may not have been what
+  you intended.
+  .
+  However, it is possible to turn it off with:
+    wpctl settings --save linking.pause-playback false
+
+ -- Dylan Aïssi <daissi@debian.org>  Mon, 13 Oct 2025 16:18:35 +0200
+
 wireplumber (0.5.1-1) experimental; urgency=medium
 
   WirePlumber 0.5 was released with a new configuration system.
