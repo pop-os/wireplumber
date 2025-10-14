@@ -1,4 +1,4 @@
-wireplumber (0.5.12-1) UNRELEASED; urgency=medium
+wireplumber (0.5.12-1) unstable; urgency=medium
 
   * New upstream version.
   * Install manpage for wpctl in wireplumber-doc.
@@ -12,7 +12,7 @@ wireplumber (0.5.12-1) UNRELEASED; urgency=medium
   * Override lintian tag systemd-service-file-refers-to-unusual-wantedby-target
     for wireplumber-system-services.
 
- -- Dylan Aïssi <daissi@debian.org>  Fri, 10 Oct 2025 17:25:14 +0200
+ -- Dylan Aïssi <daissi@debian.org>  Tue, 14 Oct 2025 09:17:55 +0200
 
 wireplumber (0.5.11-1) unstable; urgency=medium
 
