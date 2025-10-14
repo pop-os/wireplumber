@@ -2,7 +2,7 @@ wireplumber (0.5.12-1) unstable; urgency=medium
 
   * New upstream version.
   * Install manpage for wpctl in wireplumber-doc.
-    (Closes :#1068019, LP: #2080723)
+    (Closes: #1068019, LP: #2080723)
   * Remove Remove-service-alias.patch, this was required to avoid conflict
     with pipewire-media-session due to a bug in systemd. systemd is fixed
     since v253 and pipewire-media-session is no longer available since Trixie,
