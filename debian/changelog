@@ -9,6 +9,8 @@ wireplumber (0.5.12-1) UNRELEASED; urgency=medium
     so no reason to keep it.
   * Announce the new MPRIS media player pause functionality in NEWS.Debian.
     (Closes: #1117509)
+  * Override lintian tag systemd-service-file-refers-to-unusual-wantedby-target
+    for wireplumber-system-services.
 
  -- Dylan Aïssi <daissi@debian.org>  Fri, 10 Oct 2025 17:25:14 +0200
 

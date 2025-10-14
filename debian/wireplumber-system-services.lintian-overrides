@@ -1,0 +1,3 @@
+# It's just how wireplumber and pipewire work!
+systemd-service-file-refers-to-unusual-wantedby-target pipewire.service [usr/lib/systemd/system/wireplumber.service]
+systemd-service-file-refers-to-unusual-wantedby-target pipewire.service [usr/lib/systemd/system/wireplumber@.service]
