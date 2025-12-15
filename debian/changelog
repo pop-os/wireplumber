@@ -1,3 +1,9 @@
+wireplumber (0.5.12-3) UNRELEASED; urgency=medium
+
+  * Use dbus-daemon as Build-Dependency rather than dbus (Closes: #1122577)
+
+ -- Dylan Aïssi <daissi@debian.org>  Mon, 15 Dec 2025 17:18:13 +0100
+
 wireplumber (0.5.12-2) unstable; urgency=medium
 
   * Don't depend on non-multiarch-friendly libgirepository1.0-dev.

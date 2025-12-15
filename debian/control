@@ -20,7 +20,7 @@ Build-Depends: debhelper-compat (= 13),
                meson (>= 0.59.0),
                pkgconf,
                systemd-dev,
-               dbus <!nocheck>,
+               dbus-daemon <!nocheck>,
                pipewire (>= 1.0.2) <!nocheck>,
                python3-lxml:native <!nogir>,
 Build-Depends-Indep:
