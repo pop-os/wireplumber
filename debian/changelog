@@ -1,6 +1,10 @@
-wireplumber (0.5.12-3) UNRELEASED; urgency=medium
+wireplumber (0.5.12-2pop1) noble; urgency=medium
 
+  [ Dylan Aïssi ]
   * Use dbus-daemon as Build-Dependency rather than dbus (Closes: #1122737)
+
+  [ Michael Murphy ]
+  * Backport to Pop 24.04
 
  -- Dylan Aïssi <daissi@debian.org>  Mon, 15 Dec 2025 17:18:13 +0100
 
